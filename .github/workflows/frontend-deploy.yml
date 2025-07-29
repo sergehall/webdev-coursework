@@ -1,0 +1,32 @@
+# .github/workflows/frontend-deploy.yml
+name: Frontend Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    uses: ./.github/workflows/frontend-common.yml
+    with:
+      environment: production
+      run_lint: false
+      run_tests: false
+      run_build: true
+    secrets:
+      VITE_ENVIRONMENT: ${{ secrets.VITE_ENVIRONMENT }}
+      VITE_API_URL: ${{ secrets.VITE_API_URL }}
+      VITE_QUIZ_SECRET: ${{ secrets.VITE_QUIZ_SECRET }}
+      VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
+
+  upload-artifacts:
+    needs: build
+    runs-on: ubuntu-latest
+    if: ${{ github.actor != 'nektos/act' }}
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-dist
+          path: ./frontend/dist

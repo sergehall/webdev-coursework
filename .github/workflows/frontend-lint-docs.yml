@@ -1,0 +1,21 @@
+#  .github/workflows/frontend-lint-docs.yml
+name: Frontend Lint
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  test-only:
+    uses: ./.github/workflows/frontend-common.yml
+    with:
+      environment: production
+      run_lint: true
+      run_tests: false
+      run_build: false
+    secrets:
+      VITE_ENVIRONMENT: ${{ secrets.VITE_ENVIRONMENT }}
+      VITE_API_URL: ${{ secrets.VITE_API_URL }}
+      VITE_QUIZ_SECRET: ${{ secrets.VITE_QUIZ_SECRET }}
+      VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}

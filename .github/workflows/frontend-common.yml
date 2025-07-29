@@ -1,0 +1,121 @@
+# .github/workflows/frontend-common.yml
+name: Frontend Common Workflow
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+      run_lint:
+        required: true
+        type: boolean
+      run_tests:
+        required: true
+        type: boolean
+      run_build:
+        required: true
+        type: boolean
+    secrets:
+      VITE_ENVIRONMENT:
+        required: true
+      VITE_API_URL:
+        required: true
+      VITE_QUIZ_SECRET:
+        required: true
+      VITE_SENTRY_DSN:
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    defaults:
+      run:
+        working-directory: ./frontend
+    env:
+      VITE_ENVIRONMENT: ${{ inputs.environment }}
+      VITE_API_URL: ${{ secrets.VITE_API_URL }}
+      VITE_QUIZ_SECRET: ${{ secrets.VITE_QUIZ_SECRET }}
+      VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Enable Corepack and prepare Yarn (Berry)
+        run: |
+          npm install -g corepack
+          corepack enable
+          corepack prepare yarn@4.9.2 --activate
+          yarn --version
+
+      - name: Cache Yarn
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/yarn
+            .yarn/cache
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install dependencies (immutable)
+        run: yarn install --immutable
+
+      - name: Create .env file for build
+        if: inputs.run_build
+        run: |
+          echo "VITE_ENVIRONMENT=$VITE_ENVIRONMENT" >> .env
+          echo "VITE_API_URL=$VITE_API_URL" >> .env
+          echo "VITE_QUIZ_SECRET=$VITE_QUIZ_SECRET" >> .env
+
+      - name: Show generated .env keys (safe debug)
+        if: inputs.run_build
+        run: |
+          echo "🔐 Safe preview of .env:"
+          grep -o '^[^=]*' .env | while read -r key; do
+            echo "$key=***"
+          done
+
+      - name: Run Linter
+        if: inputs.run_lint
+        run: yarn lint
+
+      - name: Run Tests with Coverage
+        if: inputs.run_tests
+        run: yarn test:ci
+
+      - name: Build Frontend
+        if: inputs.run_build
+        run: yarn build
+
+      - name: Show build output (optional)
+        if: inputs.run_build
+        run: |
+          echo "📦 Contents of dist/:"
+          ls -lh ./dist
+          echo ""
+          echo "🔍 Preview of index.html:"
+          head -n 20 ./dist/index.html
+
+      - name: Check if dist exists
+        if: inputs.run_build
+        run: |
+          echo "📂 Contents of ./frontend:"
+          ls -lah .
+          echo ""
+          echo "📂 Contents of ./frontend/dist:"
+          ls -lah ./dist || echo "⚠️ dist not found"
+
+      - name: Upload frontend dist as artifact
+        if: inputs.run_build
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: ./frontend/dist
