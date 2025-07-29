@@ -1,0 +1,102 @@
+# See: https://help.github.com/articles/ignoring-files/
+
+# Build output
+dist
+build
+
+# Environment variables
+.env
+.env.dev
+.env.local
+.env.*.local
+.env.development
+.env.development.local
+.env.test.local
+.env.production
+.env.production.local
+
+config/development.env
+
+# Dependencies
+**/node_modules
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+.vercel
+
+# Test coverage and reports
+coverage
+.nyc_output
+
+# Logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# JetBrains IDEs (WebStorm, IntelliJ, etc.)
+.idea/
+!.idea/modules.xml
+!.idea/vcs.xml
+!.idea/*.iml
+
+# VS Code
+.vscode/
+
+# Cloud IDEs
+.c9/
+*.launch
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+# Sublime
+*.sublime-workspace
+
+# Optional: keep shared VSCode settings
+# Uncomment below if needed
+# !.vscode/settings.json
+# !.vscode/tasks.json
+# !.vscode/launch.json
+# !.vscode/extensions.json
+
+# Temp files
+.temp
+.tmp
+
+# Runtime and PID files
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Node.js diagnostic reports
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# OS-specific
+.DS_Store
+
+
+# Local secrets for act
+frontend/.secrets
+
+frontend/.env.test
+frontend/.env.test.example
+
+# Ignore local workflow overrides
+.github/workflows/*.local.yml
+
+
+# TypeScript build info cache
+tsconfig.tsbuildinfo
+

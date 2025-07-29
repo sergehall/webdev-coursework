@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Checklist</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        background: #f9fafb;
+        color: #111;
+        padding: 2rem;
+        line-height: 1.6;
+      }
+      .container {
+        max-width: 600px;
+        margin: auto;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        padding: 2rem;
+      }
+      h1 {
+        text-align: center;
+        color: #2563eb;
+      }
+      ul {
+        padding-left: 1.25rem;
+      }
+      li {
+        margin-bottom: 0.5rem;
+      }
+      input[type="checkbox"] {
+        margin-right: 0.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Setup Checklist</h1>
+      <ul>
+        <li>
+          <label
+            ><input type="checkbox" checked disabled /> WebStorm installed and
+            opened</label
+          >
+        </li>
+        <li>
+          <label
+            ><input type="checkbox" checked disabled /> Google Chrome
+            installed</label
+          >
+        </li>
+        <li>
+          <label
+            ><input type="checkbox" checked disabled /> Node.js and npm
+            installed (verified in terminal)</label
+          >
+        </li>
+        <li>
+          <label
+            ><input type="checkbox" checked disabled /> Project folder created
+            with index.html and script.js</label
+          >
+        </li>
+        <li>
+          <label
+            ><input type="checkbox" checked disabled /> Live Server test
+            successful in Chrome</label
+          >
+        </li>
+      </ul>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Assignment 8A: Cat Clicker Tracker</title>
+    <!-- Custom title -->
+    <meta name="author" content="Siarhei Hancharou" />
+    <meta
+      name="description"
+      content="CS 81 Assignment – Module 8 Assignment 8A: Cookie Clicker Tracker"
+    />
+
+    <style>
+      /* General layout and typography */
+      body {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        min-height: 100vh;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #fbfffb, #ffffff);
+        color: #1a1a1a;
+        box-sizing: border-box;
+        padding: 2rem 10px;
+      }
+
+      main {
+        flex: 1;
+      }
+
+      /* Section title styling */
+      h1 {
+        font-size: 1.8rem;
+        color: #2c3e50;
+        background: #eaf1ff;
+        padding: 0.6rem 1rem;
+        border-left: 6px solid #2d8cf0;
+        border-radius: 4px;
+        box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.05);
+        width: 100%;
+        box-sizing: border-box;
+        margin: 0 auto 1.5rem;
+      }
+
+      /* Collapsible task panel styling */
+      .task {
+        background-color: #fef9c3;
+        border-left: 5px solid #facc15;
+        margin: 0.5rem 0 2rem;
+        font-size: 0.95rem;
+        border-radius: 6px;
+        box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      /* Clickable summary (collapsible header) */
+      .task summary {
+        cursor: pointer;
+        padding: 0.6rem 1rem;
+        font-weight: bold;
+        font-size: 1.1rem;
+        color: #92400e;
+        background-color: #fff6b7;
+        border-radius: 4px 4px 0 0;
+        user-select: none;
+      }
+
+      /* Styling for ordered list inside collapsible task */
+      .task ol {
+        padding: 0.6rem 1.2rem 1rem 1.5rem;
+        margin: 0;
+      }
+
+      .task li {
+        margin-bottom: 0.4rem;
+      }
+
+      /* Clicker app container */
+      section {
+        background: #fffde6;
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        margin-bottom: 1rem;
+        text-align: center;
+      }
+
+      #counter {
+        font-size: 2rem;
+        font-weight: bold;
+      }
+
+      #weirdCounter {
+        font-size: 2rem;
+        font-weight: bold;
+        transition: color 0.3s ease; /* Smooth color transition */
+      }
+
+      #message {
+        margin-top: 1rem;
+        font-style: italic;
+        font-size: 1.1rem;
+        color: #555;
+      }
+
+      button {
+        padding: 10px 25px;
+        font-size: 1.5rem;
+        background-color: #2d8cf0;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        margin-top: 1rem;
+      }
+
+      button:hover {
+        background-color: #1b6dc1;
+      }
+
+      footer {
+        margin-top: 3rem;
+        padding-top: 1rem;
+        border-top: 2px solid #e5e7eb;
+        font-size: 0.95rem;
+        color: #6b7280;
+      }
+
+      footer p strong {
+        color: #2c3e50;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <!-- Section heading -->
+      <h1>Module 8: Interacting with the Browser</h1>
+
+      <!-- Assignment instructions (collapsible) -->
+      <details class="task">
+        <summary>Assignment 8A: 🍪 Cookie Clicker Tracker</summary>
+        <ol>
+          <li>Create a file named <code>cookieClicker.html</code></li>
+          <li>
+            Build an interactive page with:
+            <ul>
+              <li>A button to click (use emoji or image)</li>
+              <li>A counter that starts at 0</li>
+              <li>A message area for progress feedback</li>
+            </ul>
+          </li>
+          <li>Use <code>document.getElementById()</code> to access elements</li>
+          <li>Create a variable to track clicks</li>
+          <li>
+            Add an event listener:
+            <ul>
+              <li>
+                Use <code>addEventListener("click", ...)</code> on the button
+              </li>
+              <li>Update the counter and message each time it's clicked</li>
+              <li>
+                Trigger different messages at click milestones:
+                <ul>
+                  <li>10 → You're just getting started</li>
+                  <li>25 → Wow, that's a lot of cookies</li>
+                  <li>50 → Are you still clicking?</li>
+                  <li>100 → You win! Maybe take a break</li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li>
+            Add one creative twist:
+            <ul>
+              <li>Change background color</li>
+              <li>Use a custom emoji</li>
+              <li>Personalize title or theme (e.g. Cat Clicker)</li>
+            </ul>
+          </li>
+          <li>
+            Write a <code>REFLECTION.md</code> that answers:
+            <ul>
+              <li>What helped you understand DOM interaction best?</li>
+              <li>How did you choose your milestone messages?</li>
+              <li>What challenge or bug surprised you?</li>
+              <li>What personal twist did you add?</li>
+              <li>What real-world app uses this kind of interaction?</li>
+            </ul>
+          </li>
+          <li>
+            Make at least 4 Git commits with clear messages:
+            <ul>
+              <li>Initial HTML setup</li>
+              <li>JavaScript event logic added</li>
+              <li>Milestone messages implemented</li>
+              <li>Final edits and reflection</li>
+            </ul>
+          </li>
+        </ol>
+      </details>
+
+      <!-- Cat clicker app -->
+      <section>
+        <p>Cookies clicked: <span id="counter">0</span></p>
+        <button id="cookieButton">Click Me 🐱</button>
+        <!-- Custom emoji used -->
+        <p id="message">Start clicking to earn cats!</p>
+        <!-- Fun message -->
+      </section>
+
+      <section>
+        <h3>🌀 Weird Hex Clicker</h3>
+        <p>Clicks (in HEX): <span id="weirdCounter">0</span></p>
+        <button id="weirdButton">☄️ Smash me!</button>
+        <p id="weirdMessage">What... are you doing?</p>
+      </section>
+
+      <script>
+        // Select necessary DOM elements
+        const button = document.getElementById("cookieButton");
+        const counterDisplay = document.getElementById("counter");
+        const messageDisplay = document.getElementById("message");
+
+        // Variable to track how many times the cookie (cat) was clicked
+        let count = 0;
+
+        // Event listener that runs every time the button is clicked
+        button.addEventListener("click", () => {
+          count++; // Increase counter by 1
+          counterDisplay.textContent = count; // Update counter on screen
+
+          // Show different messages and change background at milestones
+          if (count === 10) {
+            messageDisplay.textContent = "You're just getting started!";
+            document.body.style.backgroundColor = "#f0fff4";
+          } else if (count === 25) {
+            messageDisplay.textContent = "Wow, that's a lot of cats!";
+            document.body.style.backgroundColor = "#fff7ed";
+          } else if (count === 50) {
+            messageDisplay.textContent = "Are you still petting?";
+            document.body.style.backgroundColor = "#fdf2f8";
+          } else if (count === 100) {
+            messageDisplay.textContent = "You win! Maybe take a cat nap 🐾";
+            document.body.style.backgroundColor = "#eef2ff";
+          }
+        });
+      </script>
+      <script>
+        // DOM elements for weird clicker
+        const weirdButton = document.getElementById("weirdButton");
+        const weirdCounter = document.getElementById("weirdCounter");
+        const weirdMessage = document.getElementById("weirdMessage");
+
+        let weirdCount = 0;
+
+        // Generate random color
+        function getRandomColor() {
+          const letters = "0123456789ABCDEF";
+          let color = "#";
+          for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+          }
+          return color;
+        }
+
+        weirdButton.addEventListener("click", () => {
+          weirdCount++;
+          // Convert count to HEX and display
+          weirdCounter.style.color = getRandomColor();
+          weirdCounter.textContent = weirdCount.toString(16).toUpperCase();
+
+          // Strange/funny messages at weird HEX milestones
+          switch (weirdCount) {
+            case 0xa: // 10 in decimal
+              weirdMessage.textContent = "You’ve reached 0xA. Hexcellence.";
+              break;
+            case 0xf: // 15
+              weirdMessage.textContent = "0xF... Full power achieved?";
+              break;
+            case 0x1e: // 30
+              weirdMessage.textContent = "That's 30 in HEX. Are you OK?";
+              break;
+            case 0x40: // 64
+              weirdMessage.textContent = "0x40?! Someone stop this madness!";
+              break;
+            default:
+              if (weirdCount > 0x50) {
+                weirdMessage.textContent = "You need serious help... 🧠";
+              }
+              break;
+          }
+        });
+      </script>
+    </main>
+
+    <!-- Footer with course and student info -->
+    <footer>
+      <p><strong>Student:</strong> Siarhei Hancharou</p>
+      <p>
+        <strong>Course:</strong> CS 81 - JavaScript Programming (Section 1240)
+      </p>
+      <p><strong>Instructor:</strong> Vicky Tanya Seno</p>
+    </footer>
+  </body>
+</html>

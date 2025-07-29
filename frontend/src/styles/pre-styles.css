@@ -1,0 +1,8 @@
+/* styles/pre-styles.css */
+main pre {
+  @apply overflow-auto rounded border bg-gray-100 p-4 text-sm text-gray-800;
+}
+
+.dark main pre {
+  @apply border-gray-700 bg-gray-900 text-blue-100;
+}

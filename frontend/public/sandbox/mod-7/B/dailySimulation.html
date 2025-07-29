@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Assignment – Mod 7B: Async Daily Schedule</title>
+    <meta name="author" content="Siarhei Hancharou" />
+    <meta
+      name="description"
+      content="CS 81 Assignment – Mod 7B: Async Daily Schedule Simulator using setTimeout"
+    />
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        min-height: 100vh;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #fbfffb, #ffffff);
+        color: #1a1a1a;
+        box-sizing: border-box;
+        padding: 2rem 10px;
+      }
+
+      main {
+        flex: 1;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+        color: #2c3e50;
+        background: #eaf1ff;
+        padding: 0.6rem 1rem;
+        border-left: 6px solid #2d8cf0;
+        border-radius: 4px;
+        box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.05);
+        width: 100%;
+        box-sizing: border-box;
+        margin: 0 auto 1.5rem;
+      }
+
+      .task {
+        background-color: #fef9c3;
+        border-left: 5px solid #facc15;
+        padding: 0.3rem;
+        margin: 0.5rem 0 2rem;
+        font-style: italic;
+        color: #92400e;
+        font-size: 0.9rem;
+      }
+
+      .twist {
+        background-color: #fbfffb;
+        border-left: 5px solid #175fa9;
+        padding: 0.3rem;
+        margin: 0.5rem 0 2rem;
+        font-style: italic;
+        color: #92400e;
+        font-size: 0.9rem;
+      }
+
+      section {
+        background: #fffde6;
+        padding: 0.5rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        margin-bottom: 1rem;
+      }
+
+      #output {
+        margin-top: 40px;
+        font-size: 1.5rem;
+        transition: background-color 1s ease;
+        padding: 1rem;
+        border-radius: 8px;
+      }
+
+      button {
+        padding: 10px 20px;
+        font-size: 1em;
+        background-color: #2d8cf0;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #1b6dc1;
+      }
+
+      footer {
+        margin-top: 3rem;
+        padding-top: 1rem;
+        border-top: 2px solid #e5e7eb;
+        font-size: 0.95rem;
+        color: #6b7280;
+      }
+
+      footer p strong {
+        color: #2c3e50;
+      }
+    </style>
+  </head>
+
+  <body>
+    <main>
+      <h1>Assignment 7B: Daily Schedule Async Simulator</h1>
+      <div class="task">
+        <p><strong>Task 7B:</strong></p>
+        <ol>
+          <li>
+            Complete and customize the starter code in
+            <code>dailySimulation.html</code>
+          </li>
+          <li>Add at least 6 personal or creative activities with timing</li>
+          <li>Add one surprise or twist (random time, mood, or emoji)</li>
+          <li>Write and complete <code>REFLECTION.md</code></li>
+          <li>
+            Commit your work and submit to Canvas and GitHub
+            <ul>
+              <li>
+                <a href="https://github.com/sergehall/cs81-module7a-dailysim"
+                  >Make at least 4 Git commits:</a
+                >
+              </li>
+              <li>Initial structure</li>
+              <li>Simulation events</li>
+              <li>Enhancement or twist</li>
+              <li>Final polish and reflection</li>
+            </ul>
+          </li>
+        </ol>
+      </div>
+      <div id="output"></div>
+
+      <script>
+        // Get the output container
+        const output = document.getElementById("output");
+
+        // Start with a soft morning blue background
+        output.style.backgroundColor = "#e0f0ff";
+
+        // Daily schedule with time, activity text, and twist
+        const schedule = [
+          {
+            time: "07:30",
+            text: "Woke up and wrote down a dream 💭",
+            twist: "The dream sparked a new story idea ✍️",
+          },
+          {
+            time: "08:00",
+            text: "Made a unique breakfast 🥑",
+            twist: "🧀 Random emoji popped into your head",
+          },
+          {
+            time: "09:30",
+            text: "Sketched a futuristic city 🎨",
+            twist: "Mood – 🎧 Deep focus, thanks to Lo-Fi beats",
+          },
+          {
+            time: "12:00",
+            text: "Wrote 200 words for “Window to the Sky” 📖",
+            twist:
+              "Delay +20min – stared at blank page, then wild idea appeared",
+          },
+          {
+            time: "15:00",
+            text: "Took a walk and snapped 5 urban photos 📷",
+            twist: "🎻 Surprise – Street musician played your favorite tune",
+          },
+          {
+            time: "18:30",
+            text: "Created a collage from old magazine cutouts ✂️",
+            twist: "One piece fit perfectly – like it was meant to be",
+          },
+          {
+            time: "21:00",
+            text: "Meditated for 10 min and wrote 3 gratitudes 🧘",
+            twist: "Mood – 😌 Calm, memory from childhood surfaced",
+          },
+        ];
+
+        // Function to interpolate background color from start to end as day progresses
+        function interpolateColor(start, end, progress) {
+          const toRGB = (hex) => hex.match(/\w\w/g).map((x) => parseInt(x, 16));
+          const [r1, g1, b1] = toRGB(start);
+          const [r2, g2, b2] = toRGB(end);
+          const r = Math.round(r1 + (r2 - r1) * progress);
+          const g = Math.round(g1 + (g2 - g1) * progress);
+          const b = Math.round(b1 + (b2 - b1) * progress);
+          return `rgb(${r}, ${g}, ${b})`;
+        }
+
+        // Function to display each activity step-by-step
+        function showActivity(index) {
+          if (index >= schedule.length) return;
+
+          const { time, text, twist } = schedule[index];
+
+          // Randomly format the twist string with different styles
+          const twistVariants = [twist, `✨ ${twist}`, `Unexpected: ${twist}`];
+          const randomTwist =
+            twistVariants[Math.floor(Math.random() * twistVariants.length)];
+
+          // Create a new section element for this activity
+          const section = document.createElement("section");
+          section.innerHTML = `
+      <p><strong>${time}</strong> – ${text}</p>
+      <div class="twist">${randomTwist}</div>
+    `;
+          output.appendChild(section);
+
+          // Update background color based on how far along we are in the day
+          const progress = index / (schedule.length - 1);
+          const startColor = "#e0f0ff"; // morning blue
+          const endColor = "#ffe0e0"; // evening reddish pink
+          output.style.backgroundColor = interpolateColor(
+            startColor,
+            endColor,
+            progress
+          );
+
+          // Wait 2–3.5 seconds before showing the next activity
+          const nextDelay = 2000 + Math.floor(Math.random() * 1500);
+          setTimeout(() => showActivity(index + 1), nextDelay);
+        }
+
+        // Start the simulation after 1 second
+        setTimeout(() => {
+          showActivity(0);
+        }, 1000);
+      </script>
+    </main>
+
+    <footer>
+      <p><strong>Student:</strong> Siarhei Hancharou</p>
+      <p>
+        <strong>Course:</strong> CS 81 – JavaScript Programming (Section 1240)
+      </p>
+      <p><strong>Instructor:</strong> Anthony Wang</p>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,37 @@
+/* ==== Base Form Reset ==== */
+input,
+button,
+select,
+textarea {
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  outline: none;
+  background: transparent;
+}
+
+/*  Key change - don't break the checkbox/radio  */
+input:not([type="checkbox"]):not([type="radio"]),
+button,
+select,
+textarea {
+  border: none;
+  appearance: none;
+}
+
+button {
+  cursor: pointer;
+  background-color: transparent;
+}
+
+/* Optional: for Safari */
+select {
+  background-image: none;
+}
+
+/* Allow placeholder to inherit color */
+::placeholder {
+  color: inherit;
+  opacity: 0.5;
+}

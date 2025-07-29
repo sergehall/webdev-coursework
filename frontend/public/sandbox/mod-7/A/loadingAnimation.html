@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Assignment 7A: Loading Animation Simulator Code Review</title>
+    <meta name="author" content="Siarhei Hancharou" />
+    <meta
+      name="description"
+      content="CS 81 Assignment – Module 7 Assignment 7A: Code Review"
+    />
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        min-height: 100vh;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #fbfffb, #ffffff);
+        color: #1a1a1a;
+        box-sizing: border-box;
+        padding: 2rem 10px;
+      }
+
+      main {
+        flex: 1;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+        color: #2c3e50;
+        background: #eaf1ff;
+        padding: 0.6rem 1rem;
+        border-left: 6px solid #2d8cf0;
+        border-radius: 4px;
+        box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.05);
+        width: 100%;
+        box-sizing: border-box;
+        margin: 0 auto 1.5rem;
+      }
+
+      .task {
+        background-color: #fef9c3;
+        border-left: 5px solid #facc15;
+        padding: 0.3rem;
+        margin: 0.5rem 0 2rem;
+        font-style: italic;
+        color: #92400e;
+        font-size: 0.9rem;
+      }
+
+      .animation-container {
+        width: 400px;
+        height: 400px;
+        background-color: #e0f0ff;
+        border-radius: 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin: 20px auto;
+        gap: 20px;
+        transition: background-color 0.3s ease;
+      }
+
+      button {
+      }
+
+      /*  Styles for the start button */
+      #start-btn {
+        padding: 10px 20px;
+        font-size: 1.2rem;
+        background-color: #2d8cf0;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      #start-btn:hover {
+        background-color: #1b6dc1;
+      }
+
+      /* Loading animation */
+      #loader {
+        font-size: 2rem;
+        margin-top: 40px;
+        display: none;
+      }
+
+      /* Status message */
+      #status {
+        display: none;
+        margin-top: 10px;
+        font-size: 1rem;
+        color: #555;
+      }
+
+      footer {
+        margin-top: 3rem;
+        padding-top: 1rem;
+        border-top: 2px solid #e5e7eb;
+        font-size: 0.95rem;
+        color: #6b7280;
+      }
+
+      footer p strong {
+        color: #2c3e50;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Assignment 7A: Code Review</h1>
+      <div class="task">
+        <p><strong>Task 7A: Code Review</strong></p>
+        <ol>
+          <li>Create a file named <code>loadingAnimation.html</code></li>
+          <li>Copy and run the provided code below in a browser</li>
+          <li>
+            Add at least 10 meaningful comments in the code explaining:
+            <ul>
+              <li>What each variable and function does</li>
+              <li>How <code>setInterval</code> creates looping behavior</li>
+              <li>How the DOM is updated</li>
+              <li>When and why <code>clearInterval</code> stops the loop</li>
+            </ul>
+          </li>
+          <li>
+            Add one creative idea as a comment (such as adding music, background
+            change, or more emojis)
+          </li>
+          <li>
+            Add at least one new feature to change the behavior or visuals
+          </li>
+          <li>
+            Write a <code>REFLECTION.md</code> answering the questions below
+          </li>
+          <li>Make at least 3 Git commits with clear messages</li>
+        </ol>
+      </div>
+
+      <!-- Centered container for button, loader, and status -->
+      <div class="animation-container">
+        <button id="start-btn">Start Loading</button>
+        <div id="loader">Loading...</div>
+        <div id="status">Please wait</div>
+      </div>
+
+      <!-- Hidden audio element -->
+      <audio id="ding-sound" src="background.mp3" preload="auto" loop></audio>
+
+      <script>
+        // Main function that starts the animation
+        function runLoadingAnimation() {
+          // Grab the loader element to update emoji frames
+          const loader = document.getElementById("loader");
+
+          // Grab the status element to update the text after animation ends
+          const status = document.getElementById("status");
+
+          const sound = document.getElementById("ding-sound");
+
+          // Array of frames (loading symbols) to simulate animation
+          const frames = ["⏳", "⌛", ".", "..", "...", "....", "🔄"];
+
+          // Current index of frame shown
+          let index = 0;
+
+          // Count how many full cycles of animation have passed
+          let cycleCount = 0;
+
+          // Max number of animation loops before stopping
+          const maxCycles = 10;
+
+          // Set initial background to light blue
+          document.querySelector(".animation-container").style.backgroundColor =
+            "#e0f0ff";
+
+          // Start playing background music when animation starts
+          sound.play();
+
+          // This function runs every 500ms (like a loop)
+          const interval = setInterval(() => {
+            // Update the loader's content with the next frame
+            loader.textContent = frames[index % frames.length];
+
+            // Move to the next frame
+            index++;
+
+            // Every time we complete a full cycle of all frames, increase cycle count
+            if (index % frames.length === 0) {
+              cycleCount++;
+            }
+
+            // Update background color gradually toward green
+            // Let's fade the blue (e0f0ff) towards green (d4f4dd) over time
+            const progress = cycleCount / maxCycles;
+            const r = Math.round(224 - (224 - 212) * progress); // from 224 to 212
+            const g = Math.round(240 + (244 - 240) * progress); // from 240 to 244
+            const b = Math.round(255 - (255 - 221) * progress); // from 255 to 221
+            document.querySelector(
+              ".animation-container"
+            ).style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+
+            // Stop the animation after maxCycles
+            if (cycleCount >= maxCycles) {
+              // Stop the interval (loop)
+              clearInterval(interval);
+
+              // Final visual feedback
+              loader.textContent = "✅";
+              status.textContent = "Done!";
+
+              // Stop the background music
+              sound.pause();
+              sound.currentTime = 0;
+            }
+          }, 500); // Animation speed (milliseconds between frames)
+        }
+
+        // Call the animation only after user clicks the button (required for audio autoplay)
+        const startBtn = document.getElementById("start-btn");
+        startBtn.addEventListener("click", () => {
+          // Hide the button and show animation elements
+          startBtn.style.display = "none";
+          document.getElementById("loader").style.display = "block";
+          document.getElementById("status").style.display = "block";
+
+          runLoadingAnimation();
+        });
+
+        // Creative idea: background music plays during loading, background color transitions from blue to green
+      </script>
+    </main>
+    <footer>
+      <p><strong>Student:</strong> Siarhei Hancharou</p>
+      <p>
+        <strong>Course:</strong> CS 81 - JavaScript Programming (Section 1240)
+      </p>
+      <p><strong>Instructor:</strong> Vicky Tanya Seno</p>
+    </footer>
+  </body>
+</html>
+<!--
+  Music by Maksym Malko from Pixabay
+  https://pixabay.com/users/backgroundmusicforvideos-46459014/
+  https://pixabay.com/music/ambient-vapor-334863/
+-->

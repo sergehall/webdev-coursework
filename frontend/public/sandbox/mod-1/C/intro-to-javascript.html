@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Assignment 1C: Intro to JavaScript</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        background: #f9fafb;
+        color: #1f2937;
+        padding: 2rem;
+      }
+      .container {
+        max-width: 720px;
+        margin: auto;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        padding: 2rem;
+      }
+      h1 {
+        text-align: center;
+        font-size: 1.75rem;
+        color: #2563eb;
+        margin-bottom: 1.5rem;
+      }
+      h2 {
+        font-size: 1.25rem;
+        margin-top: 1.5rem;
+        color: #111827;
+      }
+      p {
+        margin: 0.5rem 0 1rem;
+      }
+      pre {
+        background: #f3f4f6;
+        padding: 1rem;
+        border-radius: 6px;
+        overflow-x: auto;
+        font-size: 0.95rem;
+        color: #111827;
+      }
+      ul {
+        list-style-type: disc;
+        margin-left: 1.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Assignment 1C: Intro to JavaScript</h1>
+
+      <h2>1. What is JavaScript?</h2>
+      <p>
+        JavaScript is a versatile, high-level programming language primarily
+        used for creating interactive elements on websites. It runs in the
+        user's browser and allows developers to add dynamic behavior such as
+        responding to clicks, validating forms, updating content without
+        refreshing the page, and more. JavaScript is essential for building
+        modern, responsive web applications. It integrates seamlessly with HTML
+        and CSS, enabling developers to manipulate the structure and style of
+        web pages. Because it runs on the client side, it helps reduce server
+        load and improves user experience through real-time feedback and
+        interactions.
+      </p>
+
+      <h2>2. JavaScript vs. ECMAScript</h2>
+      <p>
+        JavaScript is the programming language used in web development, while
+        ECMAScript is the standardized specification that defines how JavaScript
+        should behave. Think of ECMAScript as the rules and blueprint, and
+        JavaScript as one of its most well-known implementations. This matters
+        because browser vendors (like Chrome, Firefox, Safari) rely on
+        ECMAScript standards to implement consistent JavaScript behavior. By
+        understanding the ECMAScript version a feature belongs to (like ES6),
+        developers can write compatible code and use tools like Babel to
+        transpile newer syntax for older browsers.
+      </p>
+
+      <h2>3. Logical Expressions</h2>
+      <pre>
+Expression: true && true
+Prediction: true
+Result: true
+Explanation: Both operands are true, so the result is true.
+
+Expression: true || false
+Prediction: true
+Result: true
+Explanation: At least one operand is true, so the result is true.
+
+Expression: false && true
+Prediction: false
+Result: false
+Explanation: AND requires both to be true; the first is false.
+
+Expression: false || !(false)
+Prediction: true
+Result: true
+Explanation: !(false) becomes true, and OR requires only one true.
+    </pre
+      >
+
+      <h2>4. Console Output</h2>
+      <p>Screenshot attached separately.</p>
+
+      <h2>5. JavaScript Data Types</h2>
+      <ul>
+        <li>
+          <strong>String:</strong> A sequence of characters, used for text
+          (e.g., "Hello").
+        </li>
+        <li>
+          <strong>Number:</strong> Represents numerical values, both integers
+          and floats (e.g., 42, 3.14).
+        </li>
+        <li>
+          <strong>Boolean:</strong> Represents logical values true or false.
+        </li>
+        <li>
+          <strong>Undefined:</strong> A variable declared but not assigned a
+          value.
+        </li>
+      </ul>
+    </div>
+  </body>
+</html>
