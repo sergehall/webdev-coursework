@@ -22,10 +22,12 @@ Welcome! This repository contains my coursework for **CS 81 – JavaScript Progr
 ---
 
 ## Getting Started
+
 <details>
 <summary> Getting Started – Expand to view setup instructions</summary>
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/sergehall/smc-2025-cs81-javascript-programming
    cd smc-2025-cs81-javascript-programming
@@ -35,13 +37,16 @@ Welcome! This repository contains my coursework for **CS 81 – JavaScript Progr
    Visit [https://nodejs.org](https://nodejs.org) and install **Node.js ≥ 18**
 
 3. **Install Yarn 4** (if needed)
+
    ```bash
    corepack enable
    corepack prepare yarn@4.9.2 --activate
    ```
 
 4. **Install project dependencies**
+
    > You can install strictly or with relaxed mode:
+
    ```bash
    yarn install:strict     # preferred (immutable)
    # or
@@ -49,18 +54,21 @@ Welcome! This repository contains my coursework for **CS 81 – JavaScript Progr
    ```
 
 5. **Start development servers (frontend + backend concurrently)**
+
    ```bash
    yarn dev
    ```
 
 6. **Individual workspace development (optional)**  
    To run only one part:
+
    ```bash
    yarn dev:frontend   # frontend only
    yarn dev:backend    # backend only
    ```
 
 7. **Lint, format, and test**
+
    ```bash
    yarn lint          # run ESLint on both workspaces
    yarn format        # run Prettier on both workspaces
@@ -69,6 +77,7 @@ Welcome! This repository contains my coursework for **CS 81 – JavaScript Progr
    ```
 
 8. **Build for production**
+
    ```bash
    yarn build
    ```
@@ -85,7 +94,9 @@ Welcome! This repository contains my coursework for **CS 81 – JavaScript Progr
 > **Having issues with PnP or workspace resolution?**  
 > Try running `yarn install:strict` again, or delete `.yarn`, `.pnp.*`, and `yarn.lock`, then reinstall with:  
 > `corepack prepare yarn@4.9.2 --activate && yarn install`
+
 ---
+
 </details>
 
 ## Monorepo Structure
@@ -180,6 +191,7 @@ Run from root:
 This full-stack monorepo web application was developed as the **Final Project** for _CS 81 – JavaScript Programming_ at Santa Monica College. It brings together all major course topics—DOM manipulation, component-based React, API interaction, and full-stack deployment—into one cohesive project.
 
 ---
+
 ### Core Stack
 
 - Frontend: React 19, Vite, Tailwind CSS
@@ -229,8 +241,6 @@ Powered by:
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-336791?logo=postgresql&style=flat-square)
 ![Jest](https://img.shields.io/badge/Tested_with-Jest-C21325?logo=jest&style=flat-square)
 
-
-
 - RESTful API with modular `Controllers`, `Services`, and `DTOs`
 - Data validation using `class-validator`
 - File uploads with `multer` and cookie/session handling
@@ -239,7 +249,6 @@ Powered by:
 - **Backend tests** written using [`Jest`](https://jestjs.io/) and [`Supertest`](https://github.com/ladjs/supertest) for unit and E2E coverage
 
 </details>
-
 
 ### Developer Tooling
 
