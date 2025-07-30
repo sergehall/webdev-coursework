@@ -1,6 +1,8 @@
 // src/assignments/mod11/AssignmentMod11.tsx
 import { useState } from "react";
 
+import Assignment11 from "@/courses/CS81/assignments/mod11/tasks/Assignment11";
+import QuizModule11 from "@/courses/CS81/assignments/mod11/tasks/QuizModule11";
 import AnimatedAccordionItem from "@/components/AnimatedAccordionItem";
 import ModuleCompletionButton from "@/components/buttons/ModuleCompletionButton";
 import { useFinalModuleRedirect } from "@/hooks/useFinalModuleRedirect";
@@ -19,48 +21,19 @@ export default function AssignmentMod11() {
       </h2>
 
       <AnimatedAccordionItem
-        title="1 – Title"
-        isOpen={openItem === "1"}
-        onToggle={() => toggleItem("1")}
+        title="Assignment 11A: React Contact Form"
+        isOpen={openItem === "11A"}
+        onToggle={() => toggleItem("11A")}
       >
-        {/* Task content goes here */}
-        {null}
+        <Assignment11 />
       </AnimatedAccordionItem>
 
       <AnimatedAccordionItem
-        title="2 – Title"
-        isOpen={openItem === "2"}
-        onToggle={() => toggleItem("2")}
+        title="Quiz: Module 11 - React Forms"
+        isOpen={openItem === "Quiz: Module 11"}
+        onToggle={() => toggleItem("Quiz: Module 11")}
       >
-        {/* Task content goes here */}
-        {null}
-      </AnimatedAccordionItem>
-
-      <AnimatedAccordionItem
-        title="3 – Title"
-        isOpen={openItem === "3"}
-        onToggle={() => toggleItem("3")}
-      >
-        {/* Task content goes here */}
-        {null}
-      </AnimatedAccordionItem>
-
-      <AnimatedAccordionItem
-        title="4 – Title"
-        isOpen={openItem === "4"}
-        onToggle={() => toggleItem("4")}
-      >
-        {/* Task content goes here */}
-        {null}
-      </AnimatedAccordionItem>
-
-      <AnimatedAccordionItem
-        title="5 – Title"
-        isOpen={openItem === "5"}
-        onToggle={() => toggleItem("5")}
-      >
-        {/* Task content goes here */}
-        {null}
+        <QuizModule11 />
       </AnimatedAccordionItem>
 
       <ModuleCompletionButton moduleId={11} />
