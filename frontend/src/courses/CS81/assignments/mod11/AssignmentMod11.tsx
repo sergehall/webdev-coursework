@@ -17,7 +17,7 @@ export default function AssignmentMod11() {
   return (
     <section className="space-y-6 rounded-xl bg-white p-6 shadow-md dark:bg-gray-900">
       <h2 className="text-2xl font-bold text-blue-700 dark:text-blue-300">
-        Module 11 – Public APIs
+        Module 11 – React Data Forms
       </h2>
 
       <AnimatedAccordionItem

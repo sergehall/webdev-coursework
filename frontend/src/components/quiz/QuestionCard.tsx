@@ -31,17 +31,22 @@ const QuestionCard = ({
         )}
       </div>
 
-      <p className="mb-2 text-gray-800 dark:text-white">{question.question}</p>
+      <p className="my-5 text-gray-800 dark:text-white">
+        {question.question}
+      </p>
 
-      {Array.isArray(question.imageUrl) &&
-        question.imageUrl.map((url, i) => (
-          <img
-            key={i}
-            src={url}
-            alt={`${question.question} - image ${i + 1}`}
-            className="mb-3 rounded-md border border-gray-200 dark:border-gray-600"
-          />
-        ))}
+      {Array.isArray(question.imageUrl) && (
+        <div className="my-5">
+          {question.imageUrl.map((url, i) => (
+            <img
+              key={i}
+              src={url}
+              alt={`${question.question} - image ${i + 1}`}
+              className="mb-3 rounded-md border border-gray-200 dark:border-gray-600"
+            />
+          ))}
+        </div>
+      )}
 
       <div className="space-y-2">
         {question.options.map((opt, oIndex) => {

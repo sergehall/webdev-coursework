@@ -18,7 +18,7 @@ export default function AssignmentMod10() {
   return (
     <section className="space-y-6 rounded-xl bg-white p-6 shadow-md dark:bg-gray-900">
       <h2 className="text-2xl font-bold text-blue-700 dark:text-blue-300">
-        Module 10 – Building Forms in React
+        Module 10 – React State and Props
       </h2>
 
       <AnimatedAccordionItem
