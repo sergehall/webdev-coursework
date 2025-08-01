@@ -30,4 +30,5 @@ export type Variants =
   | "warning"
   | "info"
   | "default"
-  | "lightBrown";
+  | "lightBrown"
+  | "gradientPurpleBlue";

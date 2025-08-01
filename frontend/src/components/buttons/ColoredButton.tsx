@@ -52,15 +52,16 @@ const variants: Record<Variants, string> = {
   info: "bg-cyan-100 hover:bg-cyan-200 dark:bg-cyan-600 dark:hover:bg-cyan-700 text-cyan-900 dark:text-white",
   lightBrown:
     "bg-amber-100 hover:bg-amber-200 dark:bg-amber-700 dark:hover:bg-amber-800 text-amber-900 dark:text-white",
-
+  gradientPurpleBlue:
+    "bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 text-white hover:from-purple-600 hover:to-blue-600 dark:from-purple-600 dark:to-blue-700 dark:hover:from-purple-700 dark:hover:to-blue-800",
   default:
     "bg-neutral-200 hover:bg-neutral-300 dark:bg-neutral-600 dark:hover:bg-neutral-500 text-neutral-900 dark:text-white",
 };
 
 export default function ColoredButton({
-  variant = "default",
-  className = "",
-}: {
+                                        variant = "default",
+                                        className = "",
+                                      }: {
   variant?: Variants;
   className?: string;
 }): string {
