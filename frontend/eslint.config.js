@@ -10,6 +10,7 @@ import importPlugin from "eslint-plugin-import";
 import prettierPlugin from "eslint-plugin-prettier";
 import prettierConfig from "eslint-config-prettier";
 import globals from "globals";
+import eslintConfigPrettier from "eslint-config-prettier";
 
 const { browser, node, jest } = globals;
 
@@ -66,6 +67,7 @@ export default [
     },
     rules: {
       ...tseslintPlugin.configs.recommended.rules,
+      ...eslintConfigPrettier.rules,
 
       "prettier/prettier": "warn",
       "no-unused-vars": "off",

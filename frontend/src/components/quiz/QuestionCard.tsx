@@ -31,9 +31,7 @@ const QuestionCard = ({
         )}
       </div>
 
-      <p className="my-5 text-gray-800 dark:text-white">
-        {question.question}
-      </p>
+      <p className="my-5 text-gray-800 dark:text-white">{question.question}</p>
 
       {Array.isArray(question.imageUrl) && (
         <div className="my-5">
