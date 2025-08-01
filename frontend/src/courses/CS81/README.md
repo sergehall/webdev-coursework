@@ -127,7 +127,7 @@ Welcome! This repository contains my coursework for **CS 81 – JavaScript Progr
 │   ├── .env.development         # Dev-specific env vars
 │   ├── index.html               # Vite entry point
 │   ├── eslint.config.js         # ESLint rules for frontend
-│   ├── tailwind.config.ts       # TailwindCSS configuration
+│   ├── tailwind.config.js       # TailwindCSS configuration
 │   ├── postcss.config.js        # PostCSS config for Tailwind
 │   ├── prettier.config.cjs      # Prettier configuration
 │   ├── setupTests.ts            # Setup for frontend testing
