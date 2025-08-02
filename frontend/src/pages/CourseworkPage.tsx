@@ -6,7 +6,7 @@ import { XCircle } from "lucide-react";
 import { LoadMoreButton } from "@/components/buttons";
 import { courses } from "@/data/web-developer-courses";
 
-export default function Coursework() {
+export default function CourseworkPage() {
   const [visibleCount, setVisibleCount] = useState(10);
   const allCourses = courses.flatMap((course) =>
     course.options ? course.options : [course]

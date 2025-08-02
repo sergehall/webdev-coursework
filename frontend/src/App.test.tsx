@@ -17,9 +17,11 @@ describe("<App /> integration", () => {
     expect(await screen.findByText(/loading home/i)).toBeInTheDocument();
   });
 
-  it("renders Coursework page", async () => {
+  it("renders CourseworkPage page", async () => {
     renderWithProviders(<App />, "/coursework");
-    expect(await screen.findByText(/Loading Coursework/i)).toBeInTheDocument();
+    expect(
+      await screen.findByText(/Loading CourseworkPage/i)
+    ).toBeInTheDocument();
   });
 
   it("renders WebDeveloperPath Page", async () => {

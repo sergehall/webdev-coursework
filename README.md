@@ -1,4 +1,4 @@
-# Web Development & CS Coursework Portfolio
+# Web Development & CS CourseworkPage Portfolio
 
 This project serves as a personal portfolio and central hub for completed coursework across several core Computer Science and Web Development classes at Santa Monica College (SMC). Each section of this application represents hands-on work completed during online classes, including assignments, projects, and technical topics covered.
 

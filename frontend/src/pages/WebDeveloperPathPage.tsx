@@ -1,4 +1,4 @@
-import CourseTracker from "@/components/CourseTracker";
+import WebDevMajorRequirements from "@/components/WebDevMajorRequirements";
 import PathwaySections from "@/components/PathwaySections";
 import { TagLegend } from "@/components/tags";
 
@@ -13,7 +13,7 @@ const WebDeveloperPathPage = () => {
       <div className="flex flex-col gap-1">
         <PathwaySections />
         <TagLegend />
-        <CourseTracker />
+        <WebDevMajorRequirements />
       </div>
     </div>
   );

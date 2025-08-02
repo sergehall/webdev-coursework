@@ -8,10 +8,10 @@ import ExitFullscreenButton from "@/components/buttons/ExitFullscreenButton";
 const gridSize = 3;
 
 const FinalProjectReveal = ({
-                              completedTasks,
-                              totalTasks,
-                              imageUrl,
-                            }: {
+  completedTasks,
+  totalTasks,
+  imageUrl,
+}: {
   completedTasks: number;
   totalTasks: number;
   imageUrl: string;

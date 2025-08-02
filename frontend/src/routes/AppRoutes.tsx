@@ -3,7 +3,6 @@
 import { Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 
-import { AssignmentWrapper } from "./LazyScreens";
 import * as Screens from "./LazyScreens";
 
 import Layout from "@/layout/Layout";
@@ -28,14 +27,14 @@ export default function AppRoutes() {
           path="/coursework"
           element={
             <Suspense fallback={<div>Loading Coursework...</div>}>
-              <Screens.Coursework />
+              <Screens.CourseworkPage />
             </Suspense>
           }
         />
 
         <Route
           path="/coursework/:code/assignment"
-          element={<AssignmentWrapper />}
+          element={<Screens.AssignmentWrapper />}
         >
           <Route path=":id" element={<AutoAssignmentRouter />} />
           <Route

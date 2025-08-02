@@ -79,7 +79,7 @@ export const courses: Course[] = [
     code: "",
     title: "One Server Programming Course",
     units: 3,
-    tags: ["Required Course"],
+    tags: ["Program Requirement"],
     options: [
       {
         code: "CS 82",
@@ -111,7 +111,7 @@ export const courses: Course[] = [
         code: "CS 83R",
         title: "Server-Side Ruby Web Programming",
         units: 3,
-        tags: ["Online Course"],
+        tags: ["Available Online"],
         description:
           "This course teaches how to design and write applications utilizing Ruby on Rails, an open-source web application framework based on the Ruby programming language. In this course, students will create applications that gather information from a web server, query databases and render results.",
         descriptionSummary:
@@ -125,7 +125,7 @@ export const courses: Course[] = [
         code: "CS 85",
         title: "PHP Programming",
         units: 3,
-        tags: ["Online Course"],
+        tags: ["Available Online"],
         description:
           'This course teaches how to design and write applications that extend Web servers. These applications process data submitted from Web forms and access back-end databases to dynamically generate Web pages. This course covers the PHP server-side technology. PHP, which stands for "PHP: Hypertext Preprocessor" is a widely-used, Open Source, general-purpose scripting language that is especially suited for Web development and can be embedded into HTML.',
         descriptionSummary:
@@ -156,13 +156,13 @@ export const courses: Course[] = [
     code: "",
     title: "One Security Course",
     units: 3,
-    tags: ["Required Course"],
+    tags: ["Program Requirement"],
     options: [
       {
         code: "CS 73A",
         title: "Fundamentals of Computer Security",
         units: 3,
-        tags: ["Online Course"],
+        tags: ["Available Online"],
         description:
           "In this introductory course students will learn how to defend and protect critical computer assets from various security threats including computer worms and viruses. This course will describe fundamental techniques and principles for modeling and analyzing security. Students will learn how to express security requirements, translate requirements into policies, implement mechanisms that enforce policy, and ensure that these policies are effective. Current industry best practices for safeguarding computer resources will be discussed. Various case studies will outline the typical way that security failures get exploited by attackers and how these attacks can be discovered, understood, and countered.",
         descriptionSummary:
@@ -174,7 +174,7 @@ export const courses: Course[] = [
         code: "CS 73B",
         title: "Computer Forensics Fundamentals",
         units: 3,
-        tags: ["Online Course"],
+        tags: ["Available Online"],
         description:
           "In this course, students will learn the principles and techniques of network forensics investigation and the use of available forensics tools in the list of the International Association of Computer Investigative Specialists (IACIS) certification. This course explores security incidents and intrusions, including identifying and categorizing incidents, responding to incidents, using log analysis, analyzing network traffic, applying various tools, and creating an incident response team. Students will also learn about ethical implications of computer forensics reporting and the laws regarding computer evidence.",
         descriptionSummary:
@@ -186,7 +186,7 @@ export const courses: Course[] = [
         code: "CS 73C",
         title: "Cybersecurity and Ethical Hacking",
         units: 3,
-        tags: ["Online Course"],
+        tags: ["Available Online"],
         description:
           "This course provides an in-depth understanding of how to protect IT infrastructure. The course combines ethical hacking methodologies with the hands-on application of security tools to secure computer and other digital systems. Students are introduced to common countermeasures that effectively reduce and/or mitigate attacks. In addition, the course covers what an ethical hacker is and how important it is to protect data from cyber attacks. Students will review TCP/IP concepts and practice footprinting, scanning, enumeration, exploitation, and social engineering.",
         descriptionSummary:
@@ -198,7 +198,7 @@ export const courses: Course[] = [
         code: "CS 73L",
         title: "Cybersecurity Literacy",
         units: 3,
-        tags: ["Online Course"],
+        tags: ["Available Online"],
         description:
           "Technology, through the use of cellphones, tablets, desktops and embedded systems, surrounds us everywhere and is a part of our daily life. With the ubiquity of device use, and global-scale data transfers, users are vulnerable to the temptations of cyber-criminals. In this course, students learn how to use technology safely. The course also introduces basic concepts of cybersecurity and explores careers in this field. This course is intended for any non-major student who wants to be a savvy user in the world today.",
         descriptionSummary:
@@ -209,7 +209,7 @@ export const courses: Course[] = [
         code: "CS 79D",
         title: "Security in Amazon Web Services",
         units: 3,
-        tags: ["Online Course"],
+        tags: ["Available Online"],
         description:
           "This course focuses on protecting the confidentiality, integrity and availability of computing systems and data.Students learn how Amazon Web Service (AWS) uses redundant and layered controls, continuous validation and testing, and a substantial amount of automation to ensure the underlying infrastructure is continuously monitored and protected. Students examine the AWS Shared Responsibility Model and access the AWS Management Console to learn more about security tools and features provided by the AWS platform.",
         descriptionSummary:

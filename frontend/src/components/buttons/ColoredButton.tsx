@@ -59,9 +59,9 @@ const variants: Record<Variants, string> = {
 };
 
 export default function ColoredButton({
-                                        variant = "default",
-                                        className = "",
-                                      }: {
+  variant = "default",
+  className = "",
+}: {
   variant?: Variants;
   className?: string;
 }): string {
