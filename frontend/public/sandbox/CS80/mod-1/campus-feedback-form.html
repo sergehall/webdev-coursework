@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Assignment: Campus Feedback Form</title>
+    <meta name="author" content="Siarhei Hancharou" />
+    <meta name="description" content="CS 80 Assignment – HTML/JS Practice" />
+    <link rel="icon" href="https://www.google.com/favicon.ico" />
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        min-height: 100vh;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #fbfffb, #ffffff);
+        color: #1a1a1a;
+        box-sizing: border-box;
+        padding: 2rem 10px;
+      }
+
+      main {
+        flex: 1;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+        color: #2c3e50;
+        background: #eaf1ff;
+        padding: 0.6rem 1rem;
+        border-left: 6px solid #2d8cf0;
+        border-radius: 4px;
+        box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.05);
+        width: 100%;
+        box-sizing: border-box;
+        margin: 0 auto 1.5rem;
+      }
+
+      .task {
+        background-color: #fef9c3;
+        border-left: 5px solid #facc15;
+        padding: 1rem;
+        margin: 0.5rem 0 2rem;
+        font-style: italic;
+        color: #92400e;
+        font-size: 0.9rem;
+      }
+
+      .container {
+        background: #e9eaec;
+        border: 1px solid #7b8290;
+        border-radius: 8px;
+        padding: 2rem;
+        max-width: 720px;
+        margin: 0 auto;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        box-sizing: border-box;
+      }
+
+      .success-message {
+        display: none;
+        position: absolute;
+        top: -2rem;
+        left: 0;
+        right: 0;
+        background: #16a34a;
+        color: white;
+        padding: 0.5rem;
+        text-align: center;
+        border-radius: 4px;
+        font-size: 0.9rem;
+      }
+
+      label {
+        display: block;
+        margin-top: 1rem;
+        font-weight: 600;
+        color: #2c3e50;
+      }
+
+      input[type="text"],
+      input[type="email"],
+      textarea {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #7b8290;
+        border-radius: 4px;
+        margin-top: 0.3rem;
+        background-color: #f9fafb;
+      }
+
+      .checkbox-group,
+      .radio-group {
+        margin-top: 1rem;
+      }
+
+      .checkbox-group label,
+      .radio-group label {
+        display: inline-block;
+        margin-right: 1rem;
+        font-weight: normal;
+      }
+
+      .buttons {
+        margin-top: 2rem;
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+      }
+
+      button {
+        padding: 0.6rem 1.2rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+
+      button[type="submit"] {
+        background-color: #2d8cf0;
+        color: white;
+        margin-right: 1rem;
+        transition: background-color 0.3s ease;
+      }
+
+      button[type="submit"]:hover {
+        background-color: #1a73e8;
+      }
+
+      button[type="reset"] {
+        background-color: #6b7280;
+        color: white;
+        transition: background-color 0.3s ease;
+      }
+
+      button[type="reset"]:hover {
+        background-color: #4b5563;
+      }
+
+      footer {
+        margin-top: 3rem;
+        padding-top: 1rem;
+        border-top: 2px solid #e5e7eb;
+        font-size: 0.95rem;
+        color: #6b7280;
+      }
+
+      footer p strong {
+        color: #2c3e50;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Assignment: Campus Feedback Form</h1>
+
+      <div class="task">
+        <strong>Task 2.16:</strong> A local university has asked you to create
+        an HTML5 document that allows prospective college students to provide
+        feedback about their campus visit. Your HTML5 document should contain a
+        form with text fields for a name and e-mail. Provide checkboxes that
+        allow prospective students to indicate what they liked most about the
+        campus. The checkboxes should include: campus, students, location,
+        atmosphere, dorm rooms and sports. Also, provide radio buttons that ask
+        the prospective students how they became interested in the college.
+        Options should include: friends, television, Internet and other. In
+        addition, provide a text area for additional comments, a submit button
+        and a reset button.
+      </div>
+
+      <div class="container">
+        <div id="success" class="success-message">
+          Feedback submitted successfully!
+        </div>
+
+        <form id="feedbackForm">
+          <label for="name">Name:</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            placeholder="Enter your name"
+            required
+          />
+
+          <label for="email">Email:</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Enter your email"
+            required
+          />
+
+          <div class="checkbox-group">
+            <p><strong>What did you like?</strong></p>
+            <label
+              ><input type="checkbox" name="likes" value="campus" />
+              Campus</label
+            >
+            <label
+              ><input type="checkbox" name="likes" value="students" />
+              Students</label
+            >
+            <label
+              ><input type="checkbox" name="likes" value="location" />
+              Location</label
+            >
+            <label
+              ><input type="checkbox" name="likes" value="atmosphere" />
+              Atmosphere</label
+            >
+            <label
+              ><input type="checkbox" name="likes" value="dormrooms" /> Dorm
+              Rooms</label
+            >
+            <label
+              ><input type="checkbox" name="likes" value="sports" />
+              Sports</label
+            >
+          </div>
+
+          <div class="radio-group">
+            <p><strong>How did you hear about us?</strong></p>
+            <label
+              ><input type="radio" name="interest" value="friends" />
+              Friends</label
+            >
+            <label
+              ><input type="radio" name="interest" value="television" />
+              Television</label
+            >
+            <label
+              ><input type="radio" name="interest" value="internet" />
+              Internet</label
+            >
+            <label
+              ><input type="radio" name="interest" value="other" /> Other</label
+            >
+          </div>
+
+          <label for="comments">Comments:</label>
+          <textarea
+            id="comments"
+            name="comments"
+            rows="4"
+            placeholder="Your feedback..."
+          ></textarea>
+
+          <div class="buttons">
+            <button type="submit" id="submitBtn">Submit</button>
+            <button type="reset">Reset</button>
+          </div>
+        </form>
+
+        <!-- Script goes here -->
+        <script>
+          const form = document.getElementById("feedbackForm");
+          const successMsg = document.getElementById("success");
+          const submitBtn = document.getElementById("submitBtn");
+
+          form.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            // Disable button, simulate loading
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Submitting...";
+
+            setTimeout(() => {
+              successMsg.classList.add("show");
+              form.reset();
+              submitBtn.disabled = false;
+              submitBtn.textContent = "Submit";
+
+              // Auto-hide success message
+              setTimeout(() => {
+                successMsg.classList.remove("show");
+              }, 3000);
+            }, 500);
+          });
+        </script>
+      </div>
+    </main>
+
+    <footer>
+      <p><strong>Student:</strong> Siarhei Hancharou</p>
+      <p>
+        <strong>Course:</strong> CS 80 – Internet Programming (Section 1239)
+      </p>
+      <p><strong>Instructor:</strong> Anthony Wang</p>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,109 @@
+<section class="readme-block">
+  <p>
+    <strong>Note:</strong> This project uses JavaScript <code>fetch()</code> to
+    dynamically load some files (like <code>mod2-readme.html</code> and
+    <code>mod-2-preview.html</code>). To view everything properly, run the page
+    on a local server using <code>npx serve .</code> or the
+    <em>Live Server</em> extension in VS Code. Opening directly as
+    <code>file://</code> may prevent content from loading.
+  </p>
+
+  <h2>Files Included and Their Roles</h2>
+
+  <h3>1. <code>assignment2.html</code></h3>
+  <ul>
+    <li>Main structure of the assignment page.</li>
+    <li>
+      Includes:
+      <ul>
+        <li>
+          A button to view tasks in a modal (<strong>View Full Task</strong>)
+        </li>
+        <li>
+          A button to preview the solution (<strong
+            >Open Assignment Preview</strong
+          >)
+        </li>
+        <li>Modal windows for both tasks and preview content</li>
+        <li>JavaScript logic from <code>mod-2-scripts.js</code></li>
+        <li>External styling from CSS files</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h3>2. <code>mod-2-modal-tasks.css</code></h3>
+  <ul>
+    <li>
+      Styles the task modal structure and appearance:
+      <ul>
+        <li>
+          <code>.modal-content</code>, <code>.tasks-header</code>,
+          <code>.tasks</code>
+        </li>
+        <li>
+          Buttons: <code>.open-modal-btn</code>, <code>.close-button</code>
+        </li>
+      </ul>
+    </li>
+  </ul>
+
+  <h3>3. <code>mod-2-preview-btn.css</code></h3>
+  <ul>
+    <li>
+      Styles the “Open Assignment Preview” button:
+      <ul>
+        <li>Background, padding, hover behavior</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h3>4. <code>mod-2-preview.html</code></h3>
+  <ul>
+    <li>
+      Contains solutions for <strong>Assignment – Module 2</strong> in
+      <em>CS 80 – Internet Programming (Section 1239)</em>.
+    </li>
+    <li>Used to preview completed tasks inside an iframe or shadow DOM.</li>
+  </ul>
+
+  <h3>5. <code>mod-2-scripts.js</code></h3>
+  <ul>
+    <li>
+      Implements interactive behavior for task modal, assignment preview, and
+      dynamic footer.
+    </li>
+    <li>
+      Features include:
+      <ul>
+        <li>
+          <code>openModal()</code>, <code>closeModal()</code> – toggle task
+          description modal
+        </li>
+        <li>
+          <code>togglePreview()</code>, <code>closePreviewModal()</code> –
+          control preview via Shadow DOM
+        </li>
+        <li>Handles dynamic footer visibility based on scroll direction</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h3>6. <code>assignment-header-readme-block.css</code></h3>
+  <ul>
+    <li>
+      Provides styling for the assignment page header and task panel layout.
+    </li>
+    <li>
+      Also defines styles for the <code>.readme-block</code> section, including
+      spacing, borders, font, and typography.
+    </li>
+  </ul>
+
+  <h3>7. <code>mod2-readme.html</code></h3>
+  <ul>
+    <li>Dynamically loaded into the page to display this README section.</li>
+    <li>
+      Provides a structured overview of all project files and their functions.
+    </li>
+  </ul>
+</section>

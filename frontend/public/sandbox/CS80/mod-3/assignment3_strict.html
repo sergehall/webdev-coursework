@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Assignment: Client-Side vs Server-Side Programming</title>
+    <meta name="author" content="Siarhei Hancharou" />
+    <meta name="description" content="CS 80 Assignment – HTML/JS Practice" />
+    <link rel="icon" href="https://www.google.com/favicon.ico" />
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        min-height: 100vh;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #fbfffb, #ffffff);
+        color: #1a1a1a;
+        box-sizing: border-box;
+        padding: 2rem 10px;
+      }
+
+      main {
+        flex: 1;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+        color: #2c3e50;
+        background: #eaf1ff;
+        padding: 0.6rem 1rem;
+        border-left: 6px solid #2d8cf0;
+        border-radius: 4px;
+        box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.05);
+        width: 100%;
+        box-sizing: border-box;
+        margin: 0 auto 1.5rem;
+      }
+
+      h2,
+      h3 {
+        margin-top: 1.5rem;
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #111827;
+      }
+
+      .task {
+        background-color: #fef9c3;
+        border-left: 5px solid #facc15;
+        padding: 1rem;
+        margin: 0.5rem 0 2rem;
+        font-style: italic;
+        color: #92400e;
+        font-size: 0.9rem;
+        transition:
+          background-color 0.3s,
+          transform 0.2s;
+      }
+
+      .task:hover {
+        background-color: #fff7aa;
+        transform: scale(1.01);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      }
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+        padding-top: 80px;
+      }
+
+      .modal-content {
+        background-color: #fef9c3;
+        margin: auto;
+        padding: 2rem;
+        border: 1px solid #888;
+        width: 90%;
+        max-width: 800px;
+        border-radius: 8px;
+        font-size: 1rem;
+        color: #5b3204;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      }
+
+      .close-button {
+        color: #aaa;
+        float: right;
+        font-size: 2rem;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      .close-button:hover {
+        color: #000;
+      }
+
+      .container {
+        background: #fff;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        box-sizing: border-box;
+      }
+
+      ul {
+        margin-left: 1.5rem;
+      }
+
+      #output {
+        margin-top: 20px;
+        padding: 15px;
+        background: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+      }
+
+      button {
+        margin: 10px 0;
+        padding: 10px 16px;
+        font-size: 1rem;
+        border-radius: 8px;
+        border: 1px solid #aaa;
+        cursor: pointer;
+        background-color: #f9fafb;
+        transition:
+          background-color 0.3s,
+          color 0.3s,
+          box-shadow 0.3s;
+      }
+
+      button:hover {
+        background-color: #2d8cf0;
+        color: white;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      footer {
+        margin-top: 3rem;
+        padding-top: 1rem;
+        border-top: 2px solid #e5e7eb;
+        font-size: 0.95rem;
+        color: #6b7280;
+      }
+
+      footer p strong {
+        color: #2c3e50;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Assignment - Module 3</h1>
+
+      <!-- Collapsible Assignment Summary -->
+      <div class="task" onclick="toggleModal()" style="cursor: pointer">
+        <strong>Tasks 6.17 – 8.7:</strong> JavaScript Practice — prompt, alert,
+        conditionals, loops, output
+      </div>
+
+      <!-- Modal Dialog -->
+      <div id="assignmentModal" class="modal">
+        <div class="modal-content">
+          <span class="close-button" onclick="toggleModal()">&times;</span>
+          <h2>Assignment Description</h2>
+          <ul>
+            <li>
+              <strong>6.17:</strong> Write a script that asks the user to enter
+              two integers... If the numbers are equal, output HTML5 text that
+              displays: <em>“These numbers are equal.”</em>
+            </li>
+            <li>
+              <strong>6.18:</strong> Write a script that takes three integers
+              from the user and displays the <em>sum</em>, <em>average</em>,
+              <em>product</em>, <em>smallest</em> and <em>largest</em>.
+            </li>
+            <li>
+              <strong>7.12:</strong> Develop a script to check if a customer has
+              exceeded a credit limit. Information includes:
+              <ul>
+                <li>a) Account number</li>
+                <li>b) Beginning balance</li>
+                <li>c) Charges this month</li>
+                <li>d) Credits applied</li>
+                <li>e) Allowed credit limit</li>
+              </ul>
+              The script should calculate the new balance and display an HTML5
+              message if the credit limit is exceeded.
+            </li>
+            <li>
+              <strong>8.7:</strong> Calculate the product of the odd integers
+              from 1 to 15, then display results using HTML5.
+            </li>
+          </ul>
+          <hr />
+          <p>
+            <strong>Testing Your Script:</strong> I highly recommend testing
+            before submission.
+          </p>
+          <ul>
+            <li>Use browser developer tools (press F12).</li>
+            <li>Watch for errors in console.</li>
+            <li>
+              Ask questions if you’re stuck. Help others if you know the answer.
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="container">
+        <h3>6.17 - Compare Two Integers</h3>
+        <button onclick="compareTwoIntegers()">Run 6.17</button>
+
+        <h3>6.18 - Calculate Sum, Average, Product, Smallest and Largest</h3>
+        <button onclick="calculateStats()">Run 6.18</button>
+
+        <h3>7.12 - Credit Limit Calculator</h3>
+        <button onclick="checkCreditLimit()">Run 7.12</button>
+
+        <h3>8.7 - Product of Odd Integers from 1 to 15</h3>
+        <button onclick="calculateEvenOddProduct()">Run 8.7</button>
+
+        <hr />
+        <h3>Test All Scripts</h3>
+
+        <div style="margin-bottom: 1rem">
+          <button onclick="testCompareTwoIntegers()">
+            Test 6.17: Compare Integers
+          </button>
+          <button onclick="testCalculateStats()">Test 6.18: Stats</button>
+          <button onclick="testCheckCreditLimit()">
+            Test 7.12: Credit Limit
+          </button>
+          <button onclick="testEvenOddProduct()">
+            Test 8.7: Even/Odd Product
+          </button>
+        </div>
+
+        <button onclick="clearOutput()">🔄 Clear Output</button>
+        <div id="output"></div>
+      </div>
+    </main>
+
+    <footer>
+      <p><strong>Student:</strong> Siarhei Hancharou</p>
+      <p>
+        <strong>Course:</strong> CS 80 – Internet Programming (Section 1239)
+      </p>
+      <p><strong>Instructor:</strong> Anthony Wang</p>
+    </footer>
+
+    <!-- External JavaScript -->
+    <script>
+      // Appends HTML content to a div with id="output"
+      function outputHTML(html) {
+        const outputDiv = document.getElementById("output");
+        outputDiv.innerHTML += html;
+      }
+
+      // Clears all content from the output div
+      function clearOutput() {
+        document.getElementById("output").innerHTML = "";
+      }
+
+      // Prompts the user until they enter a strictly valid whole integer
+      function getValidatedInteger(message) {
+        let value;
+        let isValid = false;
+
+        do {
+          const input = prompt(message);
+          if (/^-?\d+$/.test(input)) {
+            value = Number(input);
+            isValid = true;
+          } else {
+            alert(
+              "Invalid input. Please enter a valid whole number (no letters or symbols)."
+            );
+          }
+        } while (!isValid);
+
+        return value;
+      }
+
+      // === 6.17 ===
+      // Prompt the user to enter two integers.
+      // Display the larger value in an alert: "X is larger".
+      // If equal, display HTML text: "These numbers are equal."
+      function compareTwoIntegers() {
+        const num1 = getValidatedInteger("Enter the first integer:");
+        const num2 = getValidatedInteger("Enter the second integer:");
+
+        if (num1 > num2) {
+          alert(`${num1} is larger`);
+        } else if (num2 > num1) {
+          alert(`${num2} is larger`);
+        } else {
+          outputHTML(
+            `<p style="color: blue; font-weight: bold;">These numbers are equal.</p>`
+          );
+        }
+      }
+
+      // === 6.18 ===
+      // Prompt the user to enter 3 integers.
+      // Show sum, average, product, smallest, and largest in an alert.
+      function calculateStats() {
+        const nums = [];
+
+        for (let i = 1; i <= 3; i++) {
+          const num = getValidatedInteger(`Enter integer #${i}:`);
+          nums.push(num);
+        }
+
+        const sum = nums[0] + nums[1] + nums[2];
+        const average = sum / 3;
+        const product = nums[0] * nums[1] * nums[2];
+        const smallest = Math.min(...nums);
+        const largest = Math.max(...nums);
+
+        alert(
+          `You entered: ${nums.join(", ")}\n\n` +
+            `Sum: ${sum}\n` +
+            `Average: ${average.toFixed(2)}\n` +
+            `Product: ${product}\n` +
+            `Smallest: ${smallest}\n` +
+            `Largest: ${largest}`
+        );
+      }
+
+      // === 7.12 ===
+      // Prompt the user to enter customer credit account details:
+      // beginning balance, charges, credits, and credit limit.
+      // Calculate new balance and check if credit limit is exceeded.
+      function checkCreditLimit() {
+        const accountNumber = prompt(
+          "Enter account number (e.g., 12345):"
+        )?.trim();
+        if (!accountNumber) {
+          alert("Account number is required.");
+          return;
+        }
+
+        const beginningBalance = getValidatedInteger(
+          "Enter beginning balance (amount already owed):"
+        );
+        const charges = getValidatedInteger(
+          "Enter total charges (new purchases this month):"
+        );
+        const credits = getValidatedInteger(
+          "Enter total credits (payments made this month):"
+        );
+        const creditLimit = getValidatedInteger(
+          "Enter your allowed credit limit:"
+        );
+
+        const newBalance = beginningBalance + charges - credits;
+
+        outputHTML(`
+    <div style="margin-bottom: 1.5rem;">
+      <p><strong>Account Number:</strong> ${accountNumber}</p>
+      <p><strong>Beginning Balance:</strong> $${beginningBalance.toFixed(2)}</p>
+      <p><strong>Charges:</strong> $${charges.toFixed(2)}</p>
+      <p><strong>Credits:</strong> $${credits.toFixed(2)}</p>
+      <p><strong>Credit Limit:</strong> $${creditLimit.toFixed(2)}</p>
+      <p><strong>New Balance:</strong> <strong>$${newBalance.toFixed(2)}</strong></p>
+    </div>
+  `);
+
+        if (newBalance > creditLimit) {
+          const over = (newBalance - creditLimit).toFixed(2);
+          outputHTML(
+            `<p style="color: red; font-weight: bold;">Credit limit exceeded by $${over}.</p>`
+          );
+        } else {
+          outputHTML(
+            `<p style="color: green; font-weight: bold;">Credit is within the limit.</p>`
+          );
+        }
+      }
+
+      // === 8.7 ===
+      // Ask the user if they want to calculate the product of even or odd numbers.
+      // Prompt for a maximum number (between 2 and 100).
+      // Display the result and numbers used in HTML.
+      function calculateEvenOddProduct() {
+        const type = prompt(
+          "Do you want to calculate the product of 'even' or 'odd' numbers?"
+        )?.toLowerCase();
+        if (type !== "even" && type !== "odd") {
+          alert("Invalid choice. Please enter either 'even' or 'odd'.");
+          return;
+        }
+
+        const max = getValidatedInteger(
+          "Enter the maximum number (between 2 and 100):"
+        );
+        if (max < 2 || max > 100) {
+          alert("Number out of range. Enter a number between 2 and 100.");
+          return;
+        }
+
+        const start = type === "even" ? 2 : 1;
+        let product = 1;
+        let numbersUsed = [];
+
+        for (let i = start; i <= max; i += 2) {
+          product *= i;
+          numbersUsed.push(i);
+        }
+
+        outputHTML(`
+    <p><strong>Product of ${type} numbers from ${start} to ${max}:</strong> ${product}</p>
+    <p><strong>Numbers used:</strong> ${numbersUsed.join(", ")}</p>
+  `);
+      }
+    </script>
+    <script>
+      // testAssignment3.js
+
+      function testCompareTwoIntegers() {
+        outputHTML("<h4>Test 6.17: Compare Two Integers</h4>");
+
+        const cases = [
+          [5, 9],
+          [10, 2],
+          [7, 7],
+          ["23p", "3"],
+          ["abc", 10],
+        ];
+
+        cases.forEach(([a, b], index) => {
+          let result = `<p><strong>Test ${index + 1}:</strong> input1 = "${a}", input2 = "${b}" → `;
+
+          const isValid = /^-?\d+$/.test(a) && /^-?\d+$/.test(b);
+
+          if (!isValid) {
+            result += `<span style="color: red;">❌ Invalid input</span></p>`;
+          } else {
+            const n1 = Number(a);
+            const n2 = Number(b);
+
+            if (n1 > n2) {
+              result += `<span style="color: green;">${n1} is larger</span></p>`;
+            } else if (n2 > n1) {
+              result += `<span style="color: green;">${n2} is larger</span></p>`;
+            } else {
+              result += `<span style="color: blue;">These numbers are equal</span></p>`;
+            }
+          }
+
+          outputHTML(result);
+        });
+      }
+
+      function testCalculateStats() {
+        outputHTML("<h4>Test 6.18: Calculate Stats</h4>");
+
+        const testSet = [
+          [12, 3, 67],
+          [5, 5, 5],
+          [-10, 0, 10],
+        ];
+
+        testSet.forEach((nums, index) => {
+          const [a, b, c] = nums;
+          const sum = a + b + c;
+          const avg = (sum / 3).toFixed(2);
+          const prod = a * b * c;
+          const min = Math.min(a, b, c);
+          const max = Math.max(a, b, c);
+
+          outputHTML(`
+      <p><strong>Test ${index + 1}:</strong> Inputs: ${a}, ${b}, ${c}<br>
+      Sum: ${sum}, Avg: ${avg}, Product: ${prod}, Min: ${min}, Max: ${max}</p>
+    `);
+        });
+      }
+
+      function testCheckCreditLimit() {
+        outputHTML("<h4>Test 7.12: Credit Limit Check</h4>");
+
+        const testCases = [
+          {
+            account: "1001",
+            start: 1000,
+            charges: 200,
+            credits: 100,
+            limit: 1000,
+          },
+          {
+            account: "1002",
+            start: 800,
+            charges: 100,
+            credits: 50,
+            limit: 850,
+          },
+          {
+            account: "1003",
+            start: 200,
+            charges: 50,
+            credits: 100,
+            limit: 300,
+          },
+        ];
+
+        testCases.forEach((c, i) => {
+          const newBalance = c.start + c.charges - c.credits;
+          const exceeded = newBalance > c.limit;
+          const overAmount = (newBalance - c.limit).toFixed(2);
+
+          outputHTML(`
+      <p>
+        <strong>Test ${i + 1} – Account:</strong> ${c.account}<br>
+        Beginning Balance: $${c.start}, Charges: $${c.charges}, Credits: $${c.credits}, Credit Limit: $${c.limit}<br>
+        <strong>New Balance:</strong> $${newBalance.toFixed(2)}<br>
+        ${
+          exceeded
+            ? `<span style="color: red;">❌ Credit limit exceeded by $${overAmount}</span>`
+            : `<span style="color: green;">✅ Credit is within the limit</span>`
+        }
+      </p>
+    `);
+        });
+      }
+
+      function testEvenOddProduct() {
+        outputHTML("<h4>Test 8.7: Even/Odd Product</h4>");
+
+        const types = ["even", "odd"];
+        const max = 15;
+
+        types.forEach((type) => {
+          let start = type === "even" ? 2 : 1;
+          let product = 1;
+          const numbers = [];
+
+          for (let i = start; i <= max; i += 2) {
+            product *= i;
+            numbers.push(i);
+          }
+
+          outputHTML(`
+      <p>
+        <strong>Type:</strong> ${type}<br>
+        Numbers: ${numbers.join(", ")}<br>
+        <strong>Product:</strong> ${product}
+      </p>
+    `);
+        });
+      }
+    </script>
+    <script>
+      function toggleModal() {
+        const modal = document.getElementById("assignmentModal");
+        modal.style.display =
+          modal.style.display === "block" ? "none" : "block";
+      }
+
+      // Optional: close when clicking outside modal
+      window.onclick = function (event) {
+        const modal = document.getElementById("assignmentModal");
+        if (event.target === modal) {
+          modal.style.display = "none";
+        }
+      };
+    </script>
+  </body>
+</html>

@@ -1,0 +1,79 @@
+<style>
+  /* Problem 4.3 */
+  :host {
+    font-size: 1.5em;
+    color: red;
+  }
+
+  /* Problem 4.4 */
+  :host {
+    background-image: url("https://www.smc.edu/student-support/welcome-center/welcome-events/images/preview-days.png");
+    background-repeat: repeat-x;
+    background-attachment: fixed;
+    background-position: center 50%;
+  }
+
+  /* Problem 4.5 */
+  h1,
+  h2 {
+    padding: 0.5em;
+    border: 2px dashed black;
+    margin: 0.5em;
+  }
+
+  /* Problem 4.6 */
+  .greenMove {
+    color: green;
+    transform: translate(15px, 25px);
+  }
+
+  /* Problem 5.3 */
+  .text-shadow {
+    text-shadow: 2px 5px 6px deepskyblue;
+    font-size: 1.5em;
+    font-weight: bold;
+  }
+
+  /* Problem 5.5 */
+  .box-container {
+    white-space: nowrap;
+  }
+  .box {
+    width: 100px;
+    height: 100px;
+    border: 3px solid black;
+    display: inline-block;
+    margin: 10px;
+    text-align: center;
+    line-height: 100px;
+    font-weight: bold;
+  }
+
+  .box1 {
+    border-radius: 10px;
+    background-color: lightcoral;
+  }
+
+  .box2 {
+    border-radius: 50px;
+    background-color: lightgreen;
+  }
+
+  .box3 {
+    border-radius: 100px;
+    background-color: royalblue;
+  }
+</style>
+
+<h1>Heading 1</h1>
+<h2>Heading 2</h2>
+
+<p class="greenMove">This element moves down and right with green text</p>
+
+<p class="text-shadow">New features in CSS3</p>
+
+<div class="box-container">
+  <div class="box box1">10px</div>
+  <div class="box box2">50px</div>
+  <div class="box box3">100px</div>
+</div>

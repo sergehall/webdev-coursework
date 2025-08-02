@@ -35,7 +35,7 @@ export default function CourseworkPage() {
           {allCourses.slice(0, visibleCount).map((course) => {
             const isCompleted = activeCourseCodes.includes(course.code);
             const courseUrl = `/coursework/${course.code
-              .toLowerCase()
+              .toUpperCase()
               .replace(/\s/g, "")}/assignment`;
 
             const cardContent = (

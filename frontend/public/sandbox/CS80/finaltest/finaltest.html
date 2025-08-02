@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Final Test – CS 80 Assignment</title>
+    <meta name="author" content="Siarhei Hancharou" />
+    <meta name="description" content="CS 80 Assignment – Mod 6: Bonus Work" />
+
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #fbfffb, #ffffff);
+        color: #1a1a1a;
+      }
+
+      body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      main {
+        flex: 1;
+        padding: 2rem 10px;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+        color: #2c3e50;
+        background: #eaf1ff;
+        padding: 0.6rem 1rem;
+        border-left: 6px solid #2d8cf0;
+        border-radius: 4px;
+        box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.05);
+        margin: 0 auto 1.5rem;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      /* Collapsible Assignment Instructions */
+      .task {
+        background-color: #fef9c3;
+        border-left: 5px solid #facc15;
+        margin: 0.5rem 0 2rem;
+        padding: 4px 0;
+        font-size: 0.95rem;
+        color: #92400e;
+        border-radius: 6px;
+        box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      .task summary {
+        cursor: pointer;
+        padding: 0.6rem 1rem;
+        font-weight: bold;
+        font-size: 1.1rem;
+        background-color: #fff6b7;
+        border-radius: 4px 4px 0 0;
+        user-select: none;
+      }
+
+      .task ul {
+        list-style: none;
+        padding-left: 0;
+        margin: 0;
+      }
+
+      .task li {
+        margin-bottom: 0.4rem;
+        padding: 4px 0 4px 1rem;
+      }
+
+      .table-wrapper {
+        background: linear-gradient(to bottom right, #e7f9e9, #f9fffa);
+        padding: 2.5rem;
+        border-radius: 12px;
+        display: flex;
+        justify-content: center;
+        margin: 2rem auto;
+        width: fit-content;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+
+        box-shadow:
+          0 10px 20px rgba(0, 0, 0, 0.12),
+          0 6px 6px rgba(0, 0, 0, 0.08);
+      }
+
+      table {
+        border-collapse: collapse;
+        width: 300px;
+      }
+
+      th,
+      td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: left;
+      }
+
+      td[contenteditable="true"] {
+        background-color: #f0f8ff;
+        transition: background-color 0.3s;
+      }
+
+      td[contenteditable="true"]:hover {
+        background-color: #d0ebff;
+      }
+
+      td:not([contenteditable]) {
+        background-color: #d8dfe6;
+      }
+
+      th:not([contenteditable]) {
+        background-color: #505355;
+        color: white;
+      }
+
+      tfoot td {
+        font-weight: bold;
+      }
+
+      tfoot td:last-child {
+        text-align: right;
+      }
+
+      /* Footer */
+      footer {
+        margin-top: 3rem;
+        padding-top: 1rem;
+        padding-left: 1rem;
+        border-top: 2px solid #e5e7eb;
+        font-size: 0.95rem;
+        color: #6b7280;
+      }
+
+      footer p strong {
+        color: #2c3e50;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Final Test – CS 80 Assignment</h1>
+      <details class="task">
+        <summary>CS 80 Final Test Instructions:</summary>
+        <div style="padding: 1rem">
+          <ol>
+            <li>
+              This test is open book, open notes, open computer, open Internet.
+            </li>
+            <li>You shall not solicit help from any person.</li>
+            <li>Name your HTML file <code>finaltest.html</code>.</li>
+          </ol>
+          <p>Total points for test: 100.</p>
+          <p>
+            Write the HTML, CSS, and JS to implement a very primitive
+            spreadsheet-like program that meets the following requirements. Each
+            requirement will be worth a certain amount of points so please
+            follow them carefully:
+          </p>
+          <p>The HTML page shall appear similar, if not exactly, like this:</p>
+          <table
+            style="
+              border: 1px solid black;
+              border-collapse: collapse;
+              margin: 1rem 0;
+            "
+          >
+            <thead>
+              <tr>
+                <th style="border: 1px solid black; padding: 4px">Item(s)</th>
+                <th style="border: 1px solid black; padding: 4px">Price</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="border: 1px solid black; padding: 4px">Rent</td>
+                <td style="border: 1px solid black; padding: 4px">400.23</td>
+              </tr>
+              <tr>
+                <td style="border: 1px solid black; padding: 4px">Food</td>
+                <td style="border: 1px solid black; padding: 4px">200.77</td>
+              </tr>
+              <tr>
+                <td style="border: 1px solid black; padding: 4px">
+                  Entertainment
+                </td>
+                <td style="border: 1px solid black; padding: 4px">100.50</td>
+              </tr>
+              <tr>
+                <td style="border: 1px solid black; padding: 4px">
+                  Transportation
+                </td>
+                <td style="border: 1px solid black; padding: 4px">50.50</td>
+              </tr>
+              <tr>
+                <td style="border: 1px solid black; padding: 4px">Total</td>
+                <td style="border: 1px solid black; padding: 4px">
+                  <strong>$752.00</strong>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <ul>
+            <li>
+              <strong>Use CSS</strong> to match the table above. Please observe
+              the table above carefully! (15 pts)
+            </li>
+            <li>
+              The values in the <strong>Item</strong> column (except for the
+              last row <em>Total</em>) must be editable by the user. (15 pts)
+            </li>
+            <li>
+              Whenever the user changes the value in the
+              <strong>Price</strong> column for an <strong>Item</strong>, the
+              number auto updates to a float with only two decimal places
+              rounded up. For example: (15 pts)
+              <ul>
+                <li><code>2342</code> becomes <code>2342.00</code></li>
+                <li><code>23.03526</code> becomes <code>23.04</code></li>
+              </ul>
+            </li>
+            <li>
+              Similar to 4. whenever the user changes value in the
+              <strong>Price</strong> column, the <strong>Total</strong> value
+              (last row, second column) shall be automatically recalculated as a
+              float with two decimal places and a dollar sign prepended (as seen
+              in the table above). (20 pts)
+              <ul>
+                <li>
+                  The <strong>Total</strong> is the summed up value of all
+                  prices in the <strong>Price</strong> column up to, but not
+                  including, the last row. (25 pts)
+                </li>
+              </ul>
+            </li>
+            <li>
+              All javascript and CSS should be inline with the HTML. (10 pts)
+            </li>
+          </ul>
+        </div>
+      </details>
+      <div class="table-wrapper">
+        <table id="spreadsheet">
+          <thead>
+            <tr>
+              <th>Item(s)</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td contenteditable="true">Rent</td>
+              <td contenteditable="true" class="price">400.23</td>
+            </tr>
+            <tr>
+              <td contenteditable="true">Food</td>
+              <td contenteditable="true" class="price">200.77</td>
+            </tr>
+            <tr>
+              <td contenteditable="true">Entertainment</td>
+              <td contenteditable="true" class="price">100.50</td>
+            </tr>
+            <tr>
+              <td contenteditable="true">Transportation</td>
+              <td contenteditable="true" class="price">50.50</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td>Total</td>
+              <td id="total">$752.00</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <script>
+        function formatToTwoDecimalsUp(value) {
+          let number = parseFloat(value);
+          if (isNaN(number)) return "0.00";
+          return (Math.ceil(number * 100) / 100).toFixed(2);
+        }
+
+        function updateTotal() {
+          const priceCells = document.querySelectorAll(".price");
+          let sum = 0;
+
+          priceCells.forEach((cell) => {
+            let value = cell.textContent.trim();
+            let formatted = formatToTwoDecimalsUp(value);
+            cell.textContent = formatted;
+            sum += parseFloat(formatted);
+          });
+
+          document.getElementById("total").textContent = `$${sum.toFixed(2)}`;
+        }
+
+        document.querySelectorAll(".price").forEach((cell) => {
+          cell.addEventListener("blur", updateTotal);
+        });
+
+        updateTotal();
+      </script>
+    </main>
+
+    <footer>
+      <p><strong>Student:</strong> Siarhei Hancharou</p>
+      <p>
+        <strong>Course:</strong> CS 80 – Internet Programming (Section 1239)
+      </p>
+      <p><strong>Instructor:</strong> Anthony Wang</p>
+    </footer>
+  </body>
+</html>

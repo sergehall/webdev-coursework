@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Assignment: List with Flavors</title>
+    <meta name="author" content="Siarhei Hancharou" />
+    <meta name="description" content="CS 80 Assignment – HTML/JS Practice" />
+    <link rel="icon" href="https://www.google.com/favicon.ico" />
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        min-height: 100vh;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #fbfffb, #ffffff);
+        color: #1a1a1a;
+        box-sizing: border-box;
+        padding: 2rem 10px;
+      }
+
+      main {
+        flex: 1;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+        color: #2c3e50;
+        background: #eaf1ff;
+        padding: 0.6rem 1rem;
+        border-left: 6px solid #2d8cf0;
+        border-radius: 4px;
+        box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.05);
+        width: 100%;
+        box-sizing: border-box;
+        margin: 0 auto 1.5rem;
+      }
+
+      .task {
+        background-color: #fef9c3;
+        border-left: 5px solid #facc15;
+        padding: 1rem;
+        margin: 0.5rem 0 2rem;
+        font-style: italic;
+        color: #92400e;
+        font-size: 0.9rem;
+      }
+
+      .container {
+        background: #fff;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 2rem;
+        max-width: 720px;
+        margin: 0 auto;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        box-sizing: border-box;
+      }
+
+      ol {
+        padding-left: 1.2rem;
+      }
+
+      li {
+        margin: 0.5rem 0;
+      }
+
+      ul {
+        list-style-type: disc;
+        padding-left: 1.5rem;
+        margin-top: 0.5rem;
+      }
+
+      footer {
+        margin-top: 3rem;
+        padding-top: 1rem;
+        border-top: 2px solid #e5e7eb;
+        font-size: 0.95rem;
+        color: #6b7280;
+      }
+
+      footer p strong {
+        color: #2c3e50;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Assignment: Frozen Treats and Flavors</h1>
+
+      <div class="task">
+        <strong>Task 2.6:</strong> Create an HTML5 document containing an
+        ordered list of three items—ice cream, soft serve and frozen yogurt.
+        Each ordered list should contain a nested, unordered list of your
+        favorite flavors. Provide three flavors in each unordered list.
+      </div>
+
+      <div class="container">
+        <p><strong>Provide three flavors in each unordered list:</strong></p>
+        <ol>
+          <li>
+            Ice Cream
+            <ul>
+              <li>Chocolate</li>
+              <li>Vanilla</li>
+              <li>Strawberry</li>
+            </ul>
+          </li>
+          <li>
+            Soft Serve
+            <ul>
+              <li>Twist</li>
+              <li>Chocolate</li>
+              <li>Vanilla</li>
+            </ul>
+          </li>
+          <li>
+            Frozen Yogurt
+            <ul>
+              <li>Mango</li>
+              <li>Peach</li>
+              <li>Berry</li>
+            </ul>
+          </li>
+        </ol>
+      </div>
+    </main>
+
+    <footer>
+      <p><strong>Student:</strong> Siarhei Hancharou</p>
+      <p>
+        <strong>Course:</strong> CS 80 – Internet Programming (Section 1239)
+      </p>
+      <p><strong>Instructor:</strong> Anthony Wang</p>
+    </footer>
+  </body>
+</html>

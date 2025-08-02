@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Meta & Page Info -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Assignment – Mod 5: Simple Sum Form</title>
+    <meta name="author" content="Siarhei Hancharou" />
+    <meta
+      name="description"
+      content="CS 80 Assignment – Mod 5: Simple Sum Form"
+    />
+
+    <!-- Inline CSS for layout and form styling -->
+    <style>
+      /* Base Layout and Typography */
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+
+      body {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        min-height: 100vh;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #fbfffb, #ffffff);
+        color: #1a1a1a;
+        padding: 0;
+      }
+
+      main {
+        flex: 1;
+        padding: 2rem 10px;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+        color: #2c3e50;
+        background: #eaf1ff;
+        padding: 0.6rem 1rem;
+        border-left: 6px solid #2d8cf0;
+        border-radius: 4px;
+        box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.05);
+        width: 100%;
+        box-sizing: border-box;
+        margin: 0 auto 1.5rem;
+      }
+
+      /* Collapsible Panel for Task Description */
+      .task {
+        background-color: #fef9c3;
+        border-left: 5px solid #facc15;
+        margin: 0.5rem 0 2rem;
+        font-size: 0.95rem;
+        color: #92400e;
+        border-radius: 6px;
+        box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      .task summary {
+        cursor: pointer;
+        padding: 0.6rem 1rem;
+        font-weight: bold;
+        font-size: 1.1rem;
+        background-color: #fff6b7;
+        border-radius: 4px 4px 0 0;
+        user-select: none;
+      }
+
+      .task ol,
+      .task ul {
+        padding: 0.6rem 1.2rem 1rem 1.5rem;
+        margin: 0;
+      }
+
+      .task li {
+        margin-bottom: 0.4rem;
+      }
+
+      /* Inputs and Button Styles */
+      input,
+      select,
+      button {
+        font-size: 1rem;
+      }
+
+      input {
+        padding: 0.5rem;
+        margin: 0.5rem;
+        width: 150px;
+      }
+
+      select {
+        padding: 0.6rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      button {
+        padding: 10px 20px;
+        background-color: #2d8cf0;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #1b6dc1;
+      }
+
+      #clearBtn {
+        background-color: #f87171;
+      }
+
+      #clearBtn:hover {
+        background-color: #ef4444;
+      }
+
+      /* Footer */
+      footer {
+        margin-top: 3rem;
+        padding-top: 1rem;
+        padding-left: 1rem;
+        border-top: 2px solid #e5e7eb;
+        font-size: 0.95rem;
+        color: #6b7280;
+      }
+
+      footer p strong {
+        color: #2c3e50;
+      }
+
+      /* Responsive Form Container */
+      .form-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 2rem;
+      }
+
+      .form-box {
+        background-color: #f0f4ff;
+        border: 2px solid #c3dafe;
+        border-radius: 8px;
+        padding: 1.5rem;
+        max-width: 400px;
+        width: 100%;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        text-align: center;
+        box-sizing: border-box;
+        flex: 1 1 300px;
+      }
+
+      @media (max-width: 900px) {
+        .form-container {
+          flex-direction: column;
+          align-items: center;
+        }
+      }
+
+      /* Form Inputs */
+      .inputs {
+        display: flex;
+        flex-direction: column;
+        gap: 0.7rem;
+        margin-bottom: 1rem;
+      }
+
+      #inputA,
+      #inputB {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        transition: border-color 0.3s ease;
+      }
+
+      #inputA:focus,
+      #inputB:focus {
+        border-color: #2d8cf0;
+        outline: none;
+      }
+
+      #inputC {
+        border: 1px dashed #2d8cf0;
+        background-color: #eaf4ff;
+        font-style: italic;
+        color: #2c3e50;
+        border-radius: 4px;
+      }
+
+      /* Nutrition Info Box */
+      .nutrition-label {
+        background-color: #e6f7e6;
+        border: 2px solid #c3dafe;
+        border-radius: 12px;
+        padding: 1.5rem;
+        max-width: 600px;
+        margin: 2rem auto;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+        font-family: Arial, sans-serif;
+      }
+
+      .nutrition-label h3 {
+        text-align: center;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        color: #2c3e50;
+      }
+
+      .label-block {
+        margin-bottom: 2rem;
+      }
+
+      .label-block h4 {
+        font-weight: bold;
+        color: #1e3a8a;
+        margin-bottom: 0.5rem;
+      }
+
+      .label-block ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .label-block li {
+        padding: 4px 0;
+        font-size: 1rem;
+        color: #1f2937;
+        border-bottom: 1px solid #dbeafe;
+      }
+
+      #output-json,
+      #output-xml {
+        background-color: #c3dafe;
+        border-radius: 8px;
+        padding: 1rem;
+      }
+    </style>
+    <!--
+    NOTE: This HTML file uses fetch() to load `nutrition.xml` and `nutrition.json`.
+
+    ⚠️ If you open this file directly via file:// (e.g., by double-clicking),
+    most modern browsers (like Chrome, Edge, Firefox) will block these fetch requests due to security policies (CORS).
+
+    To test this file correctly, open it through a local web server.
+
+    Example using Python 3:
+      1. Open terminal or command prompt
+      2. Navigate to this folder
+      3. Run: python -m http.server 8000
+      4. Open: http://localhost:8000 in your browser
+
+    Or use the "Live Server" extension in VS Code or WebStorm and right-click → "Open with Live Server".
+
+    Make sure `nutrition.xml` and `nutrition.json` are located in the same folder as this HTML file.
+  -->
+
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  </head>
+
+  <body>
+    <main>
+      <!-- Collapsible Assignment Instructions -->
+      <h1>Module 5: Simple Add Form</h1>
+      <details class="task">
+        <summary>Assignments: Problem 1 & Problem 2 - 15.7</summary>
+        <ol>
+          <li>
+            <strong>Problem 1:</strong> Use HTML and jQuery (CSS encouraged but
+            optional) to create a simple form with three number inputs (input A,
+            B, and C(Result)), and a button. You may style this form any way you
+            wish. Requirements:
+            <ul>
+              <li>
+                All jQuery is executable when document is ready to be
+                manipulated.
+              </li>
+              <li>Users can enter numbers in input A and B.</li>
+              <li>
+                Clicking the button adds A + B and updates the value of C
+                (Result) with the sum.
+              </li>
+              <li>
+                Hovering over input C (Result) empties
+                <strong>all</strong> inputs.
+              </li>
+              <li>
+                <strong>MUST</strong> use jQuery library to code functionality.
+              </li>
+            </ul>
+          </li>
+          <li>
+            <strong>Problem 2 - 15.7:</strong>
+            <ul>
+              <li>
+                <em>Part 1:</em> Create an XML document
+                (<code>nutrition.xml</code>) describing nutrition facts for
+                Grandma White’s cookies:
+                <ul>
+                  <li>Serving size: 1 package</li>
+                  <li>260 calories, 100 fat calories</li>
+                  <li>11g fat, 2g saturated fat</li>
+                  <li>5mg cholesterol, 210mg sodium</li>
+                  <li>36g total carbohydrates, 2g fiber, 15g sugars</li>
+                  <li>5g protein</li>
+                </ul>
+                Load the XML in Internet Explorer. No DTD or Schema required.
+              </li>
+              <li><em>Part 2:</em> Convert the XML into JSON format.</li>
+            </ul>
+          </li>
+        </ol>
+      </details>
+
+      <!-- Dual Forms for Problem 1 & 2 -->
+      <div class="form-container">
+        <!-- Problem 1 Form -->
+        <section class="form-box" id="simple-form">
+          <h3>Enter Two Numbers</h3>
+          <div class="inputs">
+            <input
+              type="number"
+              id="inputA"
+              placeholder="Enter number A"
+              aria-label="Number A"
+            />
+            <input
+              type="number"
+              id="inputB"
+              placeholder="Enter number B"
+              aria-label="Number B"
+            />
+            <input
+              type="number"
+              id="inputC"
+              placeholder="Result"
+              readonly
+              aria-label="Sum Result"
+            />
+          </div>
+          <button id="addBtn">Add A + B</button>
+        </section>
+
+        <!-- Problem 1 Form extra-->
+        <section class="form-box" id="advanced-form">
+          <h3>Advanced Calculator</h3>
+          <div class="inputs">
+            <input
+              type="number"
+              id="num1"
+              placeholder="First number"
+              aria-label="First Number"
+            />
+            <select id="operation" aria-label="Operation">
+              <option value="+">+</option>
+              <option value="-">−</option>
+              <option value="*">×</option>
+              <option value="/">÷</option>
+            </select>
+            <input
+              type="number"
+              id="num2"
+              placeholder="Second number"
+              aria-label="Second Number"
+            />
+            <input
+              type="text"
+              id="result"
+              placeholder="Result"
+              readonly
+              aria-label="Calculation Result"
+            />
+          </div>
+          <div style="display: flex; gap: 1rem; justify-content: center">
+            <button id="calcBtn">Calculate</button>
+            <button id="clearBtn">AC</button>
+          </div>
+        </section>
+      </div>
+
+      <!-- Nutrition Data Output Section -->
+      <section class="nutrition-label">
+        <h3>Package of Grandma White’s Cookies</h3>
+
+        <!-- XML Output -->
+        <div id="output-xml" class="label-block">
+          <h4>[XML] Nutrition Facts</h4>
+          <ul></ul>
+        </div>
+
+        <!-- JSON Output -->
+        <div id="output-json" class="label-block">
+          <h4>[JSON] Nutrition Facts</h4>
+          <ul></ul>
+        </div>
+      </section>
+
+      <!-- jQuery Scripts -->
+      <script>
+        // Add values A + B and display rounded result in input C
+        $("#addBtn").click(function () {
+          const valA = parseFloat($("#inputA").val());
+          const valB = parseFloat($("#inputB").val());
+
+          // Check if both inputs are valid numbers
+          if (isNaN(valA) || isNaN(valB)) {
+            alert("Please enter valid numbers in both A and B.");
+            $("#inputC").val("");
+            return;
+          }
+
+          // Calculate sum and format output: integer → no decimals, decimal → 2 places
+          const sum = valA + valB;
+          const formattedSum = Number.isInteger(sum) ? sum : sum.toFixed(2);
+          $("#inputC").val(formattedSum);
+        });
+
+        // Clear all fields when hovering over the result input
+        $("#inputC").hover(function () {
+          $("#inputA, #inputB, #inputC").val("");
+        });
+
+        $(document).ready(function () {
+          // Clear all calculator fields and reset operation
+          $("#clearBtn").click(function () {
+            $("#num1, #num2, #result").val("");
+            $("#operation").val("+");
+          });
+
+          // Perform selected arithmetic operation and display result
+          $("#calcBtn").click(function () {
+            const num1 = parseFloat($("#num1").val());
+            const num2 = parseFloat($("#num2").val());
+            const op = $("#operation").val();
+            let result;
+
+            // Validate numeric inputs
+            if (isNaN(num1) || isNaN(num2)) {
+              result = "Error";
+            } else {
+              // Perform calculation based on selected operator
+              switch (op) {
+                case "+":
+                  result = num1 + num2;
+                  break;
+                case "-":
+                  result = num1 - num2;
+                  break;
+                case "*":
+                  result = num1 * num2;
+                  break;
+                case "/":
+                  result = num2 === 0 ? "Error" : num1 / num2;
+                  break;
+                default:
+                  result = "Error";
+              }
+
+              // Round numeric result to 2 decimal places
+              if (typeof result === "number") {
+                result = Number.isInteger(result) ? result : result.toFixed(2);
+              }
+            }
+
+            $("#result").val(result);
+          });
+        });
+      </script>
+
+      <script>
+        // Load and display nutrition facts from XML
+        fetch("nutrition.xml")
+          .then((response) => response.text())
+          .then((xmlText) => {
+            const xmlDoc = new DOMParser().parseFromString(
+              xmlText,
+              "application/xml"
+            );
+
+            /** @type {[string, string | null][]} */
+            const facts = [
+              [
+                "Serving Size",
+                xmlDoc.querySelector("servingSize")?.textContent,
+              ],
+              [
+                "Calories",
+                xmlDoc.querySelector("calories > totalCalories")?.textContent,
+              ],
+              [
+                "Calories from Fat",
+                xmlDoc.querySelector("calories > fromFat")?.textContent,
+              ],
+              [
+                "Total Fat (g)",
+                xmlDoc.querySelector("fat > totalFat")?.textContent,
+              ],
+              [
+                "Saturated Fat (g)",
+                xmlDoc.querySelector("fat > saturatedFat")?.textContent,
+              ],
+              [
+                "Cholesterol (mg)",
+                xmlDoc.querySelector("cholesterol")?.textContent,
+              ],
+              ["Sodium (mg)", xmlDoc.querySelector("sodium")?.textContent],
+              [
+                "Total Carbohydrates (g)",
+                xmlDoc.querySelector("carbohydrates > totalCarbs")?.textContent,
+              ],
+              [
+                "Fiber (g)",
+                xmlDoc.querySelector("carbohydrates > fiber")?.textContent,
+              ],
+              [
+                "Sugars (g)",
+                xmlDoc.querySelector("carbohydrates > sugars")?.textContent,
+              ],
+              ["Protein (g)", xmlDoc.querySelector("protein")?.textContent],
+            ];
+
+            const ul = document.querySelector("#output-xml ul");
+            if (!ul) return;
+
+            facts.forEach(([label, value]) => {
+              const li = document.createElement("li");
+              li.textContent = `${label}: ${value ?? "N/A"}`;
+              ul.appendChild(li);
+            });
+          });
+
+        // Load and display nutrition facts from JSON
+        fetch("nutrition.json")
+          .then((response) => response.json())
+          .then((json) => {
+            const f = json.nutritionFacts;
+
+            /** @type {[string, string | number | undefined][]} */
+            const facts = [
+              ["Product Name", f.productName],
+              ["Serving Size", f.servingSize],
+              ["Calories", f.calories?.total],
+              ["Calories from Fat", f.calories?.fromFat],
+              ["Total Fat (g)", f.fat?.total?.value],
+              ["Saturated Fat (g)", f.fat?.saturated?.value],
+              ["Cholesterol (mg)", f.cholesterol?.value],
+              ["Sodium (mg)", f.sodium?.value],
+              ["Total Carbohydrates (g)", f.carbohydrates?.total?.value],
+              ["Fiber (g)", f.carbohydrates?.fiber?.value],
+              ["Sugars (g)", f.carbohydrates?.sugars?.value],
+              ["Protein (g)", f.protein?.value],
+            ];
+
+            const ul = document.querySelector("#output-json ul");
+            if (!ul) return;
+
+            facts.forEach(([label, value]) => {
+              const li = document.createElement("li");
+              li.textContent = `${label}: ${value ?? "N/A"}`;
+              ul.appendChild(li);
+            });
+          });
+      </script>
+    </main>
+
+    <!-- Footer Section -->
+    <footer>
+      <p><strong>Student:</strong> Siarhei Hancharou</p>
+      <p>
+        <strong>Course:</strong> CS 80 – Internet Programming (Section 1239)
+      </p>
+      <p><strong>Instructor:</strong> Anthony Wang</p>
+    </footer>
+  </body>
+</html>

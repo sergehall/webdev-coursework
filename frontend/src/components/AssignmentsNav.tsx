@@ -1,16 +1,22 @@
+import React from "react";
 import { NavLink, useParams } from "react-router-dom";
 import { CheckCircle, Circle } from "lucide-react";
 
+import type { CourseCode } from "@/data/types/CourseCode";
+import { courseCodes } from "@/data/courseCodes";
 import { useCompletedModules } from "@/hooks/useCompletedModules";
 import { prefetchAssignmentModule } from "@/utils/prefetchAssignment";
 
-const modules = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+interface AssignmentNavProps {
+  totalModules: number; // Total number of modules, e.g. 12
+}
 
-export default function AssignmentNav() {
+const AssignmentNav: React.FC<AssignmentNavProps> = ({ totalModules }) => {
   const { completedModules } = useCompletedModules();
   const { code } = useParams();
-
-  if (!code) return null;
+  if (!code || !courseCodes.includes(code.toUpperCase())) return null;
+  // Generate an array like [1, 2, 3, ..., totalModules]
+  const modules = Array.from({ length: totalModules }, (_, i) => i + 1);
 
   return (
     <nav className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-6">
@@ -23,8 +29,9 @@ export default function AssignmentNav() {
           <NavLink
             key={mod}
             to={`/coursework/${code}/assignment/${modId}`}
-            // Prefetch the module on hover for faster perceived load time
-            onMouseEnter={() => prefetchAssignmentModule(modId, isUnlocked)}
+            onMouseEnter={() =>
+              prefetchAssignmentModule(modId, isUnlocked, code as CourseCode)
+            }
             className={({ isActive }) =>
               `rounded-xl border border-gray-200 p-4 text-center font-semibold shadow transition-all dark:border-gray-700 ${
                 isActive
@@ -46,4 +53,6 @@ export default function AssignmentNav() {
       })}
     </nav>
   );
-}
+};
+
+export default AssignmentNav;

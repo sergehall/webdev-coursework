@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Favorite Day Form</title>
+    <meta name="author" content="Siarhei Hancharou" />
+    <meta name="description" content="CS 80 Assignment – Autocomplete Form" />
+    <link rel="icon" href="https://www.google.com/favicon.ico" />
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        min-height: 100vh;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #fbfffb, #ffffff);
+        color: #1a1a1a;
+        box-sizing: border-box;
+        padding: 2rem 10px;
+      }
+
+      main {
+        flex: 1;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+        color: #2c3e50;
+        background: #eaf1ff;
+        padding: 0.6rem 1rem;
+        border-left: 6px solid #2d8cf0;
+        border-radius: 4px;
+        box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.05);
+        width: 100%;
+        box-sizing: border-box;
+        margin: 0 auto 1.5rem;
+      }
+
+      .task {
+        background-color: #fef9c3;
+        border-left: 5px solid #facc15;
+        padding: 1rem;
+        margin: 0.5rem 0 2rem;
+        font-style: italic;
+        color: #92400e;
+        font-size: 0.9rem;
+      }
+
+      .container {
+        background: #e9eaec;
+        border: 1px solid #7b8290;
+        border-radius: 8px;
+        padding: 2rem;
+        max-width: 520px;
+        margin: 0 auto;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        box-sizing: border-box;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+
+      label {
+        display: block;
+        font-weight: 500;
+        margin-bottom: 0.3rem;
+      }
+
+      input[type="text"] {
+        width: 250px;
+        padding: 0.6rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background: #f9fafb;
+        margin-bottom: 1rem;
+        text-align: center;
+      }
+
+      .buttons {
+        display: flex;
+        justify-content: center;
+        margin-top: 1rem;
+      }
+
+      button {
+        padding: 0.6rem 1.2rem;
+        font-weight: 600;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      button[type="submit"] {
+        background-color: #1a73e8;
+        color: white;
+      }
+
+      button[type="submit"]:hover {
+        background-color: #2563eb;
+      }
+
+      .result {
+        text-align: center;
+        margin-top: 1.5rem;
+      }
+
+      .emoji {
+        font-size: 2rem;
+      }
+
+      .message {
+        margin-top: 0.5rem;
+        font-size: 1rem;
+        font-weight: 500;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Choose Your Favorite Day</h1>
+
+      <div class="task">
+        <strong>Task 3.8:</strong> (Creating an Autocomplete Form with a
+        datalist) Create an autocomplete input element with an associated
+        <code
+          ><a
+            href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/datalist"
+            target="_blank"
+            >datalist</a
+          ></code
+        >
+        that contains the days of the week.
+      </div>
+
+      <div class="container">
+        <form id="dayForm">
+          <label for="dayInput">Day of the Week:</label>
+          <input
+            list="days"
+            id="dayInput"
+            name="day"
+            placeholder="Start typing..."
+            required
+          />
+          <datalist id="days">
+            <option value="Monday"></option>
+            <option value="Tuesday"></option>
+            <option value="Wednesday"></option>
+            <option value="Thursday"></option>
+            <option value="Friday"></option>
+            <option value="Saturday"></option>
+            <option value="Sunday"></option>
+          </datalist>
+
+          <div class="buttons">
+            <button type="submit">Submit</button>
+          </div>
+        </form>
+
+        <div class="result" id="resultContainer" style="display: none">
+          <div class="emoji" id="emojiOutput"></div>
+          <div class="message" id="messageOutput"></div>
+          <div class="buttons">
+            <button onclick="resetForm()">Pick another day</button>
+          </div>
+        </div>
+
+        <script>
+          const responses = {
+            monday: {
+              emoji: "😞",
+              message: "Oh no, it's Monday again? Hope you survive it!",
+            },
+            tuesday: {
+              emoji: "😐",
+              message: "Tuesday is just Monday with glasses.",
+            },
+            wednesday: {
+              emoji: "😕",
+              message: "Midweek! You deserve a medal for surviving.",
+            },
+            thursday: {
+              emoji: "🙂",
+              message: "Almost Friday. You can smell the weekend!",
+            },
+            friday: {
+              emoji: "😊",
+              message: "Friday! Spiritually, you're already home.",
+            },
+            saturday: {
+              emoji: "😎",
+              message: "Saturday – time to wake up… at noon.",
+            },
+            sunday: {
+              emoji: "😄",
+              message: "Sunday: the last drop of freedom...",
+            },
+          };
+
+          const form = document.getElementById("dayForm");
+          const input = document.getElementById("dayInput");
+          const resultContainer = document.getElementById("resultContainer");
+          const emojiOutput = document.getElementById("emojiOutput");
+          const messageOutput = document.getElementById("messageOutput");
+
+          form.addEventListener("submit", function (e) {
+            e.preventDefault();
+            const day = input.value.trim().toLowerCase();
+            const response = responses[day];
+            if (response) {
+              emojiOutput.textContent = response.emoji;
+              messageOutput.textContent = response.message;
+            } else {
+              emojiOutput.textContent = "🤔";
+              messageOutput.textContent = "Interesting choice!";
+            }
+            form.style.display = "none";
+            resultContainer.style.display = "block";
+          });
+
+          function resetForm() {
+            input.value = "";
+            form.style.display = "block";
+            resultContainer.style.display = "none";
+          }
+        </script>
+      </div>
+    </main>
+
+    <footer>
+      <p><strong>Student:</strong> Siarhei Hancharou</p>
+      <p>
+        <strong>Course:</strong> CS 80 – Internet Programming (Section 1239)
+      </p>
+      <p><strong>Instructor:</strong> Anthony Wang</p>
+    </footer>
+  </body>
+</html>

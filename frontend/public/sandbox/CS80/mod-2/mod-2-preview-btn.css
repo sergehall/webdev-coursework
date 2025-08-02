@@ -1,0 +1,15 @@
+.preview-btn {
+  background-color: #a3cfff;
+  color: #1a1a1a;
+  border: none;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+}
+
+.preview-btn:hover {
+  background-color: #91bdf0;
+}

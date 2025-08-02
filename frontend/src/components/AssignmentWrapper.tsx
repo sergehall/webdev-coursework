@@ -12,11 +12,8 @@ export default function AssignmentWrapper() {
   // Flatten nested course options
   const allCourses = courses.flatMap((course) => course.options ?? [course]);
 
-  // Normalize code (e.g. "CS 81" → "cs81")
-  const normalizedCode = code?.toLowerCase().replace(/\s/g, "");
-
   const matchedCourse = allCourses.find(
-    (c) => c.code.toLowerCase().replace(/\s/g, "") === normalizedCode
+    (c) => c.code.toUpperCase().replace(/\s/g, "") === code
   );
 
   const courseEntry = matchedCourse

@@ -1,0 +1,24 @@
+<!ELEMENT nutritionFacts (productName, servingSize, calories, fat, cholesterol, sodium, carbohydrates, protein)>
+  <!ELEMENT productName (#PCDATA)>
+  <!ELEMENT servingSize (#PCDATA)>
+  <!ELEMENT calories (totalCalories, fromFat)>
+  <!ELEMENT totalCalories (#PCDATA)>
+  <!ELEMENT fromFat (#PCDATA)>
+  <!ELEMENT fat (totalFat, saturatedFat)>
+  <!ELEMENT totalFat (#PCDATA)>
+  <!ATTLIST totalFat unit CDATA #IMPLIED>
+  <!ELEMENT saturatedFat (#PCDATA)>
+  <!ATTLIST saturatedFat unit CDATA #IMPLIED>
+  <!ELEMENT cholesterol (#PCDATA)>
+  <!ATTLIST cholesterol unit CDATA #IMPLIED>
+  <!ELEMENT sodium (#PCDATA)>
+  <!ATTLIST sodium unit CDATA #IMPLIED>
+  <!ELEMENT carbohydrates (totalCarbs, fiber, sugars)>
+  <!ELEMENT totalCarbs (#PCDATA)>
+  <!ATTLIST totalCarbs unit CDATA #IMPLIED>
+  <!ELEMENT fiber (#PCDATA)>
+  <!ATTLIST fiber unit CDATA #IMPLIED>
+  <!ELEMENT sugars (#PCDATA)>
+  <!ATTLIST sugars unit CDATA #IMPLIED>
+  <!ELEMENT protein (#PCDATA)>
+  <!ATTLIST protein unit CDATA #IMPLIED>

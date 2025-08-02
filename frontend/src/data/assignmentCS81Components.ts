@@ -1,7 +1,7 @@
 import React, { lazy } from "react";
 
 // A map of all assignments and their placeholders, keyed by module ID
-const assignmentComponents: Record<
+const assignmentCS81Components: Record<
   string,
   {
     main: React.LazyExoticComponent<React.FC>;
@@ -141,4 +141,4 @@ const assignmentComponents: Record<
   },
 };
 
-export default assignmentComponents;
+export default assignmentCS81Components;

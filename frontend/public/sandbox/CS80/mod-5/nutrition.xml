@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE nutritionFacts SYSTEM "nutrition.dtd">
+<nutritionFacts>
+  <productName>Grandma White's Cookies</productName>
+  <servingSize>1 package</servingSize>
+
+  <calories>
+    <totalCalories>260</totalCalories>
+    <fromFat>100</fromFat>
+  </calories>
+
+  <fat>
+    <totalFat unit="g">11</totalFat>
+    <saturatedFat unit="g">2</saturatedFat>
+  </fat>
+
+  <cholesterol unit="mg">5</cholesterol>
+  <sodium unit="mg">210</sodium>
+
+  <carbohydrates>
+    <totalCarbs unit="g">36</totalCarbs>
+    <fiber unit="g">2</fiber>
+    <sugars unit="g">15</sugars>
+  </carbohydrates>
+
+  <protein unit="g">5</protein>
+</nutritionFacts>

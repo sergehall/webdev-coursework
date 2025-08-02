@@ -1,0 +1,79 @@
+
+CS 80 – Module 6–8 Assignment Submission
+Student: Siarhei Hancharou
+Assignment File: assignment3.html + modular JS files
+
+------------------------------------------------------------
+
+Project Overview
+
+This submission contains all solutions for Tasks 6.17 to 8.7 in a single HTML file with clean user interaction, input validation, and HTML5 output.
+All logic has been separated into dedicated JavaScript files for modularity and testing support.
+
+------------------------------------------------------------
+
+Submission Contents:
+
+1. assignment3.html
+- Entry point of the project.
+- Contains the interface to run individual task scripts and test scripts.
+- Uses modern HTML5 elements, <main>, <footer>, responsive layout, and styles.
+
+2. assignment3.js
+- Contains implementations of all task scripts:
+  - compareTwoIntegers() – Task 6.17
+  - calculateStats() – Task 6.18
+  - checkCreditLimit() – Task 7.12
+  - calculateEvenOddProduct() – Task 8.7
+- All functions include input validation and error handling.
+- User interaction is handled via prompt, alert, and optional HTML output.
+
+3. testAssignment3.js
+- Contains automated test logic for each task.
+- Each test simulates input and outputs results using outputHTML().
+- Tests cover normal and edge cases.
+
+------------------------------------------------------------
+
+Testing Your Script
+
+How to run the tests:
+1. Open assignment3.html in a browser.
+2. Scroll to the "Test All Scripts" section.
+3. Click individual test buttons:
+   - Test 6.17
+   - Test 6.18
+   - Test 7.12
+   - Test 8.7
+4. Test results are shown inside the page (in the #output area).
+
+Note:
+The main logic can also be manually tested using the “Run Task” buttons for interactive input.
+
+------------------------------------------------------------
+
+Features Implemented
+
+- Modular Design: Code is logically split across task and test files.
+- Built-In Testing: All logic can be tested directly from the browser.
+- Full Assignment Descriptions: Collapsible modal section displays detailed task descriptions.
+- Validated Input: Each prompt verifies integer-only input with regex (/^-?\d+$/).
+- HTML5 Output: Tasks requiring page output use outputHTML() with clean formatting.
+
+------------------------------------------------------------
+
+Summary
+
+This submission demonstrates:
+- Proper DOM interaction with JavaScript (prompt, alert, innerHTML)
+- Modular function design and validation
+- Custom testing interface
+- Full UI and UX integration for assignments 6.17 through 8.7
+
+------------------------------------------------------------
+
+Recommendation
+
+To explore, open the HTML file in any browser and try both:
+- Interactive use (via task buttons)
+- Automated tests (via test buttons)

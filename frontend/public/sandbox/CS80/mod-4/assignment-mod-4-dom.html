@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Assignment – Mod 4: DOM & JavaScript</title>
+    <meta name="author" content="Siarhei Hancharou" />
+    <meta
+      name="description"
+      content="CS 80 Assignment – Mod 4: DOM Exploration & Counter Script"
+    />
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        min-height: 100vh;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #fbfffb, #ffffff);
+        color: #1a1a1a;
+        box-sizing: border-box;
+        padding: 2rem 10px;
+      }
+
+      main {
+        flex: 1;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+        color: #2c3e50;
+        background: #eaf1ff;
+        padding: 0.6rem 1rem;
+        border-left: 6px solid #2d8cf0;
+        border-radius: 4px;
+        box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.05);
+        width: 100%;
+        box-sizing: border-box;
+        margin: 0 auto 1.5rem;
+      }
+
+      .task {
+        background-color: #fef9c3;
+        border-left: 5px solid #facc15;
+        padding: 0.3rem;
+        margin: 0.5rem 0 2rem;
+        font-style: italic;
+        color: #92400e;
+        font-size: 0.9rem;
+      }
+
+      section {
+        background: #f0f0f0;
+        padding: 0.5rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        margin-bottom: 1rem;
+      }
+
+      .counter-box {
+        text-align: center;
+        margin-top: 1rem;
+      }
+
+      #counter {
+        font-size: 2em;
+        margin-bottom: 10px;
+        color: #2c3e50;
+      }
+
+      button {
+        padding: 10px 20px;
+        font-size: 1em;
+        background-color: #2d8cf0;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #1b6dc1;
+      }
+
+      footer {
+        margin-top: 3rem;
+        padding-top: 1rem;
+        border-top: 2px solid #e5e7eb;
+        font-size: 0.95rem;
+        color: #6b7280;
+      }
+
+      footer p strong {
+        color: #2c3e50;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Assignment – Mod 4: Chrome Developer Tools & JavaScript Counter</h1>
+      <div class="task">
+        <p>
+          <strong>Task 12.4:</strong> Use a browser's developer tools to view
+          the DOM tree of the document in Fig. 12.4. Look at the document tree
+          of your favorite website. Explore the information these tools give you
+          in the right panel(s) about an element when you click it.<br />
+        </p>
+        <p>
+          <strong>Task 12.5:</strong> Write a script that contains a button and
+          a counter in a div. The button's event handler should increment the
+          counter each time it's clicked.
+        </p>
+      </div>
+      <p
+        style="
+          font-style: italic;
+          font-size: 0.9rem;
+          color: #555;
+          text-align: center;
+          margin-top: 1rem;
+        "
+      >
+        * Note: For the modal window
+        <strong>"View Assignment & DOM Example"</strong> to display correctly,
+        the file <code>fig-12-4.html</code> must be located in the same
+        directory as this HTML file.
+      </p>
+
+      <section>
+        <h3>12.4 – Exploring the DOM with Chrome Developer Tools</h3>
+        <p>
+          &nbsp;&nbsp;&nbsp;&nbsp;I used Chrome Developer Tools to analyze the
+          structure of the DOM document shown in Figure 12.4. In the Elements
+          tab, I could see the hierarchical HTML tree, including attributes,
+          classes, IDs, and associated styles. This allowed me to quickly locate
+          the needed elements and experiment with changes directly in the
+          browser.<br />
+          &nbsp;&nbsp;&nbsp;&nbsp;I also visited my favorite website and
+          explored its structure. The panels on the right were especially
+          useful: I could see the applied CSS styles, event listeners,
+          properties, and even accessibility information. The Console tab
+          allowed me to interact directly with elements using JavaScript. This
+          tool proved to be very powerful and intuitive — I now have a much
+          better understanding of how a website works "under the hood."<br />
+          &nbsp;&nbsp;&nbsp;&nbsp;While exploring the sample document from
+          Figure 12.4, I specifically used the Developer Tools to inspect
+          elements like the <code>&lt;h1&gt;</code> with
+          <code>id="bigheading"</code> and the list items inside
+          <code>&lt;ul id="list1"&gt;</code>. By clicking these elements in the
+          DOM tree, I could see their CSS classes, applied styles, and how
+          JavaScript might target them using <code>getElementById</code> or
+          <code>appendChild</code>. I also examined the form inputs and buttons
+          i
+        </p>
+        <!-- - Button and modal window -->
+        <div style="text-align: center; margin: 1rem 0">
+          <button
+            onclick="document.getElementById('modal').style.display='block'"
+          >
+            View Assignment & DOM Example
+          </button>
+        </div>
+
+        <div
+          id="modal"
+          style="
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 9999;
+          "
+        >
+          <div
+            style="
+              background: white;
+              max-width: 90%;
+              max-height: 90%;
+              margin: 5% auto;
+              padding: 20px;
+              border-radius: 10px;
+              overflow: auto;
+              position: relative;
+            "
+          >
+            <button
+              onclick="document.getElementById('modal').style.display='none'"
+              style="
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                background: red;
+                color: white;
+                border: none;
+                padding: 5px 10px;
+                cursor: pointer;
+                border-radius: 5px;
+              "
+            >
+              Close
+            </button>
+
+            <h4>Task 12.4: Review</h4>
+            <p>
+              Use a browser's developer tools to view the DOM tree of the
+              document in Fig. 12.4. Look at the document tree of your favorite
+              website. Explore the information these tools give you in the right
+              panel(s) about an element when you click it.
+            </p>
+            <hr />
+            <h4>Figure 12.4 – DOM Example</h4>
+            <iframe
+              src="fig-12-4.html"
+              width="100%"
+              height="400"
+              style="border: 1px solid #ccc"
+            ></iframe>
+          </div>
+        </div>
+      </section>
+      <section>
+        <h3>12.5 – JavaScript Counter Button</h3>
+        <div class="counter-box">
+          <div id="counter">0</div>
+          <button id="incrementButton">Click Me</button>
+          <button id="resetButton">Reset</button>
+        </div>
+
+        <script>
+          let count = 0;
+          const counterDiv = document.getElementById("counter");
+          const incrementButton = document.getElementById("incrementButton");
+          const resetButton = document.getElementById("resetButton");
+
+          incrementButton.addEventListener("click", () => {
+            count++;
+            counterDiv.textContent = count;
+          });
+
+          resetButton.addEventListener("click", () => {
+            count = 0;
+            counterDiv.textContent = count;
+          });
+        </script>
+      </section>
+      <section>
+        <h3>Extra – JavaScript Stopwatch</h3>
+        <div class="counter-box">
+          <div id="advanced-counter">0</div>
+          <p id="status" style="margin-bottom: 10px; color: gray">
+            Status: <strong>Idle</strong>
+          </p>
+          <button id="startBtn">Start</button>
+          <button id="stopBtn">Stop</button>
+          <button id="resetBtn">Reset</button>
+        </div>
+
+        <script>
+          let advCount = 0;
+          let interval = null;
+          const display = document.getElementById("advanced-counter");
+          const statusText = document.getElementById("status");
+
+          const updateStatus = (text) => {
+            statusText.innerHTML = `Status: <strong>${text}</strong>`;
+          };
+
+          // Start button
+          document.getElementById("startBtn").addEventListener("click", () => {
+            if (!interval) {
+              interval = setInterval(() => {
+                advCount++;
+                display.textContent = advCount;
+              }, 1000);
+              updateStatus("Running");
+            }
+          });
+
+          // Stop button (pause)
+          document.getElementById("stopBtn").addEventListener("click", () => {
+            if (interval) {
+              clearInterval(interval);
+              interval = null;
+              updateStatus("Paused");
+            }
+          });
+
+          // Reset button
+          document.getElementById("resetBtn").addEventListener("click", () => {
+            advCount = 0;
+            display.textContent = advCount;
+            clearInterval(interval);
+            interval = null;
+            updateStatus("Reset");
+          });
+
+          // Optional: Initialize state
+          updateStatus("Idle");
+        </script>
+      </section>
+    </main>
+    <footer>
+      <p><strong>Student:</strong> Siarhei Hancharou</p>
+      <p>
+        <strong>Course:</strong> CS 80 – Internet Programming (Section 1239)
+      </p>
+      <p><strong>Instructor:</strong> Anthony Wang</p>
+    </footer>
+  </body>
+</html>

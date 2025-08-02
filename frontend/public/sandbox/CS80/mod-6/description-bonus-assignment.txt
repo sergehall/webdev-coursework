@@ -1,0 +1,32 @@
+Assignment – Mod 6: Bonus Assignment (AJAX & JSON)
+Student: Siarhei Hancharou
+Course: CS 80 – Internet Programming (Section 1239)
+Instructor: Anthony Wang
+
+Submission Contents:
+
+1. bonus-assignment.html
+• Main HTML file for the assignment.
+• Contains two styled sections:
+  - Problem 1: Explanation of differences between traditional web apps and Ajax apps.
+  - Problem 2: Visualization of nutrition data using AJAX and jQuery.
+• Responsive layout with side-by-side presentation.
+• Includes external script reference to ajaxLoad.js.
+
+2. ajaxLoad.js
+• Contains jQuery logic that:
+  - Automatically loads data from data.json on page load.
+  - Reloads the data on button click.
+  - Formats and appends each data point to a list in the DOM.
+
+3. data.json
+• JSON data structure containing nutrition facts for “Grandma White’s Cookies”.
+• Includes keys like calories, fat, carbohydrates, protein, etc.
+• Designed for easy parsing and rendering with JavaScript.
+
+Important Notes:
+• All 3 files (bonus-assignment.html, ajaxLoad.js, data.json) must be in the same directory.
+• Do NOT open bonus-assignment.html using the file:// protocol.
+• Use a local web server to test:
+  - VS Code Live Server extension
+  - Or run in terminal: python -m http.server

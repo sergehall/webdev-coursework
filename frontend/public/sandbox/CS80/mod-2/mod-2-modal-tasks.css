@@ -1,0 +1,76 @@
+.modal-content {
+  background-color: #fef9c3;
+  border-radius: 10px;
+  width: 95%;
+  max-width: 900px;
+  overflow-y: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: 1rem;
+}
+.preview-modal {
+  width: 90%;
+  height: 90%;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.open-modal-btn {
+  background-color: #d49059;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.open-modal-btn:hover {
+  background-color: #a3683f;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.tasks {
+  background-color: inherit;
+  border-left: 5px solid #facc15;
+  padding-left: 1rem;
+  font-style: italic;
+  color: #92400e;
+  font-size: 0.9rem;
+  flex: 1;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.tasks strong {
+  color: #2c3e50;
+}
+
+.task ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #888;
+}

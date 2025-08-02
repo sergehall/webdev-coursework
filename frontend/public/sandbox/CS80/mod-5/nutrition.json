@@ -1,0 +1,22 @@
+{
+  "nutritionFacts": {
+    "productName": "Grandma White's Cookies",
+    "servingSize": "1 package",
+    "calories": {
+      "totalCalories": 260,
+      "fromFat": 100
+    },
+    "fat": {
+      "totalFat": { "value": 11, "unit": "g" },
+      "saturatedFat": { "value": 2, "unit": "g" }
+    },
+    "cholesterol": { "value": 5, "unit": "mg" },
+    "sodium": { "value": 210, "unit": "mg" },
+    "carbohydrates": {
+      "totalCarbs": { "value": 36, "unit": "g" },
+      "fiber": { "value": 2, "unit": "g" },
+      "sugars": { "value": 15, "unit": "g" }
+    },
+    "protein": { "value": 5, "unit": "g" }
+  }
+}

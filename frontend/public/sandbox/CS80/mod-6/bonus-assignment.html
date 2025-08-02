@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Assignment – Mod 6: Bonus Assignment</title>
+    <meta name="author" content="Siarhei Hancharou" />
+    <meta name="description" content="CS 80 Assignment – Mod 6: Bonus Work" />
+
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #fbfffb, #ffffff);
+        color: #1a1a1a;
+      }
+
+      body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      main {
+        flex: 1;
+        padding: 2rem 10px;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+        color: #2c3e50;
+        background: #eaf1ff;
+        padding: 0.6rem 1rem;
+        border-left: 6px solid #2d8cf0;
+        border-radius: 4px;
+        box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.05);
+        margin: 0 auto 1.5rem;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      /* Collapsible Assignment Instructions */
+      .task {
+        background-color: #fef9c3;
+        border-left: 5px solid #facc15;
+        margin: 0.5rem 0 2rem;
+        padding: 4px 0;
+        font-size: 0.95rem;
+        color: #92400e;
+        border-radius: 6px;
+        box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      .task summary {
+        cursor: pointer;
+        padding: 0.6rem 1rem;
+        font-weight: bold;
+        font-size: 1.1rem;
+        background-color: #fff6b7;
+        border-radius: 4px 4px 0 0;
+        user-select: none;
+      }
+
+      .task ul {
+        list-style: none;
+        padding-left: 0;
+        margin: 0;
+      }
+
+      .task li {
+        margin-bottom: 0.4rem;
+        padding: 4px 0 4px 1rem;
+      }
+
+      .content-section {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      .ajax-vs-traditional {
+        background-color: #eff6ff;
+        border-left: 6px solid #38bdf8;
+        padding: 1.5rem;
+        border-radius: 10px;
+        max-width: 600px;
+        flex: 1 1 300px;
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+        color: #1e3a8a;
+        font-size: 1rem;
+        line-height: 1.6;
+      }
+
+      .ajax-vs-traditional h3 {
+        color: #0f172a;
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+      }
+
+      .ajax-vs-traditional ul {
+        padding-left: 1.2rem;
+        margin: 0.5rem 0 1rem;
+      }
+
+      .ajax-vs-traditional li {
+        margin-bottom: 0.5rem;
+        color: #334155;
+      }
+
+      .ajax-vs-traditional strong {
+        color: #0c4a6e;
+      }
+
+      .form-box {
+        background-color: #f0f4ff;
+        border: 2px solid #c3dafe;
+        border-radius: 8px;
+        padding: 1.5rem;
+        max-width: 600px;
+        flex: 1 1 300px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        box-sizing: border-box;
+        text-align: center;
+      }
+
+      #output {
+        background-color: #e6f7e6;
+        border: 2px solid #c3dafe;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+        list-style: none;
+        text-align: left;
+      }
+
+      #output li {
+        padding: 4px 0 4px 1rem;
+        font-size: 1rem;
+        color: #1f2937;
+        border-bottom: 1px solid #dbeafe;
+      }
+
+      button {
+        padding: 10px 20px;
+        background-color: #2d8cf0;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+      }
+
+      button:hover {
+        background-color: #1b6dc1;
+      }
+
+      footer {
+        margin-top: auto;
+        padding-top: 1rem;
+        padding-left: 1rem;
+        border-top: 2px solid #e5e7eb;
+        font-size: 0.95rem;
+        color: #6b7280;
+      }
+
+      footer p strong {
+        color: #2c3e50;
+      }
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  </head>
+
+  <body>
+    <main>
+      <h1>Module 6: Bonus Assignment</h1>
+
+      <details class="task">
+        <summary>Assignments: Problem 1 - 16.3 & Problem 2</summary>
+        <ul>
+          <li>
+            <strong>Problem 1:</strong> Describe the differences between
+            client/server interactions in traditional web applications and
+            client/server interactions in Ajax web applications.
+          </li>
+          <li>
+            <strong>Problem 2:</strong> Add an ajax() call so the data is
+            retrieved on page load instead of on button click.
+          </li>
+        </ul>
+      </details>
+
+      <!-- Two-column layout -->
+      <section class="content-section">
+        <!-- Left column: Explanation -->
+        <div class="ajax-vs-traditional">
+          <h3>Problem 1 – 16.3: Traditional vs Ajax Web Applications</h3>
+          <p>
+            In traditional web applications, the interaction between client
+            (browser) and server follows a simple principle: whenever the user
+            clicks a link or submits a form, the browser sends a request to the
+            server, and the server responds by sending back a completely new
+            HTML page. This results in a full page reload, even if only a small
+            part of the content has changed.
+          </p>
+          <ul>
+            <li>
+              <strong>Example:</strong> A user submits a form — the page
+              refreshes entirely and displays the result.
+            </li>
+          </ul>
+          <p>
+            In contrast, Ajax-based web applications work differently. When
+            using Ajax, data is exchanged asynchronously — in the background —
+            without reloading the entire page. This is achieved through
+            JavaScript (often using jQuery), which makes background requests to
+            the server and receives only the needed data (typically in JSON
+            format). The page then updates just the relevant part of the content
+            dynamically.
+          </p>
+          <ul>
+            <li>
+              <strong>Example:</strong> On page load, a product list or news
+              feed is retrieved and displayed without refreshing the page.
+            </li>
+          </ul>
+          <p>
+            <strong>In summary:</strong> Traditional applications reload the
+            whole page with every request, while Ajax applications request only
+            the data and dynamically update parts of the page.
+          </p>
+        </div>
+
+        <!-- Right column: Ajax output -->
+        <div class="form-box">
+          <h2>Problem 2 - AJAX with JQuery</h2>
+          <h4>Nutrition Facts (JSON via Ajax)</h4>
+          <ul id="output">
+            Loading...
+          </ul>
+          <button id="loadDataBtn">Reload Data</button>
+        </div>
+      </section>
+
+      <script src="ajaxLoad.js"></script>
+    </main>
+
+    <footer>
+      <p><strong>Student:</strong> Siarhei Hancharou</p>
+      <p>
+        <strong>Course:</strong> CS 80 – Internet Programming (Section 1239)
+      </p>
+      <p><strong>Instructor:</strong> Anthony Wang</p>
+    </footer>
+  </body>
+</html>

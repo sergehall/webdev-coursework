@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Assignment: CSS Practice</title>
+    <meta name="author" content="Siarhei Hancharou" />
+    <meta name="description" content="CS 80 Assignment – CSS Practice" />
+    <link rel="icon" href="https://www.google.com/favicon.ico" />
+
+    <!-- External stylesheets -->
+    <link rel="stylesheet" href="assignment-header-readme-block.css" />
+    <link rel="stylesheet" href="mod-2-modal-tasks.css" />
+    <link rel="stylesheet" href="mod-2-preview-btn.css" />
+
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        min-height: 100vh;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #fbfffb, #ffffff);
+        color: #1a1a1a;
+        box-sizing: border-box;
+        padding: 1rem 10px 0 10px;
+      }
+
+      main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      footer {
+        border-top: 2px solid #e5e7eb;
+        font-size: 0.95rem;
+        color: #6b7280;
+        padding: 10px 0;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+      }
+
+      footer.visible {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      iframe {
+        width: 100%;
+        height: 80vh;
+        border: none;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- === HEADER === -->
+    <header>
+      <section class="assignment-title">
+        <h1>Assignment 2 – CSS Practice</h1>
+      </section>
+
+      <section class="task-panel">
+        <span><strong>Tasks:</strong> Assignment – Module 2 Overview</span>
+        <button class="open-modal-btn" onclick="openModal()">
+          View Full Task
+        </button>
+      </section>
+    </header>
+
+    <!-- === TASK MODAL === -->
+    <div id="modalOverlay" class="modal-overlay">
+      <div class="modal-content">
+        <button class="close-button" onclick="closeModal()">✖</button>
+        <div class="tasks">
+          <strong>Task Description:</strong>
+          <ul>
+            <li>
+              <strong>4.3</strong> Write a CSS rule that makes all text 1.5
+              times larger than the base font of the system and colors the text
+              red.
+            </li>
+            <li>
+              <strong>4.4</strong> Write a CSS rule that places a background
+              image halfway down the page, tiling it horizontally. The image
+              should remain in place when the user scrolls.
+            </li>
+            <li>
+              <strong>4.5</strong> Write a CSS rule that gives all
+              <code>h1</code> and <code>h2</code> elements a
+              <code>padding</code> of 0.5 ems, a dashed border style, and a
+              margin of 0.5 ems.
+            </li>
+            <li>
+              <strong>4.6</strong> Write a CSS rule that changes the color of
+              all elements with class <code>"greenMove"</code> to green and
+              shifts them down 25px and right 15px.
+            </li>
+            <li>
+              <strong>5.3</strong> Create a text shadow on the phrase
+              <em>"New features in CSS3"</em> with a horizontal offset of 2px,
+              vertical offset 5px, blur radius 6px, and color
+              <code>deepskyblue</code>.
+            </li>
+            <li>
+              <strong>5.5</strong> Create three <code>div</code> blocks
+              (100x100px) with different <code>border-radius</code> values:
+              10px, 50px, 100px. Use a <code>3px black</code> border and
+              different background colors. Display the radius value inside each
+              block as bold text.
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- === PREVIEW MODAL === -->
+    <div id="previewModal" class="modal-overlay">
+      <div class="modal-content preview-modal">
+        <button class="close-button" onclick="closePreviewModal()">✖</button>
+        <iframe id="previewFrame" src=""></iframe>
+      </div>
+    </div>
+
+    <!--Button to open preview in main -->
+    <button id="previewToggleBtn" class="preview-btn" onclick="togglePreview()">
+      Open Assignment Preview
+    </button>
+
+    <!-- README Section (Visible by default) -->
+    <div id="readme-container"></div>
+
+    <!-- Shadow DOM preview goes here -->
+    <main id="mainContent"></main>
+
+    <footer>
+      <p><strong>Student:</strong> Siarhei Hancharou</p>
+      <p>
+        <strong>Course:</strong> CS 80 – Internet Programming (Section 1239)
+      </p>
+      <p><strong>Instructor:</strong> Anthony Wang</p>
+    </footer>
+
+    <script src="mod-2-scripts.js"></script>
+  </body>
+</html>

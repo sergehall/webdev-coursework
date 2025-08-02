@@ -1,0 +1,64 @@
+header .assignment-title {
+  height: 60px;
+  padding: 0 1rem;
+  background: #eaf1ff;
+  border-left: 6px solid #2d8cf0;
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0 auto 0.3rem;
+}
+
+.assignment-title h1 {
+  font-size: 1.8rem;
+  color: #2c3e50;
+}
+
+header .task-panel {
+  height: 60px;
+  padding: 0 1rem;
+  background: #fef9c3;
+  border-left: 6px solid #facc15;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 4px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #d49059;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  margin: 0 0 0.3rem 0;
+}
+
+.readme-block {
+  background-color: #fefefe;
+  border-left: 4px solid #d49059;
+  padding: 1rem;
+  border-radius: 6px;
+  margin-top: 0.3rem;
+  margin-bottom: 0.6rem;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.4;
+}
+
+.readme-block h2 {
+  color: #2c3e50;
+  margin: 0 0 0.5rem;
+}
+
+.readme-block h3 {
+  margin: 0.5rem 0 0.3rem;
+}
+
+.readme-block ul {
+  margin: 0;
+  padding-left: 1.25rem;
+  line-height: 1.4;
+}
+
+.readme-block ul li {
+  margin-bottom: 0.2rem;
+}
