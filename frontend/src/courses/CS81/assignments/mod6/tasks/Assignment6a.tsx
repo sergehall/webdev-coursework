@@ -14,7 +14,7 @@ const Assignment6A = () => {
   const screenshots = [
     {
       label: "Console Output Example",
-      src: "/sandbox/mod-6/A/playlist-console-output.png",
+      src: "/sandbox/CS81/mod-6/A/playlist-console-output.png",
     },
   ];
 
@@ -57,15 +57,18 @@ const Assignment6A = () => {
         />
 
         <DownloadJsButton
-          fileUrl="/sandbox/mod-6/A/playlist.js"
+          fileUrl="/sandbox/CS81/mod-6/A/playlist.js"
           filename="playlist.js"
           label="playlist.js"
         />
 
-        <RunInSandboxButton file="mod-6/A/playlist.js" label="Run in Sandbox" />
+        <RunInSandboxButton
+          file="CS81/mod-6/A/playlist.js"
+          label="Run in Sandbox"
+        />
 
         <DownloadMdButton
-          fileUrl="/sandbox/mod-6/A/REFLECTION.md"
+          fileUrl="/sandbox/CS81/mod-6/A/REFLECTION.md"
           filename="REFLECTION.md"
           label="REFLECTION.md"
         />

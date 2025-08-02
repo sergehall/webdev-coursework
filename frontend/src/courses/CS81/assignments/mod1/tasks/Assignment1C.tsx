@@ -14,7 +14,7 @@ const Assignment1C = () => {
   const screenshots = [
     {
       label: "Console output screenshot",
-      src: "/sandbox/mod-1/C/introToJS.png",
+      src: "/sandbox/CS81/mod-1/C/introToJS.png",
     },
   ];
 
@@ -53,10 +53,10 @@ const Assignment1C = () => {
 
       <div className="mt-4 grid w-full grid-cols-1 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-3">
         <DownloadHtmlButton
-          fileUrl="/sandbox/mod-1/C/intro-to-javascript.html"
+          fileUrl="/sandbox/CS81/mod-1/C/intro-to-javascript.html"
           filename="intro-to-javascript.html"
         />
-        <RunInSandboxButton file="mod-1/C/helloWorldName.js" />
+        <RunInSandboxButton file="CS81/mod-1/C/helloWorldName.js" />
         <RunFunctionButton onClick={helloWordName} label="Run in Console" />
         <ToggleScreenshotButton
           show={showScreenshots}

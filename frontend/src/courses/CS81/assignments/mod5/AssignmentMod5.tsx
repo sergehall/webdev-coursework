@@ -1,6 +1,7 @@
 // src/assignments/mod5/AssignmentMod5.tsx
 import { useState } from "react";
 
+import Assignment5B from "@/courses/CS81/assignments/mod5/tasks/Assignment5B";
 import Assignment5A from "@/courses/CS81/assignments/mod5/tasks/Assignment5A";
 import ClassroomEngagementSlackPost5 from "@/courses/CS81/assignments/mod5/tasks/ClassroomEngagementSlackPost5";
 import QuizModule5 from "@/courses/CS81/assignments/mod5/tasks/QuizModule5";
@@ -42,8 +43,7 @@ export default function AssignmentMod5() {
         isOpen={openItem === "5B"}
         onToggle={() => toggleItem("5B")}
       >
-        {/* Task content goes here */}
-        {null}
+        <Assignment5B />
       </AnimatedAccordionItem>
 
       <AnimatedAccordionItem

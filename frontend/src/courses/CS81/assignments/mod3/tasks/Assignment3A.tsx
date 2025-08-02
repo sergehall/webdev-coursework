@@ -44,18 +44,18 @@ const Assignment3A = () => {
         />
 
         <DownloadJsButton
-          fileUrl="/sandbox/mod-3/A/journal.js"
+          fileUrl="/sandbox/CS81/mod-3/A/journal.js"
           filename="journal.js"
           label="Download journal.js"
         />
         <DownloadMdButton
-          fileUrl="/sandbox/mod-3/A/README.md"
+          fileUrl="/sandbox/CS81/mod-3/A/README.md"
           filename="README.md"
           label="Download README.md"
         />
 
         <DownloadMdButton
-          fileUrl="/sandbox/mod-3/A/REFLECTION.md"
+          fileUrl="/sandbox/CS81/mod-3/A/REFLECTION.md"
           filename="REFLECTION.md"
           label="Download REFLECTION.md"
         />

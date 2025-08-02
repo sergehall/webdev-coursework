@@ -19,25 +19,25 @@ const Assignment9B = () => {
     {
       label:
         "Here is an example of the final component rendering multiple users inside a responsive modal.",
-      src: "/sandbox/mod-9/B/Module-9-Assignment-9B.png",
+      src: "/sandbox/CS81/mod-9/B/Module-9-Assignment-9B.png",
     },
   ];
 
   const files = [
     {
-      fileUrl: "/sandbox/mod-9/B/README.md",
+      fileUrl: "/sandbox/CS81/mod-9/B/README.md",
       filename: "README.md",
     },
     {
-      fileUrl: "/sandbox/mod-9/B/Module-9-Assignment-9B.png",
+      fileUrl: "/sandbox/CS81/mod-9/B/Module-9-Assignment-9B.png",
       filename: "Module-9-Assignment-9B.png",
     },
     {
-      fileUrl: "/sandbox/mod-9/B/Module9B_README.pdf",
+      fileUrl: "/sandbox/CS81/mod-9/B/Module9B_README.pdf",
       filename: "Module9B_README.pdf",
     },
     {
-      fileUrl: "/sandbox/mod-9/B/module9b-profile.zip",
+      fileUrl: "/sandbox/CS81/mod-9/B/module9b-profile.zip",
       filename: "module9b-profile.zip",
     },
   ];

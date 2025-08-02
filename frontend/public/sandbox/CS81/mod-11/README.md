@@ -35,7 +35,7 @@ It features a responsive and interactive contact form built with **React**, supp
 <details>
   <summary>Click to expand view of project structure</summary>
 
-![Screenshot of project file structure](./module11-assignment11a-react-contact-form.png)
+![Screenshot of project file structure](module11-assignment11a-react-contact-form.png)
 
 </details>
 

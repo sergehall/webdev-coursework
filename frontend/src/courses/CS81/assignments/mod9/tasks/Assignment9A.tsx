@@ -22,31 +22,31 @@ const Assignment9A = () => {
     {
       label:
         "Here is an example of the final component rendering multiple users inside a responsive modal.",
-      src: "/sandbox/mod-9/A/user-profiles.png",
+      src: "/sandbox/CS81/mod-9/A/user-profiles.png",
     },
   ];
 
   const files = [
     {
-      fileUrl: "/sandbox/mod-9/A/UserProfile.jsx",
+      fileUrl: "/sandbox/CS81/mod-9/A/UserProfile.jsx",
       filename: "UserProfile.jsx",
     },
     {
-      fileUrl: "/sandbox/mod-9/A/module9a-firstreact.zip",
+      fileUrl: "/sandbox/CS81/mod-9/A/module9a-firstreact.zip",
       filename: "module9a-firstreact.zip",
     },
     {
-      fileUrl: "/sandbox/mod-9/A/user-profiles.png",
+      fileUrl: "/sandbox/CS81/mod-9/A/user-profiles.png",
       filename: "user-profiles.png",
     },
     {
-      fileUrl: "/sandbox/mod-9/A/README.md",
+      fileUrl: "/sandbox/CS81/mod-9/A/README.md",
       filename: "README.md",
     },
   ];
 
   const file = {
-    fileUrl: "/sandbox/mod-9/A/UserProfile.jsx",
+    fileUrl: "/sandbox/CS81/mod-9/A/UserProfile.jsx",
     filename: "UserProfile.jsx",
   };
 
@@ -90,10 +90,6 @@ const Assignment9A = () => {
           onClick={() => setIsModalOpen(true)}
           label={"Show starter code JSX"}
         />
-        {/*<OpenRenderModalButton*/}
-        {/*  onClick={() => setIsRenderModalOpen(true)}*/}
-        {/*  label={'Preview Homework'}*/}
-        {/*/>*/}
         <ToggleModalButton
           isOpen={isModalOpen}
           label={"Preview Homework"}

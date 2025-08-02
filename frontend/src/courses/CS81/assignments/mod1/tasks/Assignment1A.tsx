@@ -11,15 +11,15 @@ const Assignment1A = () => {
   const [showScreenshots, setShowScreenshots] = useState(false);
   const screenshots = [
     {
-      src: "/sandbox/mod-1/A/webstorm.png",
+      src: "/sandbox/CS81/mod-1/A/webstorm.png",
       label: "WebStorm with project files",
     },
     {
-      src: "/sandbox/mod-1/A/chrome.png",
+      src: "/sandbox/CS81/mod-1/A/chrome.png",
       label: "Chrome with site and console",
     },
     {
-      src: "/sandbox/mod-1/A/terminal.png",
+      src: "/sandbox/CS81/mod-1/A/terminal.png",
       label: "Terminal showing Node.js and npm versions",
     },
   ];
@@ -38,7 +38,7 @@ const Assignment1A = () => {
 
       <div className="mt-4 grid w-full grid-cols-1 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-3">
         <DownloadHtmlButton
-          fileUrl="/sandbox/mod-1/A/checklist.html"
+          fileUrl="/sandbox/CS81/mod-1/A/checklist.html"
           filename="checklist.html"
         />
         <ToggleScreenshotButton

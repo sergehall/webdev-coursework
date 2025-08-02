@@ -19,7 +19,7 @@ const Assignment2C = () => {
   const screenshots = [
     {
       label: "Commute simulation console screenshot",
-      src: "/sandbox/mod-2/C/Assignment2C_Screenshot.png",
+      src: "/sandbox/CS81/mod-2/C/Assignment2C_Screenshot.png",
     },
   ];
 
@@ -96,10 +96,13 @@ const Assignment2C = () => {
       <div className="mt-4 grid w-full grid-cols-1 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-3">
         <RunFunctionButton onClick={runSimulation} label="Run in Console" />
 
-        <RunInSandboxButton file="mod-2/C/assn2c.js" label="Run in Sandbox" />
+        <RunInSandboxButton
+          file="CS81/mod-2/C/assn2c.js"
+          label="Run in Sandbox"
+        />
 
         <DownloadJsButton
-          fileUrl="/sandbox/mod-2/C/assn2c.js"
+          fileUrl="/sandbox/CS81/mod-2/C/assn2c.js"
           filename="assn2c.js"
         />
         <ToggleScreenshotButton

@@ -14,7 +14,7 @@ const Assignment5A = () => {
   const screenshots = [
     {
       label: "Sample Console Output",
-      src: "/sandbox/mod-5/A/hobbyTracker-output.png",
+      src: "/sandbox/CS81/mod-5/A/hobbyTracker-output.png",
     },
   ];
 
@@ -60,18 +60,18 @@ const Assignment5A = () => {
         />
 
         <DownloadJsButton
-          fileUrl="/sandbox/mod-5/A/hobbyTracker.js"
+          fileUrl="/sandbox/CS81/mod-5/A/hobbyTracker.js"
           filename="hobbyTracker.js"
           label="hobbyTracker.js"
         />
 
         <RunInSandboxButton
-          file="mod-5/A/hobbyTracker.js"
+          file="CS81/mod-5/A/hobbyTracker.js"
           label="Run in Sandbox"
         />
 
         <DownloadMdButton
-          fileUrl="/sandbox/mod-5/A/REFLECTION.md"
+          fileUrl="/sandbox/CS81/mod-5/A/REFLECTION.md"
           filename="REFLECTION.md"
           label="REFLECTION.md"
         />

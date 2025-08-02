@@ -20,7 +20,7 @@ describe("<App /> integration", () => {
   it("renders CourseworkPage page", async () => {
     renderWithProviders(<App />, "/coursework");
     expect(
-      await screen.findByText(/Loading CourseworkPage/i)
+      await screen.findByText(/Loading Coursework/i)
     ).toBeInTheDocument();
   });
 

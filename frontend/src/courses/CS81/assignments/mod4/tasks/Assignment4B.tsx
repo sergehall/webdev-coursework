@@ -14,7 +14,7 @@ const Assignment4B = () => {
   const screenshots = [
     {
       label: "Console Output Sample",
-      src: "/sandbox/mod-4/B/data-analysis-results.png",
+      src: "/sandbox/CS81/mod-4/B/data-analysis-results.png",
     },
   ];
 
@@ -62,18 +62,18 @@ const Assignment4B = () => {
         />
 
         <DownloadJsButton
-          fileUrl="/sandbox/mod-4/B/myDataJournal.js"
+          fileUrl="/sandbox/CS81/mod-4/B/myDataJournal.js"
           filename="myDataJournal.js"
           label="myDataJournal.js"
         />
         <DownloadJsButton
-          fileUrl="/sandbox/mod-4/B/testDataJournal.js"
+          fileUrl="/sandbox/CS81/mod-4/B/testDataJournal.js"
           filename="testDataJournal.js"
           label="testDataJournal.js"
         />
 
         <DownloadMdButton
-          fileUrl="/sandbox/mod-4/B/REFLECTION.md"
+          fileUrl="/sandbox/CS81/mod-4/B/REFLECTION.md"
           filename="REFLECTION.md"
           label="REFLECTION.md"
         />

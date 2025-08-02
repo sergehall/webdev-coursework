@@ -15,7 +15,7 @@ const Assignment2B = () => {
 
   const screenshots = [
     {
-      src: "/sandbox/mod-2/B/FizzBuzz_Assignment_Screenshot.png",
+      src: "/sandbox/CS81/mod-2/B/FizzBuzz_Assignment_Screenshot.png",
       alt: "FizzBuzz console screenshot",
     },
   ];
@@ -76,7 +76,7 @@ const Assignment2B = () => {
         <RunInSandboxButton file="mod-2/B/assn2b.js" />
 
         <DownloadJsButton
-          fileUrl="/sandbox/mod-2/B/assn2b.js"
+          fileUrl="/sandbox/CS81/mod-2/B/assn2b.js"
           filename="assn2b.js"
         />
         <ToggleScreenshotButton

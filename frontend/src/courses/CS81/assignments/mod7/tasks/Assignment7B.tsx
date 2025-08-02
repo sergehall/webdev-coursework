@@ -13,18 +13,18 @@ const Assignment7B = () => {
 
   const files = [
     {
-      fileUrl: "/sandbox/mod-7/B/dailySimulation.html",
+      fileUrl: "/sandbox/CS81/mod-7/B/dailySimulation.html",
       filename: "dailySimulation.html",
     },
     {
-      fileUrl: "/sandbox/mod-7/B/REFLECTION.md",
+      fileUrl: "/sandbox/CS81/mod-7/B/REFLECTION.md",
       filename: "REFLECTION.md",
     },
   ];
 
   const file = [
     {
-      fileUrl: "/sandbox/mod-7/B/dailySimulation.html",
+      fileUrl: "/sandbox/CS81/mod-7/B/dailySimulation.html",
       filename: "dailySimulation.html",
     },
   ];
