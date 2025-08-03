@@ -22,12 +22,18 @@ export class QuizProgressRepository extends Repository<QuizProgress> {
     courseId: string,
     moduleNumber: number
   ): Promise<void> {
-    const existing = await this.findByClientAppAndCourse(clientId, appId, courseId);
+    const existing = await this.findByClientAppAndCourse(
+      clientId,
+      appId,
+      courseId
+    );
     const current = existing?.completedModules ?? [];
 
     if (current.includes(moduleNumber)) return;
 
-    const updated = [...new Set([...current, moduleNumber])].sort((a, b) => a - b);
+    const updated = [...new Set([...current, moduleNumber])].sort(
+      (a, b) => a - b
+    );
 
     if (existing) {
       existing.completedModules = updated;
@@ -49,10 +55,16 @@ export class QuizProgressRepository extends Repository<QuizProgress> {
     courseId: string,
     moduleNumber: number
   ): Promise<void> {
-    const existing = await this.findByClientAppAndCourse(clientId, appId, courseId);
+    const existing = await this.findByClientAppAndCourse(
+      clientId,
+      appId,
+      courseId
+    );
     if (!existing) return;
 
-    existing.completedModules = existing.completedModules.filter((m) => m !== moduleNumber);
+    existing.completedModules = existing.completedModules.filter(
+      (m) => m !== moduleNumber
+    );
     await this.save(existing);
   }
 

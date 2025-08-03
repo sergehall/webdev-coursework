@@ -57,7 +57,11 @@ export class QuizService {
     return this.quizQuestionRepo.save(question);
   }
 
-  async getProgress(clientId: string, appId: string, courseId: string): Promise<number[]> {
+  async getProgress(
+    clientId: string,
+    appId: string,
+    courseId: string
+  ): Promise<number[]> {
     const record = await this.quizProgressRepo.findByClientAppAndCourse(
       clientId,
       appId,
@@ -72,7 +76,12 @@ export class QuizService {
     courseId: string,
     moduleNumber: number
   ): Promise<void> {
-    return this.quizProgressRepo.markCompleted(clientId, appId, courseId, moduleNumber);
+    return this.quizProgressRepo.markCompleted(
+      clientId,
+      appId,
+      courseId,
+      moduleNumber
+    );
   }
 
   async unmarkModuleCompleted(
@@ -81,10 +90,19 @@ export class QuizService {
     courseId: string,
     moduleNumber: number
   ): Promise<void> {
-    return this.quizProgressRepo.unmarkCompleted(clientId, appId, courseId, moduleNumber);
+    return this.quizProgressRepo.unmarkCompleted(
+      clientId,
+      appId,
+      courseId,
+      moduleNumber
+    );
   }
 
-  async resetProgress(clientId: string, appId: string, courseId: string): Promise<void> {
+  async resetProgress(
+    clientId: string,
+    appId: string,
+    courseId: string
+  ): Promise<void> {
     return this.quizProgressRepo.resetProgress(clientId, appId, courseId);
   }
 }
