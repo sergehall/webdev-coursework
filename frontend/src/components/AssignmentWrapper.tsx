@@ -7,13 +7,16 @@ import { courses } from "@/data/web-developer-courses";
 import completedCourseComponents from "@/data/completedCourseComponents";
 
 export default function AssignmentWrapper() {
-  const { code } = useParams<{ code: string }>();
+  const { courseId } = useParams<{ courseId: string }>();
 
+  console.log("AssignmentWrapper courseId", courseId);
   // Flatten nested course options
   const allCourses = courses.flatMap((course) => course.options ?? [course]);
 
+  const normalizedId = courseId?.toUpperCase().replace(/\s/g, "");
+
   const matchedCourse = allCourses.find(
-    (c) => c.code.toUpperCase().replace(/\s/g, "") === code
+    (c) => c.code.toUpperCase().replace(/\s/g, "") === normalizedId
   );
 
   const courseEntry = matchedCourse

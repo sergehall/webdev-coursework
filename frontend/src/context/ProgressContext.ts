@@ -1,10 +1,13 @@
 // src/context/ProgressContext.ts
 import { createContext } from "react";
 
-interface ProgressContextType {
+import type { CourseId } from "@/api/config/course-progress";
+
+export interface ProgressContextType {
+  courseId: CourseId;
   completedModules: number[];
-  markAsCompleted: (mod: number) => void;
-  unmarkAsCompleted: (mod: number) => void;
+  markAsCompleted: (mod: number) => Promise<void>;
+  unmarkAsCompleted: (mod: number) => Promise<void>;
   maxModules: number;
 }
 

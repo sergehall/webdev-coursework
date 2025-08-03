@@ -57,9 +57,10 @@ export class QuizController {
   @Get("progress")
   async getProgress(
     @Query("clientId") clientId: string,
-    @Query("appId") appId: string
+    @Query("appId") appId: string,
+    @Query("courseId") courseId: string
   ): Promise<number[]> {
-    return this.quizService.getProgress(clientId, appId);
+    return this.quizService.getProgress(clientId, appId, courseId);
   }
 
   @Post("progress")
@@ -67,6 +68,7 @@ export class QuizController {
     return this.quizService.markModuleCompleted(
       body.clientId,
       body.appId,
+      body.courseId,
       body.moduleNumber
     );
   }
@@ -76,13 +78,14 @@ export class QuizController {
     return this.quizService.unmarkModuleCompleted(
       body.clientId,
       body.appId,
+      body.courseId,
       body.moduleNumber
     );
   }
 
   @Post("progress/reset")
   async resetProgress(@Body() body: ResetProgressDto): Promise<void> {
-    const { clientId, appId } = body;
-    return this.quizService.resetProgress(clientId, appId);
+    const { clientId, appId, courseId } = body;
+    return this.quizService.resetProgress(clientId, appId, courseId);
   }
 }

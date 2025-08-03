@@ -29,8 +29,20 @@ describe("<App /> integration", () => {
     ).toBeInTheDocument();
   });
 
-  it("renders Completed Assignments page", async () => {
-    renderWithProviders(<App />, "/coursework/cs81/assignment/completed");
+  it("renders Completed Assignments page for CS81", async () => {
+    renderWithProviders(<App />, "/coursework/CS81/assignment/completed");
+
+    const heading = await screen.findByRole(
+      "heading",
+      { name: /all modules completed!/i },
+      { timeout: 3000 }
+    );
+
+    expect(heading).toBeInTheDocument();
+  });
+
+  it("renders Completed Assignments page for CS80", async () => {
+    renderWithProviders(<App />, "/coursework/CS80/assignment/completed");
 
     const heading = await screen.findByRole(
       "heading",

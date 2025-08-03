@@ -8,26 +8,26 @@ export class QuizProgressRepository extends Repository<QuizProgress> {
     super(QuizProgress, dataSource.createEntityManager());
   }
 
-  async findByClientAndApp(
+  async findByClientAppAndCourse(
     clientId: string,
-    appId: string
+    appId: string,
+    courseId: string
   ): Promise<QuizProgress | null> {
-    return this.findOne({ where: { clientId, appId } });
+    return this.findOne({ where: { clientId, appId, courseId } });
   }
 
   async markCompleted(
     clientId: string,
     appId: string,
+    courseId: string,
     moduleNumber: number
   ): Promise<void> {
-    const existing = await this.findByClientAndApp(clientId, appId);
+    const existing = await this.findByClientAppAndCourse(clientId, appId, courseId);
     const current = existing?.completedModules ?? [];
 
     if (current.includes(moduleNumber)) return;
 
-    const updated = [...new Set([...current, moduleNumber])].sort(
-      (a, b) => a - b
-    );
+    const updated = [...new Set([...current, moduleNumber])].sort((a, b) => a - b);
 
     if (existing) {
       existing.completedModules = updated;
@@ -36,6 +36,7 @@ export class QuizProgressRepository extends Repository<QuizProgress> {
       await this.save({
         clientId,
         appId,
+        courseId,
         completedModules: [moduleNumber],
         createdAt: new Date().toISOString(),
       });
@@ -45,14 +46,21 @@ export class QuizProgressRepository extends Repository<QuizProgress> {
   async unmarkCompleted(
     clientId: string,
     appId: string,
+    courseId: string,
     moduleNumber: number
   ): Promise<void> {
-    const existing = await this.findByClientAndApp(clientId, appId);
+    const existing = await this.findByClientAppAndCourse(clientId, appId, courseId);
     if (!existing) return;
 
-    existing.completedModules = existing.completedModules.filter(
-      (m) => m !== moduleNumber
-    );
+    existing.completedModules = existing.completedModules.filter((m) => m !== moduleNumber);
     await this.save(existing);
+  }
+
+  async resetProgress(
+    clientId: string,
+    appId: string,
+    courseId: string
+  ): Promise<void> {
+    await this.delete({ clientId, appId, courseId });
   }
 }

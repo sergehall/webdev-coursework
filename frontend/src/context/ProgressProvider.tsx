@@ -1,8 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useParams } from "react-router-dom";
 
 import { ProgressContext } from "./ProgressContext";
 
-import { QUIZ_APP_CONFIG } from "@/api/config/quiz-app";
+import { COURSE_PROGRESS_CONFIG } from "@/api/config/course-progress";
+import type { CourseId } from "@/api/config/course-progress";
 import {
   fetchProgress,
   markModuleCompleted,
@@ -12,57 +14,118 @@ import { useClientId } from "@/hooks/useClientId";
 
 const ProgressProvider = ({ children }: { children: React.ReactNode }) => {
   const clientId = useClientId();
-  const appId = QUIZ_APP_CONFIG.appId;
-  const maxModules = QUIZ_APP_CONFIG.maxModules;
+  const { courseId } = useParams<{ courseId: CourseId }>();
 
-  const [completedModules, setCompletedModules] = useState<number[]>([]);
+  const [completedModules, setCompletedModules] = useState<
+    Partial<Record<CourseId, number[]>>
+  >({});
+
+  const hasValidContext =
+    clientId && courseId && courseId in COURSE_PROGRESS_CONFIG;
+
+  const currentConfig = hasValidContext
+    ? COURSE_PROGRESS_CONFIG[courseId as CourseId]
+    : undefined;
 
   useEffect(() => {
-    if (!clientId) return;
+    if (!hasValidContext || !currentConfig) return;
 
     const load = async () => {
       try {
-        const data = await fetchProgress(clientId);
-        setCompletedModules(data);
+        const data = await fetchProgress(clientId, courseId as CourseId);
+        setCompletedModules((prev) => ({
+          ...prev,
+          [courseId as CourseId]: data,
+        }));
       } catch (err) {
         console.error("Failed to fetch progress:", err);
       }
     };
+
     load();
-  }, [clientId]);
+  }, [clientId, courseId, currentConfig, hasValidContext]);
 
   const markAsCompleted = useCallback(
     async (mod: number) => {
-      if (!clientId || completedModules.includes(mod)) return;
-      setCompletedModules((prev) => [...prev, mod]);
-      await markModuleCompleted({ clientId, appId, moduleNumber: mod });
+      if (
+        !hasValidContext ||
+        !currentConfig ||
+        completedModules[courseId as CourseId]?.includes(mod)
+      )
+        return;
+
+      setCompletedModules((prev) => ({
+        ...prev,
+        [courseId as CourseId]: [...(prev[courseId as CourseId] || []), mod],
+      }));
+
+      await markModuleCompleted({
+        clientId,
+        appId: currentConfig.appId,
+        moduleNumber: mod,
+        courseId: courseId as CourseId,
+      });
     },
-    [clientId, completedModules, appId]
+    [clientId, courseId, currentConfig, completedModules, hasValidContext]
   );
 
   const unmarkAsCompleted = useCallback(
     async (mod: number) => {
-      if (!clientId) return;
-      setCompletedModules((prev) => prev.filter((m) => m !== mod));
-      await unmarkModuleCompleted({ clientId, appId, moduleNumber: mod });
+      if (!hasValidContext || !currentConfig) return;
+
+      setCompletedModules((prev) => ({
+        ...prev,
+        [courseId as CourseId]: (prev[courseId as CourseId] || []).filter(
+          (m) => m !== mod
+        ),
+      }));
+
+      await unmarkModuleCompleted({
+        clientId,
+        appId: currentConfig.appId,
+        moduleNumber: mod,
+        courseId: courseId as CourseId,
+      });
     },
-    [clientId, appId]
+    [clientId, courseId, currentConfig, hasValidContext]
   );
 
-  const value = useMemo(
-    () => ({
-      completedModules,
+  const value = useMemo(() => {
+    if (!hasValidContext || !currentConfig || !courseId) {
+      return {
+        courseId: "" as CourseId,
+        completedModules: [],
+        markAsCompleted: async () => {},
+        unmarkAsCompleted: async () => {},
+        maxModules: 0,
+      };
+    }
+
+    return {
+      courseId,
+      completedModules: completedModules[courseId] || [],
       markAsCompleted,
       unmarkAsCompleted,
-      maxModules,
-    }),
-    [completedModules, markAsCompleted, unmarkAsCompleted, maxModules]
+      maxModules: currentConfig.maxModules,
+    };
+  }, [
+    completedModules,
+    markAsCompleted,
+    unmarkAsCompleted,
+    currentConfig,
+    courseId,
+    hasValidContext,
+  ]);
+
+  if (!hasValidContext || !currentConfig) {
+    return <>{children}</>;
+  }
+
+  return (
+    <ProgressContext.Provider value={value}>
+      {children}
+    </ProgressContext.Provider>
   );
-
-  // Conditional return — only within JSX, hook order is not violated
-  if (!clientId) return <>{children}</>;
-
-  return <ProgressContext value={value}>{children}</ProgressContext>;
 };
 
 export default ProgressProvider;

@@ -1,26 +1,33 @@
-// src/pages/CourseDetail.tsx
-import { useParams } from "react-router-dom";
-
+import { useCompletedModules } from "@/hooks/useCompletedModules";
 import ExpandedCourseCard from "@/components/ExpandedCourseCard";
 import completedCourseComponents from "@/data/completedCourseComponents";
 import { courses } from "@/data/web-developer-courses";
 
 export default function CourseDetail() {
-  const { code } = useParams<{ code: string }>();
+  const { courseId } = useCompletedModules();
+  console.log("CourseDetail courseId", courseId);
+  if (!courseId) {
+    return (
+      <div className="p-6 text-center text-xl font-semibold text-red-500 dark:text-red-400">
+        ⚠️ Course not found (missing courseId).
+      </div>
+    );
+  }
 
   const allCourses = courses.flatMap((course) =>
     course.options ? course.options : [course]
   );
 
-  const normalizedCode = code?.toLowerCase().replace(/\s/g, "");
+  const normalizedId = courseId.toUpperCase().replace(/\s/g, "");
+
   const course = allCourses.find(
-    (c) => c.code.toLowerCase().replace(/\s/g, "") === normalizedCode
+    (c) => c.code.toUpperCase().replace(/\s/g, "") === normalizedId
   );
 
   if (!course) {
     return (
       <div className="p-6 text-center text-xl font-semibold text-red-500 dark:text-red-400">
-        ⚠️ Course not found.
+        ⚠️ Course not found!
       </div>
     );
   }

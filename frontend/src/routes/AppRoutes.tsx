@@ -33,7 +33,7 @@ export default function AppRoutes() {
         />
 
         <Route
-          path="/coursework/:code/assignment"
+          path="/coursework/:courseId/assignment"
           element={<Screens.AssignmentWrapper />}
         >
           <Route path=":id" element={<AutoAssignmentRouter />} />

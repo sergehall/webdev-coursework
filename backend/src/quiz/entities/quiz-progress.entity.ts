@@ -1,10 +1,13 @@
-import { Column, Entity, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn, Unique } from "typeorm";
 
 @Entity("quiz_progress")
-@Unique(["clientId", "appId"])
+@Unique(["clientId", "appId", "courseId"])
 export class QuizProgress {
   @PrimaryGeneratedColumn()
   id!: string;
+
+  @Column({ type: "character varying", nullable: false })
+  courseId!: string;
 
   @Column({ type: "character varying", nullable: false })
   clientId!: string;

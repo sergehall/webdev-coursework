@@ -1,5 +1,3 @@
-// src/components/AutoAssignmentRouter.tsx
-
 import { Suspense } from "react";
 import { useParams } from "react-router-dom";
 
@@ -8,14 +6,14 @@ import type { CourseCode } from "@/data/types/CourseCode";
 import { useCompletedModules } from "@/hooks/useCompletedModules";
 
 export default function AutoAssignmentRouter() {
-  const { id, code } = useParams();
+  const { id, courseId } = useParams<{ id: string; courseId: CourseCode }>();
   const { completedModules } = useCompletedModules();
 
-  if (!id || !code) {
+  if (!id || !courseId) {
     return <div className="p-6 text-red-600">Module not found</div>;
   }
 
-  const components = assignmentComponents(id, code as CourseCode);
+  const components = assignmentComponents(id, courseId);
   if (!components) {
     return <div className="p-6 text-red-600">Module not found</div>;
   }

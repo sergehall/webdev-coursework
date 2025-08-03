@@ -8,6 +8,9 @@ export class QuizProgressDto {
   @IsString()
   appId!: string;
 
+  @IsString()
+  courseId!: string;
+
   @Type(() => Number)
   @IsNumber()
   moduleNumber!: number;

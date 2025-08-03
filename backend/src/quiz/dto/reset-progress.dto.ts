@@ -5,5 +5,8 @@ export class ResetProgressDto {
   clientId!: string;
 
   @IsString()
+  courseId!: string;
+
+  @IsString()
   appId!: string;
 }

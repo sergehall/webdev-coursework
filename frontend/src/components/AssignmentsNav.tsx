@@ -8,14 +8,21 @@ import { useCompletedModules } from "@/hooks/useCompletedModules";
 import { prefetchAssignmentModule } from "@/utils/prefetchAssignment";
 
 interface AssignmentNavProps {
-  totalModules: number; // Total number of modules, e.g. 12
+  totalModules: number;
 }
 
 const AssignmentNav: React.FC<AssignmentNavProps> = ({ totalModules }) => {
   const { completedModules } = useCompletedModules();
-  const { code } = useParams();
-  if (!code || !courseCodes.includes(code.toUpperCase())) return null;
-  // Generate an array like [1, 2, 3, ..., totalModules]
+  const { courseId } = useParams<{ courseId: CourseCode }>();
+
+  // if courseId is missing or invalid — do not render anything
+  if (
+    !courseId ||
+    !courseCodes.includes(courseId.toUpperCase() as CourseCode)
+  ) {
+    return null;
+  }
+
   const modules = Array.from({ length: totalModules }, (_, i) => i + 1);
 
   return (
@@ -28,9 +35,13 @@ const AssignmentNav: React.FC<AssignmentNavProps> = ({ totalModules }) => {
         return (
           <NavLink
             key={mod}
-            to={`/coursework/${code}/assignment/${modId}`}
+            to={`/coursework/${courseId}/assignment/${modId}`}
             onMouseEnter={() =>
-              prefetchAssignmentModule(modId, isUnlocked, code as CourseCode)
+              prefetchAssignmentModule(
+                modId,
+                isUnlocked,
+                courseId as CourseCode
+              )
             }
             className={({ isActive }) =>
               `rounded-xl border border-gray-200 p-4 text-center font-semibold shadow transition-all dark:border-gray-700 ${

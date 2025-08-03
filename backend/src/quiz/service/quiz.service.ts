@@ -57,10 +57,11 @@ export class QuizService {
     return this.quizQuestionRepo.save(question);
   }
 
-  async getProgress(clientId: string, appId: string): Promise<number[]> {
-    const record = await this.quizProgressRepo.findByClientAndApp(
+  async getProgress(clientId: string, appId: string, courseId: string): Promise<number[]> {
+    const record = await this.quizProgressRepo.findByClientAppAndCourse(
       clientId,
-      appId
+      appId,
+      courseId
     );
     return record?.completedModules ?? [];
   }
@@ -68,20 +69,22 @@ export class QuizService {
   async markModuleCompleted(
     clientId: string,
     appId: string,
+    courseId: string,
     moduleNumber: number
   ): Promise<void> {
-    return this.quizProgressRepo.markCompleted(clientId, appId, moduleNumber);
+    return this.quizProgressRepo.markCompleted(clientId, appId, courseId, moduleNumber);
   }
 
   async unmarkModuleCompleted(
     clientId: string,
     appId: string,
+    courseId: string,
     moduleNumber: number
   ): Promise<void> {
-    return this.quizProgressRepo.unmarkCompleted(clientId, appId, moduleNumber);
+    return this.quizProgressRepo.unmarkCompleted(clientId, appId, courseId, moduleNumber);
   }
 
-  async resetProgress(clientId: string, appId: string): Promise<void> {
-    await this.quizProgressRepo.delete({ clientId, appId });
+  async resetProgress(clientId: string, appId: string, courseId: string): Promise<void> {
+    return this.quizProgressRepo.resetProgress(clientId, appId, courseId);
   }
 }
