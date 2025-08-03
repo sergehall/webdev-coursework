@@ -5,7 +5,6 @@ import { courses } from "@/data/web-developer-courses";
 
 export default function CourseDetail() {
   const { courseId } = useCompletedModules();
-  console.log("CourseDetail courseId", courseId);
   if (!courseId) {
     return (
       <div className="p-6 text-center text-xl font-semibold text-red-500 dark:text-red-400">

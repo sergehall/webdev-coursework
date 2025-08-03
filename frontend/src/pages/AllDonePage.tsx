@@ -12,7 +12,6 @@ export default function AllDonePage() {
   const clientId = useClientId();
   const { courseId } = useParams<{ courseId: CourseId }>();
 
-  console.log("AllDonePage courseId", courseId);
   const currentConfig = courseId ? COURSE_PROGRESS_CONFIG[courseId] : undefined;
 
   const handleReset = async () => {

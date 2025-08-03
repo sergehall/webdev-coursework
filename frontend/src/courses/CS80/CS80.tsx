@@ -13,7 +13,10 @@ function CS80() {
       <ProgressProvider>
         <ModuleStatus />
         <AssignmentNav totalModules={6} />
+
+        {/* Render modules like AutoAssignmentRouter or AllDonePage here */}
         <Outlet />
+
         <FooterContent
           course="CS 80 – Internet Programming"
           instructor="Anthony Wang"
