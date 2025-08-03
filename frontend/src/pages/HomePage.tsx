@@ -34,13 +34,13 @@ export default function HomePage() {
         {Object.entries(technologies).map(([courseName, techList]) => (
           <div
             key={courseName}
-            className={`mb-4 w-full rounded-xl border border-gray-200 px-4 py-3 shadow-md transition-colors dark:border-gray-700 ${
+            className={`mb-4 w-full rounded-2xl border border-gray-100 px-4 py-3 shadow-md transition-all duration-300 ease-in-out dark:border-gray-700 ${
               courseName.includes("Python")
-                ? "bg-emerald-100 dark:bg-emerald-900/40"
+                ? "bg-gradient-to-l from-emerald-100 to-emerald-200 dark:from-emerald-800 dark:via-emerald-900 dark:to-emerald-950"
                 : courseName.includes("JavaScript")
-                  ? "bg-orange-100 dark:bg-orange-900/40"
-                  : "bg-blue-100 dark:bg-blue-900/40"
-            }`}
+                  ? "bg-gradient-to-l from-yellow-100 to-orange-200 dark:from-yellow-800 dark:via-orange-900 dark:to-amber-950"
+                  : "bg-gradient-to-l from-sky-100 to-blue-200 dark:from-sky-800 dark:via-blue-900 dark:to-indigo-950"
+            } text-gray-800 ring-1 ring-white/20 backdrop-blur-sm hover:shadow-lg hover:brightness-105 dark:text-white dark:hover:brightness-125`}
           >
             {/* Collapsible Header */}
             <button
