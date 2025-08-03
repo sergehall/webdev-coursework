@@ -281,8 +281,8 @@ Powered by:
 
 ## Deployment
 
-- [Open Frontend on Vercel](https://vercel.com/serges-projects-82829985/webdev-coursework-frontend)
-- [Open Backend API on Heroku](https://webdev-coursework-e05bdfc4ba6e.herokuapp.com/api)
+- [Open Frontend on Vercel](https://webdev-coursework.com)
+- [Open Backend API on Heroku](https://api.webdev-coursework.com)
 - Environment-managed builds, optimized for production
 ## Author
 
