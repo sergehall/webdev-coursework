@@ -42,8 +42,8 @@ export default function CourseworkPage() {
               <div
                 className={`group relative flex h-full flex-col justify-between overflow-hidden rounded-xl border p-4 text-left shadow-sm transition-all duration-300 hover:shadow-md ${
                   isCompleted
-                    ? "border-green-400 bg-white dark:border-green-800 dark:bg-gray-800"
-                    : "bg-gray-100 dark:border-gray-700 dark:bg-gray-900"
+                    ? "border-green-400 bg-gradient-to-l from-emerald-100 to-emerald-200 dark:border-green-800 dark:from-emerald-800 dark:via-emerald-900 dark:to-emerald-950"
+                    : "border-gray-300 bg-gradient-to-l from-gray-100 via-gray-200 to-gray-300 dark:border-gray-700 dark:from-gray-800 dark:via-gray-900 dark:to-gray-950"
                 }`}
               >
                 <div className="absolute inset-0 z-10 hidden items-center justify-center rounded-xl bg-white/95 px-4 text-center text-sm text-gray-800 backdrop-blur-sm transition-all duration-300 group-hover:flex dark:bg-gray-900/90 dark:text-gray-200">

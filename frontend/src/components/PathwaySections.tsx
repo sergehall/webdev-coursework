@@ -13,7 +13,7 @@ const PathwaySections = () => {
   };
 
   return (
-    <div className="divide-y divide-gray-200 rounded-xl border border-gray-200 bg-white p-6 shadow-md dark:divide-gray-600 dark:border-gray-700 dark:bg-gray-900">
+    <div className="divide-y divide-gray-200 rounded-xl border bg-gradient-to-t from-gray-100 via-gray-200 to-gray-300 p-6 dark:border-gray-700 dark:from-gray-800 dark:via-gray-800 dark:to-gray-900">
       {programSections.map((section, idx) => {
         const isOpen = openIndex === idx;
         return (

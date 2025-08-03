@@ -44,16 +44,22 @@ const AssignmentNav: React.FC<AssignmentNavProps> = ({ totalModules }) => {
               )
             }
             className={({ isActive }) =>
-              `rounded-xl border border-gray-200 p-4 text-center font-semibold shadow transition-all dark:border-gray-700 ${
+              `rounded-xl border border-gray-200 p-1 text-center font-semibold shadow transition-all dark:border-gray-700 ${
                 isActive
-                  ? "bg-blue-600 text-white"
+                  ? "bg-green-400 text-gray-800 dark:bg-emerald-700 dark:text-white"
                   : "bg-white text-gray-800 hover:bg-blue-100 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700"
               }`
             }
           >
-            <div className="flex flex-col items-center space-y-1">
+            <div
+              className={`flex flex-col items-center space-y-1 rounded-xl border p-4 transition ${
+                isCompleted
+                  ? "border-green-500 bg-gradient-to-l from-emerald-50 to-emerald-200 dark:border-green-800 dark:from-emerald-800 dark:via-emerald-900 dark:to-emerald-950"
+                  : "border-gray-400 bg-gradient-to-l from-gray-100 via-gray-200 to-gray-300 dark:border-gray-700 dark:from-gray-800 dark:via-gray-900 dark:to-gray-950"
+              } `}
+            >
               {isCompleted ? (
-                <CheckCircle className="h-5 w-5 text-green-500" />
+                <CheckCircle className="h-5 w-5 text-green-400" />
               ) : (
                 <Circle className="h-5 w-5 text-gray-400" />
               )}
