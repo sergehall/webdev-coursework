@@ -8,7 +8,7 @@ This project serves as a personal portfolio and central hub for completed course
 - **CS 70** – Network Fundamentals and Architecture
 - **CS 73A** – Fundamentals of Computer Security
 - **CS 79A** – Introduction to Cloud Computing
-- **CS 79B** – Database Essentials in AWS
+- **CS 79E** – Best Practices in Amazon Web Services
 - **CS 80** – Internet Programming
 - **CS 81** – JavaScript Programming
 - **CS 83** – Server-Side Java Web Programming
