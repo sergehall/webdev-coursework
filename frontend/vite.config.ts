@@ -59,11 +59,7 @@ export default defineConfig(({ mode }) => {
       outDir: "dist",
       rollupOptions: {
         external: ["fsevents"],
-        output: {
-          manualChunks: {
-            react: ["react", "react-dom"],
-          },
-        },
+        output: {},
       },
     },
     test: {

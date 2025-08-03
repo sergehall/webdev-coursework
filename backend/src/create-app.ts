@@ -43,7 +43,7 @@ export const createApp = (app: INestApplication): INestApplication => {
   // Swagger setup
   const config = new DocumentBuilder()
     .setTitle("SMC Backend API")
-    .setDescription("API for JS Programming Course (CS81)")
+    .setDescription("API for Web Developer Learning Portal")
     .setVersion("1.0")
     .addBearerAuth()
     .build();
