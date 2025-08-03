@@ -31,7 +31,7 @@ const ExpandedCourseCard: React.FC<Props> = ({
   );
 
   // Adjust layout based on compact mode
-  const padding = compact ? "p-4" : "p-6";
+  const padding = compact ? "p-3" : "p-6";
   const textSize = compact ? "text-sm" : "text-base";
   const titleSize = compact ? "text-lg" : "text-2xl";
 

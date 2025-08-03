@@ -13,7 +13,6 @@ export async function apiFetch<TResponse, TBody = undefined>(
   options: ApiFetchOptions<TBody> = {}
 ): Promise<TResponse> {
   const { body, headers, ...rest } = options;
-  console.log("📡 Fetching:", `${API_BASE_URL}${endpoint}`, options);
   try {
     const res = await fetch(`${API_BASE_URL}${endpoint}`, {
       headers: {
