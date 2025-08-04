@@ -20,7 +20,7 @@ export default function ProgressBar({
 
       <div className="relative h-4 w-full overflow-hidden rounded-full bg-gray-300 shadow-inner dark:bg-gray-700">
         <div
-          className="absolute inset-0 bg-gradient-to-r from-green-400 to-emerald-950"
+          className="absolute inset-0 bg-gradient-to-r from-green-500 to-green-400 dark:from-green-500 dark:to-emerald-500"
           style={{
             width: `${percent}%`,
             transition: "width 0.6s ease-in-out",

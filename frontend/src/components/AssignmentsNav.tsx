@@ -46,8 +46,8 @@ const AssignmentNav: React.FC<AssignmentNavProps> = ({ totalModules }) => {
             className={({ isActive }) =>
               `rounded-xl border border-gray-200 p-1 text-center font-semibold shadow transition-all dark:border-gray-700 ${
                 isActive
-                  ? "bg-green-400 text-gray-800 dark:bg-emerald-700 dark:text-white"
-                  : "bg-white text-gray-800 hover:bg-blue-100 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700"
+                  ? "bg-green-300 text-gray-800 dark:bg-emerald-700 dark:text-white"
+                  : "bg-white text-gray-800 hover:bg-green-300 dark:bg-gray-800 dark:text-white dark:hover:bg-emerald-700"
               }`
             }
           >
