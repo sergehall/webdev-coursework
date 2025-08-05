@@ -1,18 +1,28 @@
 // frontend/src/data/web-developer-courses.ts
 
-export type Course = {
-  code: string;
+import type { CourseCode } from "@/data/types/CourseCode";
+
+export type BaseCourse = {
+  code: CourseCode;
   title: string;
   units: number;
-  description?: string;
   tags: string[];
+  description: string;
   descriptionSummary?: string;
   skillsAdvisory?: string;
   transfersTo?: string;
   smcGeCategory?: string;
   prerequisite?: string;
-  options?: Course[];
 };
+
+export type CourseGroup = {
+  title: string;
+  units: number;
+  tags: string[];
+  options: BaseCourse[];
+};
+
+export type Course = BaseCourse | CourseGroup;
 
 export const courses: Course[] = [
   {
@@ -76,7 +86,6 @@ export const courses: Course[] = [
     transfersTo: "CSU",
   },
   {
-    code: "",
     title: "One Server Programming Course",
     units: 3,
     tags: ["Program Requirement"],
@@ -153,7 +162,6 @@ export const courses: Course[] = [
     transfersTo: "UC/CSU",
   },
   {
-    code: "",
     title: "One Security Course",
     units: 3,
     tags: ["Program Requirement"],
@@ -220,7 +228,6 @@ export const courses: Course[] = [
     ],
   },
   {
-    code: "",
     title: "One Cloud Skills Course",
     units: 3,
     tags: ["Program Requirement"],

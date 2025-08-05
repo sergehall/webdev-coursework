@@ -1,12 +1,12 @@
 <!doctype html>
+
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Assignment – Mod 6: Bonus Assignment</title>
-    <meta name="author" content="Siarhei Hancharou" />
-    <meta name="description" content="CS 80 Assignment – Mod 6: Bonus Work" />
-
+    <meta content="Siarhei Hancharou" name="author" />
+    <meta content="CS 80 Assignment – Mod 6: Bonus Work" name="description" />
     <style>
       html,
       body {
@@ -172,16 +172,13 @@
         color: #2c3e50;
       }
     </style>
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   </head>
-
   <body>
     <main>
       <h1>Module 6: Bonus Assignment</h1>
-
       <details class="task">
-        <summary>Assignments: Problem 1 - 16.3 & Problem 2</summary>
+        <summary>Assignments: Problem 1 - 16.3 &amp; Problem 2</summary>
         <ul>
           <li>
             <strong>Problem 1:</strong> Describe the differences between
@@ -194,48 +191,63 @@
           </li>
         </ul>
       </details>
-
       <!-- Two-column layout -->
       <section class="content-section">
         <!-- Left column: Explanation -->
         <div class="ajax-vs-traditional">
-          <h3>Problem 1 – 16.3: Traditional vs Ajax Web Applications</h3>
+          <h3>
+            Problem 1 – 16.3: Client/Server Interactions – Traditional vs. Ajax
+          </h3>
+          <div class="section-title">Traditional Web Application</div>
           <p>
-            In traditional web applications, the interaction between client
-            (browser) and server follows a simple principle: whenever the user
-            clicks a link or submits a form, the browser sends a request to the
-            server, and the server responds by sending back a completely new
-            HTML page. This results in a full page reload, even if only a small
-            part of the content has changed.
+            In a traditional web application, when a user clicks a button like
+            “Load Data”, the browser sends a request to the server and reloads
+            the entire page. The server returns a full new HTML response. This
+            process is synchronous and causes a full page refresh, even if only
+            a small part of the content changes.
           </p>
+          <div class="section-title">
+            Ajax Web Application (Example from Lecture)
+          </div>
+          <p>
+            In an Ajax-based application, clicking a button triggers a
+            JavaScript (jQuery) function that sends a request to the server in
+            the background. Only the needed data is returned (usually in JSON
+            format), and the page updates dynamically without a full reload.
+          </p>
+          <p>Here’s the example from the lecture notes (CodeSandbox):</p>
+          <pre><code>$("#btn").click(function () {
+  $.ajax({
+    method: "GET",
+    url: "https://baconipsum.com/api/?type=all-meat",
+    dataType: "json"
+  })
+    .done(function (data) {
+      $(".baconText").text(data[0]);
+    })
+    .fail(function () {
+      alert("no good");
+    });
+});</code></pre>
+          <p>
+            In this example, the user clicks a button with ID
+            <code>#btn</code>. Instead of reloading the page, jQuery sends a GET
+            request to the Bacon Ipsum API. The server returns JSON, and the
+            first paragraph is inserted into the page using
+            <code>$(".baconText").text(data[0])</code>.
+          </p>
+          <div class="section-title">Summary</div>
           <ul>
             <li>
-              <strong>Example:</strong> A user submits a form — the page
-              refreshes entirely and displays the result.
+              <strong>Traditional:</strong> Button click → full request to
+              server → entire page reloads with new HTML
             </li>
-          </ul>
-          <p>
-            In contrast, Ajax-based web applications work differently. When
-            using Ajax, data is exchanged asynchronously — in the background —
-            without reloading the entire page. This is achieved through
-            JavaScript (often using jQuery), which makes background requests to
-            the server and receives only the needed data (typically in JSON
-            format). The page then updates just the relevant part of the content
-            dynamically.
-          </p>
-          <ul>
             <li>
-              <strong>Example:</strong> On page load, a product list or news
-              feed is retrieved and displayed without refreshing the page.
+              <strong>Ajax:</strong> Button click → async request via jQuery →
+              only part of the page updates
             </li>
           </ul>
-          <p>
-            <strong>In summary:</strong> Traditional applications reload the
-            whole page with every request, while Ajax applications request only
-            the data and dynamically update parts of the page.
-          </p>
         </div>
-
         <!-- Right column: Ajax output -->
         <div class="form-box">
           <h2>Problem 2 - AJAX with JQuery</h2>
@@ -246,10 +258,8 @@
           <button id="loadDataBtn">Reload Data</button>
         </div>
       </section>
-
       <script src="ajaxLoad.js"></script>
     </main>
-
     <footer>
       <p><strong>Student:</strong> Siarhei Hancharou</p>
       <p>

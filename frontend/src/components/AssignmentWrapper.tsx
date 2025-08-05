@@ -2,7 +2,7 @@ import React, { Suspense } from "react";
 import { useParams } from "react-router-dom";
 
 import CourseSummaryCard from "@/components/CourseSummaryCard";
-import { courses } from "@/data/web-developer-courses";
+import { type BaseCourse, courses } from "@/data/web-developer-courses";
 import completedCourseComponents from "@/data/completedCourseComponents";
 import ProgressProvider from "@/context/ProgressProvider";
 
@@ -11,7 +11,9 @@ export default function AssignmentWrapper() {
   const { courseId } = useParams<{ courseId: string }>();
 
   // Flatten nested course options, if any
-  const allCourses = courses.flatMap((course) => course.options ?? [course]);
+  const allCourses: BaseCourse[] = courses.flatMap((course) =>
+    "options" in course ? course.options : [course]
+  );
 
   // Normalize course ID (uppercase and no whitespace)
   const normalizedId = courseId?.toUpperCase().replace(/\s/g, "");

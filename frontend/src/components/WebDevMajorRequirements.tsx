@@ -2,25 +2,21 @@ import React, { useState } from "react";
 
 import ExpandedCourseCard from "@/components/ExpandedCourseCard";
 import { courses } from "@/data/web-developer-courses";
+import type { CourseGroup } from "@/data/web-developer-courses";
 
-// This component displays the list of required courses for the Web Developer major
 const WebDevMajorRequirements: React.FC = () => {
-  // Track the currently expanded course by its code
   const [expanded, setExpanded] = useState<string | null>(null);
 
-  // Track which option has been selected for each multi-option course
-  const [selectedOption, setSelectedOption] = useState<{
-    [code: string]: string;
-  }>({});
+  const [selectedOption, setSelectedOption] = useState<Record<string, string>>(
+    {}
+  );
 
-  // Toggles course expansion on click (open/close)
   const toggleExpand = (code: string) => {
     setExpanded((prev) => (prev === code ? null : code));
   };
 
   return (
     <section className="w-full rounded-xl border border-gray-200 bg-white p-6 shadow-md dark:border-gray-700 dark:bg-gray-900">
-      {/* Info notice with external link to full academic program */}
       <p className="mb-2 text-sm italic text-gray-600 dark:text-gray-400">
         These are the courses required specifically for the major. General
         Education and elective requirements can be found at{" "}
@@ -35,16 +31,26 @@ const WebDevMajorRequirements: React.FC = () => {
         .
       </p>
 
-      {/* Render all required courses */}
       <div className="space-y-2">
         {courses.map((course, idx) => {
-          // Generate unique key for top-level or grouped course
-          const courseCode = course.code || `multi-${idx}`;
+          const isBaseCourse = "code" in course;
+          const isGroupCourse = "options" in course;
 
-          // Get the selected option (if applicable)
-          const selected = course.options?.find(
-            (opt) => opt.code === selectedOption[courseCode]
-          );
+          const courseCode = isBaseCourse ? course.code : `group-${idx}`;
+
+          const selected = isGroupCourse
+            ? (course as CourseGroup).options.find(
+                (opt) => opt.code === selectedOption[courseCode]
+              )
+            : undefined;
+
+          const displayCode = isBaseCourse ? course.code : selected?.code || "";
+
+          const displayTitle = isBaseCourse
+            ? course.title
+            : selected
+              ? `${course.title}: ${selected.title}`
+              : course.title;
 
           return (
             <div
@@ -54,28 +60,21 @@ const WebDevMajorRequirements: React.FC = () => {
               role="button"
               tabIndex={0}
               onKeyDown={(e) => {
-                // Enable keyboard toggling with Enter or Space
-                if (e.key === "Enter" || e.key === " ") {
+                if (e.key === "Enter" || e.key === " ")
                   toggleExpand(courseCode);
-                }
               }}
             >
-              {/* If collapsed, show a compact header */}
               {expanded !== courseCode ? (
                 <div className="flex items-center gap-4">
                   <div className="text-xl text-yellow-500">+</div>
                   <div>
-                    <div className="text-lg font-bold">
-                      {course.code || selected?.code || ""}
-                    </div>
+                    <div className="text-lg font-bold">{displayCode}</div>
                     <div className="font-semibold text-gray-800 dark:text-gray-200">
-                      {course.title}
-                      {selected && `: ${selected.title}`}
+                      {displayTitle}
                     </div>
                   </div>
                 </div>
               ) : (
-                // If expanded, render the full course card
                 <ExpandedCourseCard
                   course={course}
                   selected={selected}

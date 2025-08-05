@@ -12,10 +12,10 @@ export function prefetchAssignmentModule(
   let entry;
 
   switch (code) {
-    case "CS81":
+    case "CS 81":
       entry = assignmentCS81Components[id];
       break;
-    case "CS80":
+    case "CS 80":
       entry = assignmentCS80Components[id];
       break;
     default:

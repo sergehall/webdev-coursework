@@ -1,21 +1,28 @@
+// src/routes/AutoAssignmentRouter.tsx
 import { Suspense, useEffect } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 
 import { assignmentComponents } from "@/data/assignmentComponents";
-import type { CourseCode } from "@/data/types/CourseCode";
 import { useCompletedModules } from "@/hooks/useCompletedModules";
 import { COURSE_PROGRESS_CONFIG } from "@/api/config/course-progress";
 import type { CourseId } from "@/api/config/course-progress";
+import { normalizeCourseIdToCode } from "@/utils/normalizeCourseIdToCode";
 
 export default function AutoAssignmentRouter() {
-  const { id, courseId } = useParams<{ id: string; courseId: CourseCode }>();
+  const { id, courseId: rawCourseId } = useParams<{
+    id: string;
+    courseId: string;
+  }>();
+  const courseCode = rawCourseId
+    ? normalizeCourseIdToCode(rawCourseId)
+    : undefined;
+
   const { completedModules } = useCompletedModules();
   const navigate = useNavigate();
   const location = useLocation();
 
-  // These are safe defaults to use even before validation
-  const config = courseId
-    ? COURSE_PROGRESS_CONFIG[courseId as CourseId]
+  const config = courseCode
+    ? COURSE_PROGRESS_CONFIG[courseCode as CourseId]
     : undefined;
   const maxModules = config?.maxModules ?? 0;
 
@@ -23,17 +30,16 @@ export default function AutoAssignmentRouter() {
   const isOnCompletedPage = location.pathname.endsWith("/completed");
 
   useEffect(() => {
-    if (courseId && isAllCompleted && !isOnCompletedPage) {
-      navigate(`/coursework/${courseId}/assignment/completed`);
+    if (courseCode && isAllCompleted && !isOnCompletedPage) {
+      navigate(`/coursework/${rawCourseId}/assignment/completed`);
     }
-  }, [isAllCompleted, isOnCompletedPage, navigate, courseId]);
+  }, [isAllCompleted, isOnCompletedPage, navigate, rawCourseId, courseCode]);
 
-  // Validation and fallback rendering — only AFTER hooks
-  if (!id || !courseId) {
+  if (!id || !courseCode) {
     return <div className="p-6 text-red-600">Module not found</div>;
   }
 
-  const components = assignmentComponents(id, courseId);
+  const components = assignmentComponents(id, courseCode);
   if (!components) {
     return <div className="p-6 text-red-600">Module not found</div>;
   }

@@ -4,11 +4,11 @@ function extractCodes(courseList: Course[]): string[] {
   const codes: string[] = [];
 
   for (const course of courseList) {
-    if (course.code) {
+    if ("code" in course && course.code) {
       codes.push(course.code.replace(/\s+/g, "").toUpperCase());
     }
 
-    if (course.options && Array.isArray(course.options)) {
+    if ("options" in course && Array.isArray(course.options)) {
       codes.push(...extractCodes(course.options));
     }
   }

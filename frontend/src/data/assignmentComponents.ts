@@ -15,9 +15,9 @@ export function assignmentComponents(
   code: CourseCode
 ): AssignmentEntry | undefined {
   switch (code) {
-    case "CS81":
+    case "CS 81":
       return assignmentCS81Components[id];
-    case "CS80":
+    case "CS 80":
       return assignmentCS80Components[id];
     default:
       console.warn(`Unsupported course code: ${code}`);

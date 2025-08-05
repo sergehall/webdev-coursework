@@ -4,19 +4,31 @@ import { motion } from "framer-motion";
 import { XCircle } from "lucide-react";
 
 import { LoadMoreButton } from "@/components/buttons";
+import { selectedCourseCodes } from "@/data/selectedCourseCodes";
+import { activeCourseCodes } from "@/data/types/activeCourseCodes";
 import { courses } from "@/data/web-developer-courses";
+import type { BaseCourse } from "@/data/web-developer-courses";
 
 export default function CourseworkPage() {
-  const [visibleCount, setVisibleCount] = useState(10);
-  const allCourses = courses.flatMap((course) =>
-    course.options ? course.options : [course]
+  const [visibleCount, setVisibleCount] = useState(8);
+
+  // Собираем все возможные курсы (включая options)
+  const allCourses: BaseCourse[] = courses.flatMap((course) =>
+    "options" in course ? course.options : [course]
   );
-  const activeCourseCodes = ["CS 80", "CS 81", "CS 87A"];
+
+  // We filter only those courses that the user has selected.
+  const selectedCourses: BaseCourse[] = allCourses.filter((course) =>
+    selectedCourseCodes.includes(course.code)
+  );
+
+  //  Create a Set for quick search of completed courses
+  const activeCodesSet = new Set(activeCourseCodes);
+
   const loadMore = () => setVisibleCount((prev) => prev + 6);
 
   return (
     <main className="flex flex-col gap-10 px-4 py-10">
-      {/* Course list view */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -32,8 +44,10 @@ export default function CourseworkPage() {
         </h3>
 
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          {allCourses.slice(0, visibleCount).map((course) => {
-            const isCompleted = activeCourseCodes.includes(course.code);
+          {selectedCourses.slice(0, visibleCount).map((course) => {
+            const isCompleted = activeCodesSet.has(
+              course.code as (typeof activeCourseCodes)[number]
+            );
             const courseUrl = `/coursework/${course.code
               .toUpperCase()
               .replace(/\s/g, "")}/assignment`;
@@ -46,6 +60,7 @@ export default function CourseworkPage() {
                     : "border-gray-300 bg-gradient-to-l from-gray-100 via-gray-200 to-gray-300 dark:border-gray-700 dark:from-gray-800 dark:via-gray-900 dark:to-gray-950"
                 }`}
               >
+                {/* При наведении показывается описание */}
                 <div className="absolute inset-0 z-10 hidden items-center justify-center rounded-xl bg-white/95 px-4 text-center text-sm text-gray-800 backdrop-blur-sm transition-all duration-300 group-hover:flex dark:bg-gray-900/90 dark:text-gray-200">
                   <p>{course.descriptionSummary || course.description}</p>
                 </div>
@@ -71,10 +86,11 @@ export default function CourseworkPage() {
                   </h4>
                 </div>
 
+                {/* Если курс не завершён — показываем метку */}
                 {!isCompleted && (
                   <div className="mt-auto flex items-center gap-2 text-xs font-medium text-gray-400 dark:text-gray-500">
                     <XCircle className="h-4 w-4" />
-                    Not Yet Completed
+                    Курс ещё не завершён
                   </div>
                 )}
               </div>
@@ -90,14 +106,13 @@ export default function CourseworkPage() {
           })}
         </div>
 
-        {visibleCount < allCourses.length && (
+        {visibleCount < selectedCourses.length && (
           <div className="mt-8">
             <LoadMoreButton onClick={loadMore} />
           </div>
         )}
       </motion.div>
 
-      {/* Nested routes will be inserted here  */}
       <Outlet />
     </main>
   );
