@@ -15,7 +15,7 @@ function CS87A() {
       <Outlet />
 
       <FooterContent
-        course="CS 87A – Python Programming Sections 1832 & 1833"
+        course="CS 87A – Python Programming"
         instructor="Scott Bishop"
         instructorEmail="bishop_scott@smc.edu"
         institution="Santa Monica College"
