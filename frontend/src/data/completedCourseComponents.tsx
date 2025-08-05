@@ -2,6 +2,7 @@
 
 import type { FC } from "react";
 
+import CS87A from "@/courses/CS87A/CS87A";
 import CS81 from "@/courses/CS81/CS81";
 import CS80 from "@/courses/CS80/CS80";
 
@@ -52,7 +53,7 @@ const completedCourseComponents: CourseComponentMap = {
   },
   "CS 87A": {
     title: "Python Programming",
-    component: null,
+    component: CS87A,
   },
   "CS 73A": {
     title: "Fundamentals of Computer Security",

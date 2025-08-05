@@ -2,6 +2,7 @@
 
 import assignmentCS80Components from "@/data/assignmentCS80Components";
 import assignmentCS81Components from "@/data/assignmentCS81Components";
+import assignmentCS87AComponents from "@/data/assignmentCS87AComponents";
 import type { CourseCode } from "@/data/types/CourseCode";
 
 export function prefetchAssignmentModule(
@@ -17,6 +18,9 @@ export function prefetchAssignmentModule(
       break;
     case "CS 80":
       entry = assignmentCS80Components[id];
+      break;
+    case "CS 87A":
+      entry = assignmentCS87AComponents[id];
       break;
     default:
       console.warn(`Unsupported course code: ${code}`);

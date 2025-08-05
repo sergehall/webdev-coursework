@@ -10,6 +10,11 @@ export const COURSE_PROGRESS_CONFIG = {
     maxModules: 6,
     client_id_key: "clientId",
   },
+  CS87A: {
+    appId: "Python Programming",
+    maxModules: 6,
+    client_id_key: "clientId",
+  },
 } as const;
 
 export type CourseId = keyof typeof COURSE_PROGRESS_CONFIG;

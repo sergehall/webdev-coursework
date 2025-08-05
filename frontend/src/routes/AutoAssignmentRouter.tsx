@@ -1,5 +1,4 @@
-// src/routes/AutoAssignmentRouter.tsx
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useMemo } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 
 import { assignmentComponents } from "@/data/assignmentComponents";
@@ -9,50 +8,97 @@ import type { CourseId } from "@/api/config/course-progress";
 import { normalizeCourseIdToCode } from "@/utils/normalizeCourseIdToCode";
 
 export default function AutoAssignmentRouter() {
-  const { id, courseId: rawCourseId } = useParams<{
-    id: string;
-    courseId: string;
+  const { id, courseId: courseIdParam } = useParams<{
+    id?: string;
+    courseId?: string;
   }>();
-  const courseCode = rawCourseId
-    ? normalizeCourseIdToCode(rawCourseId)
-    : undefined;
-
-  const { completedModules } = useCompletedModules();
   const navigate = useNavigate();
   const location = useLocation();
+  const { completedModules } = useCompletedModules();
 
-  const config = courseCode
-    ? COURSE_PROGRESS_CONFIG[courseCode as CourseId]
-    : undefined;
-  const maxModules = config?.maxModules ?? 0;
+  const normalizedCode = useMemo(() => {
+    if (!courseIdParam) return null;
+    return normalizeCourseIdToCode(courseIdParam);
+  }, [courseIdParam]);
 
-  const isAllCompleted = completedModules.length === maxModules;
-  const isOnCompletedPage = location.pathname.endsWith("/completed");
+  const isValidCourse = useMemo(() => {
+    if (!courseIdParam || !normalizedCode) return false;
+    return courseIdParam in COURSE_PROGRESS_CONFIG;
+  }, [courseIdParam, normalizedCode]);
+
+  const courseId = useMemo(() => {
+    if (!isValidCourse || !courseIdParam) return undefined;
+    return courseIdParam as CourseId;
+  }, [isValidCourse, courseIdParam]);
+
+  const maxModules = useMemo(() => {
+    if (!courseId) return 0;
+    return COURSE_PROGRESS_CONFIG[courseId]?.maxModules || 0;
+  }, [courseId]);
+
+  const isAllCompleted = useMemo(
+    () => completedModules.length === maxModules,
+    [completedModules, maxModules]
+  );
+
+  const isOnCompletedPage = useMemo(
+    () => location.pathname.endsWith("/completed"),
+    [location.pathname]
+  );
 
   useEffect(() => {
-    if (courseCode && isAllCompleted && !isOnCompletedPage) {
-      navigate(`/coursework/${rawCourseId}/assignment/completed`);
+    if (courseId && isAllCompleted && !isOnCompletedPage) {
+      navigate(`/coursework/${courseId}/assignment/completed`);
     }
-  }, [isAllCompleted, isOnCompletedPage, navigate, rawCourseId, courseCode]);
+  }, [courseId, isAllCompleted, isOnCompletedPage, navigate]);
 
-  if (!id || !courseCode) {
+  const moduleNumber = useMemo(() => {
+    const num = parseInt(id ?? "", 10);
+    return isNaN(num) ? null : num;
+  }, [id]);
+
+  const isUnlocked = useMemo(() => {
+    if (!moduleNumber) return false;
+    return moduleNumber === 1 || completedModules.includes(moduleNumber - 1);
+  }, [moduleNumber, completedModules]);
+
+  const canRender =
+    id &&
+    courseIdParam &&
+    normalizedCode &&
+    isValidCourse &&
+    courseId &&
+    moduleNumber !== null;
+
+  let components;
+  if (canRender) {
+    try {
+      components = assignmentComponents(id!, normalizedCode!);
+    } catch (error) {
+      console.error("Failed to load assignment component:", error);
+    }
+  }
+
+  // UI responses after all hooks
+  if (!id || !courseIdParam) {
     return <div className="p-6 text-red-600">Module not found</div>;
   }
 
-  const components = assignmentComponents(id, courseCode);
+  if (!isValidCourse || !normalizedCode || !courseId) {
+    return <div className="p-6 text-red-600">Invalid course ID</div>;
+  }
+
   if (!components) {
-    return <div className="p-6 text-red-600">Module not found</div>;
+    return <div className="p-6 text-red-600">Failed to load module</div>;
   }
 
-  const modNumber = parseInt(id, 10);
-  const isUnlocked =
-    modNumber === 1 || completedModules.includes(modNumber - 1);
-
-  const Component = isUnlocked ? components.main : components.placeholder;
+  const AssignmentComponent = isUnlocked
+    ? components.main
+    : components.placeholder;
 
   return (
     <Suspense fallback={<div className="p-6">Loading module...</div>}>
-      <Component />
+      <AssignmentComponent />
     </Suspense>
   );
 }

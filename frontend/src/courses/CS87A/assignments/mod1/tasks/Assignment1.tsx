@@ -1,26 +1,25 @@
-// src/assignments/mod1/tasks/Assignment1.tsx
+// frontend/src/courses/CS87A/assignments/mod1/tasks/Assignment1.tsx
 import { useState } from "react";
 
 import {
-  DownloadHtmlButton,
+  DownloadAssignmentBundleButton,
   ToggleScreenshotButton,
 } from "@/components/buttons";
 import ScreenshotGallery from "@/components/ScreenshotGallery";
 
-const Assignment1A = () => {
+const Assignment1 = () => {
   const [showScreenshots, setShowScreenshots] = useState(false);
   const screenshots = [
     {
-      src: "/sandbox/CS81/mod-1/A/webstorm.png",
-      label: "WebStorm with project files",
+      src: "/sandbox/CS87A/mod-1/CS87A_FA2020_A01.pdf",
+      label: "Programming Assignment 1",
     },
+  ];
+
+  const files = [
     {
-      src: "/sandbox/CS81/mod-1/A/chrome.png",
-      label: "Chrome with site and console",
-    },
-    {
-      src: "/sandbox/CS81/mod-1/A/terminal.png",
-      label: "Terminal showing Node.js and npm versions",
+      fileUrl: "/sandbox/CS87A/mod-1/CS87A_FA2020_A01.pdf",
+      filename: "Programming Assignment 1",
     },
   ];
 
@@ -37,10 +36,7 @@ const Assignment1A = () => {
       </p>
 
       <div className="mt-4 grid w-full grid-cols-1 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-3">
-        <DownloadHtmlButton
-          fileUrl="/sandbox/CS81/mod-1/A/checklist.html"
-          filename="checklist.html"
-        />
+        <DownloadAssignmentBundleButton files={files} />
         <ToggleScreenshotButton
           show={showScreenshots}
           toggle={() => setShowScreenshots(!showScreenshots)}
@@ -51,4 +47,4 @@ const Assignment1A = () => {
   );
 };
 
-export default Assignment1A;
+export default Assignment1;

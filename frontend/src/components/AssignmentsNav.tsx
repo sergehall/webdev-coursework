@@ -2,10 +2,9 @@ import React from "react";
 import { NavLink, useParams } from "react-router-dom";
 import { CheckCircle, Circle } from "lucide-react";
 
-import type { CourseCode } from "@/data/types/CourseCode";
-import { courseCodes } from "@/data/courseCodes";
 import { useCompletedModules } from "@/hooks/useCompletedModules";
 import { prefetchAssignmentModule } from "@/utils/prefetchAssignment";
+import { normalizeCourseIdToCode } from "@/utils/normalizeCourseIdToCode";
 
 interface AssignmentNavProps {
   totalModules: number;
@@ -13,13 +12,15 @@ interface AssignmentNavProps {
 
 const AssignmentNav: React.FC<AssignmentNavProps> = ({ totalModules }) => {
   const { completedModules } = useCompletedModules();
-  const { courseId } = useParams<{ courseId: CourseCode }>();
+  const { courseId } = useParams<{ courseId: string }>();
 
-  // if courseId is missing or invalid — do not render anything
-  if (
-    !courseId ||
-    !courseCodes.includes(courseId.toUpperCase() as CourseCode)
-  ) {
+  // Normalize courseId from the URL to internal CourseCode format (e.g., CS81 => CS 81)
+  const normalizedCode = courseId
+    ? normalizeCourseIdToCode(courseId)
+    : undefined;
+
+  // If invalid course code — render nothing
+  if (!normalizedCode) {
     return null;
   }
 
@@ -37,11 +38,7 @@ const AssignmentNav: React.FC<AssignmentNavProps> = ({ totalModules }) => {
             key={mod}
             to={`/coursework/${courseId}/assignment/${modId}`}
             onMouseEnter={() =>
-              prefetchAssignmentModule(
-                modId,
-                isUnlocked,
-                courseId as CourseCode
-              )
+              prefetchAssignmentModule(modId, isUnlocked, normalizedCode)
             }
             className={({ isActive }) =>
               `rounded-xl border border-gray-200 p-1 text-center font-semibold shadow transition-all dark:border-gray-700 ${

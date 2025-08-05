@@ -1,4 +1,4 @@
-// src/components/CS81.tsx
+// frontend/src/courses/CS80/CS80.tsx
 
 import { Outlet } from "react-router-dom";
 

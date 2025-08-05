@@ -14,28 +14,29 @@ import { useClientId } from "@/hooks/useClientId";
 
 const ProgressProvider = ({ children }: { children: React.ReactNode }) => {
   const clientId = useClientId();
-  const { courseId } = useParams<{ courseId: CourseId }>();
+  const { courseId } = useParams<{ courseId: string }>();
+
+  const isValidCourseId = courseId && courseId in COURSE_PROGRESS_CONFIG;
+  const validCourseId = isValidCourseId ? (courseId as CourseId) : undefined;
 
   const [completedModules, setCompletedModules] = useState<
     Partial<Record<CourseId, number[]>>
   >({});
 
-  const hasValidContext =
-    clientId && courseId && courseId in COURSE_PROGRESS_CONFIG;
-
-  const currentConfig = hasValidContext
-    ? COURSE_PROGRESS_CONFIG[courseId as CourseId]
+  const hasValidContext = !!(clientId && validCourseId);
+  const currentConfig = validCourseId
+    ? COURSE_PROGRESS_CONFIG[validCourseId]
     : undefined;
 
   useEffect(() => {
-    if (!hasValidContext || !currentConfig) return;
+    if (!hasValidContext || !currentConfig || !validCourseId) return;
 
     const load = async () => {
       try {
-        const data = await fetchProgress(clientId, courseId as CourseId);
+        const data = await fetchProgress(clientId, validCourseId);
         setCompletedModules((prev) => ({
           ...prev,
-          [courseId as CourseId]: data,
+          [validCourseId]: data,
         }));
       } catch (err) {
         console.error("Failed to fetch progress:", err);
@@ -43,55 +44,54 @@ const ProgressProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     load();
-  }, [clientId, courseId, currentConfig, hasValidContext]);
+  }, [clientId, validCourseId, currentConfig, hasValidContext]);
 
   const markAsCompleted = useCallback(
     async (mod: number) => {
       if (
         !hasValidContext ||
         !currentConfig ||
-        completedModules[courseId as CourseId]?.includes(mod)
+        !validCourseId ||
+        completedModules[validCourseId]?.includes(mod)
       )
         return;
 
       setCompletedModules((prev) => ({
         ...prev,
-        [courseId as CourseId]: [...(prev[courseId as CourseId] || []), mod],
+        [validCourseId]: [...(prev[validCourseId] || []), mod],
       }));
 
       await markModuleCompleted({
         clientId,
         appId: currentConfig.appId,
         moduleNumber: mod,
-        courseId: courseId as CourseId,
+        courseId: validCourseId,
       });
     },
-    [clientId, courseId, currentConfig, completedModules, hasValidContext]
+    [clientId, validCourseId, currentConfig, completedModules, hasValidContext]
   );
 
   const unmarkAsCompleted = useCallback(
     async (mod: number) => {
-      if (!hasValidContext || !currentConfig) return;
+      if (!hasValidContext || !currentConfig || !validCourseId) return;
 
       setCompletedModules((prev) => ({
         ...prev,
-        [courseId as CourseId]: (prev[courseId as CourseId] || []).filter(
-          (m) => m !== mod
-        ),
+        [validCourseId]: (prev[validCourseId] || []).filter((m) => m !== mod),
       }));
 
       await unmarkModuleCompleted({
         clientId,
         appId: currentConfig.appId,
         moduleNumber: mod,
-        courseId: courseId as CourseId,
+        courseId: validCourseId,
       });
     },
-    [clientId, courseId, currentConfig, hasValidContext]
+    [clientId, validCourseId, currentConfig, hasValidContext]
   );
 
   const value = useMemo(() => {
-    if (!hasValidContext || !currentConfig || !courseId) {
+    if (!hasValidContext || !currentConfig || !validCourseId) {
       return {
         courseId: "" as CourseId,
         completedModules: [],
@@ -102,8 +102,8 @@ const ProgressProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     return {
-      courseId,
-      completedModules: completedModules[courseId] || [],
+      courseId: validCourseId,
+      completedModules: completedModules[validCourseId] || [],
       markAsCompleted,
       unmarkAsCompleted,
       maxModules: currentConfig.maxModules,
@@ -113,13 +113,9 @@ const ProgressProvider = ({ children }: { children: React.ReactNode }) => {
     markAsCompleted,
     unmarkAsCompleted,
     currentConfig,
-    courseId,
+    validCourseId,
     hasValidContext,
   ]);
-
-  if (!hasValidContext || !currentConfig) {
-    return <>{children}</>;
-  }
 
   return (
     <ProgressContext.Provider value={value}>
