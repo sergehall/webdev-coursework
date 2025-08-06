@@ -62,7 +62,7 @@ const isValidPythonFile = (file: File): boolean => {
 
 export default function SecurePythonUploadButton({
   onSafeUpload,
-  label = "Upload Python File",
+  label = "Upload .py file",
   icon,
   className = "",
   variant = "blue",

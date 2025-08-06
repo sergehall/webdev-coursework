@@ -94,7 +94,7 @@ const isSafeJavaScript = (code: string): boolean => {
 
 export default function SecureJsUploadButton({
   onSafeUpload,
-  label = "Upload JS File",
+  label = "Upload .js file",
   icon,
   className = "",
   variant = "success",
