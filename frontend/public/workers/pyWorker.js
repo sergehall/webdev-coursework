@@ -1,4 +1,8 @@
-import { loadPyodide } from "pyodide";
+// public/workers/pyWorker.js
+// Fixing the error: importScripts cannot be used if worker type is "module"
+// We remove `type: 'module'` in the caller and write this file as a classic (non-module) worker
+
+importScripts("https://cdn.jsdelivr.net/pyodide/v0.28.1/full/pyodide.js");
 
 let pyodide = null;
 

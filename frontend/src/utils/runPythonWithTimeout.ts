@@ -4,7 +4,7 @@ export function runPythonWithTimeout(
   timeoutMs = 3000
 ): Promise<string> {
   return new Promise((resolve, reject) => {
-    const worker = new Worker("/workers/pyWorker.js", { type: "module" });
+    const worker = new Worker("/workers/pyWorker.js");
     const timeout = setTimeout(() => {
       worker.terminate();
       reject("Python execution timed out.");
