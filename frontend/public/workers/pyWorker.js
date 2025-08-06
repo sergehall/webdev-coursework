@@ -1,8 +1,8 @@
 import { loadPyodide } from "pyodide";
 
-let pyodide: Awaited<ReturnType<typeof loadPyodide>> | null = null;
+let pyodide = null;
 
-self.onmessage = async (event: MessageEvent<{ code: string }>) => {
+self.onmessage = async (event) => {
   const { code } = event.data;
 
   try {
@@ -21,7 +21,7 @@ self.onmessage = async (event: MessageEvent<{ code: string }>) => {
 
     const output = await pyodide.runPythonAsync("sys.stdout.getvalue()");
     self.postMessage({ type: "result", result: output });
-  } catch (err: unknown) {
+  } catch (err) {
     const message =
       err instanceof Error ? err.message : String(err ?? "Unknown error");
     self.postMessage({ type: "error", error: message });

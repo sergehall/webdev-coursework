@@ -55,7 +55,9 @@ describe("<App /> integration", () => {
 
   it("renders Code Playground Page", async () => {
     renderWithProviders(<App />, "/code-playground");
-    expect(await screen.findByText(/loading code playground/i)).toBeInTheDocument();
+    expect(
+      await screen.findByText(/loading code playground/i)
+    ).toBeInTheDocument();
   });
 
   it("renders Resources page", async () => {

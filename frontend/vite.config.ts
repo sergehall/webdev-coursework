@@ -59,7 +59,6 @@ export default defineConfig(({ mode }) => {
       outDir: "dist",
       rollupOptions: {
         external: ["fsevents"],
-        output: {},
       },
     },
     test: {
