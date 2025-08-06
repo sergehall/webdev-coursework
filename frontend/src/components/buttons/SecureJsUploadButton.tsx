@@ -1,4 +1,5 @@
 // src/components/buttons/SecureJsUploadButton.tsx
+
 import * as esprima from "esprima";
 import * as estraverse from "estraverse";
 import React, { useRef } from "react";
@@ -19,9 +20,19 @@ type SecureJsUploadButtonProps = {
   disabled?: boolean;
 };
 
-// --- JavaScript security validator ---
+const MAX_FILE_SIZE = 50_000; // 50KB
+const MAX_LINE_COUNT = 1000;
+const MAX_CODE_LENGTH = 10_000;
+
+// --- JavaScript AST-based security validator ---
 const isSafeJavaScript = (code: string): boolean => {
   try {
+    if (
+      code.length > MAX_CODE_LENGTH ||
+      code.split("\n").length > MAX_LINE_COUNT
+    )
+      return false;
+
     const ast = esprima.parseScript(code);
     let isSafe = true;
 
@@ -92,7 +103,6 @@ export default function SecureJsUploadButton({
   disabled = false,
 }: SecureJsUploadButtonProps) {
   const inputRef = useRef<HTMLInputElement>(null);
-
   const finalIcon = icon ?? <Upload size={16} />;
 
   const handleClick = () => {
@@ -105,20 +115,18 @@ export default function SecureJsUploadButton({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 50_000) {
-      alert("⚠️ File too large. Max allowed size is 50KB.");
+    if (!file.name.endsWith(".js") || file.size > MAX_FILE_SIZE) {
+      alert("⚠️ Invalid or too large JS file.");
       return;
     }
 
     const reader = new FileReader();
     reader.onload = () => {
       const code = reader.result as string;
-
       if (!isSafeJavaScript(code)) {
         alert("⚠️ File blocked: unsafe JavaScript patterns detected.");
         return;
       }
-
       onSafeUpload(code, file.name);
     };
 

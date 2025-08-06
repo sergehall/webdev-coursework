@@ -1,15 +1,22 @@
-// frontend/src/pages/CodePlaygroundPage.tsx
+// // frontend/src/pages/CodePlaygroundPage.tsx
+
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
+import { runPythonWithTimeout } from "@/utils/runPythonWithTimeout";
 import { CodePlaygroundStatus } from "@/components/CodePlaygroundStatus";
 import { useConsoleInterceptor } from "@/hooks/useConsoleInterceptor";
 import { usePostMessageLogs } from "@/hooks/usePostMessageLogs";
 import { useRunPlayground } from "@/hooks/useRunPlayground";
 import { useCodePlaygroundFileCheck } from "@/hooks/useCodePlaygroundFileCheck";
 import { ConsoleOutput } from "@/components/ConsoleOutput";
-import { CodePlaygroundControls } from "@/components/CodePlaygroundControls";
 import { runInSandboxedIframe } from "@/utils/sandboxIframe";
+import {
+  ClearConsoleButton,
+  RunAgainButton,
+  SecureJsUploadButton,
+} from "@/components/buttons";
+import SecurePythonUploadButton from "@/components/buttons/SecurePythonUploadButton";
 
 export default function CodePlaygroundPage() {
   const navigate = useNavigate();
@@ -41,9 +48,9 @@ export default function CodePlaygroundPage() {
   useConsoleInterceptor((msg) => setLogs((prev) => [...prev.slice(-99), msg]));
   usePostMessageLogs((msg) => setLogs((prev) => [...prev.slice(-99), msg]));
 
-  // Load code-playground file script
+  // Load JS script if file is provided and valid
   useEffect(() => {
-    if (!file || fileExists !== true) return;
+    if (!file || fileExists !== true || !file.endsWith(".js")) return;
 
     const existingScript = document.querySelector(
       `script[src="/code-playground/${file}"]`
@@ -66,8 +73,51 @@ export default function CodePlaygroundPage() {
     file,
     fileExists,
     lastUploadedCode,
+    filename, // pass filename so hook knows the file extension
     setLogs
   );
+
+  const handleUpload = (code: string, name: string) => {
+    void (async () => {
+      const search = new URLSearchParams(location.search);
+      search.delete("file");
+      await navigate({
+        pathname: location.pathname,
+        search: search.toString(),
+      });
+
+      setFilename(name);
+      setLastUploadedCode(code);
+
+      const isPython = name.endsWith(".py");
+
+      if (isPython) {
+        // input() not supported
+        if (code.includes("input(")) {
+          setLogs((prev) => [
+            ...prev.slice(-99),
+            "❌ input() is not supported in the browser-based Python interpreter.",
+          ]);
+          return;
+        }
+
+        setLogs((prev) => [...prev.slice(-99), ">_"]);
+
+        try {
+          const output = await runPythonWithTimeout(code);
+          setLogs((prev) => [...prev.slice(-99), `${output}`]);
+        } catch (err: unknown) {
+          setLogs((prev) => [
+            ...prev.slice(-99),
+            `❌ Error:\n${String(err instanceof Error ? err.message : err)}`,
+          ]);
+        }
+      } else {
+        setLogs((prev) => [...prev.slice(-99), ">_"]);
+        runInSandboxedIframe(code);
+      }
+    })();
+  };
 
   return (
     <div className="p-3">
@@ -94,25 +144,14 @@ export default function CodePlaygroundPage() {
         lastUploadedCode={lastUploadedCode}
       />
 
-      <CodePlaygroundControls
-        onClear={() => setLogs([])}
-        onRunAgain={handleRunAgain}
-        onUpload={(code, name) => {
-          void (async () => {
-            const search = new URLSearchParams(location.search);
-            search.delete("file");
-            await navigate({
-              pathname: location.pathname,
-              search: search.toString(),
-            });
-
-            setFilename(name);
-            setLastUploadedCode(code);
-            runInSandboxedIframe(code);
-          })();
-        }}
-        showRunAgain={Boolean(file || lastUploadedCode)}
-      />
+      <div className="mt-4 flex flex-wrap gap-2">
+        <ClearConsoleButton onClear={() => setLogs([])} />
+        <SecureJsUploadButton onSafeUpload={handleUpload} />
+        <SecurePythonUploadButton onSafeUpload={handleUpload} />
+        {Boolean(file || lastUploadedCode) && (
+          <RunAgainButton onRunAgain={handleRunAgain} />
+        )}
+      </div>
 
       <ConsoleOutput logs={logs} />
     </div>

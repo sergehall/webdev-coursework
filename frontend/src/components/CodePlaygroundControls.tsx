@@ -1,10 +1,11 @@
-// src/components/CodePlaygroundControls.tsx
+// // src/components/CodePlaygroundControls.tsx
 
 import {
   ClearConsoleButton,
   RunAgainButton,
   SecureJsUploadButton,
 } from "@/components/buttons";
+import SecurePythonUploadButton from "@/components/buttons/SecurePythonUploadButton";
 
 interface Props {
   onClear: () => void;
@@ -23,9 +24,42 @@ export function CodePlaygroundControls({
     <div className="mt-4 flex flex-wrap gap-2">
       <ClearConsoleButton onClear={onClear} />
 
+      {/* Upload buttons for JS and Python */}
       <SecureJsUploadButton onSafeUpload={onUpload} />
+      <SecurePythonUploadButton onSafeUpload={onUpload} />
 
       {showRunAgain && <RunAgainButton onRunAgain={onRunAgain} />}
     </div>
   );
 }
+
+//
+// import {
+//   ClearConsoleButton,
+//   RunAgainButton,
+//   SecureJsUploadButton,
+// } from "@/components/buttons";
+//
+// interface Props {
+//   onClear: () => void;
+//   onRunAgain: () => void;
+//   onUpload: (code: string, name: string) => void;
+//   showRunAgain: boolean;
+// }
+//
+// export function CodePlaygroundControls({
+//   onClear,
+//   onRunAgain,
+//   onUpload,
+//   showRunAgain,
+// }: Props) {
+//   return (
+//     <div className="mt-4 flex flex-wrap gap-2">
+//       <ClearConsoleButton onClear={onClear} />
+//
+//       <SecureJsUploadButton onSafeUpload={onUpload} />
+//
+//       {showRunAgain && <RunAgainButton onRunAgain={onRunAgain} />}
+//     </div>
+//   );
+// }

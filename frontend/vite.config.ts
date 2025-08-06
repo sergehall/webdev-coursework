@@ -52,7 +52,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     optimizeDeps: {
-      exclude: ["fsevents"],
+      exclude: ["fsevents", "pyodide"],
     },
     build: {
       sourcemap: true,

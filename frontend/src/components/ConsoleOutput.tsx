@@ -10,38 +10,22 @@ export function ConsoleOutput({ logs }: { logs: string[] }) {
   }, [logs]);
 
   return (
-    <div
-      style={{
-        background: "#111827",
-        color: "#0f0",
-        padding: "1em",
-        marginTop: "1em",
-        fontFamily: "monospace",
-        borderRadius: "8px",
-      }}
-    >
-      <div
-        style={{
-          borderBottom: "1px solid #111827",
-          marginBottom: "0.5em",
-          fontWeight: "bold",
-        }}
-      >
+    <div className="mt-4 rounded-lg bg-gray-900 p-4 font-mono text-green-500">
+      <div className="mb-2 border-b border-gray-900 font-bold">
         Console Output:
       </div>
       <pre
         ref={ref}
-        style={{
-          maxHeight: "500px",
-          overflowY: "auto",
-          margin: 0,
-          backgroundColor: "#1f2937",
-          color: "white",
-          padding: "1em",
-          borderRadius: "6px",
-        }}
+        className="m-0 max-h-[500px] overflow-y-auto rounded-md bg-gray-800 p-4 text-white"
       >
-        {logs.join("\n")}
+        {logs.map((line, i) => (
+          <div
+            key={i}
+            className={line.trim() === ">_" ? "text-green-400" : "text-white"}
+          >
+            {line}
+          </div>
+        ))}
       </pre>
     </div>
   );

@@ -23,7 +23,7 @@ export default function RunAgainButton({
   label = "Run Again",
   icon,
   size = "sm",
-  variant = "blue",
+  variant = "fuchsia",
   type = "button",
   className = "",
 }: Props) {
