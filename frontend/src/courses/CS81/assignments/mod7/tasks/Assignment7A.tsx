@@ -15,22 +15,22 @@ const Assignment7A = () => {
 
   const files = [
     {
-      fileUrl: "/sandbox/CS81/mod-7/A/loadingAnimation.html",
+      fileUrl: "/code-playground/CS81/mod-7/A/loadingAnimation.html",
       filename: "loadingAnimation.html",
     },
     {
-      fileUrl: "/sandbox/CS81/mod-7/A/REFLECTION.md",
+      fileUrl: "/code-playground/CS81/mod-7/A/REFLECTION.md",
       filename: "REFLECTION.md",
     },
     {
-      fileUrl: "/sandbox/CS81/mod-7/A/background.mp3",
+      fileUrl: "/code-playground/CS81/mod-7/A/background.mp3",
       filename: "background.mp3",
     },
   ];
 
   const file = [
     {
-      fileUrl: "/sandbox/CS81/mod-7/A/loadingAnimation.html",
+      fileUrl: "/code-playground/CS81/mod-7/A/loadingAnimation.html",
       filename: "loadingAnimation.html",
     },
   ];
@@ -77,7 +77,7 @@ const Assignment7A = () => {
         />
         <DownloadAssignmentBundleButton files={files} />
         <DownloadHtmlButton
-          fileUrl="/sandbox/CS81/mod-7/A/loadingAnimation.html"
+          fileUrl="/code-playground/CS81/mod-7/A/loadingAnimation.html"
           filename="loadingAnimation.html"
           label="Download HTML"
         />

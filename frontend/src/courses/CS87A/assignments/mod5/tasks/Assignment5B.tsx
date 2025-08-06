@@ -5,7 +5,7 @@ import {
   DownloadJsButton,
   DownloadMdButton,
   ExternalLinkButton,
-  RunInSandboxButton,
+  RunInPlaygroundButton,
   ToggleScreenshotButton,
 } from "@/components/buttons";
 import ScreenshotGallery from "@/components/ScreenshotGallery";
@@ -16,25 +16,25 @@ const Assignment5B = () => {
   const screenshots = [
     {
       label: "Sample Console Output",
-      src: "/sandbox/CS81/mod-5/B/runTracker-output.png",
+      src: "/code-playground/CS81/mod-5/B/runTracker-output.png",
     },
   ];
 
   const files = [
     {
-      fileUrl: "/sandbox/CS81/mod-5/B/activityTracker.js",
+      fileUrl: "/code-playground/CS81/mod-5/B/activityTracker.js",
       filename: "activityTracker.js",
     },
     {
-      fileUrl: "/sandbox/CS81/mod-5/B/README.md",
+      fileUrl: "/code-playground/CS81/mod-5/B/README.md",
       filename: "README.md",
     },
     {
-      fileUrl: "/sandbox/CS81/mod-5/B/REFLECTION.md",
+      fileUrl: "/code-playground/CS81/mod-5/B/REFLECTION.md",
       filename: "REFLECTION.md",
     },
     {
-      fileUrl: "frontend/public/sandbox/CS81/mod-5/B/runTracker.js",
+      fileUrl: "frontend/public/code-playground/CS81/mod-5/B/runTracker.js",
       filename: "runTracker.js",
     },
   ];
@@ -174,7 +174,7 @@ const Assignment5B = () => {
           label="REFLECTION.md"
         />
 
-        <RunInSandboxButton
+        <RunInPlaygroundButton
           file="CS81/mod-5/B/runTracker.js"
           label="Run in Sandbox"
         />

@@ -6,7 +6,7 @@ import { BaseButton, ColoredButton } from "@/components/buttons";
 import type { ButtonSize, ButtonType } from "@/components/buttons/BaseButton";
 import type { Variants } from "@/components/buttons/types/variants";
 
-type RunInSandboxButtonProps = {
+type RunInPlaygroundButtonProps = {
   file: string;
   label?: string;
   icon?: ReactNode;
@@ -17,23 +17,23 @@ type RunInSandboxButtonProps = {
   disabled?: boolean;
 };
 
-export default function RunInSandboxButton({
+export default function RunInPlaygroundButton({
   file,
-  label = "Run in Sandbox",
+  label = "Run in Playground",
   icon,
   className = "",
   variant = "green",
   size = "sm",
   type = "button",
   disabled = false,
-}: RunInSandboxButtonProps) {
+}: RunInPlaygroundButtonProps) {
   const navigate = useNavigate();
 
   const finalIcon = icon ?? <Play size={16} />;
 
   const handleClick = () => {
     if (!disabled) {
-      void navigate(`/sandbox?file=${file}`);
+      void navigate(`/code-playground?file=${file}`);
     }
   };
 

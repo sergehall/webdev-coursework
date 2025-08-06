@@ -23,7 +23,7 @@ const HtmlOrderedListWithFlavors = () => {
         />
 
         <DownloadHtmlButton
-          fileUrl="/sandbox/CS80/mod-1/list-with-flavors.html"
+          fileUrl="/code-playground/CS80/mod-1/list-with-flavors.html"
           filename="list-with-flavors.html"
         />
       </div>

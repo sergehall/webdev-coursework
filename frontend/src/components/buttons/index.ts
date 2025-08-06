@@ -11,7 +11,7 @@ export { default as DownloadMdButton } from "./DownloadMdButton";
 export { default as ExternalLinkButton } from "./ExternalLinkButton";
 export { default as RunAgainButton } from "./RunAgainButton";
 export { default as RunFunctionButton } from "./RunFunctionButton";
-export { default as RunInSandboxButton } from "./RunInSandboxButton";
+export { default as RunInPlaygroundButton } from "./RunInPlaygroundButton";
 export { default as ToggleScreenshotButton } from "./ToggleScreenshotButton";
 export { default as ToggleThemeButton } from "./ToggleThemeButton";
 export { default as SubmitQuizButton } from "./SubmitQuizButton";

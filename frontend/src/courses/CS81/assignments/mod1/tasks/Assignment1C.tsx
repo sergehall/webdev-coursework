@@ -4,7 +4,7 @@ import { useState } from "react";
 import {
   DownloadHtmlButton,
   ToggleScreenshotButton,
-  RunInSandboxButton,
+  RunInPlaygroundButton,
   RunFunctionButton,
 } from "@/components/buttons";
 import ScreenshotGallery from "@/components/ScreenshotGallery";
@@ -14,7 +14,7 @@ const Assignment1C = () => {
   const screenshots = [
     {
       label: "Console output screenshot",
-      src: "/sandbox/CS81/mod-1/C/introToJS.png",
+      src: "/code-playground/CS81/mod-1/C/introToJS.png",
     },
   ];
 
@@ -53,10 +53,10 @@ const Assignment1C = () => {
 
       <div className="mt-4 grid w-full grid-cols-1 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-3">
         <DownloadHtmlButton
-          fileUrl="/sandbox/CS81/mod-1/C/intro-to-javascript.html"
+          fileUrl="/code-playground/CS81/mod-1/C/intro-to-javascript.html"
           filename="intro-to-javascript.html"
         />
-        <RunInSandboxButton file="CS81/mod-1/C/helloWorldName.js" />
+        <RunInPlaygroundButton file="CS81/mod-1/C/helloWorldName.js" />
         <RunFunctionButton onClick={helloWordName} label="Run in Console" />
         <ToggleScreenshotButton
           show={showScreenshots}

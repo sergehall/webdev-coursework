@@ -12,7 +12,7 @@ import type { BaseCourse } from "@/data/web-developer-courses";
 export default function CourseworkPage() {
   const [visibleCount, setVisibleCount] = useState(8);
 
-  // Собираем все возможные курсы (включая options)
+  //  We collect all possible courses (including options)
   const allCourses: BaseCourse[] = courses.flatMap((course) =>
     "options" in course ? course.options : [course]
   );
@@ -29,6 +29,7 @@ export default function CourseworkPage() {
 
   return (
     <main className="flex flex-col gap-10 px-4 py-10">
+      {/* Course list view */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -60,7 +61,7 @@ export default function CourseworkPage() {
                     : "border-gray-300 bg-gradient-to-l from-gray-100 via-gray-200 to-gray-300 dark:border-gray-700 dark:from-gray-800 dark:via-gray-900 dark:to-gray-950"
                 }`}
               >
-                {/* При наведении показывается описание */}
+                {/* When hovering over, a description is displayed. */}
                 <div className="absolute inset-0 z-10 hidden items-center justify-center rounded-xl bg-white/95 px-4 text-center text-sm text-gray-800 backdrop-blur-sm transition-all duration-300 group-hover:flex dark:bg-gray-900/90 dark:text-gray-200">
                   <p>{course.descriptionSummary || course.description}</p>
                 </div>
@@ -86,11 +87,11 @@ export default function CourseworkPage() {
                   </h4>
                 </div>
 
-                {/* Если курс не завершён — показываем метку */}
+                {/* If the course is not completed, we display a label. */}
                 {!isCompleted && (
                   <div className="mt-auto flex items-center gap-2 text-xs font-medium text-gray-400 dark:text-gray-500">
                     <XCircle className="h-4 w-4" />
-                    Курс ещё не завершён
+                    Not Yet Completed
                   </div>
                 )}
               </div>

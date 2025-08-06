@@ -29,7 +29,7 @@ export default function SidebarPage() {
             label="Roadmap"
           />
           <SidebarItem
-            to="/sandbox"
+            to="/code-playground"
             icon={<TerminalSquare className="h-6 w-6" />}
             label="Code Playground"
           />

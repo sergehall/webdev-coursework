@@ -71,7 +71,7 @@ const AutocompleteDayForm = () => {
       </div>
 
       <DownloadHtmlButton
-        fileUrl="/sandbox/mod-1/autocomplete-day-form.html"
+        fileUrl="/code-playground/mod-1/autocomplete-day-form.html"
         filename="autocomplete-day-form.html"
       />
 

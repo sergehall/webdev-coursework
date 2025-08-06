@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import {
   ToggleScreenshotButton,
-  RunInSandboxButton,
+  RunInPlaygroundButton,
   RunFunctionButton,
 } from "@/components/buttons";
 import ScreenshotGallery from "@/components/ScreenshotGallery";
@@ -15,7 +15,7 @@ const Assignment2B = () => {
 
   const screenshots = [
     {
-      src: "/sandbox/CS81/mod-2/B/FizzBuzz_Assignment_Screenshot.png",
+      src: "/code-playground/CS81/mod-2/B/FizzBuzz_Assignment_Screenshot.png",
       alt: "FizzBuzz console screenshot",
     },
   ];
@@ -73,7 +73,7 @@ const Assignment2B = () => {
       <div className="mt-4 grid w-full grid-cols-1 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-3">
         <RunFunctionButton onClick={runFizzBuzz} label="Run FizzBuzz" />
 
-        <RunInSandboxButton file="mod-2/B/assn2b.js" />
+        <RunInPlaygroundButton file="mod-2/B/assn2b.js" />
 
         <DownloadJsButton
           fileUrl="/sandbox/CS81/mod-2/B/assn2b.js"

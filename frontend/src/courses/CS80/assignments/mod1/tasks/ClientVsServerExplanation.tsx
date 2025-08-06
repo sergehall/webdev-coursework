@@ -17,7 +17,7 @@ const ClientVsServerExplanation = () => {
       </p>
 
       <DownloadHtmlButton
-        fileUrl="/sandbox/CS80/mod-1/client-vs-server.html"
+        fileUrl="/code-playground/CS80/mod-1/client-vs-server.html"
         filename="client-vs-server.html"
       />
 

@@ -14,7 +14,7 @@ const Assignment4A = () => {
   const screenshots = [
     {
       label: "Test Case Results",
-      src: "/sandbox/CS81/mod-4/A/reading-test-result.png",
+      src: "/code-playground/CS81/mod-4/A/reading-test-result.png",
     },
   ];
 

@@ -36,7 +36,7 @@ const CampusFeedbackForm = () => {
       </div>
 
       <DownloadHtmlButton
-        fileUrl="/sandbox/CS80/mod-1/campus-feedback-form.html"
+        fileUrl="/code-playground/CS80/mod-1/campus-feedback-form.html"
         filename="campus-feedback-form.html"
       />
 

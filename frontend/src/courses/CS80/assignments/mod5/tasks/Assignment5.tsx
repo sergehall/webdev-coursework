@@ -12,19 +12,19 @@ const Assignment5 = () => {
 
   const files = [
     {
-      fileUrl: "/sandbox/CS80/mod-5/form.html",
+      fileUrl: "/code-playground/CS80/mod-5/form.html",
       filename: "form.html",
     },
     {
-      fileUrl: "/sandbox/CS80/mod-5/nutrition.xml",
+      fileUrl: "/code-playground/CS80/mod-5/nutrition.xml",
       filename: "nutrition.xml",
     },
     {
-      fileUrl: "/sandbox/CS80/mod-5/nutrition.json",
+      fileUrl: "/code-playground/CS80/mod-5/nutrition.json",
       filename: "nutrition.json",
     },
     {
-      fileUrl: "/sandbox/CS80/mod-5/nutrition.dtd",
+      fileUrl: "/code-playground/CS80/mod-5/nutrition.dtd",
       filename: "nutrition.dtd",
     },
   ];
@@ -85,7 +85,7 @@ const Assignment5 = () => {
         />
         <DownloadAssignmentBundleButton files={files} />
         <DownloadHtmlButton
-          fileUrl="/sandbox/CS80/mod-5/form.html"
+          fileUrl="/code-playground/CS80/mod-5/form.html"
           filename="form.html"
           label="View HTML Only"
         />
@@ -97,7 +97,7 @@ const Assignment5 = () => {
           <div className="relative h-[90vh] w-[95%] max-w-6xl overflow-hidden rounded-lg bg-white shadow-lg dark:bg-gray-900">
             <CloseModalButton onClick={() => setIsModalOpen(false)} />
             <iframe
-              src="/sandbox/CS80/mod-5/form.html"
+              src="/code-playground/CS80/mod-5/form.html"
               className="h-full w-full border-none"
               title="Assignment 5 Preview"
               sandbox="allow-scripts allow-same-origin allow-modals"

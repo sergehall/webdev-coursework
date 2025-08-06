@@ -113,7 +113,7 @@ export default function ShowModalButton({
 //                   src={file.fileUrl}
 //                   title={file.filename}
 //                   className="w-full h-[600px] border rounded"
-//                   sandbox="allow-scripts allow-same-origin"
+//                   code-playground="allow-scripts allow-same-origin"
 //                 />
 //               ) : file.filename.toLowerCase().endsWith('.mp3') ? (
 //                 <audio controls className="w-full">

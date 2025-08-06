@@ -12,22 +12,22 @@ const Assignment8A = () => {
 
   const files = [
     {
-      fileUrl: "/sandbox/CS81/mod-8/A/cookieClicker.html",
+      fileUrl: "/code-playground/CS81/mod-8/A/cookieClicker.html",
       filename: "cookieClicker.html",
     },
     {
-      fileUrl: "/sandbox/CS81/mod-8/A/REFLECTION.md",
+      fileUrl: "/code-playground/CS81/mod-8/A/REFLECTION.md",
       filename: "REFLECTION.md",
     },
     {
-      fileUrl: "/sandbox/CS81/mod-8/A/README.md",
+      fileUrl: "/code-playground/CS81/mod-8/A/README.md",
       filename: "README.md",
     },
   ];
 
   const file = [
     {
-      fileUrl: "/sandbox/CS81/mod-8/A/cookieClicker.html",
+      fileUrl: "/code-playground/CS81/mod-8/A/cookieClicker.html",
       filename: "cookieClicker.html",
     },
   ];

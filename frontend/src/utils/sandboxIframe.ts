@@ -10,7 +10,7 @@ export function runInSandboxedIframe(code: string) {
         <script type="module">
           const originalLog = console.log;
           console.log = (...args) => {
-            window.parent.postMessage({ type: "sandbox-log", payload: args.map(String).join(" ") }, "*");
+            window.parent.postMessage({ type: "code-playground-log", payload: args.map(String).join(" ") }, "*");
             originalLog(...args);
           };
           ${code}

@@ -12,19 +12,19 @@ const Assignment6 = () => {
 
   const files = [
     {
-      fileUrl: "/sandbox/CS80/mod-6/ajaxLoad.js",
+      fileUrl: "/code-playground/CS80/mod-6/ajaxLoad.js",
       filename: "ajaxLoad.js",
     },
     {
-      fileUrl: "/sandbox/CS80/mod-6/bonus-assignment.html",
+      fileUrl: "/code-playground/CS80/mod-6/bonus-assignment.html",
       filename: "bonus-assignment.html",
     },
     {
-      fileUrl: "/sandbox/CS80/mod-6/data.json",
+      fileUrl: "/code-playground/CS80/mod-6/data.json",
       filename: "data.json",
     },
     {
-      fileUrl: "/sandbox/CS80/mod-6/description-bonus-assignment.txt",
+      fileUrl: "/code-playground/CS80/mod-6/description-bonus-assignment.txt",
       filename: "description-bonus-assignment.txt",
     },
   ];
@@ -73,7 +73,7 @@ const Assignment6 = () => {
         />
         <DownloadAssignmentBundleButton files={files} />
         <DownloadHtmlButton
-          fileUrl="/sandbox/CS80/mod-6/bonus-assignment.html"
+          fileUrl="/code-playground/CS80/mod-6/bonus-assignment.html"
           filename="bonus-assignment.html"
           label="Download HTML Only"
         />
@@ -85,7 +85,7 @@ const Assignment6 = () => {
           <div className="relative h-[90vh] w-[95%] max-w-6xl overflow-hidden rounded-lg bg-white shadow-lg dark:bg-gray-900">
             <CloseModalButton onClick={() => setIsModalOpen(false)} />
             <iframe
-              src="/sandbox/CS80/mod-6/bonus-assignment.html"
+              src="/code-playground/CS80/mod-6/bonus-assignment.html"
               className="h-full w-full border-none"
               title="Assignment 6 Preview"
               sandbox="allow-scripts allow-same-origin allow-modals"

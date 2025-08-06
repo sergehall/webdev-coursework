@@ -1,5 +1,6 @@
-// // src/components/SandboxStatus.tsx
-export function SandboxStatus({
+// // src/components/CodePlaygroundStatus.tsx
+
+export function CodePlaygroundStatus({
   file,
   fileExists,
   filename,

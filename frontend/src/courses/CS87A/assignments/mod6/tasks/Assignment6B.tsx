@@ -5,7 +5,7 @@ import {
   DownloadJsButton,
   DownloadMdButton,
   ExternalLinkButton,
-  RunInSandboxButton,
+  RunInPlaygroundButton,
   ToggleScreenshotButton,
 } from "@/components/buttons";
 import ScreenshotGallery from "@/components/ScreenshotGallery";
@@ -15,7 +15,7 @@ const Assignment6B = () => {
   const screenshots = [
     {
       label: "Console Output Example",
-      src: "/sandbox/CS81/mod-6/B/assistant-console-output.png",
+      src: "/code-playground/CS81/mod-6/B/assistant-console-output.png",
     },
   ];
 
@@ -70,9 +70,9 @@ const Assignment6B = () => {
           label="assistant.js"
         />
 
-        <RunInSandboxButton
+        <RunInPlaygroundButton
           file="CS81/mod-6/B/assistant.js"
-          label="Run in Sandbox"
+          label="Run in Playground"
         />
 
         <DownloadMdButton

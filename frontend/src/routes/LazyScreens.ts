@@ -14,7 +14,9 @@ export const AssignmentWrapper = lazy(
 export const AllDonePage = lazy(() => import("../pages/AllDonePage"));
 
 // Tools / Playground
-export const SandboxPage = lazy(() => import("../pages/SandboxPage"));
+export const CodePlaygroundPage = lazy(
+  () => import("../pages/CodePlaygroundPage")
+);
 export const ResourcesPage = lazy(() => import("../pages/ResourcesPage"));
 
 // Web Developer Path

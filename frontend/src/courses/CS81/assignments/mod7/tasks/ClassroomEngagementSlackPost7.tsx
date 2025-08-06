@@ -9,7 +9,7 @@ const ClassroomEngagementSlackPost7 = () => {
   const screenshots = [
     {
       label: "Slack Module 7 discussion screenshot",
-      src: "/sandbox/CS81/mod-7/Module-7-Classroom-Engagement–Slack-Post.png",
+      src: "/code-playground/CS81/mod-7/Module-7-Classroom-Engagement–Slack-Post.png",
     },
   ];
 

@@ -12,19 +12,19 @@ const Assignment3 = () => {
 
   const files = [
     {
-      fileUrl: "/sandbox/CS80/mod-3/assignment3.html",
+      fileUrl: "/code-playground/CS80/mod-3/assignment3.html",
       filename: "assignment3.html",
     },
     {
-      fileUrl: "/sandbox/CS80/mod-3/assignment3.js",
+      fileUrl: "/code-playground/CS80/mod-3/assignment3.js",
       filename: "assignment3.js",
     },
     {
-      fileUrl: "/sandbox/CS80/mod-3/testAssignment3.js",
+      fileUrl: "/code-playground/CS80/mod-3/testAssignment3.js",
       filename: "testAssignment3.js",
     },
     {
-      fileUrl: "/sandbox/CS80/mod-3/Assignment_Submission_Info.txt",
+      fileUrl: "/code-playground/CS80/mod-3/Assignment_Submission_Info.txt",
       filename: "Assignment_Submission_Info.txt",
     },
   ];
@@ -75,7 +75,7 @@ const Assignment3 = () => {
         />
         <DownloadAssignmentBundleButton files={files} />
         <DownloadHtmlButton
-          fileUrl="/sandbox/CS80/mod-3/assignment3_strict.html"
+          fileUrl="/code-playground/CS80/mod-3/assignment3_strict.html"
           filename="assignment3_strict.html"
           label="Strict HTML"
         />
@@ -87,7 +87,7 @@ const Assignment3 = () => {
           <div className="relative h-[90vh] w-[95%] max-w-6xl overflow-hidden rounded-lg bg-white shadow-lg dark:bg-gray-900">
             <CloseModalButton onClick={() => setIsModalOpen(false)} />
             <iframe
-              src="/sandbox/CS80/mod-3/assignment3.html"
+              src="/code-playground/CS80/mod-3/assignment3.html"
               className="h-full w-full border-none"
               title="Assignment 3 Preview"
               sandbox="allow-scripts allow-same-origin allow-modals"

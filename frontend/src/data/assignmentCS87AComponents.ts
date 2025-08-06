@@ -69,7 +69,7 @@ const assignmentCS87AComponents: Record<
       import("@/courses/CS81/assignments/mod6/AssignmentMod6"),
     prefetchPlaceholder: () =>
       import("@/courses/CS81/assignments/mod6/AssignmentMod6Placeholder"),
-  }
+  },
 };
 
 export default assignmentCS87AComponents;

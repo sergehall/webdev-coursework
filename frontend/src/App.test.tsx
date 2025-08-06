@@ -54,7 +54,7 @@ describe("<App /> integration", () => {
   });
 
   it("renders Sandbox page", async () => {
-    renderWithProviders(<App />, "/sandbox");
+    renderWithProviders(<App />, "/code-playground");
     expect(await screen.findByText(/loading sandbox/i)).toBeInTheDocument();
   });
 

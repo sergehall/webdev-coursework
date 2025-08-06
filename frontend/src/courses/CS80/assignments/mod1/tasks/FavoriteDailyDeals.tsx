@@ -33,7 +33,7 @@ const FavoriteDailyDeals = () => {
         />
 
         <DownloadHtmlButton
-          fileUrl="/sandbox/CS80/mod-1/favorite-daily-deals.html"
+          fileUrl="/code-playground/CS80/mod-1/favorite-daily-deals.html"
           filename="favorite-daily-deals.html"
         />
       </div>

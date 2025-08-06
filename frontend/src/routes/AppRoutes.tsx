@@ -48,10 +48,10 @@ export default function AppRoutes() {
         </Route>
 
         <Route
-          path="/sandbox/*"
+          path="/code-playground/*"
           element={
             <Suspense fallback={<div>Loading Sandbox...</div>}>
-              <Screens.SandboxPage />
+              <Screens.CodePlaygroundPage />
             </Suspense>
           }
         />

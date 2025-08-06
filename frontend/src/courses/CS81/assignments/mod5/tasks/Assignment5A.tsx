@@ -4,7 +4,7 @@ import {
   DownloadJsButton,
   DownloadMdButton,
   ExternalLinkButton,
-  RunInSandboxButton,
+  RunInPlaygroundButton,
   ToggleScreenshotButton,
 } from "@/components/buttons";
 import ScreenshotGallery from "@/components/ScreenshotGallery";
@@ -14,7 +14,7 @@ const Assignment5A = () => {
   const screenshots = [
     {
       label: "Sample Console Output",
-      src: "/sandbox/CS81/mod-5/A/hobbyTracker-output.png",
+      src: "/code-playground/CS81/mod-5/A/hobbyTracker-output.png",
     },
   ];
 
@@ -60,18 +60,18 @@ const Assignment5A = () => {
         />
 
         <DownloadJsButton
-          fileUrl="/sandbox/CS81/mod-5/A/hobbyTracker.js"
+          fileUrl="/code-playground/CS81/mod-5/A/hobbyTracker.js"
           filename="hobbyTracker.js"
           label="hobbyTracker.js"
         />
 
-        <RunInSandboxButton
+        <RunInPlaygroundButton
           file="CS81/mod-5/A/hobbyTracker.js"
-          label="Run in Sandbox"
+          label="Run in Playground"
         />
 
         <DownloadMdButton
-          fileUrl="/sandbox/CS81/mod-5/A/REFLECTION.md"
+          fileUrl="/code-playground/CS81/mod-5/A/REFLECTION.md"
           filename="REFLECTION.md"
           label="REFLECTION.md"
         />

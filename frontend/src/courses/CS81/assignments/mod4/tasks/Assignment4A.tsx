@@ -14,7 +14,7 @@ const Assignment4A = () => {
   const screenshots = [
     {
       label: "Test Case Results",
-      src: "/sandbox/CS81/mod-4/A/reading-test-result.png",
+      src: "/code-playground/CS81/mod-4/A/reading-test-result.png",
     },
   ];
 
@@ -54,13 +54,13 @@ const Assignment4A = () => {
         />
 
         <DownloadJsButton
-          fileUrl="/sandbox/CS81/mod-4/A/readingTracker.js"
+          fileUrl="/code-playground/CS81/mod-4/A/readingTracker.js"
           filename="readingTracker.js"
           label="Download tracker.js"
         />
 
         <DownloadMdButton
-          fileUrl="/sandbox/CS81/mod-4/A/REFLECTION.md"
+          fileUrl="/code-playground/CS81/mod-4/A/REFLECTION.md"
           filename="REFLECTION.md"
           label="REFLECTION.md"
         />

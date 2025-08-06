@@ -28,7 +28,7 @@ const WebsiteRegistrationForm = () => {
         question.
       </div>
       <DownloadHtmlButton
-        fileUrl="/sandbox/CS80/mod-1/website-registration-form.html"
+        fileUrl="/code-playground/CS80/mod-1/website-registration-form.html"
         filename="website-registration-form.html"
       />
 

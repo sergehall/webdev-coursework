@@ -1,4 +1,4 @@
-// src/components/SandboxControls.tsx
+// src/components/CodePlaygroundControls.tsx
 
 import {
   ClearConsoleButton,
@@ -13,7 +13,7 @@ interface Props {
   showRunAgain: boolean;
 }
 
-export function SandboxControls({
+export function CodePlaygroundControls({
   onClear,
   onRunAgain,
   onUpload,

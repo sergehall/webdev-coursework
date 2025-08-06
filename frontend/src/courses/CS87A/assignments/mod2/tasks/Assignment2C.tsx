@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import {
   RunFunctionButton,
-  RunInSandboxButton,
+  RunInPlaygroundButton,
   DownloadJsButton,
   ToggleScreenshotButton,
 } from "@/components/buttons";
@@ -19,7 +19,7 @@ const Assignment2C = () => {
   const screenshots = [
     {
       label: "Commute simulation console screenshot",
-      src: "/sandbox/CS81/mod-2/C/Assignment2C_Screenshot.png",
+      src: "/code-playground/CS81/mod-2/C/Assignment2C_Screenshot.png",
     },
   ];
 
@@ -96,7 +96,7 @@ const Assignment2C = () => {
       <div className="mt-4 grid w-full grid-cols-1 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-3">
         <RunFunctionButton onClick={runSimulation} label="Run in Console" />
 
-        <RunInSandboxButton
+        <RunInPlaygroundButton
           file="CS81/mod-2/C/assn2c.js"
           label="Run in Sandbox"
         />

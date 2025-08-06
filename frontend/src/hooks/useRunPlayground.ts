@@ -1,8 +1,8 @@
-// src/hooks/useRunSandbox.ts
+// src/hooks/useRunPlayground.ts
 
 import { runInSandboxedIframe } from "@/utils/sandboxIframe";
 
-export function useRunSandbox(
+export function useRunPlayground(
   file: string | null,
   fileExists: boolean | null,
   lastUploadedCode: string | null,
@@ -14,9 +14,9 @@ export function useRunSandbox(
       const existing = document.querySelector(`script[data-sandbox-reload]`);
       if (existing) existing.remove();
       const script = document.createElement("script");
-      script.src = `/sandbox/${file}?t=${Date.now()}`;
+      script.src = `/code-playground/${file}?t=${Date.now()}`;
       script.type = "module";
-      script.setAttribute("data-sandbox-reload", "true");
+      script.setAttribute("data-code-playground-reload", "true");
       document.body.appendChild(script);
     } else if (lastUploadedCode) {
       runInSandboxedIframe(lastUploadedCode);

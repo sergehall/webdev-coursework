@@ -15,7 +15,7 @@ const Assignment2A = () => {
   const screenshots = [
     {
       label: "Hello World alert and console screenshot",
-      src: "/sandbox/CS81/mod-2/A/HelloWorld_Assignment_Screenshot.png",
+      src: "/code-playground/CS81/mod-2/A/HelloWorld_Assignment_Screenshot.png",
     },
   ];
   console.log("Hello, World!");

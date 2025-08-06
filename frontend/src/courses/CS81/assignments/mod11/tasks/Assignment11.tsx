@@ -18,22 +18,22 @@ const Assignment11 = () => {
   const screenshots = [
     {
       label: "Module 11 – Contact Form",
-      src: "/sandbox/CS81/mod-11/module11-assignment11a-react-contact-form.png",
+      src: "/code-playground/CS81/mod-11/module11-assignment11a-react-contact-form.png",
     },
   ];
 
   const files = [
     {
-      fileUrl: "/sandbox/CS81/mod-11/README.md",
+      fileUrl: "/code-playground/CS81/mod-11/README.md",
       filename: "README.md",
     },
     {
       fileUrl:
-        "/sandbox/CS81/mod-11/module11-assignment11a-react-contact-form.png",
+        "/code-playground/CS81/mod-11/module11-assignment11a-react-contact-form.png",
       filename: "module11-assignment11a-react-contact-form.png",
     },
     {
-      fileUrl: "/sandbox/CS81/mod-11/module11-contact-form.zip",
+      fileUrl: "/code-playground/CS81/mod-11/module11-contact-form.zip",
       filename: "module11-contact-form.zip",
     },
   ];

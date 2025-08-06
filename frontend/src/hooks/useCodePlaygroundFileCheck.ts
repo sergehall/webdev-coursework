@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export function useSandboxFileCheck(file: string | null) {
+export function useCodePlaygroundFileCheck(file: string | null) {
   const [fileExists, setFileExists] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -9,7 +9,7 @@ export function useSandboxFileCheck(file: string | null) {
       return;
     }
 
-    const path = `/sandbox/${file}`;
+    const path = `/code-playground/${file}`;
     const isLikelyScript = file.endsWith(".js") || file.endsWith(".mjs");
 
     const checkFile = async () => {

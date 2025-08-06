@@ -33,7 +33,7 @@ export default [
       ".cache/**",
       "temp/**",
       "tmp/**",
-      "public/sandbox/**",
+      "public/code-playground/**",
     ],
   },
   js.configs.recommended,

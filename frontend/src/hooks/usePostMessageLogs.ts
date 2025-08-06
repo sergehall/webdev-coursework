@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 
 type SandboxLogMessage = {
-  type: "sandbox-log";
+  type: "code-playground-log";
   payload: string;
 };
 
@@ -11,7 +11,10 @@ export function usePostMessageLogs(onLog: (msg: string) => void) {
     const handler = (event: MessageEvent<unknown>) => {
       const data = event.data as Partial<SandboxLogMessage>;
 
-      if (data?.type === "sandbox-log" && typeof data.payload === "string") {
+      if (
+        data?.type === "code-playground-log" &&
+        typeof data.payload === "string"
+      ) {
         onLog(data.payload);
       }
     };

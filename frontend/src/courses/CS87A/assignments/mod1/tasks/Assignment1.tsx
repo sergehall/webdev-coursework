@@ -1,40 +1,74 @@
 // frontend/src/courses/CS87A/assignments/mod1/tasks/Assignment1.tsx
 import { useState } from "react";
 
+import ScreenshotGallery from "@/components/ScreenshotGallery";
 import {
   DownloadAssignmentBundleButton,
   ToggleScreenshotButton,
 } from "@/components/buttons";
-import ScreenshotGallery from "@/components/ScreenshotGallery";
 
 const Assignment1 = () => {
   const [showScreenshots, setShowScreenshots] = useState(false);
+
   const screenshots = [
     {
-      src: "/sandbox/CS87A/mod-1/CS87A_FA2020_A01.pdf",
-      label: "Programming Assignment 1",
+      label: "Assignment 1 – Python Intro",
+      src: "/code-playground/CS87A/mod-1/CS87A_FA2020_A01.pdf",
     },
   ];
 
   const files = [
     {
-      fileUrl: "/sandbox/CS87A/mod-1/CS87A_FA2020_A01.pdf",
-      filename: "Programming Assignment 1",
+      fileUrl: "/code-playground/CS87A/mod-1/CS87A_FA2020_A01.pdf",
+      filename: "CS87A_FA2020_A01.pdf",
     },
   ];
 
   return (
-    <div className="space-y-4 rounded-xl border border-gray-300 bg-white p-6 shadow-lg dark:border-gray-700 dark:bg-gray-900">
-      <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
-        Assignment 1A: Setup Home Dev Environment
-      </h2>
-      <p className="text-gray-700 dark:text-gray-300">
-        Set up WebStorm, Google Chrome, Node.js, and create a basic project
-        structure with index.html and script.js. Verify that Live Server works
-        by checking the console output in Chrome. Submit screenshots and
-        optionally include version checks.
-      </p>
+    <div className="space-y-4">
+      <h2 className="text-xl font-bold">Assignment 1 – Python Setup & Intro</h2>
 
+      <div>
+        <h3 className="text-md mb-1 font-semibold text-gray-700 dark:text-gray-300">
+          Objective
+        </h3>
+        <p className="text-sm text-gray-700 dark:text-gray-300">
+          Get started with Python and prepare your working environment for the
+          course. Update your profiles on Zoom and Canvas, and complete a simple
+          Python exercise using IDLE.
+        </p>
+      </div>
+
+      <div>
+        <h3 className="text-md mb-1 font-semibold text-gray-700 dark:text-gray-300">
+          Project Description
+        </h3>
+        <p className="text-sm text-gray-700 dark:text-gray-300">
+          Write a Python script using only the number <code>5.9687</code> and
+          the built-in <code>int()</code> function to enumerate five places you
+          want to visit. Use <code>print()</code> to output the list, and
+          include required comments at the top of your <code>A01.py</code> file.
+        </p>
+      </div>
+
+      <div>
+        <h3 className="text-md mb-1 font-semibold text-gray-700 dark:text-gray-300">
+          Key Requirements
+        </h3>
+        <ul className="list-inside list-disc space-y-1 text-sm text-gray-700 dark:text-gray-300">
+          <li>Set profile photo and bio on Zoom and Canvas</li>
+          <li>Use Python IDLE or a preferred IDE (must work on Windows)</li>
+          <li>
+            Submit <code>A01.py</code> only – no screenshots or text outputs
+          </li>
+          <li>Include proper header comments in your script</li>
+          <li>
+            Use only <code>print()</code> and numeric conversion as described
+          </li>
+        </ul>
+      </div>
+
+      {/* Action Buttons */}
       <div className="mt-4 grid w-full grid-cols-1 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-3">
         <DownloadAssignmentBundleButton files={files} />
         <ToggleScreenshotButton
@@ -42,6 +76,8 @@ const Assignment1 = () => {
           toggle={() => setShowScreenshots(!showScreenshots)}
         />
       </div>
+
+      {/* Screenshot Preview */}
       {showScreenshots && <ScreenshotGallery screenshots={screenshots} />}
     </div>
   );

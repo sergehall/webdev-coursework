@@ -11,11 +11,11 @@ const Assignment4 = () => {
 
   const files = [
     {
-      fileUrl: "/sandbox/CS80/mod-4/assignment-mod-4-dom.html",
+      fileUrl: "/code-playground/CS80/mod-4/assignment-mod-4-dom.html",
       filename: "assignment-mod-4-dom.html",
     },
     {
-      fileUrl: "/sandbox/CS80/mod-4/fig-12-4.html",
+      fileUrl: "/code-playground/CS80/mod-4/fig-12-4.html",
       filename: "fig-12-4.html",
     },
   ];
@@ -59,7 +59,7 @@ const Assignment4 = () => {
           <div className="relative h-[90vh] w-[95%] max-w-6xl overflow-hidden rounded-lg bg-white shadow-lg dark:bg-gray-900">
             <CloseModalButton onClick={() => setIsModalOpen(false)} />
             <iframe
-              src="/sandbox/CS80/mod-4/assignment-mod-4-dom.html"
+              src="/code-playground/CS80/mod-4/assignment-mod-4-dom.html"
               className="h-full w-full border-none"
               title="Assignment 4 Preview"
               sandbox="allow-scripts allow-same-origin allow-modals"

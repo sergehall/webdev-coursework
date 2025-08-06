@@ -11,11 +11,11 @@ const Assignment1B = () => {
   const [showScreenshots, setShowScreenshots] = useState(false);
   const screenshots = [
     {
-      src: "/sandbox/CS81/mod-1/B/slack-workspace.png",
+      src: "/code-playground/CS81/mod-1/B/slack-workspace.png",
       label: "Slack interface showing 'smccs81sum2025' workspace",
     },
     {
-      src: "/sandbox/CS81/mod-1/B/slack-profile.png",
+      src: "/code-playground/CS81/mod-1/B/slack-profile.png",
       label: "Slack showing your full name in the member list or chat",
     },
   ];
@@ -33,7 +33,7 @@ const Assignment1B = () => {
 
       <div className="mt-4 grid w-full grid-cols-1 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-3">
         <DownloadHtmlButton
-          fileUrl="/sandbox/CS81/mod-1/B/slack-checklist.html"
+          fileUrl="/code-playground/CS81/mod-1/B/slack-checklist.html"
           filename="slack-checklist.html"
         />
         <ToggleScreenshotButton
