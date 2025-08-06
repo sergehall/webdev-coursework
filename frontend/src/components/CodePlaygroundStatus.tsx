@@ -16,19 +16,20 @@ export function CodePlaygroundStatus({
 
   if (file && fileExists === false) {
     message = `File not found: ${file.split("/").pop()}`;
-    colorClass = "text-red-400";
+    colorClass = "text-red-500 dark:text-red-400";
   } else if (file && fileExists === true && !lastUploadedCode) {
     message = `Running script from project files: ${file.split("/").pop()}`;
-    colorClass = "text-emerald-400";
+    colorClass = "text-emerald-600 dark:emerald-400";
   } else if (filename) {
     message = `Running uploaded script: ${filename}`;
-    colorClass = "text-emerald-400";
+    colorClass = "text-emerald-600 dark:text-emerald-400";
   } else {
     message = "Specify a file using ?file=your-script.js or upload below.";
+    colorClass = "text-black dark:text-white";
   }
 
   return (
-    <div className="my-2 min-h-[40px] rounded bg-gray-800 px-4 py-2 font-mono text-sm transition-colors">
+    <div className="my-2 min-h-[40px] rounded bg-gray-200 px-4 py-2 font-mono text-sm transition-colors dark:bg-gray-800">
       <span className={colorClass}>
         {message.includes(":") ? (
           <>
