@@ -81,18 +81,29 @@ export default function CodePlaygroundPage() {
     void (async () => {
       const search = new URLSearchParams(location.search);
       search.delete("file");
+
       await navigate({
         pathname: location.pathname,
         search: search.toString(),
       });
 
+      // Determine file type
+      const isPython = name.endsWith(".py");
+      const wasPython = filename?.endsWith(".py") ?? false;
+
+      // If switching between JS <-> Python, remove stale iframe
+      if (isPython !== wasPython) {
+        const existingIframe = document.getElementById("sandboxed-iframe");
+        if (existingIframe) {
+          existingIframe.remove();
+        }
+      }
+
       setFilename(name);
       setLastUploadedCode(code);
 
-      const isPython = name.endsWith(".py");
-
+      // Python execution
       if (isPython) {
-        // input() not supported
         if (code.includes("input(")) {
           setLogs((prev) => [
             ...prev.slice(-99),
@@ -112,8 +123,12 @@ export default function CodePlaygroundPage() {
             `❌ Error:\n${String(err instanceof Error ? err.message : err)}`,
           ]);
         }
+
+        // JavaScript execution
       } else {
         setLogs((prev) => [...prev.slice(-99), ">_"]);
+
+        // Fresh iframe will be created inside runInSandboxedIframe
         runInSandboxedIframe(code);
       }
     })();

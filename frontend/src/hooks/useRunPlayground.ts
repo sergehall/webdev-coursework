@@ -20,6 +20,8 @@ export function useRunPlayground(
     // Clear logs on re-run
     setLogs([]);
 
+    setLogs((prev) => [...prev.slice(-99), ">_"]);
+
     // Run from file in /code-playground directory
     if (file && fileExists !== false) {
       const existing = document.querySelector(`script[data-sandbox-reload]`);
