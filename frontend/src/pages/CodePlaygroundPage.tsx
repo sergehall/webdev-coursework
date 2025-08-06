@@ -57,6 +57,8 @@ export default function CodePlaygroundPage() {
     );
     if (existingScript) return;
 
+    setLogs((prev) => [...prev.slice(-99), ">_"]);
+
     const script = document.createElement("script");
     script.src = `/code-playground/${file}`;
     script.async = true;
