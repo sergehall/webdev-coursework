@@ -1,6 +1,6 @@
-// frontend/src/hooks/useConsoleInterceptor.ts
 import { useEffect, useRef } from "react";
 
+// Safe serialization with depth and loop handling
 function safeStringify(value: unknown, depthLimit = 3): string {
   const seen = new WeakSet();
 
@@ -16,10 +16,19 @@ function safeStringify(value: unknown, depthLimit = 3): string {
 
       const result: Record<string, unknown> = {};
       for (const key in val as Record<string, unknown>) {
-        const value = (val as Record<string, unknown>)[key];
-        result[key] = stringifyInternal(value, depth + 1);
+        const innerVal = (val as Record<string, unknown>)[key];
+        result[key] = stringifyInternal(innerVal, depth + 1);
       }
       return result;
+    }
+
+    if (typeof val === "function") {
+      const fn = val as (...args: unknown[]) => unknown;
+      return `[Function: ${fn.name || "anonymous"}]`;
+    }
+
+    if (typeof val === "undefined") {
+      return "[undefined]";
     }
 
     return val;
@@ -43,15 +52,27 @@ export function useConsoleInterceptor(onLog: (msg: string) => void) {
     const originalLog = console.log;
 
     console.log = (...args: unknown[]) => {
+      const timestamp = new Date().toISOString();
+
       const formatted = args
-        .map((arg) =>
-          typeof arg === "object" && arg !== null
-            ? safeStringify(arg)
-            : String(arg)
-        )
+        .map((arg) => {
+          if (typeof arg === "object" && arg !== null) {
+            return safeStringify(arg);
+          }
+          if (typeof arg === "function") {
+            const fn = arg as (...args: unknown[]) => unknown;
+            return `[Function: ${fn.name || "anonymous"}]`;
+          }
+          if (typeof arg === "undefined") {
+            return "[undefined]";
+          }
+          return String(arg);
+        })
         .join(" ");
 
-      onLogRef.current(formatted);
+      const finalLog = `[${timestamp}] ${formatted}`;
+      onLogRef.current(finalLog);
+
       originalLog(...args);
     };
 

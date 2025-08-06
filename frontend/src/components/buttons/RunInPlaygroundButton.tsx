@@ -31,9 +31,17 @@ export default function RunInPlaygroundButton({
 
   const finalIcon = icon ?? <Play size={16} />;
 
+  const getLanguage = (filename: string) => {
+    if (filename.endsWith(".py")) return "python";
+    if (filename.endsWith(".js")) return "javascript";
+    return "text";
+  };
+
   const handleClick = () => {
     if (!disabled) {
-      void navigate(`/code-playground?file=${file}`);
+      const lang = getLanguage(file);
+      const encodedFile = encodeURIComponent(file);
+      void navigate(`/code-playground?file=${encodedFile}&lang=${lang}`);
     }
   };
 

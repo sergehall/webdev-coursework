@@ -17,7 +17,8 @@ export default function AssignmentMod1() {
   return (
     <section className="space-y-6 rounded-xl bg-white p-6 shadow-md dark:bg-gray-900">
       <h2 className="text-2xl font-bold text-blue-700 dark:text-blue-300">
-        Module 1 – Introduction to JavaScript Values, Types and Operators
+        Module 1 – Installing and Using Python, IDLE, and the Canvas Submission
+        System
       </h2>
       <AnimatedAccordionItem
         title="Installing and Using Python, IDLE, and the Canvas Submission System"

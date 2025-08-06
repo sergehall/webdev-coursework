@@ -1,4 +1,4 @@
-// // frontend/src/pages/CodePlaygroundPage.tsx
+// frontend/src/pages/CodePlaygroundPage.tsx
 
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
@@ -21,7 +21,6 @@ import SecurePythonUploadButton from "@/components/buttons/SecurePythonUploadBut
 export default function CodePlaygroundPage() {
   const navigate = useNavigate();
   const location = useLocation();
-
   const [searchParams] = useSearchParams();
   const file = searchParams.get("file");
 
@@ -31,54 +30,95 @@ export default function CodePlaygroundPage() {
 
   const { fileExists } = useCodePlaygroundFileCheck(file);
 
-  // Reset filename and uploaded code when file changes
+  // Automatically load and run file if it's valid
   useEffect(() => {
-    setFilename(null);
-    setLastUploadedCode(null);
-  }, [file]);
+    if (!file || fileExists !== true) return;
 
-  // Show warning if file not found
+    const isPython = file.endsWith(".py");
+    const isJavaScript = file.endsWith(".js");
+
+    // Load and run JavaScript file
+    if (isJavaScript) {
+      void fetch(`/code-playground/${file}`)
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error(`Failed to load file: ${res.statusText}`);
+          }
+          return res.text();
+        })
+        .then((code) => {
+          setLogs((prev) => [...prev.slice(-99), ">_"]);
+          runInSandboxedIframe(code);
+        })
+        .catch((err) => {
+          setLogs((prev) => [
+            ...prev.slice(-99),
+            `❌ Failed to fetch or run JS file: ${String(err)}`,
+          ]);
+        });
+    }
+
+    // Load and run Python file
+    if (isPython) {
+      void fetch(`/code-playground/${file}`)
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error(`Failed to load file: ${res.statusText}`);
+          }
+          return res.text();
+        })
+        .then(async (code) => {
+          if (code.includes("input(")) {
+            setLogs((prev) => [
+              ...prev.slice(-99),
+              "❌ input() is not supported in the browser-based Python interpreter.",
+            ]);
+            return;
+          }
+
+          try {
+            setLogs((prev) => [...prev.slice(-99), ">_"]);
+            const output = await runPythonWithTimeout(code);
+            setLogs((prev) => [...prev.slice(-99), `${output}`]);
+          } catch (err: unknown) {
+            setLogs((prev) => [
+              ...prev.slice(-99),
+              `❌ Error:\n${String(err instanceof Error ? err.message : err)}`,
+            ]);
+          }
+        })
+        .catch((err) => {
+          setLogs((prev) => [
+            ...prev.slice(-99),
+            `❌ Failed to fetch or run file: ${String(err)}`,
+          ]);
+        });
+    }
+
+    return undefined; // Explicitly return undefined to satisfy TS
+  }, [file, fileExists]);
+
+  // Log warning in dev tools if file is not found
   useEffect(() => {
     if (file && fileExists === false) {
       console.warn(`❌ File not found: /code-playground/${file}`);
     }
   }, [file, fileExists]);
 
-  // Intercept console and iframe logs
+  // Intercept logs from iframe and console
   useConsoleInterceptor((msg) => setLogs((prev) => [...prev.slice(-99), msg]));
   usePostMessageLogs((msg) => setLogs((prev) => [...prev.slice(-99), msg]));
 
-  // Load JS script if file is provided and valid
-  useEffect(() => {
-    if (!file || fileExists !== true || !file.endsWith(".js")) return;
-
-    const existingScript = document.querySelector(
-      `script[src="/code-playground/${file}"]`
-    );
-    if (existingScript) return;
-
-    setLogs((prev) => [...prev.slice(-99), ">_"]);
-
-    const script = document.createElement("script");
-    script.src = `/code-playground/${file}`;
-    script.async = true;
-    script.type = "module";
-    script.setAttribute("data-code-playground-initial", "true");
-    document.body.appendChild(script);
-
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, [file, fileExists]);
-
+  // Hook to rerun code on button click
   const handleRunAgain = useRunPlayground(
     file,
     fileExists,
     lastUploadedCode,
-    filename, // pass filename so hook knows the file extension
+    filename,
     setLogs
   );
 
+  // Handle new code uploads (JS or Python)
   const handleUpload = (code: string, name: string) => {
     void (async () => {
       const search = new URLSearchParams(location.search);
@@ -89,11 +129,10 @@ export default function CodePlaygroundPage() {
         search: search.toString(),
       });
 
-      // Determine file type
       const isPython = name.endsWith(".py");
       const wasPython = filename?.endsWith(".py") ?? false;
 
-      // If switching between JS <-> Python, remove stale iframe
+      // Clear iframe if switching between JS <-> Python
       if (isPython !== wasPython) {
         const existingIframe = document.getElementById("sandboxed-iframe");
         if (existingIframe) {
@@ -104,7 +143,6 @@ export default function CodePlaygroundPage() {
       setFilename(name);
       setLastUploadedCode(code);
 
-      // Python execution
       if (isPython) {
         if (code.includes("input(")) {
           setLogs((prev) => [
@@ -125,12 +163,8 @@ export default function CodePlaygroundPage() {
             `❌ Error:\n${String(err instanceof Error ? err.message : err)}`,
           ]);
         }
-
-        // JavaScript execution
       } else {
         setLogs((prev) => [...prev.slice(-99), ">_"]);
-
-        // Fresh iframe will be created inside runInSandboxedIframe
         runInSandboxedIframe(code);
       }
     })();
@@ -142,7 +176,7 @@ export default function CodePlaygroundPage() {
         Code Playground
       </h2>
 
-      {/* Loading or error state */}
+      {/* Error and loading messages */}
       {file && fileExists === false && (
         <div className="mb-4 rounded bg-red-100 p-3 text-red-800 dark:bg-red-800 dark:text-red-100">
           Error: File <code>{file}</code> not found in Code Playground.
@@ -162,7 +196,7 @@ export default function CodePlaygroundPage() {
       />
 
       <div className="mt-4 grid w-full grid-cols-1 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-3">
-      <ClearConsoleButton onClear={() => setLogs([])} />
+        <ClearConsoleButton onClear={() => setLogs([])} />
         <SecureJsUploadButton onSafeUpload={handleUpload} />
         <SecurePythonUploadButton onSafeUpload={handleUpload} />
         {Boolean(file || lastUploadedCode) && (

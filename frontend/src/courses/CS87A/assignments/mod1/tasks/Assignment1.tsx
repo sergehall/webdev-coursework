@@ -4,6 +4,7 @@ import { useState } from "react";
 import ScreenshotGallery from "@/components/ScreenshotGallery";
 import {
   DownloadAssignmentBundleButton,
+  RunInPlaygroundButton,
   ToggleScreenshotButton,
 } from "@/components/buttons";
 
@@ -12,8 +13,8 @@ const Assignment1 = () => {
 
   const screenshots = [
     {
-      label: "Assignment 1 – Python Intro",
-      src: "/code-playground/CS87A/mod-1/CS87A_FA2020_A01.pdf",
+      label: "Screenshot-assignment1 – Python Intro",
+      src: "/code-playground/CS87A/mod-1/screenshot-assignment1.png",
     },
   ];
 
@@ -21,6 +22,14 @@ const Assignment1 = () => {
     {
       fileUrl: "/code-playground/CS87A/mod-1/CS87A_FA2020_A01.pdf",
       filename: "CS87A_FA2020_A01.pdf",
+    },
+    {
+      fileUrl: "/code-playground/CS87A/mod-1/A01.py",
+      filename: "A01.py",
+    },
+    {
+      fileUrl: "/code-playground/CS87A/mod-1/screenshot-assignment1.png",
+      filename: "screenshot-assignment1.png",
     },
   ];
 
@@ -70,11 +79,15 @@ const Assignment1 = () => {
 
       {/* Action Buttons */}
       <div className="mt-4 grid w-full grid-cols-1 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-3">
-        <DownloadAssignmentBundleButton files={files} />
         <ToggleScreenshotButton
           show={showScreenshots}
           toggle={() => setShowScreenshots(!showScreenshots)}
         />
+        <RunInPlaygroundButton
+          file="CS87A/mod-1/A01.py"
+          label="Run in Playground"
+        />
+        <DownloadAssignmentBundleButton files={files} />
       </div>
 
       {/* Screenshot Preview */}

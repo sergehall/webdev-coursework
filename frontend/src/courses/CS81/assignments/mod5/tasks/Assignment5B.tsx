@@ -34,7 +34,7 @@ const Assignment5B = () => {
       filename: "REFLECTION.md",
     },
     {
-      fileUrl: "frontend/public/code-playground/CS81/mod-5/B/runTracker.js",
+      fileUrl: "/code-playground/CS81/mod-5/B/runTracker.js",
       filename: "runTracker.js",
     },
   ];

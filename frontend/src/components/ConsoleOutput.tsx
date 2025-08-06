@@ -14,22 +14,29 @@ export function ConsoleOutput({ logs }: { logs: string[] }) {
       <div className="mb-2 border-b border-gray-900 font-bold">
         Console Output:
       </div>
+
       <pre
         ref={ref}
         className="m-0 max-h-[500px] overflow-y-auto rounded-md bg-gray-50 p-4 text-black dark:bg-gray-900 dark:text-white"
       >
-        {logs.map((line, i) => (
-          <div
-            key={i}
-            className={
-              line.trim() === ">_"
-                ? "text-green-500 dark:text-green-400"
-                : "text-black dark:text-white"
-            }
-          >
-            {line}
-          </div>
-        ))}
+        <code>
+          {logs.map((log, i) => {
+            const lines = log.split("\n");
+            return lines.map((line, j) => (
+              <span
+                key={`${i}-${j}`}
+                className={
+                  line.trim() === ">_"
+                    ? "text-green-500 dark:text-green-400"
+                    : ""
+                }
+              >
+                {line}
+                {"\n"}
+              </span>
+            ));
+          })}
+        </code>
       </pre>
     </div>
   );
