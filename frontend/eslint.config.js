@@ -55,6 +55,8 @@ export default [
         IntersectionObserverCallback: "readonly",
         IntersectionObserverInit: "readonly",
         RequestInit: "readonly",
+        importScripts: "readonly",
+        loadPyodide: "readonly",
       },
     },
     plugins: {
