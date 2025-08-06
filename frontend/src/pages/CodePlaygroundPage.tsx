@@ -161,7 +161,7 @@ export default function CodePlaygroundPage() {
         lastUploadedCode={lastUploadedCode}
       />
 
-      <div className="mt-4 flex w-full flex-col items-center gap-2 sm:flex-row sm:justify-start sm:overflow-x-auto sm:whitespace-nowrap">
+      <div className="mt-4 grid w-full grid-cols-1 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-3">
       <ClearConsoleButton onClear={() => setLogs([])} />
         <SecureJsUploadButton onSafeUpload={handleUpload} />
         <SecurePythonUploadButton onSafeUpload={handleUpload} />
