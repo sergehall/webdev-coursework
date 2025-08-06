@@ -16,7 +16,7 @@ export function ConsoleOutput({ logs }: { logs: string[] }) {
       </div>
       <pre
         ref={ref}
-        className="m-0 max-h-[500px] overflow-y-auto rounded-md bg-gray-100 p-4 text-black dark:bg-gray-900 dark:text-white"
+        className="m-0 max-h-[500px] overflow-y-auto rounded-md bg-gray-50 p-4 text-black dark:bg-gray-900 dark:text-white"
       >
         {logs.map((line, i) => (
           <div

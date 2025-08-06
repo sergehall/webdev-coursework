@@ -12,7 +12,7 @@ export function CodePlaygroundStatus({
   lastUploadedCode: string | null;
 }) {
   let message: string;
-  let colorClass = "text-slate-200 italic";
+  let colorClass: string;
 
   if (file && fileExists === false) {
     message = `File not found: ${file.split("/").pop()}`;
