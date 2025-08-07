@@ -52,8 +52,6 @@ export function useConsoleInterceptor(onLog: (msg: string) => void) {
     const originalLog = console.log;
 
     console.log = (...args: unknown[]) => {
-      const timestamp = new Date().toISOString();
-
       const formatted = args
         .map((arg) => {
           if (typeof arg === "object" && arg !== null) {
@@ -70,9 +68,7 @@ export function useConsoleInterceptor(onLog: (msg: string) => void) {
         })
         .join(" ");
 
-      const finalLog = `[${timestamp}] ${formatted}`;
-      onLogRef.current(finalLog);
-
+      onLogRef.current(formatted);
       originalLog(...args);
     };
 

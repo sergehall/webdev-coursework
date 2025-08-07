@@ -15,7 +15,7 @@ export function useCodePlaygroundFileCheck(file: string | null) {
 
     const checkFile = async () => {
       try {
-        const res = await fetch(path, {method: "GET", cache: "no-store"});
+        const res = await fetch(path, { method: "GET", cache: "no-store" });
         const contentType = res.headers.get("Content-Type") || "";
         if (res.ok) {
           if (isJS && contentType.includes("javascript")) {
@@ -57,5 +57,5 @@ export function useCodePlaygroundFileCheck(file: string | null) {
     void checkFile();
   }, [file]);
 
-  return {fileExists};
+  return { fileExists };
 }
