@@ -24,7 +24,7 @@ export function CodePlaygroundStatus({
     message = `Running uploaded script: ${filename}`;
     colorClass = "text-emerald-600 dark:text-emerald-400";
   } else {
-    message = "Specify a file via ?file=your-script.js or ?file=your-script.py, or upload one below.";
+    message = "Please upload a Python (.py) or JavaScript (.js) file using the form below.";
     colorClass = "text-black dark:text-white";
   }
 
