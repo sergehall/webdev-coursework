@@ -15,7 +15,7 @@ export function useCodePlaygroundFileCheck(file: string | null) {
 
     const checkFile = async () => {
       try {
-        const res = await fetch(path, { method: "GET", cache: "no-store" });
+        const res = await fetch(path, {method: "GET", cache: "no-store"});
         const contentType = res.headers.get("Content-Type") || "";
         if (res.ok) {
           if (isJS && contentType.includes("javascript")) {
@@ -23,14 +23,24 @@ export function useCodePlaygroundFileCheck(file: string | null) {
             return;
           }
 
-          if (
-            isPy &&
-            (contentType === "" || // fallback for dev server
-              contentType.includes("x-python") ||
-              contentType.includes("text/plain"))
-          ) {
-            setFileExists(true);
-            return;
+          if (isPy) {
+            const safeContentTypes = [
+              "text/plain",
+              "application/octet-stream",
+              "application/x-python-code",
+              "application/x-python",
+              "text/x-python",
+              "",
+            ];
+
+            const isSafeType = safeContentTypes.some((type) =>
+              contentType.includes(type)
+            );
+
+            if (isSafeType) {
+              setFileExists(true);
+              return;
+            }
           }
         }
 
@@ -47,5 +57,5 @@ export function useCodePlaygroundFileCheck(file: string | null) {
     void checkFile();
   }, [file]);
 
-  return { fileExists };
+  return {fileExists};
 }
