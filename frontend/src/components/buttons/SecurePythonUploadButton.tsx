@@ -20,10 +20,10 @@ const MAX_FILE_SIZE = 50_000;
 const MAX_LINE_COUNT = 1000;
 const MAX_CODE_LENGTH = 15_000;
 
+// Removed hard block for `while True` and input()
 const forbiddenPatterns = [
   /\bimport\s+(os|sys|subprocess|shutil|socket|multiprocessing|threading|ctypes|resource|signal|js)\b/,
   /\b(eval|exec|compile|open|__import__)\s*\(/,
-  /\bwhile\s+True\b/,
   /\bfor\s+\w+\s+in\s+range\s*\(\s*10{4,}/,
   /\bdel\s+\w+/,
   /\bsetattr\s*\(/,

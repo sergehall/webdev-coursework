@@ -1,60 +1,28 @@
+// src/hooks/usePostMessageLogs.ts
 import { useEffect } from "react";
-
-// Helper: Deep-safe stringify for non-string objects
-function safeStringify(value: unknown, depth = 2): string {
-  const seen = new WeakSet();
-
-  function recurse(val: unknown, level: number): unknown {
-    if (level > depth) return "[Max depth]";
-    if (val && typeof val === "object") {
-      if (seen.has(val)) return "[Circular]";
-      seen.add(val);
-
-      if (Array.isArray(val)) return val.map((v) => recurse(v, level + 1));
-
-      const result: Record<string, unknown> = {};
-      for (const key in val as Record<string, unknown>) {
-        result[key] = recurse((val as Record<string, unknown>)[key], level + 1);
-      }
-      return result;
-    }
-
-    return val;
-  }
-
-  try {
-    return JSON.stringify(recurse(value, 0), null, 2);
-  } catch {
-    return "[Unserializable]";
-  }
-}
 
 type SandboxLogMessage = {
   source?: "sandbox";
   type: "log";
-  payload: unknown[]; // real args from console.log(...)
+  payload: string; // sanitized single-line string from the iframe
 };
 
 export function usePostMessageLogs(onLog: (msg: string) => void): void {
   useEffect(() => {
     const handler = (event: MessageEvent<unknown>) => {
       const data = event.data as Partial<SandboxLogMessage>;
+      if (data?.type !== "log" || data?.source !== "sandbox") return;
 
-      if (
-        data?.type === "log" &&
-        data?.source === "sandbox" &&
-        Array.isArray(data.payload)
-      ) {
-        const formatted = data.payload
-          .map((item) =>
-            typeof item === "string" ? item : safeStringify(item)
-          )
-          .join(" ");
+      // payload is guaranteed to be a string in the new protocol
+      let text = data.payload ?? "";
+      if (!text) return;
 
-        onLog(formatted);
-      }
+      // Normalize: drop a single trailing newline, if any
+      text = text.replace(/\r?\n$/u, "");
+      if (text) onLog(text);
     };
 
+    // Note: srcdoc iframes have opaque origins ("null"), so origin checks are not useful here
     window.addEventListener("message", handler);
     return () => window.removeEventListener("message", handler);
   }, [onLog]);
