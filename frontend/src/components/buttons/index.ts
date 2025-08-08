@@ -26,3 +26,4 @@ export { default as LoadMoreButton } from "./LoadMoreButton";
 export { default as ResetDayButton } from "./ResetDayButton";
 export { default as TogglePreviewButton } from "./TogglePreviewButton";
 export { default as SecurePythonUploadButton } from "./SecurePythonUploadButton";
+export { default as DownloadPDFButton } from "./DownloadPDFButton";

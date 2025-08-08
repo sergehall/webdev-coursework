@@ -60,7 +60,7 @@ const isValidPythonFile = (file: File): boolean => {
   return file.name.toLowerCase().endsWith(".py");
 };
 
-export default function SecurePythonUploadButton({
+function SecurePythonUploadButton({
   onSafeUpload,
   label = "Upload .py file",
   icon,
@@ -141,3 +141,5 @@ export default function SecurePythonUploadButton({
     </>
   );
 }
+
+export default SecurePythonUploadButton;
