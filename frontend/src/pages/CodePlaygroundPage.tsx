@@ -172,7 +172,10 @@ export default function CodePlaygroundPage() {
 
   return (
     <div className="p-3">
-      <h2 className="mb-4 text-3xl font-bold">Code Playground</h2>
+      <h2 className="mb-4 rounded-xl bg-gradient-to-r from-blue-200 to-purple-300 px-6 py-4 text-3xl font-bold text-slate-700 shadow dark:from-blue-600 dark:to-purple-600 dark:text-white">
+        {" "}
+        Code Playground
+      </h2>
 
       <CodePlaygroundStatus
         file={file}
