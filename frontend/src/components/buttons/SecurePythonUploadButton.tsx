@@ -18,7 +18,7 @@ type SecurePythonUploadButtonProps = {
 
 const MAX_FILE_SIZE = 50_000;
 const MAX_LINE_COUNT = 1000;
-const MAX_CODE_LENGTH = 15_000;
+const MAX_CODE_LENGTH = 17_000;
 
 // Removed hard block for `while True` and input()
 const forbiddenPatterns = [
