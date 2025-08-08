@@ -41,14 +41,14 @@ const assignmentCS87AComponents: Record<
       import("@/courses/CS87A/assignments/mod3/AssignmentMod3Placeholder"),
   },
   "4": {
-    main: lazy(() => import("@/courses/CS81/assignments/mod4/AssignmentMod4")),
+    main: lazy(() => import("@/courses/CS87A/assignments/mod4/AssignmentMod4")),
     placeholder: lazy(
-      () => import("@/courses/CS81/assignments/mod4/AssignmentMod4Placeholder")
+      () => import("@/courses/CS87A/assignments/mod4/AssignmentMod4Placeholder")
     ),
     prefetchMain: () =>
-      import("@/courses/CS81/assignments/mod4/AssignmentMod4"),
+      import("@/courses/CS87A/assignments/mod4/AssignmentMod4"),
     prefetchPlaceholder: () =>
-      import("@/courses/CS81/assignments/mod4/AssignmentMod4Placeholder"),
+      import("@/courses/CS87A/assignments/mod4/AssignmentMod4Placeholder"),
   },
   "5": {
     main: lazy(() => import("@/courses/CS81/assignments/mod5/AssignmentMod5")),

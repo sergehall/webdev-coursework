@@ -1,16 +1,15 @@
 // src/assignments/mod4/AssignmentMod4.tsx
 import { useState } from "react";
 
-import Assignment4A from "@/courses/CS81/assignments/mod4/tasks/Assignment4A";
-import Assignment4B from "@/courses/CS81/assignments/mod4/tasks/Assignment4B";
-import QuizModule4 from "@/courses/CS81/assignments/mod4/tasks/QuizModule4";
+import Assignment4 from "@/courses/CS87A/assignments/mod4/tasks/Assignment4";
 import AnimatedAccordionItem from "@/components/AnimatedAccordionItem";
-import { ModuleCompletionButton } from "@/components/buttons";
+import ModuleCompletionButton from "@/components/buttons/ModuleCompletionButton";
 import { useFinalModuleRedirect } from "@/hooks/useFinalModuleRedirect";
 
 export default function AssignmentMod4() {
-  useFinalModuleRedirect(12);
+  useFinalModuleRedirect(6);
   const [openItem, setOpenItem] = useState<string | null>(null);
+
   const toggleItem = (key: string) => {
     setOpenItem((prev) => (prev === key ? null : key));
   };
@@ -18,31 +17,15 @@ export default function AssignmentMod4() {
   return (
     <section className="space-y-6 rounded-xl bg-white p-6 shadow-md dark:bg-gray-900">
       <h2 className="text-2xl font-bold text-blue-700 dark:text-blue-300">
-        Module 4 – Data Structures: Objects and Arrays
+        Module 4 – More Fun With Functions & Python Lists
       </h2>
 
       <AnimatedAccordionItem
-        title="4A: Review readingTracker.js"
-        isOpen={openItem === "4A"}
-        onToggle={() => toggleItem("4A")}
+        title="Assignment 4 — Dot Product, Matrix Transpose, and Scalar Multiplication (auto/manual/random)"
+        isOpen={openItem === "A4"}
+        onToggle={() => toggleItem("A4")}
       >
-        <Assignment4A />
-      </AnimatedAccordionItem>
-
-      <AnimatedAccordionItem
-        title="4B: My Personal Data Objects"
-        isOpen={openItem === "4B"}
-        onToggle={() => toggleItem("4B")}
-      >
-        <Assignment4B />
-      </AnimatedAccordionItem>
-
-      <AnimatedAccordionItem
-        title="Quiz: Module 4 - Objects and Arrays"
-        isOpen={openItem === "Quiz: Module 4"}
-        onToggle={() => toggleItem("Quiz: Module 4")}
-      >
-        <QuizModule4 />
+        <Assignment4 />
       </AnimatedAccordionItem>
 
       <ModuleCompletionButton moduleId={4} />
