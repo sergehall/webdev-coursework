@@ -21,7 +21,7 @@ export default function AssignmentMod1() {
         System
       </h2>
       <AnimatedAccordionItem
-        title="Installing and Using Python, IDLE, and the Canvas Submission System"
+        title="Assignment 1 – Installing and Using Python, IDLE, and the Canvas Submission System"
         isOpen={openItem === "IDLE"}
         onToggle={() => toggleItem("IDLE")}
       >

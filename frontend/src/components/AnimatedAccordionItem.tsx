@@ -37,7 +37,8 @@ export default function AnimatedAccordionItem({
             transition={{ duration: 0.3 }}
             className="overflow-hidden"
           >
-            <div className="px-4 pb-4">{children}</div>
+            {/* Padding around the opening part */}
+            <div className="px-6 py-4">{children}</div>
           </motion.div>
         )}
       </AnimatePresence>

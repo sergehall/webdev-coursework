@@ -1,10 +1,9 @@
-// frontend/src/courses/CS87A/assignments/mod1/tasks/Assignment1.tsx
 import { useState } from "react";
 
 import ScreenshotGallery from "@/components/ScreenshotGallery";
 import {
-  DownloadAssignmentBundleButton,
   DownloadPDFButton,
+  ExternalLinkButton,
   RunInPlaygroundButton,
   ToggleScreenshotButton,
 } from "@/components/buttons";
@@ -19,33 +18,22 @@ const Assignment1 = () => {
     },
   ];
 
-  const files = [
-    {
-      fileUrl: "/code-playground/CS87A/mod-1/CS87A_FA2020_A01.pdf",
-      filename: "CS87A_FA2020_A01.pdf",
-    },
-    {
-      fileUrl: "/code-playground/CS87A/mod-1/A01.py",
-      filename: "A01.py",
-    },
-    {
-      fileUrl: "/code-playground/CS87A/mod-1/screenshot-assignment1.png",
-      filename: "screenshot-assignment1.png",
-    },
-  ];
-
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-bold">Assignment 1 – Python Setup & Intro</h2>
+      <h2 className="text-xl font-bold">
+        Installing and Using Python, IDLE, and Canvas
+      </h2>
 
       <div>
         <h3 className="text-md mb-1 font-semibold text-gray-700 dark:text-gray-300">
           Objective
         </h3>
         <p className="text-sm text-gray-700 dark:text-gray-300">
-          Get started with Python and prepare your working environment for the
-          course. Update your profiles on Zoom and Canvas, and complete a simple
-          Python exercise using IDLE.
+          Get started with Python by installing and using IDLE (or your
+          preferred IDE) and preparing your Zoom & Canvas profiles. You will
+          write a simple Python program using only the number{" "}
+          <code>5.9687</code> and the <code>int()</code> function to enumerate
+          and display five places you recommend or want to visit in the world.
         </p>
       </div>
 
@@ -54,10 +42,13 @@ const Assignment1 = () => {
           Project Description
         </h3>
         <p className="text-sm text-gray-700 dark:text-gray-300">
-          Write a Python script using only the number <code>5.9687</code> and
-          the built-in <code>int()</code> function to enumerate five places you
-          want to visit. Use <code>print()</code> to output the list, and
-          include required comments at the top of your <code>A01.py</code> file.
+          Use the built-in <code>print()</code> function to display a list of
+          five unique travel destinations. Enumerate each item starting from 0
+          without hardcoding the numbers—only use <code>int(5.9687)</code> in
+          your logic to produce the sequence. Do not copy the example
+          destinations from the handout; create your own list. Include proper
+          header comments in your <code>A01.py</code> file as shown in the
+          skeleton code.
         </p>
       </div>
 
@@ -66,14 +57,25 @@ const Assignment1 = () => {
           Key Requirements
         </h3>
         <ul className="list-inside list-disc space-y-1 text-sm text-gray-700 dark:text-gray-300">
-          <li>Set profile photo and bio on Zoom and Canvas</li>
-          <li>Use Python IDLE or a preferred IDE (must work on Windows)</li>
           <li>
-            Submit <code>A01.py</code> only – no screenshots or text outputs
+            Add a profile picture and bio on both Zoom and Canvas (include
+            professional links if available)
           </li>
-          <li>Include proper header comments in your script</li>
           <li>
-            Use only <code>print()</code> and numeric conversion as described
+            Write your Python code in IDLE or another IDE (must run in IDLE on
+            Windows)
+          </li>
+          <li>
+            Submit exactly one file named <code>A01.py</code> — no screenshots
+            or copied interpreter sessions
+          </li>
+          <li>
+            Include your name, student ID, assignment number, date, and
+            description in comments at the top
+          </li>
+          <li>
+            Use only <code>print()</code> and <code>int()</code> with{" "}
+            <code>5.9687</code> to create the numbered list
           </li>
         </ul>
       </div>
@@ -86,14 +88,18 @@ const Assignment1 = () => {
         />
         <DownloadPDFButton
           fileUrl="/code-playground/CS87A/mod-1/CS87A_FA2020_A01.pdf"
-          filename="CS87A_FA2020_A02.pdf"
+          filename="CS87A_FA2020_A01.pdf"
           label="Download Assignment"
         />
         <RunInPlaygroundButton
           file="CS87A/mod-1/A01.py"
           label="Run in Playground"
         />
-        <DownloadAssignmentBundleButton files={files} />
+
+        <ExternalLinkButton
+          href="https://github.com/sergehall/Python_SMC_CS_87A"
+          label="View Solution on GitHub"
+        />
       </div>
 
       {/* Screenshot Preview */}

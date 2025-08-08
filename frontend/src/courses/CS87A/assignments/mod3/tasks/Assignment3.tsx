@@ -3,10 +3,10 @@ import { useState } from "react";
 
 import ScreenshotGallery from "@/components/ScreenshotGallery";
 import {
-  DownloadAssignmentBundleButton,
   RunInPlaygroundButton,
   ToggleScreenshotButton,
   DownloadPDFButton,
+  ExternalLinkButton,
 } from "@/components/buttons";
 
 const Assignment3 = () => {
@@ -19,25 +19,10 @@ const Assignment3 = () => {
     },
   ];
 
-  const files = [
-    {
-      fileUrl: "/code-playground/CS87A/mod-3/CS87A_FA2020_A03.pdf",
-      filename: "CS87A_FA2020_A03.pdf",
-    },
-    {
-      fileUrl: "/code-playground/CS87A/mod-3/A03.py",
-      filename: "A03.py",
-    },
-    {
-      fileUrl: "/code-playground/CS87A/mod-3/screenshot-assignment3.png",
-      filename: "screenshot-assignment3.png",
-    },
-  ];
-
   return (
     <div className="space-y-4">
       <h2 className="text-xl font-bold">
-        Assignment 3 – Tic-Tac-Toe with Variable Board Size & Difficulty
+        Tic-Tac-Toe (Single Player vs Computer)
       </h2>
 
       <div>
@@ -45,10 +30,10 @@ const Assignment3 = () => {
           Objective
         </h3>
         <p className="text-sm text-gray-700 dark:text-gray-300">
-          Build a console Tic-Tac-Toe game in Python that supports a custom
-          square board size and two difficulty levels. Practice working with
-          two-dimensional lists, loops, input validation, and game-state
-          evaluation (win/draw detection).
+          Create a Python Tic-Tac-Toe game where a single player competes
+          against the computer. Use a list of lists to store the board state and
+          the <code>random</code> module to control the computer’s behavior. The
+          computer moves first and plays as <strong>O</strong>.
         </p>
       </div>
 
@@ -57,13 +42,15 @@ const Assignment3 = () => {
           Project Description
         </h3>
         <p className="text-sm text-gray-700 dark:text-gray-300">
-          Implement a Tic-Tac-Toe game where the user can choose the board’s
-          diagonal length (e.g., <code>3</code> for the classic game) and a
-          difficulty level: <strong>Level 1</strong> — the computer chooses
-          moves randomly; <strong>Level 2</strong> — the computer tries to win
-          or at least force a draw. Represent the board as a two-dimensional
-          list whose size equals the chosen diagonal. After each game, prompt
-          the user to play again.
+          Implement the game logic using Python’s <code>randint</code> for
+          computer moves. Write the functions <code>move()</code>,{" "}
+          <code>check_cols()</code>, <code>check_diag1()</code>,{" "}
+          <code>check_diag2()</code>, <code>check_rows()</code>, and{" "}
+          <code>print_board()</code>. Four of these functions check for a
+          winning state (three in a row in any row, column, or diagonal). Use
+          the provided <code>check_ifwin()</code> to determine if the board is
+          in a winning state and announce the winner. Refer to the example
+          gameplay in the handout for look-and-feel.
         </p>
       </div>
 
@@ -73,29 +60,31 @@ const Assignment3 = () => {
         </h3>
         <ul className="list-inside list-disc space-y-1 text-sm text-gray-700 dark:text-gray-300">
           <li>
-            Include header comments with your name, date, and assignment title
-            in <code>A03.py</code>
+            Submit a single file named <code>A03.py</code> with header comments
+            (name, student ID, assignment number, submission date, short program
+            description).
           </li>
           <li>
-            Prompt for the board diagonal length (minimum <code>3</code>) and
-            the difficulty level (<code>1</code> or <code>2</code>)
-          </li>
-          <li>Use a 2D list to store the board; display it after each move</li>
-          <li>
-            Player vs. Computer turns; player uses <code>X</code>, computer uses{" "}
-            <code>0</code> (zero)
+            Implement <code>move()</code> to make the computer move using{" "}
+            <code>random</code>.
           </li>
           <li>
-            Level 1: computer selects a random empty cell; Level 2: implement a
-            strategy to try to win or at least draw
+            Implement <code>check_cols()</code>, <code>check_diag1()</code>,{" "}
+            <code>check_diag2()</code>, <code>check_rows()</code> to traverse
+            the board and detect wins.
           </li>
           <li>
-            Check for win conditions across rows, columns, and both diagonals;
-            detect and report draws
+            Implement <code>print_board()</code> to display the current board
+            state.
           </li>
-          <li>Validate user input; handle invalid entries gracefully</li>
-          <li>Offer to play again at the end of a game</li>
-          <li>Do not import external libraries</li>
+          <li>
+            The game continues until the player or the computer wins, or the
+            game is a draw; then prompt to play another round or exit.
+          </li>
+          <li>
+            Ensure the program runs in <strong>IDLE on Windows</strong>.
+          </li>
+          <li>No external libraries beyond Python’s standard library.</li>
         </ul>
       </div>
 
@@ -114,7 +103,10 @@ const Assignment3 = () => {
           file="CS87A/mod-3/A03.py"
           label="Run in Playground"
         />
-        <DownloadAssignmentBundleButton files={files} />
+        <ExternalLinkButton
+          href="https://github.com/sergehall/Python_SMC_CS_87A"
+          label="View Solution on GitHub"
+        />
       </div>
 
       {/* Screenshot Preview */}

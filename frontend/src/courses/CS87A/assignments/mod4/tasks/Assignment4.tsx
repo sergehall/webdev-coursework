@@ -3,10 +3,10 @@ import { useState } from "react";
 
 import ScreenshotGallery from "@/components/ScreenshotGallery";
 import {
-  DownloadAssignmentBundleButton,
   RunInPlaygroundButton,
   ToggleScreenshotButton,
   DownloadPDFButton,
+  ExternalLinkButton,
 } from "@/components/buttons";
 
 const Assignment4 = () => {
@@ -17,27 +17,24 @@ const Assignment4 = () => {
       label: "Screenshot-assignment4 – More Fun With Functions & Lists",
       src: "/code-playground/CS87A/mod-4/screenshot-assignment4.png",
     },
-  ];
-
-  const files = [
     {
-      fileUrl: "/code-playground/CS87A/mod-4/CS87A_FA2020_A04.pdf",
-      filename: "CS87A_FA2020_A04.pdf",
+      label: "Screenshot-assignment4 – More Fun With Functions & Lists",
+      src: "/code-playground/CS87A/mod-4/screenshot-assignment4-1.png",
     },
     {
-      fileUrl: "/code-playground/CS87A/mod-4/A04.py",
-      filename: "A04.py",
+      label: "Screenshot-assignment4 – More Fun With Functions & Lists",
+      src: "/code-playground/CS87A/mod-4/screenshot-assignment4-2.png",
     },
     {
-      fileUrl: "/code-playground/CS87A/mod-4/screenshot-assignment4.png",
-      filename: "screenshot-assignment4.png",
+      label: "Screenshot-assignment4 – More Fun With Functions & Lists",
+      src: "/code-playground/CS87A/mod-4/screenshot-assignment4-3.png",
     },
   ];
 
   return (
     <div className="space-y-4">
       <h2 className="text-xl font-bold">
-        Assignment 4 – More Fun With Functions & Python Lists
+        More Fun With Functions & Python Lists
       </h2>
 
       <div>
@@ -45,11 +42,9 @@ const Assignment4 = () => {
           Objective
         </h3>
         <p className="text-sm text-gray-700 dark:text-gray-300">
-          Reinforce function design and list manipulation in Python by building
-          three small programs: (1) dot product of two vectors, (2) transpose of
-          a matrix (2D list), and (3) scalar multiplication of a matrix.
-          Practice menu-driven interaction, input validation, and random data
-          generation.
+          Use the <code>def</code> keyword to write functions that operate on
+          <strong> 1D and 2D lists</strong> (vectors and matrices). Implement
+          and test functions that return values without mutating their inputs.
         </p>
       </div>
 
@@ -58,13 +53,29 @@ const Assignment4 = () => {
           Project Description
         </h3>
         <p className="text-sm text-gray-700 dark:text-gray-300">
-          Implement a console application that presents a menu to run one of
-          three programs or to demo all of them with randomly generated data.
-          For programs 1–3, allow the user to choose between manual data entry (
-          <code>'m'</code>) or automatic/random generation. Use clear printing
-          of lists/matrices after each operation, and offer a way to exit the
-          application. The demo option should run all three programs with random
-          values in sequence.
+          Create three functions:
+        </p>
+        <ul className="list-inside list-disc space-y-1 pl-5 text-sm text-gray-700 dark:text-gray-300">
+          <li>
+            <strong>Dot product</strong> of two same-length 1D lists (vectors) —
+            return a single scalar value; do not modify the original vectors.
+          </li>
+          <li>
+            <strong>Transpose</strong> of a 2D list (matrix) — return a new 2D
+            list whose rows/columns are swapped; the input matrix need not be
+            square and must not be mutated.
+          </li>
+          <li>
+            <strong>Scalar multiplication</strong> of a 2D list (matrix) — given
+            a scalar <code>v</code> and matrix <code>A</code>, return a new
+            matrix where each element is multiplied by <code>v</code>; do not
+            modify inputs.
+          </li>
+        </ul>
+        <p className="mt-2 text-sm text-gray-700 dark:text-gray-300">
+          Follow the example usages provided in the handout to verify
+          correctness (e.g., <code>dot([1,2,3],[4,5,6]) → 32</code>, transposing
+          non-square matrices, and scaling matrices by a constant).
         </p>
       </div>
 
@@ -74,43 +85,23 @@ const Assignment4 = () => {
         </h3>
         <ul className="list-inside list-disc space-y-1 text-sm text-gray-700 dark:text-gray-300">
           <li>
-            Add header comments (name, date, assignment title) in{" "}
-            <code>A04.py</code>
+            Submit <strong>one</strong> Python file named <code>A04.py</code>.
+            Include header comments (name, student ID, assignment number,
+            submission date, brief program description).
           </li>
           <li>
-            Menu: enter <code>1</code> for Dot Product, <code>2</code> for
-            Transpose, <code>3</code> for Scalar Multiplication, <code>4</code>{" "}
-            to run all with random values, and <code>exit</code> to quit
+            The functions must <strong>return</strong> results and{" "}
+            <strong>must not</strong> mutate their input lists/matrices.
           </li>
           <li>
-            For options 1–3, prompt for <strong>manual</strong> (
-            <code>'m'</code>) or <strong>automatic</strong> (any other key) data
-            input
+            Ensure the program runs in <strong>IDLE on Windows</strong>.
           </li>
           <li>
-            <strong>Program 1:</strong> compute dot product of two same-length
-            numeric vectors (1D lists)
+            Submit via Canvas by uploading your <code>.py</code> file to the
+            Assignment 4 entry. <em>No</em> screenshots, transcripts, pasted
+            output, or saved interpreter sessions.
           </li>
-          <li>
-            <strong>Program 2:</strong> compute transpose of a matrix (2D list)
-          </li>
-          <li>
-            <strong>Program 3:</strong> perform scalar multiplication{" "}
-            <code>v * matrix</code> (2D list)
-          </li>
-          <li>
-            Validate user input (sizes, numeric values, menu options) and handle
-            errors gracefully
-          </li>
-          <li>
-            For automatic mode, generate sizes/values using reasonable ranges
-            (e.g., random rows/cols and integer values)
-          </li>
-          <li>
-            Print inputs and results in a readable format; separate runs with
-            clear headings
-          </li>
-          <li>No external libraries beyond the Python standard library</li>
+          <li>No external libraries beyond the Python standard library.</li>
         </ul>
       </div>
 
@@ -129,7 +120,10 @@ const Assignment4 = () => {
           file="CS87A/mod-4/A04.py"
           label="Run in Playground"
         />
-        <DownloadAssignmentBundleButton files={files} />
+        <ExternalLinkButton
+          href="https://github.com/sergehall/Python_SMC_CS_87A"
+          label="View Solution on GitHub"
+        />
       </div>
 
       {/* Screenshot Preview */}
