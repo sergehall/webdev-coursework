@@ -1,79 +1,137 @@
+// src/utils/runPythonWithTimeout.ts
 // Runs Python code inside a Web Worker with an optional timeout.
 // Streams logs in real time (via onLog) and supports async input() (via onInput).
+type SidecarFile = { name: string; content: string };
+type Resolver = (name: string) => Promise<string | null>;
+type Options = {
+  // Provide fixed sidecar files (exact content)
+  extras?: Record<string, string>;
+  // Provide a resolver to fetch sidecars by name (e.g., from /code-playground)
+  resolver?: Resolver;
+  // If you already know names to fetch; if omitted, names are detected from `code`
+  sidecarNames?: string[];
+};
+
+function detectSidecarNames(code: string): string[] {
+  const need = new Set<string>();
+  if (/\bfrom\s+A05ClassPrH\b|\bimport\s+A05ClassPrH\b/.test(code))
+    need.add("A05ClassPrH.py");
+  if (/\bhouse\.tab\b/.test(code)) need.add("house.tab");
+  if (/\bpresident\.tab\b/.test(code)) need.add("president.tab");
+  return Array.from(need);
+}
+
+async function resolveSidecars(
+  code: string,
+  opts?: Options
+): Promise<SidecarFile[]> {
+  const out: SidecarFile[] = [];
+  const names = opts?.sidecarNames ?? detectSidecarNames(code);
+
+  // extras take precedence
+  if (opts?.extras) {
+    for (const [name, content] of Object.entries(opts.extras)) {
+      out.push({ name, content });
+    }
+  }
+
+  // fill missing via resolver
+  const have = new Set(out.map((f) => f.name));
+  if (opts?.resolver) {
+    for (const name of names) {
+      if (have.has(name)) continue;
+      try {
+        const content = await opts.resolver(name);
+        if (content != null) out.push({ name, content });
+      } catch {
+        /* ignore resolver errors */
+      }
+    }
+  }
+  return out;
+}
+
 export function runPythonWithTimeout(
   code: string,
   timeoutMs = 300000,
   onInput?: (prompt: string) => Promise<string | null>,
-  onLog?: (text: string) => void
+  onLog?: (text: string) => void,
+  options?: Options
 ): Promise<string> {
   return new Promise((resolve, reject) => {
-    const worker = new Worker("/workers/pyWorker.js"); // classic worker
-    let active = true; // prevent double settle
-    let timer: ReturnType<typeof setTimeout>; // execution timeout handle
-
-    // Arm (or re-arm) the timeout
-    const armTimeout = () => {
-      clearTimeout(timer);
-      if (timeoutMs > 0) {
-        timer = setTimeout(
-          () => stop(() => reject("Python execution timed out.")),
-          timeoutMs
-        );
-      }
-    };
-
-    // Single place to terminate the worker and settle the promise exactly once
-    const stop = (finalize: () => void) => {
-      if (!active) return;
-      active = false;
-      clearTimeout(timer);
+    // Wrap async logic in an IIFE
+    (async () => {
+      let files: SidecarFile[] = [];
       try {
-        worker.terminate();
-      } catch {
-        /* ignore */
-      }
-      finalize();
-    };
-
-    armTimeout();
-
-    worker.onmessage = async (e) => {
-      if (!active) return;
-      const { type, result, error, id, prompt, text } = e.data || {};
-
-      // Real-time logs from worker
-      if (type === "log") {
-        if (onLog) onLog(String(text ?? ""));
-        return;
+        files = await resolveSidecars(code, options);
+        if (files.length) {
+          onLog?.(`[host] sidecars: ${files.map((f) => f.name).join(", ")}`);
+        }
+      } catch (e) {
+        onLog?.(`[host] sidecar resolution error: ${(e as Error).message}`);
       }
 
-      // input() request from Python: pause timeout while the user thinks
-      if (type === "input") {
-        clearTimeout(timer); // pause timeout during user input
-        const value = (await onInput?.(String(prompt ?? "Input:"))) ?? "";
-        armTimeout(); // resume timeout after we got the answer
-        worker.postMessage({ type: "inputResponse", id, value });
-        return;
-      }
+      const worker = new Worker("/workers/pyWorker.js");
+      let active = true;
+      let timer: ReturnType<typeof setTimeout>;
 
-      // Normal completion
-      if (type === "result") {
-        stop(() => resolve(result ?? ""));
-        return;
-      }
+      const armTimeout = () => {
+        clearTimeout(timer);
+        if (timeoutMs > 0) {
+          timer = setTimeout(
+            () => stop(() => reject("Python execution timed out.")),
+            timeoutMs
+          );
+        }
+      };
 
-      // Error from worker / Python
-      if (type === "error") {
-        stop(() => reject(error ?? "Unknown worker error"));
-        return;
-      }
-    };
+      const stop = (finalize: () => void) => {
+        if (!active) return;
+        active = false;
+        clearTimeout(timer);
+        try {
+          worker.terminate();
+        } catch {
+          /* ignore */
+        }
+        finalize();
+      };
 
-    worker.onerror = (err) => {
-      stop(() => reject(err.message || "Unknown worker error"));
-    };
+      armTimeout();
 
-    // Kick off execution
-    worker.postMessage({ type: "start", code });
+      worker.onmessage = async (e) => {
+        if (!active) return;
+        const { type, result, error, id, prompt, text } = e.data || {};
+
+        if (type === "log") {
+          onLog?.(String(text ?? ""));
+          return;
+        }
+
+        if (type === "input") {
+          clearTimeout(timer);
+          const value = (await onInput?.(String(prompt ?? "Input:"))) ?? "";
+          armTimeout();
+          worker.postMessage({ type: "inputResponse", id, value });
+          return;
+        }
+
+        if (type === "result") {
+          stop(() => resolve(result ?? ""));
+          return;
+        }
+
+        if (type === "error") {
+          stop(() => reject(error ?? "Unknown worker error"));
+          return;
+        }
+      };
+
+      worker.onerror = (err) => {
+        stop(() => reject(err.message || "Unknown worker error"));
+      };
+
+      worker.postMessage({ type: "start", code, files });
+    })().catch(reject);
   });
 }
