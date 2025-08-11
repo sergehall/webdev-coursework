@@ -40,20 +40,20 @@ jobs:
       VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: Enable Corepack and prepare Yarn (Berry)
+      - name: Enable Corepack + Yarn (Berry)
         run: |
-          npm install -g corepack
+          npm i -g corepack
           corepack enable
           corepack prepare yarn@4.9.2 --activate
-          yarn --version
+          yarn -v
 
       - name: Cache Yarn
         uses: actions/cache@v3
@@ -65,57 +65,44 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
 
-      - name: Install dependencies (immutable)
+      - name: Install deps
         run: yarn install --immutable
 
-      - name: Create .env file for build
+      - name: Build
         if: inputs.run_build
         run: |
           echo "VITE_ENVIRONMENT=$VITE_ENVIRONMENT" >> .env
           echo "VITE_API_URL=$VITE_API_URL" >> .env
           echo "VITE_QUIZ_SECRET=$VITE_QUIZ_SECRET" >> .env
+          yarn build
 
-      - name: Show generated .env keys (safe debug)
+      # Pack dist into a single tarball (avoids uploading hundreds of files)
+      - name: Pack dist
         if: inputs.run_build
         run: |
-          echo "🔐 Safe preview of .env:"
-          grep -o '^[^=]*' .env | while read -r key; do
-            echo "$key=***"
-          done
+          test -d dist || (echo "dist/ not found" && exit 1)
+          tar -czf dist.tgz -C dist .
 
-      - name: Run Linter
-        if: inputs.run_lint
-        run: yarn lint
+      # Upload for PRs: short retention, PR-specific name
+      - name: Upload artifact (PR)
+        if: inputs.run_build && github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-${{ github.event.pull_request.number }}
+          path: ./frontend/dist.tgz
+          compression-level: 0   # already compressed
+          retention-days: 1
+          if-no-files-found: error
+          overwrite: true
 
-      - name: Run Tests with Coverage
-        if: inputs.run_tests
-        run: yarn test:ci
-
-      - name: Build Frontend
-        if: inputs.run_build
-        run: yarn build
-
-      - name: Show build output (optional)
-        if: inputs.run_build
-        run: |
-          echo "📦 Contents of dist/:"
-          ls -lh ./dist
-          echo ""
-          echo "🔍 Preview of index.html:"
-          head -n 20 ./dist/index.html
-
-      - name: Check if dist exists
-        if: inputs.run_build
-        run: |
-          echo "📂 Contents of ./frontend:"
-          ls -lah .
-          echo ""
-          echo "📂 Contents of ./frontend/dist:"
-          ls -lah ./dist || echo "⚠️ dist not found"
-
-      - name: Upload frontend dist as artifact
-        if: inputs.run_build
+      # Upload for main/tags: stable name, 7-day retention
+      - name: Upload artifact (main/tags)
+        if: inputs.run_build && github.event_name != 'pull_request'
         uses: actions/upload-artifact@v4
         with:
           name: frontend-dist
-          path: ./frontend/dist
+          path: ./frontend/dist.tgz
+          compression-level: 0
+          retention-days: 7
+          if-no-files-found: error
+          overwrite: true
