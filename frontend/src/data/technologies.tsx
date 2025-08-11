@@ -15,6 +15,9 @@ import {
   LayoutTemplate,
   GaugeCircle,
   Cloud,
+  Regex,
+  Terminal,
+  FileText,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -288,6 +291,24 @@ export const technologies: TechnologyGroup = {
       color: "text-green-600",
       label: "Data Processing (.tab files)",
       url: "https://en.wikipedia.org/wiki/Tab-separated_values",
+    },
+    {
+      icon: Regex,
+      color: "text-rose-600",
+      label: "Regular Expressions (re)",
+      url: "https://docs.python.org/3/library/re.html",
+    },
+    {
+      icon: Terminal,
+      color: "text-slate-600",
+      label: "OS module (os)",
+      url: "https://docs.python.org/3/library/os.html",
+    },
+    {
+      icon: FileText,
+      color: "text-amber-700",
+      label: "File I/O (open/read/write)",
+      url: "https://docs.python.org/3/tutorial/inputoutput.html#reading-and-writing-files",
     },
   ],
 };

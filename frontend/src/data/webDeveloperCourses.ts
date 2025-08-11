@@ -1,4 +1,4 @@
-// frontend/src/data/web-developer-courses.ts
+// frontend/src/data/webDeveloperCourses.ts
 
 import type { CourseCode } from "@/data/types/CourseCode";
 

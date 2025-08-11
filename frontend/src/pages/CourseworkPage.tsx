@@ -6,8 +6,8 @@ import { XCircle } from "lucide-react";
 import { LoadMoreButton } from "@/components/buttons";
 import { selectedCourseCodes } from "@/data/selectedCourseCodes";
 import { activeCourseCodes } from "@/data/types/activeCourseCodes";
-import { courses } from "@/data/web-developer-courses";
-import type { BaseCourse } from "@/data/web-developer-courses";
+import { courses } from "@/data/webDeveloperCourses";
+import type { BaseCourse } from "@/data/webDeveloperCourses";
 
 export default function CourseworkPage() {
   const [visibleCount, setVisibleCount] = useState(8);

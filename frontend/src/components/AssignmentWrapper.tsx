@@ -2,8 +2,8 @@ import React, { Suspense } from "react";
 import { useParams } from "react-router-dom";
 
 import CourseSummaryCard from "@/components/CourseSummaryCard";
-import { type BaseCourse, courses } from "@/data/web-developer-courses";
-import completedCourseComponents from "@/data/completedCourseComponents";
+import { type BaseCourse, courses } from "@/data/webDeveloperCourses";
+import completedCourseComponents from "@/courses/assignment-registry/completedCourseComponents";
 import ProgressProvider from "@/context/ProgressProvider";
 
 export default function AssignmentWrapper() {

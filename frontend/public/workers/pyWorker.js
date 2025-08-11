@@ -1,35 +1,37 @@
 // public/workers/pyWorker.js
-// Run Python in Pyodide with: real-time logs + browser input() support
+// Classic Worker (not module). Pyodide runner with:
+// - Live stdout/stderr streaming
+// - input() via JS bridge (async)
+// - Safe async transformation:
+//   1) Seed async-set by functions containing input()
+//   2) Propagate async up the call graph (functions calling async ones become async)
+//   3) Add 'await' at call sites to any async function
+//   4) Patch raw input(...) -> await __input__(...)
+//   5) Wrap code in async __user_main__ and await it
 
 importScripts("https://cdn.jsdelivr.net/pyodide/v0.28.1/full/pyodide.js");
 
-let pyodide = null; // initialized once
+let pyodide = null;
 let nextInputId = 0;
-const pendingInputs = new Map(); // id -> resolve
+const pendingInputs = new Map();
 
-// ---- helpers ---------------------------------------------------------------
-
+// ---------- JS <-> Python bridge ----------
 function sendLog(s) {
-  // Logical simple strings — safe for structured clone
   postMessage({ type: "log", text: String(s ?? "") });
 }
-
 function requestInput(promptText) {
   const id = ++nextInputId;
   return new Promise((resolve) => {
     pendingInputs.set(id, resolve);
-    postMessage({ type: "input", id, prompt: String(promptText ?? "") });
+    postMessage({ type: "input", id, prompt: String(promptText ?? "Input:") });
   });
 }
-
-// safe bridge for result/error — strings only
 function pyReport(kind, text) {
-  const msg = { type: kind };
-  if (kind === "result") msg.result = String(text ?? "");
-  else msg.error = String(text ?? "");
-  postMessage(msg);
+  postMessage({
+    type: kind,
+    [kind === "result" ? "result" : "error"]: String(text ?? ""),
+  });
 }
-
 function indent4(src) {
   return String(src)
     .split("\n")
@@ -37,109 +39,151 @@ function indent4(src) {
     .join("\n");
 }
 
-// --- code transforms --------------------------------------------------------
-
-// Find functions whose body contains plain `input(` and make them async
-function asyncifyFunctionsWithInput(code) {
+// ---------- Small parsing helpers (heuristic, line-based) ----------
+function parseFunctions(code) {
+  // Returns array of { name, indent, start, end, body }
   const lines = code.split("\n");
-  const funcRegex = /^([ \t]*)def\s+([A-Za-z_]\w*)\s*\([^)]*\)\s*:\s*$/;
-  const usesInputRegex = /(^|[^.\w])input\s*\(/m;
-
-  const toAsync = new Set();
+  const defs = [];
+  const defRe = /^([ \t]*)def\s+([A-Za-z_]\w*)\s*\([^)]*\)\s*:\s*$/;
 
   for (let i = 0; i < lines.length; i++) {
-    const m = lines[i].match(funcRegex);
+    const m = lines[i].match(defRe);
     if (!m) continue;
     const indent = m[1];
     const name = m[2];
 
     let j = i + 1;
-    const body = [];
     while (j < lines.length) {
       const l = lines[j];
       if (l.trim() === "") {
-        body.push(l);
         j++;
         continue;
       }
-      if (!l.startsWith(indent + "    ")) break; // dedented => block end
-      body.push(l);
+      if (!l.startsWith(indent + "    ")) break; // dedent => body ends
       j++;
     }
-
-    const bodyText = body.join("\n");
-    if (usesInputRegex.test(bodyText)) {
-      toAsync.add(name);
-      lines[i] = lines[i].replace(/^([ \t]*)def\b/, "$1async def");
-    }
+    const body = lines.slice(i + 1, j).join("\n");
+    defs.push({ name, indent, start: i, end: j - 1, body });
     i = j - 1;
   }
-
-  return { code: lines.join("\n"), asyncified: Array.from(toAsync) };
+  return { lines, defs };
 }
 
-// Safely add `await` before call sites of given function names
-function addAwaitToCallSites(code, names) {
-  if (!names.length) return code;
+// Word boundary call regex builder (names already escaped)
+function buildCallRegex(names) {
+  if (!names.length) return null;
+  const pat = names.join("|");
+  // Match standalone NAME( — forbid method calls like obj.NAME(
+  return new RegExp(`(^|[^.\\w])(${pat})\\s*\\(`, "g");
+}
 
-  const sorted = [...names].sort((a, b) => b.length - a.length);
-  const re = new RegExp(
-    `\\b(${sorted.map((n) => n.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&")).join("|")})\\s*\\(`,
-    "g"
-  );
+// Escape name for regex
+function reEscape(s) {
+  return s.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
+}
 
-  let out = "";
-  let i = 0;
-  while (i < code.length) {
-    re.lastIndex = i;
-    const m = re.exec(code);
-    if (!m) {
-      out += code.slice(i);
-      break;
-    }
-    const start = m.index;
-    const name = m[1];
+// ---------- Async transform pipeline ----------
+function transformToAsync(code) {
+  const usesInputRe = /(^|[^.\w])input\s*\(/m;
 
-    out += code.slice(i, start);
+  // 1) Parse functions
+  const { lines, defs } = parseFunctions(code);
 
-    const ctxStart = Math.max(0, start - 50);
-    const ctx = code.slice(ctxStart, start);
-    const prevChar = code[start - 1] || "";
-    const before = ctx.trimEnd();
-
-    const isMethodCall = prevChar === ".";
-    const precededByWord = /[A-Za-z0-9_]/.test(prevChar);
-    const inDef = /\b(async\s+def|def|class)\s*$/.test(before);
-    const alreadyAwaited = /\bawait\s+$/.test(before);
-
-    if (!isMethodCall && !precededByWord && !inDef && !alreadyAwaited) {
-      out += "await " + name;
-    } else {
-      out += name;
-    }
-
-    i = start + name.length;
+  // 2) Seed async set with functions containing input()
+  const asyncSet = new Set();
+  for (const d of defs) {
+    if (usesInputRe.test(d.body)) asyncSet.add(d.name);
   }
 
-  return out;
+  // 3) Propagate async upwards: if a function calls an async one, it becomes async too
+  let changed = true;
+  while (changed) {
+    changed = false;
+    const asyncNames = Array.from(asyncSet).map(reEscape);
+    const callRe = buildCallRegex(asyncNames);
+    if (!callRe) break;
+
+    for (const d of defs) {
+      if (asyncSet.has(d.name)) continue;
+      // Check if body calls any async function
+      callRe.lastIndex = 0;
+      const body = d.body;
+      let m;
+      let callsAsync = false;
+      while ((m = callRe.exec(body))) {
+        const before = body.slice(Math.max(0, m.index - 80), m.index).trimEnd();
+        // Skip 'def/async def/class' headers (shouldn't be in body anyway)
+        const inHeader = /\b(async\s+def|def|class)\s*$/.test(before);
+        const prevChar = body[m.index - 1] || "";
+        const isMethod = prevChar === ".";
+        if (!inHeader && !isMethod) {
+          callsAsync = true;
+          break;
+        }
+      }
+      if (callsAsync) {
+        asyncSet.add(d.name);
+        changed = true;
+      }
+    }
+  }
+
+  // 4) Rewrite headers: def -> async def for all async functions
+  let newLines = lines.slice();
+  const defHeaderRe = /^([ \t]*)def\s+([A-Za-z_]\w*)\s*\(/;
+  for (const d of defs) {
+    if (asyncSet.has(d.name)) {
+      const ln = lines[d.start];
+      newLines[d.start] = ln.replace(defHeaderRe, "$1async def $2(");
+    }
+  }
+  let newCode = newLines.join("\n");
+
+  // 5) Add 'await' before call sites to async functions (global, but guarded)
+  const asyncNamesEsc = Array.from(asyncSet).map(reEscape);
+  const callReAll = buildCallRegex(asyncNamesEsc);
+  if (callReAll) {
+    let out = "";
+    let i = 0;
+    while (i < newCode.length) {
+      callReAll.lastIndex = i;
+      const m = callReAll.exec(newCode);
+      if (!m) {
+        out += newCode.slice(i);
+        break;
+      }
+      const start = m.index + m[1].length; // skip the prefix group
+      const name = m[2];
+      out += newCode.slice(i, start);
+
+      const prevChar = newCode[start - 1] || "";
+      const before = newCode.slice(Math.max(0, start - 120), start).trimEnd();
+      const isMethodCall = prevChar === ".";
+      const inHeader = /\b(async\s+def|def|class)\s*$/.test(before);
+      const alreadyAwaited = /\bawait\s+$/.test(before);
+
+      if (!isMethodCall && !inHeader && !alreadyAwaited) {
+        out += "await " + name;
+      } else {
+        out += name;
+      }
+      i = start + name.length;
+    }
+    newCode = out;
+  }
+
+  // 6) Patch raw input(...) to await __input__(...)
+  newCode = newCode.replace(/(^|[^.\w])input\s*\(/g, "$1await __input__(");
+
+  return { code: newCode, asyncFunctionNames: Array.from(asyncSet) };
 }
 
-// Replace plain input(…) with awaited __input__(…)
-function patchInputCalls(code) {
-  return String(code).replace(/(^|[^.\w])input\s*\(/g, "$1await __input__(");
-}
-
-// Phase A: define plumbing (__input__, stdout hook, __user_main__) WITHOUT running it
-function wrapPrelude(originalCode) {
-  const { code: asyncifiedCode, asyncified } =
-    asyncifyFunctionsWithInput(originalCode);
-  const withAwaitCalls = addAwaitToCallSites(asyncifiedCode, asyncified);
-  const patched = patchInputCalls(withAwaitCalls);
-
+// ---------- Build Python prelude ----------
+function buildPrelude(userCode) {
+  const { code: patched } = transformToAsync(userCode);
   return `
 import sys
 
-# live stdout/stderr -> JS
 class _LiveOut:
     def __init__(self):
         self._buf = ""
@@ -154,29 +198,26 @@ class _LiveOut:
         if self._buf:
             from js import sendLog as _send
             _send(self._buf)
-            self._buf = ""
 
 sys.stdout = _LiveOut()
 sys.stderr = sys.stdout
 
-import asyncio
 from js import requestInput as _req
 
 async def __input__(prompt=""):
     v = await _req(prompt)
     return "" if v is None else str(v)
 
+# Wrap all user code into async function
 async def __user_main__():
 ${indent4(patched)}
 `;
 }
 
-// ---- worker wiring ---------------------------------------------------------
-
+// ---------- Worker wiring ----------
 self.onmessage = async (e) => {
   const { type, code, id, value } = e.data || {};
 
-  // response from main for an input() prompt
   if (type === "inputResponse" && pendingInputs.has(id)) {
     pendingInputs.get(id)(value);
     pendingInputs.delete(id);
@@ -186,55 +227,48 @@ self.onmessage = async (e) => {
   if (type === "start") {
     try {
       if (!pyodide) {
-        pyodide = await loadPyodide();
+        postMessage({ type: "log", text: "[worker] loading pyodide…" });
+        pyodide = await loadPyodide({
+          stdout: (s) => sendLog(s),
+          stderr: (s) => sendLog(s),
+        });
+        postMessage({ type: "log", text: "[worker] pyodide loaded" });
       }
 
-      // expose JS functions to Python
-      self.sendLog = sendLog;
-      self.requestInput = requestInput;
-      self.pyReport = pyReport;
+      // Expose JS helpers to Python globals (importable via 'from js import ...')
       pyodide.globals.set("sendLog", sendLog);
       pyodide.globals.set("requestInput", requestInput);
       pyodide.globals.set("pyReport", pyReport);
 
-      // Load any packages required by user's code
-      await pyodide.loadPackagesFromImports(code);
-
-      // Phase A
-      const prelude = wrapPrelude(code);
-      await pyodide.runPythonAsync(prelude);
-
-      // Phase B: run user main without top-level await; репорт через pyReport
-      const kickoff = `
-import asyncio
-from js import pyReport as __report
-
-async def __runner__():
-    try:
-        await __user_main__()
-        __report("result", "")
-    except Exception as e:
-        import traceback, io
-        buf = io.StringIO()
-        traceback.print_exc(file=buf)
-        __report("error", buf.getvalue())
-
-asyncio.create_task(__runner__())
-`;
-      await pyodide.runPythonAsync(kickoff);
-
-      // Flush any partial stdout line
       try {
-        await pyodide.runPythonAsync("import sys; sys.stdout.flush()");
-      } catch (e) {
-        console.error(e);
+        await pyodide.loadPackagesFromImports(code);
+      } catch (pkgErr) {
+        postMessage({
+          type: "log",
+          text: "[worker] loadPackagesFromImports skipped: " + String(pkgErr),
+        });
       }
 
-      // Python сам пришлёт result/error через pyReport
+      const prelude = buildPrelude(code);
+      await pyodide.runPythonAsync(prelude);
+
+      const kickoff = `
+from js import pyReport as __report
+import traceback, io
+try:
+    await __user_main__()
+    __report("result", "")
+except Exception:
+    buf = io.StringIO()
+    traceback.print_exc(file=buf)
+    __report("error", buf.getvalue())
+`;
+      await pyodide.runPythonAsync(kickoff);
+      await pyodide.runPythonAsync("import sys; sys.stdout.flush()");
     } catch (err) {
       postMessage({
         type: "error",
-        error: err && err.message ? err.message : String(err),
+        error: "[worker] runtime error: " + (err?.message || String(err)),
       });
     }
   }

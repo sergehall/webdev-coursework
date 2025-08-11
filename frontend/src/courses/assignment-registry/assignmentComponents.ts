@@ -1,9 +1,9 @@
 // src/data/assignmentComponents.ts
 import React from "react";
 
-import assignmentCS80Components from "@/data/assignmentCS80Components";
-import assignmentCS81Components from "@/data/assignmentCS81Components";
-import assignmentCS87AComponents from "@/data/assignmentCS87AComponents";
+import assignmentCS80Components from "@/courses/assignment-registry/assignmentCS80Components";
+import assignmentCS81Components from "@/courses/assignment-registry/assignmentCS81Components";
+import assignmentCS87AComponents from "@/courses/assignment-registry/assignmentCS87AComponents";
 import type { CourseCode } from "@/data/types/CourseCode";
 
 type AssignmentEntry = {

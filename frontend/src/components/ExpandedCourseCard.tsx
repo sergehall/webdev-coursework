@@ -3,7 +3,7 @@ import { BookOpen, Sparkles, Info, School } from "lucide-react";
 
 import { TagBadge, tagIconMap } from "@/components/tags";
 import type { TagIconLabel } from "@/components/tags";
-import type { Course, BaseCourse } from "@/data/web-developer-courses";
+import type { Course, BaseCourse } from "@/data/webDeveloperCourses";
 
 interface Props {
   course: Course;

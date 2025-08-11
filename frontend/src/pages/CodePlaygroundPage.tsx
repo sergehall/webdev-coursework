@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
-import { runPythonWithTimeout } from "@/utils/runPythonWithTimeout";
 import { CodePlaygroundStatus } from "@/components/CodePlaygroundStatus";
 import { useConsoleInterceptor } from "@/hooks/useConsoleInterceptor";
 import { usePostMessageLogs } from "@/hooks/usePostMessageLogs";
@@ -26,28 +25,93 @@ export default function CodePlaygroundPage() {
   const [logs, setLogs] = useState<string[]>([]);
   const [filename, setFilename] = useState<string | null>(null);
   const [lastUploadedCode, setLastUploadedCode] = useState<string | null>(null);
+
+  // Input prompt integration for bottom input bar
   const [inputResolver, setInputResolver] = useState<
     ((value: string) => void) | null
   >(null);
+  const [pendingPrompt, setPendingPrompt] = useState<string | null>(null);
 
   const { fileExists } = useCodePlaygroundFileCheck(file);
 
-  // Handle text input from console
+  // Send console input back to worker
   const handleConsoleInput = (value: string) => {
     if (inputResolver) {
       inputResolver(value);
       setInputResolver(null);
+      setPendingPrompt(null);
     }
   };
 
-  // Auto-run file if it exists
+  // Helper to run Python code via worker (used by both auto-run and uploads)
+  const runPythonInWorker = (code: string) => {
+    if (workerRef.current) {
+      try {
+        workerRef.current.terminate();
+      } catch (e) {
+        // Worker may already be terminated; ignore
+        // (add a no-op so the block isn't empty)
+        void e;
+      }
+      workerRef.current = null;
+    }
+    const worker = new Worker(`workers/pyWorker.js?ts=${Date.now()}`); // cache-busting
+    workerRef.current = worker;
+    worker.onerror = (ev: ErrorEvent) => {
+      const msg =
+        ev.message ||
+        (ev.error && (ev.error as Error)?.message) ||
+        `${ev.filename}:${ev.lineno}:${ev.colno}` ||
+        String(ev);
+      setLogs((prev) => [...prev, `❌ Worker error: ${msg}`]);
+    };
+
+    worker.onmessage = (e: MessageEvent) => {
+      const { type, text, prompt, id, error } = (e.data || {}) as {
+        type?: string;
+        text?: string;
+        prompt?: string;
+        id?: number;
+        error?: string;
+      };
+
+      if (type === "log") {
+        setLogs((prev) => [...prev, String(text ?? "")]);
+        return;
+      }
+      if (type === "input") {
+        setPendingPrompt(String(prompt ?? "Input:"));
+        setLogs((prev) => [...prev, String(prompt ?? "Input:")]);
+        setInputResolver(() => (value: string) => {
+          worker.postMessage({ type: "inputResponse", id, value });
+        });
+        return;
+      }
+      if (type === "result") {
+        worker.terminate();
+        return;
+      }
+      if (type === "error") {
+        setLogs((prev) => [
+          ...prev,
+          `❌ Error:\n${String(error ?? "Unknown")}`,
+        ]);
+        worker.terminate();
+        return;
+      }
+    };
+
+    setLogs((prev) => [...prev, ">_"]);
+    worker.postMessage({ type: "start", code });
+  };
+
+  // Auto-run file if present in /code-playground
   useEffect(() => {
     if (!file || fileExists !== true) return;
 
     const isPython = file.endsWith(".py");
     const isJavaScript = file.endsWith(".js");
 
-    // Handle JavaScript execution
     if (isJavaScript) {
       void fetch(`/code-playground/${file}`)
         .then((res) => (res.ok ? res.text() : Promise.reject(res.statusText)))
@@ -60,46 +124,10 @@ export default function CodePlaygroundPage() {
         );
     }
 
-    // Handle Python execution
     if (isPython) {
       void fetch(`/code-playground/${file}`)
         .then((res) => (res.ok ? res.text() : Promise.reject(res.statusText)))
-        .then((code) => {
-          const worker = new Worker("/workers/pyWorker.js");
-          workerRef.current = worker;
-
-          worker.onmessage = (e) => {
-            const { type, text, prompt, id, error } = e.data || {};
-
-            if (type === "log") {
-              setLogs((prev) => [...prev, String(text ?? "")]);
-              return;
-            }
-            if (type === "input") {
-              setLogs((prev) => [...prev, String(prompt ?? "Input:")]);
-              setInputResolver(() => (value: string) => {
-                worker.postMessage({ type: "inputResponse", id, value });
-              });
-              return;
-            }
-            if (type === "result") {
-              worker.terminate();
-              return;
-            }
-            if (type === "error") {
-              setLogs((prev) => [
-                ...prev,
-                `❌ Error:\n${String(error ?? "Unknown")}`,
-              ]);
-              worker.terminate();
-              return;
-            }
-          };
-
-          // Start execution
-          setLogs((prev) => [...prev, ">_"]);
-          worker.postMessage({ type: "start", code });
-        })
+        .then((code) => runPythonInWorker(code))
         .catch((err) =>
           setLogs((prev) => [
             ...prev,
@@ -109,11 +137,11 @@ export default function CodePlaygroundPage() {
     }
   }, [file, fileExists]);
 
-  // Capture browser console logs
+  // Capture browser console + postMessage logs
   useConsoleInterceptor((msg) => setLogs((prev) => [...prev, msg]));
   usePostMessageLogs((msg) => setLogs((prev) => [...prev, msg]));
 
-  // Run again button handler
+  // Run again button
   const handleRunAgain = useRunPlayground(
     workerRef,
     file,
@@ -124,7 +152,7 @@ export default function CodePlaygroundPage() {
     setInputResolver
   );
 
-  // Handle file uploads
+  // Upload handler
   const handleUpload = (code: string, name: string) => {
     void (async () => {
       const search = new URLSearchParams(location.search);
@@ -145,24 +173,7 @@ export default function CodePlaygroundPage() {
       setLastUploadedCode(code);
 
       if (isPython) {
-        setLogs((prev) => [...prev, ">_"]);
-        try {
-          // Let runPythonWithTimeout handle progressive logging
-          const output = await runPythonWithTimeout(
-            code,
-            300000, // 5 minutes default
-            async (prompt) => {
-              setLogs((prev) => [...prev, prompt]);
-              return new Promise((resolve) => setInputResolver(() => resolve));
-            },
-            (text) => {
-              setLogs((prev) => [...prev, text]);
-            }
-          );
-          if (output) setLogs((prev) => [...prev, output]);
-        } catch (err: unknown) {
-          setLogs((prev) => [...prev, `❌ Error:\n${String(err)}`]);
-        }
+        runPythonInWorker(code); // unified path for Python
       } else {
         setLogs((prev) => [...prev, ">_"]);
         runInSandboxedIframe(code);
@@ -173,7 +184,6 @@ export default function CodePlaygroundPage() {
   return (
     <div className="p-3">
       <h2 className="mb-4 rounded-xl bg-gradient-to-r from-blue-200 to-purple-300 px-6 py-4 text-3xl font-bold text-slate-700 shadow dark:from-blue-600 dark:to-purple-600 dark:text-white">
-        {" "}
         Code Playground
       </h2>
 
@@ -184,7 +194,6 @@ export default function CodePlaygroundPage() {
         lastUploadedCode={lastUploadedCode}
       />
 
-      {/* Action Buttons */}
       <div className="mt-4 grid w-full grid-cols-1 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-3">
         <ClearConsoleButton onClear={() => setLogs([])} />
         <SecureJsUploadButton onSafeUpload={handleUpload} />
@@ -196,7 +205,8 @@ export default function CodePlaygroundPage() {
 
       <ConsoleOutput
         logs={logs}
-        onInput={inputResolver ? handleConsoleInput : () => {}}
+        onInput={inputResolver ? handleConsoleInput : undefined}
+        awaitingPrompt={pendingPrompt || undefined}
       />
     </div>
   );

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 
 import ExpandedCourseCard from "@/components/ExpandedCourseCard";
-import { courses } from "@/data/web-developer-courses";
-import type { CourseGroup } from "@/data/web-developer-courses";
+import { courses } from "@/data/webDeveloperCourses";
+import type { CourseGroup } from "@/data/webDeveloperCourses";
 
 const WebDevMajorRequirements: React.FC = () => {
   const [expanded, setExpanded] = useState<string | null>(null);

@@ -1,93 +1,92 @@
-// src/components/ConsoleOutput.tsx
-import { useEffect, useRef } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 type Props = {
-  logs: (string | unknown)[];
-  // When provided -> input is active; when omitted -> input is shown but disabled
-  onInput?: (value: string) => void;
-  // Optional placeholder when input is inactive
-  inactivePlaceholder?: string;
+  logs: string[];
+  onInput?: (value: string) => void; // when present, show input bar
+  awaitingPrompt?: string; // prompt text from worker
 };
 
-export function ConsoleOutput({
-  logs,
-  onInput,
-  inactivePlaceholder = "Waiting...",
-}: Props) {
-  const ref = useRef<HTMLPreElement>(null);
+export function ConsoleOutput({ logs, onInput, awaitingPrompt }: Props) {
+  const listRef = useRef<HTMLDivElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const [value, setValue] = useState("");
 
-  useEffect(() => {
-    if (ref.current) ref.current.scrollTop = ref.current.scrollHeight;
+  // Join logs into a single pre block and drop empty/whitespace-only lines
+  const joined = useMemo(() => {
+    if (!logs.length) return "";
+    const lines: string[] = [];
+    for (const chunk of logs) {
+      // Normalize chunk into lines
+      const parts = String(chunk ?? "").split(/\r?\n/);
+      for (const line of parts) {
+        if (line.trim() === "") continue; // skip empty lines
+        lines.push(line);
+      }
+    }
+    return lines.join("\n");
   }, [logs]);
 
-  // Normalize any value to lines of text; trim trailing newline to avoid blank rows
-  const toLines = (x: unknown) => {
-    const s =
-      typeof x === "string"
-        ? x
-        : x == null
-          ? ""
-          : (() => {
-              try {
-                return JSON.stringify(x);
-              } catch {
-                return String(x);
-              }
-            })();
-    const trimmed = s.replace(/\r?\n$/, ""); // drop one trailing NL
-    return trimmed.split(/\r?\n/);
+  // Auto-scroll to bottom on new output or prompt
+  useEffect(() => {
+    if (listRef.current) {
+      listRef.current.scrollTop = listRef.current.scrollHeight;
+    }
+  }, [joined, awaitingPrompt]);
+
+  // Autofocus input when awaiting user input
+  useEffect(() => {
+    if (onInput && inputRef.current) inputRef.current.focus();
+  }, [onInput]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!onInput) return;
+    const v = value;
+    setValue("");
+    onInput(v);
   };
 
-  const isActive = typeof onInput === "function";
-
   return (
-    <div className="mt-4 rounded-lg bg-gray-300 p-4 font-mono text-green-500 dark:bg-gray-800">
-      <div className="mb-2 border-b border-gray-900 font-bold">
-        Console Output:
+    <div className="relative mt-4 w-full rounded-lg border border-slate-700/50 bg-black text-slate-100">
+      {/* Output area */}
+      <div
+        ref={listRef}
+        className="max-h-[60vh] w-full overflow-auto p-3 font-mono text-sm leading-relaxed"
+        aria-live="polite"
+      >
+        {joined ? (
+          <pre className="whitespace-pre-wrap break-words">{joined}</pre>
+        ) : (
+          <div className="opacity-60">console is empty…</div>
+        )}
       </div>
 
-      <pre
-        ref={ref}
-        className="m-0 max-h-[500px] overflow-y-auto rounded-md bg-gray-50 p-4 text-black dark:bg-gray-900 dark:text-white"
-      >
-        <code>
-          {logs.map((log, i) =>
-            toLines(log).map((line, j) => (
-              <div
-                key={`${i}-${j}`}
-                className={
-                  line.trim() === ">_"
-                    ? "text-green-500 dark:text-green-400"
-                    : ""
-                }
-              >
-                {line}
-              </div>
-            ))
-          )}
-
-          {/* Inline console input: always rendered; active only when onInput provided */}
+      {/* Bottom input bar */}
+      {onInput && (
+        <form
+          onSubmit={handleSubmit}
+          className="flex items-center gap-2 border-t border-slate-800 bg-[#0f0f10] p-2"
+        >
+          <span className="select-none font-mono text-xs text-slate-400">
+            {awaitingPrompt || "Input:"}
+          </span>
           <input
-            autoFocus={isActive}
-            disabled={!isActive}
-            className={`mt-1 w-full border-none bg-transparent outline-none ${
-              isActive
-                ? "text-green-500 dark:text-green-400"
-                : "text-gray-400 dark:text-gray-500"
-            }`}
-            placeholder={isActive ? "" : inactivePlaceholder}
-            onKeyDown={(e) => {
-              if (!isActive) return;
-              if (e.key === "Enter") {
-                const el = e.target as HTMLInputElement;
-                const v = el.value;
-                el.value = "";
-                onInput?.(v);
-              }
-            }}
+            ref={inputRef}
+            type="text"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            className="flex-1 rounded-md border border-slate-700 bg-black px-3 py-2 font-mono text-sm text-slate-100 outline-none focus:ring-2 focus:ring-indigo-500"
+            placeholder="type and press Enter…"
+            autoComplete="off"
           />
-        </code>
-      </pre>
+          <button
+            type="submit"
+            className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+          >
+            Send
+          </button>
+        </form>
+      )}
     </div>
   );
 }

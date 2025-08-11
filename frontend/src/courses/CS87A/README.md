@@ -12,7 +12,7 @@ It includes six programming assignments covering Python fundamentals, data struc
 ## Course Overview
 
 > _“CS 87A – Introduction to Computer Programming in Python”_  
-> [View Assignments (PDF)](./Assignment/)  
+> [View Assignments (PDF)](./Assignment/)
 
 - **Instructor**: _(Instructor name not specified)_
 - **Term**: Fall 2020
@@ -52,15 +52,14 @@ It includes six programming assignments covering Python fundamentals, data struc
 
 ## Assignment Highlights
 
-| Assignment | Topics Covered                                                                                       | Status      |
-| ---------- | --------------------------------------------------------------------------------------------------- | ----------- |
-| **A01**    | Python syntax basics, variables, loops, conditionals                                                | ✅ complete |
-| **A02**    | Functions, input/output, error handling                                                              | ✅ complete |
-| **A03**    | Lists, tuples, dictionaries, and basic algorithms                                                   | ✅ complete |
-| **A04**    | Classes and objects, encapsulation, and methods                                                      | ✅ complete |
+| Assignment | Topics Covered                                                                                         | Status      |
+| ---------- | ------------------------------------------------------------------------------------------------------ | ----------- |
+| **A01**    | Python syntax basics, variables, loops, conditionals                                                   | ✅ complete |
+| **A02**    | Functions, input/output, error handling                                                                | ✅ complete |
+| **A03**    | Lists, tuples, dictionaries, and basic algorithms                                                      | ✅ complete |
+| **A04**    | Classes and objects, encapsulation, and methods                                                        | ✅ complete |
 | **A05**    | File I/O, custom classes, dictionaries with tuple keys,<br>election data parsing and aggregation logic | ✅ complete |
-| **A06**    | Tkinter GUI programming, Canvas drawing,<br>visualization of processed election data                 | ✅ complete |
-
+| **A06**    | Tkinter GUI programming, Canvas drawing,<br>visualization of processed election data                   | ✅ complete |
 
 ---
 
@@ -105,6 +104,7 @@ python3 A06.py
 
 > **Note:** Tkinter is required for `A06.py`.  
 > On macOS, install with:
+>
 > ```bash
 > brew install python-tk
 > ```
