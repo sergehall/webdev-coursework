@@ -12,7 +12,6 @@ import {
 } from "@nestjs/common";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import { AnswersTokenGuard } from "../../guards/answers-token.guard";
-import { AnswersTokenGuardQuery } from "../../guards/answers-token.guard-query";
 import { ApiDocService } from "../../swagger/api-doc.service";
 import { EndpointKeys } from "../../swagger/enums/endpoint-keys.enum";
 import { QuizzesMethods } from "../../swagger/enums/quizzes-methods.enum";
