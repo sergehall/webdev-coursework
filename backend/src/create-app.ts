@@ -6,6 +6,7 @@ import { AppModule } from "./app.module";
 import * as cookieParser from "cookie-parser";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import type { Request, Response, NextFunction } from "express";
+import { SWAGGER_SECURITY } from "./swagger/security.constants";
 
 export const createApp = (app: INestApplication): INestApplication => {
   // DI support in validators
@@ -60,9 +61,9 @@ export const createApp = (app: INestApplication): INestApplication => {
         scheme: "bearer",
         bearerFormat: "JWT",
         description:
-          "Enter JWT Bearer token (short-lived Answers Token or user token)",
+          'Use a JWT in the Authorization header. In Swagger, click "Authorize" and paste the token only (without the "Bearer " prefix).',
       },
-      "answersToken"
+      SWAGGER_SECURITY.ANSWERS_TOKEN
     )
     .build();
 

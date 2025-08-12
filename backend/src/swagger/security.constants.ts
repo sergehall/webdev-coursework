@@ -1,6 +1,6 @@
 // src/swagger/security.constants.ts
 export const SWAGGER_SECURITY = {
-  ANSWERS_BEARER: "answersToken", // default name for answers-token bearer
+  ANSWERS_TOKEN: "answersToken",
   USER_BEARER: "bearer", // example: user auth bearer
 } as const;
 

@@ -7,6 +7,7 @@ import { EndpointKeys } from "./enums/endpoint-keys.enum";
 import { QuizzesMethods } from "./enums/quizzes-methods.enum";
 import { AppMethods } from "./enums/app-methods.enum";
 import { ApiDoc } from "./api-doc.builder";
+import { SWAGGER_SECURITY } from "./security.constants";
 
 export const ApiDocRegistry = {
   [EndpointKeys.Quizzes]: {
@@ -14,7 +15,7 @@ export const ApiDocRegistry = {
       ApiDoc({
         summary: "Get correct answers by quizId (requires AnswersToken)",
         description,
-        security: [{ type: "bearer", name: "answersToken" }],
+        security: [{ type: "bearer", name: SWAGGER_SECURITY.ANSWERS_TOKEN }],
         ok: { type: CorrectAnswerDto, isArray: true },
         responses: [{ status: 404, description: "Quiz not found" }],
       }),
