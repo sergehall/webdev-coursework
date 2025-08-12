@@ -7,16 +7,18 @@ import {
   ApiOkResponse,
   ApiQuery,
   ApiBearerAuth,
-  ApiSecurity,
 } from "@nestjs/swagger";
 
-type SecurityType = "bearer" | "answersToken";
-type SecurityItem = { type: SecurityType };
+type SecurityItem = { type: "bearer"; name?: string };
 
 export interface ApiDocOptions {
   summary?: string;
   description?: string;
-  // empty array => public operation (without “lock”)
+  /**
+   * Security:
+   * - [] or undefined => public (no lock)
+   * - [{ type: 'bearer', name?: string }] => attach named bearer scheme
+   */
   security?: SecurityItem[];
   ok?: { type?: Type<any>; schema?: any; isArray?: boolean };
   responses?: Array<{
@@ -26,33 +28,36 @@ export interface ApiDocOptions {
     schema?: any;
   }>;
   queries?: Parameters<typeof ApiQuery>[0][];
-  addUnauthorizedByDefault?: boolean; // default is true, but is skipped if security=[]
+  /** Adds 401 automatically only for secured endpoints. */
+  addUnauthorizedByDefault?: boolean;
+  /** Default bearer name if not provided in security item. */
+  defaultBearerName?: string; // defaults to 'answersToken'
 }
 
 export function ApiDoc(opts: ApiDocOptions = {}) {
   const {
     summary,
     description,
-    security = [{ type: "bearer" }],
+    security = [], // <- public by default
     ok,
     responses = [],
     queries = [],
     addUnauthorizedByDefault = true,
+    defaultBearerName = "answersToken",
   } = opts;
 
   const ds: any[] = [];
 
   if (summary || description) ds.push(ApiOperation({ summary, description }));
 
-  // security
+  // Attach bearer only if security is provided
   if (security.length > 0) {
-    security.forEach((s) => {
-      if (s.type === "bearer") ds.push(ApiBearerAuth("bearer"));
-      if (s.type === "answersToken") ds.push(ApiSecurity("answersToken"));
-    });
+    for (const s of security) {
+      if (s.type === "bearer")
+        ds.push(ApiBearerAuth(s.name ?? defaultBearerName));
+    }
   }
 
-  // 200 OK / main successful
   if (ok?.type || ok?.schema) {
     ds.push(
       ApiOkResponse({
@@ -63,13 +68,10 @@ export function ApiDoc(opts: ApiDocOptions = {}) {
     );
   }
 
-  // additional answers
   responses.forEach((r) => ds.push(ApiResponse(r)));
-
-  // query parameters
   queries.forEach((q) => ds.push(ApiQuery(q)));
 
-  // 401 by default, but only if the operation is not public
+  // Add 401 only for secured operations
   if (security.length > 0 && addUnauthorizedByDefault) {
     ds.push(ApiUnauthorizedResponse({ description: "Unauthorized" }));
   }

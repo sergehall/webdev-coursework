@@ -5,14 +5,16 @@ import {
   Param,
   Post,
   BadRequestException,
+  UseGuards,
 } from "@nestjs/common";
+import { AdminApiKeyGuard } from "../../guards/admin-api-key.guard";
 import { ApiDocService } from "../../swagger/api-doc.service";
 import { EndpointKeys } from "../../swagger/enums/endpoint-keys.enum";
 import { QuizzesMethods } from "../../swagger/enums/quizzes-methods.enum";
 import { VerifyTokenDto } from "../dto/verify-token.dto";
 import { TokensService } from "../service/tokens.service";
 
-@Controller("quizzes")
+@Controller("tokens")
 export class TokensController {
   constructor(private readonly tokensService: TokensService) {}
 
@@ -30,6 +32,7 @@ export class TokensController {
    * Verifies a previously issued token (debug/utility endpoint).
    * Returns { ok, payload } on success or { ok:false, error }.
    */
+  @UseGuards(AdminApiKeyGuard)
   @ApiDocService.apply(EndpointKeys.Quizzes, QuizzesMethods.VerifyAnswersToken)
   @Post(":quizId/answers-token/verify")
   verifyAnswersToken(

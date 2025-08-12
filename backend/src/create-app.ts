@@ -40,23 +40,30 @@ export const createApp = (app: INestApplication): INestApplication => {
     })
   );
 
-  // Swagger setup
+  // Swagger setup — register a named Bearer scheme (no global lock)
   const config = new DocumentBuilder()
     .setTitle("SMC Backend API")
     .setDescription("API for Web Developer Learning Portal")
     .setVersion("1.0")
-    .addSecurity("bearer", {
-      type: "http",
-      scheme: "bearer",
-      bearerFormat: "JWT",
-      description: "Enter JWT Bearer token only",
-    })
-    .addSecurity("answersToken", {
-      type: "apiKey",
-      in: "header",
-      name: "x-answers-token",
-      description: "Provide Answers Token in x-answers-token header",
-    })
+    .addApiKey(
+      {
+        type: "apiKey",
+        in: "header",
+        name: "x-admin-key",
+        description: "Admin key for utility/debug endpoints",
+      },
+      "adminKey"
+    )
+    .addBearerAuth(
+      {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
+        description:
+          "Enter JWT Bearer token (short-lived Answers Token or user token)",
+      },
+      "answersToken"
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

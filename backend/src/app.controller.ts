@@ -20,6 +20,7 @@ export class AppController {
     return { name: "SMC Backend API", version: "1.0.0" };
   }
 
+  @ApiDocService.apply(EndpointKeys.App, AppMethods.GetHello)
   @Get()
   getHello(): string {
     return this.appService.getHello();

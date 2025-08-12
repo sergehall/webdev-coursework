@@ -14,7 +14,7 @@ export const ApiDocRegistry = {
       ApiDoc({
         summary: "Get correct answers by quizId (requires AnswersToken)",
         description,
-        security: [{ type: "answersToken" }],
+        security: [{ type: "bearer", name: "answersToken" }],
         ok: { type: CorrectAnswerDto, isArray: true },
         responses: [{ status: 404, description: "Quiz not found" }],
       }),
@@ -23,7 +23,6 @@ export const ApiDocRegistry = {
       ApiDoc({
         summary: "Get quiz questions by quizId (public)",
         description,
-        security: [], // public
         ok: { type: QuizQuestionDto, isArray: true },
         responses: [{ status: 404, description: "Quiz not found" }],
       }),
@@ -33,7 +32,6 @@ export const ApiDocRegistry = {
         ApiDoc({
           summary: "Create a question for a quiz (public)",
           description,
-          security: [],
           ok: { type: QuizQuestionDto, isArray: false },
           responses: [{ status: 400, description: "Bad Request" }],
         }),
@@ -64,7 +62,6 @@ export const ApiDocRegistry = {
       ApiDoc({
         summary: "Get user progress (public)",
         description,
-        security: [],
         ok: { schema: { example: [1, 2, 5] } },
       }),
 
@@ -72,7 +69,6 @@ export const ApiDocRegistry = {
       ApiDoc({
         summary: "Mark a module as completed (public)",
         description,
-        security: [],
         ok: { schema: { example: {} } },
         responses: [{ status: 400, description: "Bad Request" }],
       }),
@@ -81,7 +77,6 @@ export const ApiDocRegistry = {
       ApiDoc({
         summary: "Unmark a completed module (public)",
         description,
-        security: [],
         ok: { schema: { example: {} } },
         responses: [{ status: 400, description: "Bad Request" }],
       }),
@@ -90,32 +85,55 @@ export const ApiDocRegistry = {
       ApiDoc({
         summary: "Reset user progress (public)",
         description,
-        security: [],
         ok: { schema: { example: {} } },
       }),
-  },
-  [QuizzesMethods.VerifyAnswersToken]: (description?: string) =>
-    ApiDoc({
-      summary: "Verify a previously issued answers token (public)",
-      description,
-      security: [],
-      ok: {
-        schema: {
-          oneOf: [
-            { example: { ok: true, payload: { quizId: "quiz-1" } } },
-            { example: { ok: false, error: "Invalid or expired token" } },
-          ],
+
+    [QuizzesMethods.VerifyAnswersToken]: (description?: string) =>
+      ApiDoc({
+        summary: "Verify a previously issued answers token (admin only)",
+        description,
+        security: [{ type: "bearer", name: "adminKey" as any }],
+        ok: {
+          schema: {
+            oneOf: [
+              { example: { ok: true, payload: { quizId: "quiz-1" } } },
+              { example: { ok: false, error: "Invalid or expired token" } },
+            ],
+          },
         },
-      },
-    }),
+      }),
+  },
 
   [EndpointKeys.App]: {
+    [AppMethods.GetHello]: (description?: string) =>
+      ApiDoc({
+        summary: "Hello endpoint",
+        description,
+        ok: {
+          schema: {
+            example:
+              "Hello from backend --- Web Developer Learning Portal! ---",
+          },
+        },
+      }),
     [AppMethods.Health]: (description?: string) =>
       ApiDoc({
         summary: "Service health check",
         description,
-        security: [],
         ok: { schema: { example: { ok: true } } },
+      }),
+    [AppMethods.Info]: (description?: string) =>
+      ApiDoc({
+        summary: "Service info",
+        description,
+        ok: {
+          schema: {
+            example: {
+              name: "SMC Backend API",
+              version: "1.0.0",
+            },
+          },
+        },
       }),
   },
 } as const;
