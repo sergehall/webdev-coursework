@@ -1,14 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, IsArray, ArrayNotEmpty, IsNumber } from "class-validator";
-import { Type } from "class-transformer";
+import { IsNumber, IsString, IsArray, ArrayNotEmpty } from "class-validator";
 
-export class CreateQuestionDto {
-  @ApiProperty({ example: "QuizModule1" })
-  @IsString()
-  quizId!: string;
-
+export class QuizQuestionDto {
   @ApiProperty({ example: 3 })
-  @Type(() => Number)
   @IsNumber()
   questionId!: number;
 
@@ -23,4 +17,8 @@ export class CreateQuestionDto {
   @IsArray()
   @ArrayNotEmpty()
   options!: string[];
+
+  @ApiProperty({ type: [String], example: ["https://.../q3-1.png"] })
+  @IsArray()
+  images!: string[];
 }

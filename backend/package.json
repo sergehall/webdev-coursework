@@ -2,7 +2,7 @@
   "name": "backend",
   "type": "commonjs",
   "version": "1.0.0",
-  "description": "Backend API for SMC 2025 CS81 JavaScript Programming course",
+  "description": "SMC Backend API",
   "author": "Serge Hall",
   "private": true,
   "packageManager": "yarn@4.9.2",

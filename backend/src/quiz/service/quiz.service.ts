@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { CorrectAnswerDto } from "../dto/correct-answer.dto";
 import { CreateQuestionDto } from "../dto/create-question.dto";
-import { QuestionDto } from "../dto/question.dto";
+import { QuizQuestionDto } from "../dto/quiz-question.dto";
 import { QuizQuestion } from "../entities/quiz-question.entity";
 import { CorrectAnswerRepository } from "../repository/correct-answer.repository";
 import { QuizProgressRepository } from "../repository/quiz-progress.repository";
@@ -15,7 +15,7 @@ export class QuizService {
     private readonly quizProgressRepo: QuizProgressRepository
   ) {}
 
-  async getQuizWithQuestions(quizId: string): Promise<QuestionDto[]> {
+  async getQuizWithQuestions(quizId: string): Promise<QuizQuestionDto[]> {
     const records = await this.quizQuestionRepo.findAllByQuizId(quizId);
     if (!records.length) {
       throw new NotFoundException(`Quiz with ID "${quizId}" not found`);

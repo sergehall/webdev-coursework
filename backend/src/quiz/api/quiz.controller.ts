@@ -12,9 +12,12 @@ import {
 } from "@nestjs/common";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import { AnswersTokenGuard } from "../../guards/answers-token.guard";
+import { ApiDocService } from "../../swagger/api-doc.service";
+import { EndpointKeys } from "../../swagger/enums/endpoint-keys.enum";
+import { QuizzesMethods } from "../../swagger/enums/quizzes-methods.enum";
 import { CorrectAnswerDto } from "../dto/correct-answer.dto";
 import { QuizProgressDto } from "../dto/quiz-progress.dto";
-import { QuestionDto } from "../dto/question.dto";
+import { QuizQuestionDto } from "../dto/quiz-question.dto";
 import { ResetProgressDto } from "../dto/reset-progress.dto";
 
 import { QuizService } from "../service/quiz.service";
@@ -24,14 +27,16 @@ import { CreateQuestionDto } from "../dto/create-question.dto";
 export class QuizController {
   constructor(private readonly quizService: QuizService) {}
 
+  @ApiDocService.apply(EndpointKeys.Quizzes, QuizzesMethods.GetQuizQuestions)
   @Get(":quizId/questions")
   async getQuizQuestions(
     @Param("quizId") quizId: string
-  ): Promise<QuestionDto[]> {
+  ): Promise<QuizQuestionDto[]> {
     return await this.quizService.getQuizWithQuestions(quizId);
   }
 
   @UseGuards(AnswersTokenGuard)
+  @ApiDocService.apply(EndpointKeys.Quizzes, QuizzesMethods.GetQuizAnswers)
   @Get(":quizId/answers")
   async getQuizAnswers(
     @Param("quizId") quizId: string
@@ -39,6 +44,7 @@ export class QuizController {
     return await this.quizService.getCorrectAnswers(quizId);
   }
 
+  @ApiDocService.apply(EndpointKeys.Quizzes, QuizzesMethods.CreateQuestion)
   @Post(":quizId/questions")
   @UseInterceptors(FileFieldsInterceptor([{ name: "images", maxCount: 5 }]))
   async createQuestion(
@@ -54,6 +60,7 @@ export class QuizController {
     );
   }
 
+  @ApiDocService.apply(EndpointKeys.Quizzes, QuizzesMethods.GetProgress)
   @Get("progress")
   async getProgress(
     @Query("clientId") clientId: string,
@@ -63,6 +70,7 @@ export class QuizController {
     return this.quizService.getProgress(clientId, appId, courseId);
   }
 
+  @ApiDocService.apply(EndpointKeys.Quizzes, QuizzesMethods.MarkProgress)
   @Post("progress")
   async markProgress(@Body() body: QuizProgressDto): Promise<void> {
     return this.quizService.markModuleCompleted(
@@ -73,6 +81,7 @@ export class QuizController {
     );
   }
 
+  @ApiDocService.apply(EndpointKeys.Quizzes, QuizzesMethods.UnmarkProgress)
   @Delete("progress")
   async unmarkProgress(@Body() body: QuizProgressDto): Promise<void> {
     return this.quizService.unmarkModuleCompleted(
@@ -83,6 +92,7 @@ export class QuizController {
     );
   }
 
+  @ApiDocService.apply(EndpointKeys.Quizzes, QuizzesMethods.ResetProgress)
   @Post("progress/reset")
   async resetProgress(@Body() body: ResetProgressDto): Promise<void> {
     const { clientId, appId, courseId } = body;

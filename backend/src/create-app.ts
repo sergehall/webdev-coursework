@@ -45,10 +45,25 @@ export const createApp = (app: INestApplication): INestApplication => {
     .setTitle("SMC Backend API")
     .setDescription("API for Web Developer Learning Portal")
     .setVersion("1.0")
-    .addBearerAuth()
+    .addSecurity("bearer", {
+      type: "http",
+      scheme: "bearer",
+      bearerFormat: "JWT",
+      description: "Enter JWT Bearer token only",
+    })
+    .addSecurity("answersToken", {
+      type: "apiKey",
+      in: "header",
+      name: "x-answers-token",
+      description: "Provide Answers Token in x-answers-token header",
+    })
     .build();
+
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup("/api/docs", app, document);
+
+  SwaggerModule.setup("/api/docs", app, document, {
+    swaggerOptions: { persistAuthorization: true },
+  });
 
   // CORS
   app.enableCors({
