@@ -1,48 +1,44 @@
+// src/guards/answers-token.guard.ts
 import {
   CanActivate,
   ExecutionContext,
   Injectable,
   UnauthorizedException,
-  InternalServerErrorException,
 } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
 import { Request } from "express";
-import { createHash } from "crypto";
+import { TokensService } from "../tokens/service/tokens.service";
 
 @Injectable()
 export class AnswersTokenGuard implements CanActivate {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(private readonly tokensService: TokensService) {}
 
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest<Request>();
 
-    const quizId = request.params.quizId;
-    const token = request.query.token as string;
-
-    if (!quizId || !token) {
-      throw new UnauthorizedException("Missing quizId or token");
-    }
-
-    const secret = this.configService.get<string>("QUIZ_SECRET_KEY");
-    if (!secret) {
-      throw new InternalServerErrorException(
-        "QUIZ_SECRET_KEY is not defined in the environment"
+    const authHeader = request.headers["authorization"];
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      throw new UnauthorizedException(
+        "Missing or invalid Authorization header"
       );
     }
 
-    const expectedToken = createHash("sha256")
-      .update(`${quizId}:${secret}`)
-      .digest("hex");
+    const token = authHeader.substring(7).trim(); // remove "Bearer "
 
-    if (process.env.NODE_ENV === "development") {
-      console.debug(
-        `[Token Debug] quizId=${quizId}, token=${token}, expected=${expectedToken}`
-      );
+    let payload;
+    try {
+      payload = this.tokensService.verifyQuizAnswersToken(token);
+    } catch (err) {
+      throw new UnauthorizedException("Invalid or expired token");
     }
 
-    if (token !== expectedToken) {
-      throw new UnauthorizedException("Invalid token");
+    // Optional: extra safety check that token matches the quizId in route
+    const quizIdFromRoute = request.params.quizId;
+    if (payload.quizId !== quizIdFromRoute) {
+      throw new UnauthorizedException("Token quizId mismatch");
     }
+
+    // You could attach payload to request for later use in handlers
+    (request as any).quizAnswersTokenPayload = payload;
 
     return true;
   }

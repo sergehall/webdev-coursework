@@ -1,6 +1,7 @@
 // src/quiz/quiz.module.ts
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { TokensModule } from "../tokens/tokens.module";
 import { QuizProgress } from "./entities/quiz-progress.entity";
 import { QuizQuestion } from "./entities/quiz-question.entity";
 import { CorrectAnswerRepository } from "./repository/correct-answer.repository";
@@ -12,6 +13,7 @@ import { CorrectAnswer } from "./entities/correct-answer.entity";
 
 @Module({
   imports: [
+    TokensModule,
     TypeOrmModule.forFeature([CorrectAnswer, QuizQuestion, QuizProgress]),
   ],
   controllers: [QuizController],

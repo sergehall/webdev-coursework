@@ -94,6 +94,20 @@ export const ApiDocRegistry = {
         ok: { schema: { example: {} } },
       }),
   },
+  [QuizzesMethods.VerifyAnswersToken]: (description?: string) =>
+    ApiDoc({
+      summary: "Verify a previously issued answers token (public)",
+      description,
+      security: [],
+      ok: {
+        schema: {
+          oneOf: [
+            { example: { ok: true, payload: { quizId: "quiz-1" } } },
+            { example: { ok: false, error: "Invalid or expired token" } },
+          ],
+        },
+      },
+    }),
 
   [EndpointKeys.App]: {
     [AppMethods.Health]: (description?: string) =>

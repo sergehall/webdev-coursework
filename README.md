@@ -253,7 +253,7 @@ Powered by:
 - RESTful API with modular `Controllers`, `Services`, and `DTOs`
 - Data validation using `class-validator`
 - File uploads with `multer` and cookie/session handling
-- Protected routes using a custom `AnswersTokenGuard` that verifies secure quiz access tokens using HMAC-style SHA-256 hashing and environment-based secrets
+- Protected routes using a custom `AnswersTokenGuardQuery` that verifies secure quiz access tokens using HMAC-style SHA-256 hashing and environment-based secrets
 - Secure API development with strict DTO validation and integration testing
 - **Backend tests** written using [`Jest`](https://jestjs.io/) and [`Supertest`](https://github.com/ladjs/supertest) for unit and E2E coverage
 

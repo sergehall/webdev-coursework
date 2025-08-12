@@ -7,4 +7,6 @@ export enum QuizzesMethods {
   MarkProgress = "MarkProgress",
   UnmarkProgress = "UnmarkProgress",
   ResetProgress = "ResetProgress",
+  IssueAnswersToken = "IssueAnswersToken",
+  VerifyAnswersToken = "VerifyAnswersToken",
 }

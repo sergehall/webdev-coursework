@@ -8,6 +8,7 @@ import { AppService } from "./app.service";
 import { TypeOrmPostgresOptions } from "./db/TypeOrmPostgresOptions";
 import { HttpLoggingMiddleware } from "./middlewares/http-logging.middleware";
 import { QuizModule } from "./quiz/quiz.module";
+import { TokensModule } from "./tokens/tokens.module";
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { QuizModule } from "./quiz/quiz.module";
       useClass: TypeOrmPostgresOptions,
     }),
     QuizModule,
+    TokensModule,
   ],
   controllers: [AppController],
   providers: [AppService],
