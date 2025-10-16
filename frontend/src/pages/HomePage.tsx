@@ -23,9 +23,9 @@ export default function HomePage() {
           Welcome to the Web Developer Learning Portal
         </h1>
 
-        <h3 className="mb-6 text-xl font-semibold text-gray-800 dark:text-white sm:text-2xl">
+        <h2 className="mb-6 text-xl font-semibold text-gray-800 dark:text-white sm:text-2xl">
           Explore the technologies you'll master throughout each course module.
-        </h3>
+        </h2>
 
         <p className="mb-10 text-sm italic text-gray-500 dark:text-gray-400">
           Select a course to view its full technology stack.
