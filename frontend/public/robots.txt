@@ -15,4 +15,4 @@ Disallow: /
 User-agent: Bytespider
 Disallow: /
 
-Sitemap: https://sergioartg.com/sitemap.xml
+Sitemap: https://webdev-coursework.com/sitemap.xml
