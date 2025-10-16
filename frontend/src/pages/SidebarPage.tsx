@@ -1,44 +1,109 @@
-import {
-  BookOpen,
-  ExternalLink,
-  GraduationCap,
-  LayoutDashboard,
-  TerminalSquare,
-} from "lucide-react";
+import { Camera, Film, Images, LayoutDashboard, Send } from "lucide-react";
 
 import SidebarItem from "../components/SidebarItem";
 
-export default function SidebarPage() {
+// Orientation type defines possible sidebar layouts
+type Orientation = "auto" | "horizontal" | "vertical";
+
+export default function SidebarPage({
+  orientation = "auto",
+}: {
+  orientation?: Orientation;
+}) {
+  // Flags to determine forced layout type
+  const isForcedHorizontal = orientation === "horizontal";
+  const isForcedVertical = orientation === "vertical";
+
+  // Base <aside> container classes depending on layout mode
+  const asideClass = isForcedHorizontal
+    ? "flex w-full flex-row items-center justify-between px-2 py-1 bg-transparent dark:bg-gray-900"
+    : isForcedVertical
+      ? "flex w-full flex-col items-start justify-start gap-3 px-4 py-6 bg-transparent dark:bg-gray-900 md:w-56"
+      : "flex w-full flex-row md:flex-col items-center md:items-start justify-between md:justify-start px-2 md:px-4 py-1 md:py-6 bg-transparent dark:bg-gray-900 md:w-56";
+
+  // Sidebar navigation items
+  const items = [
+    {
+      to: "/",
+      icon: <LayoutDashboard className="h-5 w-5 md:h-6 md:w-6" />,
+      label: "Home",
+    },
+    {
+      to: "/coursework",
+      icon: <Images className="h-5 w-5 md:h-6 md:w-6" />,
+      label: "Coursework",
+    },
+    {
+      to: "/web-developer-path",
+      icon: <Camera className="h-5 w-5 md:h-6 md:w-6" />,
+      label: "Roadmap",
+    },
+    {
+      to: "/code-playground",
+      icon: <Film className="h-5 w-5 md:h-6 md:w-6" />,
+      label: "code-playground",
+    },
+    {
+      to: "/resources",
+      icon: <Send className="h-5 w-5 md:h-6 md:w-6" />,
+      label: "Reference Hub",
+    },
+  ];
+
+  /**
+   * HorizontalBar layout
+   * - Used on mobile or when orientation is explicitly set to "horizontal"
+   * - Icons only, labels hidden visually (but accessible via aria-label)
+   */
+  const HorizontalBar = (
+    <ul
+      role="list"
+      className="grid h-full w-full grid-cols-5"
+      aria-label="Primary navigation (horizontal)"
+    >
+      {items.map((it) => (
+        <li key={it.to} className="flex items-center justify-center py-0.5">
+          <SidebarItem to={it.to} icon={it.icon} label={it.label} />
+        </li>
+      ))}
+    </ul>
+  );
+
+  /**
+   * VerticalStack layout
+   * - Used on desktop or when orientation is explicitly set to "vertical"
+   * - Shows both icons and text labels
+   */
+  const VerticalStack = (
+    <ul
+      role="list"
+      className="flex w-full flex-col justify-start gap-2"
+      aria-label="Primary navigation (vertical)"
+    >
+      {items.map((it) => (
+        <li key={it.to}>
+          <SidebarItem to={it.to} icon={it.icon} label={it.label} />
+        </li>
+      ))}
+    </ul>
+  );
+
   return (
-    <aside className="flex w-full flex-row items-center justify-between gap-1 border-t border-gray-300 bg-gray-100 px-2 py-2 dark:border-gray-700 dark:bg-gray-800 md:w-56 md:flex-col md:items-start md:justify-start md:gap-3 md:border-r md:border-t-0 md:px-4 md:py-6">
-      <nav className="flex w-full flex-row justify-around space-x-3 md:flex-col md:justify-start md:space-x-0 md:space-y-4">
-        <div className="flex w-full flex-row justify-around gap-3 md:flex-col md:justify-start md:gap-2">
-          <SidebarItem
-            to="/"
-            icon={<LayoutDashboard className="h-6 w-6" />}
-            label="Home"
-          />
-          <SidebarItem
-            to="/coursework"
-            icon={<BookOpen className="h-6 w-6" />}
-            label="Coursework"
-          />
-          <SidebarItem
-            to="/web-developer-path"
-            icon={<GraduationCap className="h-6 w-6" />}
-            label="Roadmap"
-          />
-          <SidebarItem
-            to="/code-playground"
-            icon={<TerminalSquare className="h-6 w-6" />}
-            label="Code Playground"
-          />
-          <SidebarItem
-            to="/resources"
-            icon={<ExternalLink className="h-6 w-6" />}
-            label="Reference Hub"
-          />
-        </div>
+    <aside className={asideClass}>
+      <nav className="w-full" aria-label="Sidebar">
+        {/* Forced horizontal layout */}
+        {isForcedHorizontal && HorizontalBar}
+
+        {/* Forced vertical layout */}
+        {isForcedVertical && VerticalStack}
+
+        {/* Auto layout: horizontal on mobile, vertical on desktop */}
+        {orientation === "auto" && (
+          <>
+            <div className="block md:hidden">{HorizontalBar}</div>
+            <div className="hidden md:block">{VerticalStack}</div>
+          </>
+        )}
       </nav>
     </aside>
   );
