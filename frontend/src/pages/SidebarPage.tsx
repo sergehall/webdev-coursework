@@ -3,7 +3,7 @@ import {
   ExternalLink,
   GraduationCap,
   LayoutDashboard,
-  TerminalSquare
+  TerminalSquare,
 } from "lucide-react";
 
 import SidebarItem from "../components/SidebarItem";

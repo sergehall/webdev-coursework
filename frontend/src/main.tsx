@@ -1,8 +1,6 @@
-// frontend/src/main.tsx
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
-import { HelmetProvider } from "@dr.pogodin/react-helmet";
 
 import App from "./App";
 import { applySavedTheme } from "./utils/theme";
@@ -29,14 +27,11 @@ const root = ReactDOM.createRoot(container);
 function renderApp() {
   root.render(
     <React.StrictMode>
-      {/* Provide Helmet context globally */}
-      <HelmetProvider>
-        <BrowserRouter>
-          <AppProviders>
-            <App />
-          </AppProviders>
-        </BrowserRouter>
-      </HelmetProvider>
+      <BrowserRouter>
+        <AppProviders>
+          <App />
+        </AppProviders>
+      </BrowserRouter>
     </React.StrictMode>
   );
 }

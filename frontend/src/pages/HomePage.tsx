@@ -1,178 +1,143 @@
-// src/pages/HomePage.tsx
-import { useEffect, useState, type ComponentType } from "react";
-import { Link } from "react-router-dom";
-import { Helmet } from "@dr.pogodin/react-helmet";
+import React, { useState } from "react";
 
-type IconComponent = ComponentType<{ className?: string }>;
+import { technologies } from "@/data/technologies";
+
+type IconProps = { className?: string };
 type TechItem = {
-  icon: IconComponent;
+  icon: React.ComponentType<IconProps>;
   color: string;
   label: string;
   url: string;
 };
 type TechMap = Record<string, TechItem[]>;
 
+const gradients: Record<"python" | "js" | "default", string> = {
+  python:
+    "from-emerald-200 to-emerald-300 dark:from-emerald-900 dark:to-emerald-950",
+  js: "from-amber-200 to-orange-300 dark:from-amber-900 dark:to-orange-950",
+  default: "from-sky-200 to-blue-300 dark:from-sky-900 dark:to-indigo-950",
+};
+
+function gradientFor(courseName: string) {
+  const n = courseName.toLowerCase();
+  if (n.includes("python")) return gradients.python;
+  if (n.includes("javascript")) return gradients.js;
+  return gradients.default;
+}
+
+function TechGrid({ items }: { items: TechItem[] }) {
+  return (
+    <div className="grid grid-cols-2 gap-3 pb-2 sm:grid-cols-3 lg:grid-cols-4">
+      {items.map(({ icon: Icon, color, label, url }) => (
+        <a
+          key={label}
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={[
+            "flex items-center gap-2 rounded-xl border border-gray-200",
+            "bg-white p-2.5 text-gray-800 shadow-sm",
+            "transition-colors duration-200",
+            "hover:border-gray-300 hover:bg-gray-100",
+            "focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2",
+            "dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700",
+          ].join(" ")}
+        >
+          <Icon className={`h-5 w-5 ${color}`} />
+          <span className="text-sm font-medium">{label}</span>
+        </a>
+      ))}
+    </div>
+  );
+}
+
+function CourseRow({
+  name,
+  items,
+  open,
+  onToggle,
+}: {
+  name: string;
+  items: TechItem[];
+  open: boolean;
+  onToggle: () => void;
+}) {
+  const panelId = `course-panel-${name.replace(/\s+/g, "-")}`;
+
+  return (
+    <div className="w-full">
+      <button
+        type="button"
+        aria-expanded={open}
+        aria-controls={panelId}
+        onClick={onToggle}
+        className={[
+          "group grid w-full grid-cols-[1fr_auto] items-center",
+          "rounded-xl border border-gray-100 text-left",
+          "bg-gradient-to-l",
+          gradientFor(name),
+          "text-gray-900 ring-1 ring-white/20 dark:text-white",
+          "px-4 py-2 shadow-sm sm:px-5 sm:py-3",
+          "transition-colors duration-200 ease-in-out",
+          "hover:brightness-90",
+          "focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2",
+          "dark:border-gray-700",
+        ].join(" ")}
+      >
+        <span className="text-sm font-semibold sm:text-base">{name}</span>
+        <span
+          aria-hidden="true"
+          className="flex h-6 w-6 items-center justify-center rounded-md bg-black/10 dark:bg-white/10"
+        >
+          {open ? "−" : "+"}
+        </span>
+      </button>
+
+      {open && (
+        <div id={panelId} className="px-2 pt-2 sm:px-3">
+          <TechGrid items={items} />
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function HomePage() {
   const [openCourse, setOpenCourse] = useState<string | null>(null);
-  const [techData, setTechData] = useState<TechMap | null>(null);
-  const [decorOn, setDecorOn] = useState<boolean>(false);
-
-  useEffect(() => {
-    // First paint → then decorate and load heavy data
-    requestAnimationFrame(() => {
-      setDecorOn(true);
-
-      const load = () =>
-        import("@/data/technologies").then((m) => setTechData(m.technologies));
-
-      // Tiny local typings for requestIdleCallback
-      interface IdleRequestOptions {
-        timeout?: number;
-      }
-      type IdleRequestCallback = (d: {
-        didTimeout: boolean;
-        timeRemaining: () => number;
-      }) => void;
-
-      const w = window as unknown as {
-        requestIdleCallback?: (
-          cb: IdleRequestCallback,
-          opts?: IdleRequestOptions
-        ) => number;
-      };
-
-      if (typeof w.requestIdleCallback === "function") {
-        w.requestIdleCallback(load, { timeout: 1000 });
-      } else {
-        setTimeout(load, 0);
-      }
-    });
-  }, []);
-
-  const toggleCourse = (courseName: string) => {
-    setOpenCourse((prev) => (prev === courseName ? null : courseName));
-  };
+  const techData: TechMap = technologies;
 
   return (
     <main className="flex flex-1 flex-col items-center justify-center px-4 py-10 text-center">
-      {/* Network hints via Helmet (improves FCP on mobile) */}
-      <Helmet>
-        {/* Preconnect to Google Fonts for faster font CSS/asset fetch */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin=""
-        />
-        {/* Non-blocking font CSS with swap to avoid FOIT */}
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
-        />
-        {/* DNS prefetch for Cloudflare beacon (Lighthouse flagged it) */}
-        <link rel="dns-prefetch" href="https://static.cloudflareinsights.com" />
-      </Helmet>
-
-      <div className="w-full max-w-6xl">
-        <h1
-          className={[
-            "mb-10 bg-gradient-to-r from-indigo-500 via-sky-400 to-cyan-400",
-            "bg-clip-text text-4xl font-extrabold text-transparent sm:text-5xl",
-            decorOn ? "drop-shadow-lg" : "",
-          ].join(" ")}
-        >
+      <div className="w-full max-w-5xl">
+        <h1 className="mb-8 bg-gradient-to-r from-indigo-500 via-sky-400 to-cyan-400 bg-clip-text text-4xl font-extrabold text-transparent sm:text-5xl">
           Welcome to the Web Developer Learning Portal
         </h1>
 
-        <h2 className="mb-6 text-lg font-semibold text-gray-800 dark:text-white sm:text-2xl">
+        <h2 className="mb-4 text-lg font-semibold text-gray-800 dark:text-white sm:text-2xl">
           Explore the technologies you'll master throughout each course module.
         </h2>
 
-        <p className="mb-6 text-sm italic text-gray-500 dark:text-gray-400 sm:mb-10">
+        <p className="mb-8 text-sm italic text-gray-500 dark:text-gray-400">
           Select a course to view its full technology stack.
         </p>
 
-        {/* Reserve space to avoid CTA layout shifts (CLS) */}
-        <section className="min-h-[36rem]">
-          {techData ? (
-            Object.entries(techData).map(([courseName, techList]) => (
-              <div
+        <section>
+          <div className="flex flex-col gap-2 sm:gap-3">
+            {Object.entries(techData).map(([courseName, list]) => (
+              <CourseRow
                 key={courseName}
-                className={[
-                  "mb-4 w-full rounded-2xl border border-gray-100 px-4 py-3",
-                  "shadow-sm transition-all duration-200 ease-in-out sm:shadow-md",
-                  "dark:border-gray-700",
-                  courseName.includes("Python")
-                    ? "bg-gradient-to-l from-emerald-100 to-emerald-200 dark:from-emerald-800 dark:via-emerald-900 dark:to-emerald-950"
-                    : courseName.includes("JavaScript")
-                      ? "bg-gradient-to-l from-yellow-100 to-orange-200 dark:from-yellow-800 dark:via-orange-900 dark:to-amber-950"
-                      : "bg-gradient-to-l from-sky-100 to-blue-200 dark:from-sky-800 dark:via-blue-900 dark:to-indigo-950",
-                  "text-gray-800 ring-1 ring-white/20 dark:text-white",
-                  decorOn ? "hover:shadow-md" : "",
-                ].join(" ")}
-              >
-                <h3 className="text-xl font-bold text-gray-800 dark:text-white">
-                  <button
-                    onClick={() => toggleCourse(courseName)}
-                    aria-expanded={openCourse === courseName}
-                    className="flex w-full items-center justify-between text-left"
-                  >
-                    {courseName}
-                    <span className="text-lg">
-                      {openCourse === courseName ? "−" : "+"}
-                    </span>
-                  </button>
-                </h3>
-
-                {openCourse === courseName && (
-                  <div className="mt-3 overflow-hidden">
-                    <div className="grid grid-cols-2 gap-3 pb-2 sm:grid-cols-3 lg:grid-cols-4">
-                      {techList.map(({ icon: Icon, color, label, url }) => (
-                        <a
-                          key={label}
-                          href={url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white p-3 text-gray-800 shadow-sm hover:border-gray-300 hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700"
-                        >
-                          <Icon className={`h-5 w-5 ${color}`} />
-                          <span className="font-medium">{label}</span>
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))
-          ) : (
-            // Skeleton sized close to final content to avoid pushing the CTA
-            <div className="space-y-3">
-              <div className="h-10 rounded-2xl bg-gray-100 dark:bg-gray-800" />
-              <div className="h-10 rounded-2xl bg-gray-100 dark:bg-gray-800" />
-              <div className="h-10 rounded-2xl bg-gray-100 dark:bg-gray-800" />
-              <div className="h-10 rounded-2xl bg-gray-100 dark:bg-gray-800" />
-              <div className="h-10 rounded-2xl bg-gray-100 dark:bg-gray-800" />
-              <div className="h-10 rounded-2xl bg-gray-100 dark:bg-gray-800" />
-            </div>
-          )}
+                name={courseName}
+                items={list}
+                open={openCourse === courseName}
+                onToggle={() =>
+                  setOpenCourse((prev) =>
+                    prev === courseName ? null : courseName
+                  )
+                }
+              />
+            ))}
+          </div>
         </section>
-
-        {/* CTA area with fixed height to prevent CLS */}
-        <div className="contain-layout mt-6 h-[56px] sm:mt-8">
-          <Link
-            to="/coursework"
-            className={[
-              "inline-flex h-full items-center justify-center rounded-2xl",
-              "bg-gradient-to-br from-emerald-500 to-lime-400",
-              "px-6 text-base font-semibold text-gray-900 sm:px-8 sm:text-lg",
-              decorOn
-                ? "shadow-md hover:from-emerald-600 hover:to-lime-500 hover:shadow-lg"
-                : "",
-            ].join(" ")}
-          >
-            Enter the Coursework & Assignments Portal
-          </Link>
-        </div>
       </div>
     </main>
   );
