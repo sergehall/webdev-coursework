@@ -9,16 +9,25 @@
       name="description"
       content="A personal learning portal by Serge Hall for studying web development and showcasing completed coursework using the webdev-coursework application. Covers HTML, CSS, JavaScript, React, PHP, Python, Java, C#, Salesforce, AWS, Azure, WordPress, and more."
     />
+    <meta name="robots" content="index, follow" />
     <meta
       name="keywords"
       content="web development, webdev-coursework, coursework, learning portal, Serge Hall, HTML, CSS, JavaScript, TypeScript, React, Vite, Node.js, PHP, Ruby on Rails, Python, Java, ASP.NET, C#, Salesforce, SQL, NoSQL, MySQL, DynamoDB, AWS, Amazon Web Services, Azure, Microsoft Azure, WordPress, cloud computing, cybersecurity, ethical hacking, forensics, server-side programming, frontend, backend, fullstack, database design, network fundamentals, DevOps"
     />
     <meta name="author" content="Serge Hall" />
-    <meta name="theme-color" content="#0a0a0a" />
-    <meta name="color-scheme" content="dark light" />
 
     <!-- Favicon -->
     <link rel="icon" href="/favicon_eagle.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- Theming -->
+    <meta
+      name="theme-color"
+      content="#0a0a0a"
+      media="(prefers-color-scheme: dark)"
+    />
+    <meta name="color-scheme" content="dark " />
 
     <!-- Open Graph -->
     <meta property="og:title" content="Web Development Learning Portal" />
@@ -29,12 +38,12 @@
     <meta property="og:type" content="website" />
     <meta
       property="og:url"
-      content="https://webdev-coursework-frontend.vercel.app"
+      content="https://webdev-coursework.com"
     />
-    <meta
-      property="og:image"
-      content="https://webdev-coursework-frontend.vercel.app/assets/Web-Developer-Learning-Portal.png"
-    />
+
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://webdev-coursework.com" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -47,28 +56,6 @@
       name="twitter:image"
       content="https://webdev-coursework-frontend.vercel.app/assets/Web-Developer-Learning-Portal.png"
     />
-
-    <!-- Performance: load Google Fonts CSS asynchronously (no render blocking) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!-- Preload the font stylesheet so it’s fetched early, but apply it async -->
-    <link
-      rel="preload"
-      as="style"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
-      media="print"
-      onload="this.media='all'"
-    />
-    <noscript>
-      <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
-      />
-    </noscript>
 
     <!-- Performance: faster DNS for Cloudflare beacon (diagnostic only) -->
     <meta http-equiv="x-dns-prefetch-control" content="on" />
