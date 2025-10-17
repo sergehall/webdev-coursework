@@ -1,5 +1,7 @@
+// src/pages/HomePage.tsx
 import { useEffect, useState, type ComponentType } from "react";
 import { Link } from "react-router-dom";
+import { Helmet } from "@dr.pogodin/react-helmet";
 
 type IconComponent = ComponentType<{ className?: string }>;
 type TechItem = {
@@ -12,41 +14,35 @@ type TechMap = Record<string, TechItem[]>;
 
 export default function HomePage() {
   const [openCourse, setOpenCourse] = useState<string | null>(null);
-
-  // Keep heavy data out of the initial JS parse.
   const [techData, setTechData] = useState<TechMap | null>(null);
-
-  // Turn on decorative effects after first paint.
   const [decorOn, setDecorOn] = useState<boolean>(false);
 
   useEffect(() => {
-    // Ensure first content shows ASAP; then do heavier work.
+    // First paint → then decorate and load heavy data
     requestAnimationFrame(() => {
-      // 1) Turn on decorative styles AFTER first paint.
       setDecorOn(true);
 
-      // 2) Lazy-load the big data AFTER first paint.
       const load = () =>
         import("@/data/technologies").then((m) => setTechData(m.technologies));
 
-      // Declare minimal local interfaces for requestIdleCallback
+      // Tiny local typings for requestIdleCallback
       interface IdleRequestOptions {
         timeout?: number;
       }
-      type IdleRequestCallback = (deadline: {
+      type IdleRequestCallback = (d: {
         didTimeout: boolean;
         timeRemaining: () => number;
       }) => void;
 
-      const win = window as unknown as {
+      const w = window as unknown as {
         requestIdleCallback?: (
           cb: IdleRequestCallback,
           opts?: IdleRequestOptions
         ) => number;
       };
 
-      if (typeof win.requestIdleCallback === "function") {
-        win.requestIdleCallback(load, { timeout: 1000 });
+      if (typeof w.requestIdleCallback === "function") {
+        w.requestIdleCallback(load, { timeout: 1000 });
       } else {
         setTimeout(load, 0);
       }
@@ -59,9 +55,25 @@ export default function HomePage() {
 
   return (
     <main className="flex flex-1 flex-col items-center justify-center px-4 py-10 text-center">
-      {/* Hero block: keep it simple for the first paint */}
+      {/* Network hints via Helmet (improves FCP on mobile) */}
+      <Helmet>
+        {/* Preconnect to Google Fonts for faster font CSS/asset fetch */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin=""
+        />
+        {/* Non-blocking font CSS with swap to avoid FOIT */}
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
+        />
+        {/* DNS prefetch for Cloudflare beacon (Lighthouse flagged it) */}
+        <link rel="dns-prefetch" href="https://static.cloudflareinsights.com" />
+      </Helmet>
+
       <div className="w-full max-w-6xl">
-        {/* Big heading — renders immediately (great for FCP) */}
         <h1
           className={[
             "mb-10 bg-gradient-to-r from-indigo-500 via-sky-400 to-cyan-400",
@@ -80,16 +92,8 @@ export default function HomePage() {
           Select a course to view its full technology stack.
         </p>
 
-        {/* content-visibility helps skip offscreen work on mobile */}
-        <div
-          style={{
-            contentVisibility: "auto",
-            containIntrinsicSize: "800px 1px",
-          }}
-          // Avoid backdrop-blur on the very first frame (GPU expensive on mobile)
-          className={decorOn ? "backdrop-blur-[2px]" : ""}
-        >
-          {/* Render either the real list (when data is ready) or a tiny skeleton (cheap DOM) */}
+        {/* Reserve space to avoid CTA layout shifts (CLS) */}
+        <section className="min-h-[36rem]">
           {techData ? (
             Object.entries(techData).map(([courseName, techList]) => (
               <div
@@ -120,7 +124,6 @@ export default function HomePage() {
                   </button>
                 </h3>
 
-                {/* Mount the heavy grid only when expanded */}
                 {openCourse === courseName && (
                   <div className="mt-3 overflow-hidden">
                     <div className="grid grid-cols-2 gap-3 pb-2 sm:grid-cols-3 lg:grid-cols-4">
@@ -142,29 +145,34 @@ export default function HomePage() {
               </div>
             ))
           ) : (
-            // Ultra-light skeleton to keep DOM minimal for FCP
+            // Skeleton sized close to final content to avoid pushing the CTA
             <div className="space-y-3">
+              <div className="h-10 rounded-2xl bg-gray-100 dark:bg-gray-800" />
+              <div className="h-10 rounded-2xl bg-gray-100 dark:bg-gray-800" />
+              <div className="h-10 rounded-2xl bg-gray-100 dark:bg-gray-800" />
               <div className="h-10 rounded-2xl bg-gray-100 dark:bg-gray-800" />
               <div className="h-10 rounded-2xl bg-gray-100 dark:bg-gray-800" />
               <div className="h-10 rounded-2xl bg-gray-100 dark:bg-gray-800" />
             </div>
           )}
-        </div>
+        </section>
 
-        {/* CTA kept simple; heavier shadow after paint */}
-        <Link
-          to="/coursework"
-          className={[
-            "mt-6 inline-block rounded-2xl sm:mt-8",
-            "bg-gradient-to-br from-emerald-500 to-lime-400",
-            "px-6 py-3 text-base font-semibold text-gray-900 sm:px-8 sm:py-4 sm:text-lg",
-            decorOn
-              ? "shadow-md hover:from-emerald-600 hover:to-lime-500 hover:shadow-lg"
-              : "",
-          ].join(" ")}
-        >
-          Enter the Coursework & Assignments Portal
-        </Link>
+        {/* CTA area with fixed height to prevent CLS */}
+        <div className="contain-layout mt-6 h-[56px] sm:mt-8">
+          <Link
+            to="/coursework"
+            className={[
+              "inline-flex h-full items-center justify-center rounded-2xl",
+              "bg-gradient-to-br from-emerald-500 to-lime-400",
+              "px-6 text-base font-semibold text-gray-900 sm:px-8 sm:text-lg",
+              decorOn
+                ? "shadow-md hover:from-emerald-600 hover:to-lime-500 hover:shadow-lg"
+                : "",
+            ].join(" ")}
+          >
+            Enter the Coursework & Assignments Portal
+          </Link>
+        </div>
       </div>
     </main>
   );

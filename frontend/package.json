@@ -21,6 +21,7 @@
     "test:ui": "vitest --ui"
   },
   "dependencies": {
+    "@dr.pogodin/react-helmet": "^3.0.4",
     "@floating-ui/react-dom": "^2.1.4",
     "@sentry/browser": "^9.42.0",
     "@sentry/react": "^9.42.0",

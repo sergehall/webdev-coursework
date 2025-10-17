@@ -477,7 +477,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.12.5":
+"@babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.28.4":
   version: 7.28.4
   resolution: "@babel/runtime@npm:7.28.4"
   checksum: 10c0/792ce7af9750fb9b93879cc9d1db175701c4689da890e6ced242ea0207c9da411ccf16dc04e689cc01158b28d7898c40d75598f4559109f761c12ce01e959bf7
@@ -600,6 +600,17 @@ __metadata:
   version: 3.0.4
   resolution: "@csstools/css-tokenizer@npm:3.0.4"
   checksum: 10c0/3b589f8e9942075a642213b389bab75a2d50d05d203727fcdac6827648a5572674caff07907eff3f9a2389d86a4ee47308fafe4f8588f4a77b7167c588d2559f
+  languageName: node
+  linkType: hard
+
+"@dr.pogodin/react-helmet@npm:^3.0.4":
+  version: 3.0.4
+  resolution: "@dr.pogodin/react-helmet@npm:3.0.4"
+  dependencies:
+    "@babel/runtime": "npm:^7.28.4"
+  peerDependencies:
+    react: 19
+  checksum: 10c0/10a7e68105f36ff9a01e38fcf3a55714cb49377b9c289d0e9bcc6351c00c8f3c6613eaebfd7e6059771530d0013666c70661f5713512399ec8fc08b49c6ad999
   languageName: node
   linkType: hard
 
@@ -6788,6 +6799,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "frontend@workspace:frontend"
   dependencies:
+    "@dr.pogodin/react-helmet": "npm:^3.0.4"
     "@eslint/js": "npm:^9.29.0"
     "@floating-ui/react-dom": "npm:^2.1.4"
     "@sentry/browser": "npm:^9.42.0"

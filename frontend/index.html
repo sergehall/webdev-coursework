@@ -15,6 +15,7 @@
     />
     <meta name="author" content="Serge Hall" />
     <meta name="theme-color" content="#0a0a0a" />
+    <meta name="color-scheme" content="dark light" />
 
     <!-- Favicon -->
     <link rel="icon" href="/favicon_eagle.ico" />
@@ -46,6 +47,18 @@
       name="twitter:image"
       content="https://webdev-coursework-frontend.vercel.app/assets/Web-Developer-Learning-Portal.png"
     />
+
+    <!-- Performance: fonts load fast and do not block first paint -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
+    />
+
+    <!-- Performance: quicker DNS for Cloudflare beacon (Lighthouse diagnostic) -->
+    <meta http-equiv="x-dns-prefetch-control" content="on" />
+    <link rel="dns-prefetch" href="https://static.cloudflareinsights.com" />
   </head>
 
   <body>
