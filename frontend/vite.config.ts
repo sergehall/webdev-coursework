@@ -74,15 +74,9 @@ export default defineConfig(({ mode }) => {
         : undefined,
       rollupOptions: {
         external: ["fsevents"],
-        output: {
-          manualChunks(id: string): string | undefined {
-            if (!id.includes("node_modules")) return undefined;
-            if (id.includes("/react-router-dom/")) return "router";
-            if (id.includes("/react/")) return "react";
-            // explicit vendor chunk for parallel loading on mobile
-            return "vendor";
-          },
-        },
+        // Let Rollup decide chunking. This avoids pulling an oversized vendor bundle on Home.
+        // If needed later, we can re-introduce very targeted splits.
+        output: {},
       },
       chunkSizeWarningLimit: 700,
     },

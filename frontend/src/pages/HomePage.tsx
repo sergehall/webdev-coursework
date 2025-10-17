@@ -36,8 +36,9 @@ function TechGrid({ items }: { items: TechItem[] }) {
           rel="noopener noreferrer"
           className={[
             "flex items-center gap-2 rounded-xl border border-gray-200",
-            "bg-white p-2.5 text-gray-800 shadow-sm",
-            "transition-colors duration-200",
+            // Mobile: cheap solid background; Desktop: add shadow/hover transitions
+            "bg-white p-2.5 text-gray-800",
+            "md:shadow-sm md:transition-colors md:duration-200",
             "hover:border-gray-300 hover:bg-gray-100",
             "focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2",
             "dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700",
@@ -72,16 +73,18 @@ function CourseRow({
         aria-controls={panelId}
         onClick={onToggle}
         className={[
-          "group grid w-full grid-cols-[1fr_auto] items-center",
-          "rounded-xl border border-gray-100 text-left",
-          "bg-gradient-to-l",
-          gradientFor(name),
-          "text-gray-900 ring-1 ring-white/20 dark:text-white",
-          "px-4 py-2 shadow-sm sm:px-5 sm:py-3",
-          "transition-colors duration-200 ease-in-out",
-          "hover:brightness-90",
-          "focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2",
-          "dark:border-gray-700",
+          "group grid w-full grid-cols-[1fr_auto] items-center text-left",
+          "rounded-xl border border-gray-100 dark:border-gray-700",
+          // Mobile: solid bg (cheap to paint); Desktop: keep gradient beauty
+          "bg-white dark:bg-gray-900 md:bg-gradient-to-l",
+          `md:${gradientFor(name)}`,
+          "text-gray-900 dark:text-white",
+          "px-4 py-2 sm:px-5 sm:py-3",
+          // Remove shadow on mobile; keep clear focus ring
+          "focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 md:shadow-sm",
+          // Transitions only on desktop to avoid initial composite cost
+          "md:transition-colors md:duration-200 md:ease-in-out",
+          "hover:brightness-95",
         ].join(" ")}
       >
         <span className="text-sm font-semibold sm:text-base">{name}</span>
@@ -109,7 +112,14 @@ export default function HomePage() {
   return (
     <main className="flex flex-1 flex-col items-center justify-center px-4 py-10 text-center">
       <div className="w-full max-w-5xl">
-        <h1 className="mb-8 bg-gradient-to-r from-indigo-500 via-sky-400 to-cyan-400 bg-clip-text text-4xl font-extrabold text-transparent sm:text-5xl">
+        <h1
+          className={[
+            "mb-8 text-4xl font-extrabold sm:text-5xl",
+            // Mobile: solid text color (cheap); Desktop: gradient text
+            "text-gray-900 dark:text-white",
+            "md:bg-gradient-to-r md:from-indigo-500 md:via-sky-400 md:to-cyan-400 md:bg-clip-text md:text-transparent",
+          ].join(" ")}
+        >
           Welcome to the Web Developer Learning Portal
         </h1>
 
@@ -121,7 +131,15 @@ export default function HomePage() {
           Select a course to view its full technology stack.
         </p>
 
-        <section>
+        <section
+          style={
+            {
+              // Defer offscreen rendering while reserving space (Chromium supports this)
+              contentVisibility: "auto",
+              containIntrinsicSize: "560px",
+            } as React.CSSProperties
+          }
+        >
           <div className="flex flex-col gap-2 sm:gap-3">
             {Object.entries(techData).map(([courseName, list]) => (
               <CourseRow
