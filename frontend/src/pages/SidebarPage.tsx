@@ -1,4 +1,10 @@
-import { Camera, Film, Images, LayoutDashboard, Send } from "lucide-react";
+import {
+  BookOpen,
+  ExternalLink,
+  GraduationCap,
+  LayoutDashboard,
+  TerminalSquare
+} from "lucide-react";
 
 import SidebarItem from "../components/SidebarItem";
 
@@ -30,22 +36,22 @@ export default function SidebarPage({
     },
     {
       to: "/coursework",
-      icon: <Images className="h-5 w-5 md:h-6 md:w-6" />,
+      icon: <BookOpen className="h-5 w-5 md:h-6 md:w-6" />,
       label: "Coursework",
     },
     {
       to: "/web-developer-path",
-      icon: <Camera className="h-5 w-5 md:h-6 md:w-6" />,
+      icon: <GraduationCap className="h-5 w-5 md:h-6 md:w-6" />,
       label: "Roadmap",
     },
     {
       to: "/code-playground",
-      icon: <Film className="h-5 w-5 md:h-6 md:w-6" />,
+      icon: <TerminalSquare className="h-5 w-5 md:h-6 md:w-6" />,
       label: "code-playground",
     },
     {
       to: "/resources",
-      icon: <Send className="h-5 w-5 md:h-6 md:w-6" />,
+      icon: <ExternalLink className="h-5 w-5 md:h-6 md:w-6" />,
       label: "Reference Hub",
     },
   ];
