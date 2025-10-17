@@ -1,6 +1,52 @@
-@import "./styles/form-reset.css";
-@import "./styles/pre-styles.css";
+/* index.css */
 
+/* --- Base layer: resets and minimal defaults --- */
 @tailwind base;
+
+/* Put your reset into base layer so purge/ordering work correctly */
+@layer base {
+  /* form-reset.css content here */
+  /* Example: */
+  /* Remove default margins, normalize headings, etc. */
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+  html:focus-within {
+    scroll-behavior: smooth;
+  }
+  body {
+    margin: 0;
+    min-height: 100%;
+  }
+  /* ...add the rest of your reset */
+}
+
+/* Put your pre-styles into base/components as appropriate */
+@layer base {
+  /* pre-styles.css content here */
+  /* Example: color-scheme and system font as a fast fallback */
+  :root {
+    color-scheme: dark light;
+  }
+  body {
+    font-family:
+      ui-sans-serif,
+      system-ui,
+      -apple-system,
+      "Segoe UI",
+      Roboto,
+      Ubuntu,
+      Cantarell,
+      "Noto Sans",
+      "Helvetica Neue",
+      Arial,
+      "Apple Color Emoji",
+      "Segoe UI Emoji";
+  }
+}
+
+/* --- Components & utilities follow --- */
 @tailwind components;
 @tailwind utilities;

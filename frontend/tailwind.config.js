@@ -2,6 +2,27 @@
 module.exports = {
   darkMode: "class",
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+
+  // Safelist ensures dynamically composed classes are not purged.
+  // Adjust the palette/levels to match what you actually use in data.
+  safelist: [
+    {
+      // text color tokens used by dynamic icon classes: e.g. "text-sky-500"
+      pattern:
+        /^text-(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-(?:400|500|600)$/,
+    },
+    // If you ever pass dynamic bg colors from data, uncomment:
+    // {
+    //   pattern:
+    //     /^bg-(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-(?:100|200|500)$/,
+    // },
+  ],
+
+  // Opt-in future behavior to reduce useless :hover rules on devices without hover
+  future: {
+    hoverOnlyWhenSupported: true,
+  },
+
   theme: {
     extend: {
       animation: {
@@ -38,5 +59,9 @@ module.exports = {
       },
     },
   },
+
   plugins: [],
+
+  // Usage tip (not a config): prefer `motion-safe:animate-glitch` in markup,
+  // so users with `prefers-reduced-motion` are not forced to see heavy animation.
 };

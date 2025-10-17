@@ -48,15 +48,29 @@
       content="https://webdev-coursework-frontend.vercel.app/assets/Web-Developer-Learning-Portal.png"
     />
 
-    <!-- Performance: fonts load fast and do not block first paint -->
+    <!-- Performance: load Google Fonts CSS asynchronously (no render blocking) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Preload the font stylesheet so it’s fetched early, but apply it async -->
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
+    />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
+      media="print"
+      onload="this.media='all'"
     />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
+      />
+    </noscript>
 
-    <!-- Performance: quicker DNS for Cloudflare beacon (Lighthouse diagnostic) -->
+    <!-- Performance: faster DNS for Cloudflare beacon (diagnostic only) -->
     <meta http-equiv="x-dns-prefetch-control" content="on" />
     <link rel="dns-prefetch" href="https://static.cloudflareinsights.com" />
   </head>
