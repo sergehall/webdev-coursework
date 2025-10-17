@@ -61,7 +61,7 @@ export default defineConfig(({ mode }) => {
     build: {
       outDir: "dist",
       sourcemap: !isProd,
-      target: "es2018",
+      target: "es2020",
       cssCodeSplit: true,
       minify: "esbuild",
       modulePreload: { polyfill: false },
@@ -75,19 +75,12 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         external: ["fsevents"],
         output: {
-          // Safer chunk splitting under Yarn PnP — return a string OR undefined explicitly
           manualChunks(id: string): string | undefined {
             if (!id.includes("node_modules")) return undefined;
-
-            // Group react ecosystem
             if (id.includes("/react-router-dom/")) return "router";
             if (id.includes("/react/")) return "react";
-
-            // Optional: put everything else from node_modules into a shared vendor chunk
-            // return "vendor";
-
-            // Default: let Rollup decide (no named chunk)
-            return undefined;
+            // explicit vendor chunk for parallel loading on mobile
+            return "vendor";
           },
         },
       },

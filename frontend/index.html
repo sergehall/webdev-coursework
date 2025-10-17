@@ -1,69 +1,92 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <head>
+    <meta charset="utf-8" />
+    <!-- Add viewport-fit=cover to avoid relayout around iOS safe areas -->
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
 
-  <title>Web Development Learning Portal – Serge Hall</title>
-  <meta
-    name="description"
-    content="A personal learning portal by Serge Hall for studying web development and showcasing completed coursework using the webdev-coursework application."
-  />
-  <meta name="robots" content="index,follow" />
-  <meta name="author" content="Serge Hall" />
+    <title>Web Development Learning Portal – Serge Hall</title>
+    <meta
+      name="description"
+      content="A personal learning portal by Serge Hall for studying web development and showcasing completed coursework using the webdev-coursework application."
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="author" content="Serge Hall" />
 
-  <!-- Favicons / PWA -->
-  <link rel="icon" href="/favicon_eagle.ico" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-  <link rel="manifest" href="/site.webmanifest" />
+    <!-- Favicons / PWA (use lightweight PNGs instead of ICO to reduce early bytes on mobile) -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+    <!-- Keep .ico only if you must support legacy; otherwise remove the next line in production -->
+    <!-- <link rel="icon" href="/favicon_eagle.ico" /> -->
 
-  <!-- Theming -->
-  <meta name="color-scheme" content="light dark" />
-  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)" />
+    <!-- Optimized, cached Apple touch icon (ensure the file itself is compressed ~<=40KB) -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 
-  <!-- OG / Twitter -->
-  <meta property="og:title" content="Web Development Learning Portal" />
-  <meta
-    property="og:description"
-    content="Explore and track completed web development coursework by Serge Hall using the webdev-coursework application."
-  />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://webdev-coursework.com" />
-  <meta
-    property="og:image"
-    content="https://webdev-coursework.com/assets/Web-Developer-Learning-Portal.png"
-  />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Web Dev Learning Portal – Serge Hall" />
-  <meta
-    name="twitter:description"
-    content="Serge Hall's personal portal for learning and showcasing web development skills and completed coursework."
-  />
-  <meta
-    name="twitter:image"
-    content="https://webdev-coursework.com/assets/Web-Developer-Learning-Portal.png"
-  />
+    <!-- Minimal, optimized manifest; its icons should be just 192 and 512 (maskable preferred) -->
+    <link rel="manifest" href="/site.webmanifest" crossorigin="anonymous" />
 
-  <!-- (опционально) Если реально используешь Cloudflare Beacon — оставь ниже:
+    <!-- Theming -->
+    <meta name="color-scheme" content="dark light " />
+    <meta
+      name="theme-color"
+      content="#ffffff"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#0a0a0a"
+      media="(prefers-color-scheme: dark)"
+    />
+
+    <!-- OG / Twitter (keep, but ensure images are compressed and long-cacheable) -->
+    <meta property="og:title" content="Web Development Learning Portal" />
+    <meta
+      property="og:description"
+      content="Explore and track completed web development coursework by Serge Hall using the webdev-coursework application."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://webdev-coursework.com" />
+    <meta
+      property="og:image"
+      content="https://webdev-coursework.com/assets/Web-Developer-Learning-Portal.png"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Web Dev Learning Portal – Serge Hall" />
+    <meta
+      name="twitter:description"
+      content="Serge Hall's personal portal for learning and showcasing web development skills and completed coursework."
+    />
+    <meta
+      name="twitter:image"
+      content="https://webdev-coursework.com/assets/Web-Developer-Learning-Portal.png"
+    />
+
+    <!-- Optional: only enable these after perf is stable
   <meta http-equiv="x-dns-prefetch-control" content="on" />
   <link rel="dns-prefetch" href="https://static.cloudflareinsights.com" />
   -->
-  <script>
-    // Мини-скрипт ранней установки темы (без flicker), синхронизирован с твоим applySavedTheme
-    (function () {
-      try {
-        var stored = localStorage.getItem("theme");
-        var systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        var dark = stored ? stored === "dark" : systemDark;
-        document.documentElement.classList.toggle("dark", dark);
-      } catch (e) {}
-    })();
-  </script>
-</head>
 
-<body>
-<div id="root"></div>
-<script type="module" src="/src/main.tsx"></script>
-</body>
+    <!-- Early theme apply to avoid flash; tiny and synchronous -->
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem("theme");
+          var systemDark = window.matchMedia(
+            "(prefers-color-scheme: dark)"
+          ).matches;
+          var dark = stored ? stored === "dark" : systemDark;
+          document.documentElement.classList.toggle("dark", dark);
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <!-- Vite injects proper preload links in production; keep dev entry as module -->
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>
