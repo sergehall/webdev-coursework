@@ -1,6 +1,4 @@
-import React, { useState } from "react";
-
-import { technologies } from "@/data/technologies";
+import React, { useEffect, useState } from "react";
 
 type IconProps = { className?: string };
 type TechItem = {
@@ -36,7 +34,6 @@ function TechGrid({ items }: { items: TechItem[] }) {
           rel="noopener noreferrer"
           className={[
             "flex items-center gap-2 rounded-xl border border-gray-200",
-            // Mobile: cheap solid background; Desktop: add shadow/hover transitions
             "bg-white p-2.5 text-gray-800",
             "md:shadow-sm md:transition-colors md:duration-200",
             "hover:border-gray-300 hover:bg-gray-100",
@@ -75,14 +72,11 @@ function CourseRow({
         className={[
           "group grid w-full grid-cols-[1fr_auto] items-center text-left",
           "rounded-xl border border-gray-100 dark:border-gray-700",
-          // Mobile: solid bg (cheap to paint); Desktop: keep gradient beauty
           "bg-white dark:bg-gray-900 md:bg-gradient-to-l",
           `md:${gradientFor(name)}`,
           "text-gray-900 dark:text-white",
           "px-4 py-2 sm:px-5 sm:py-3",
-          // Remove shadow on mobile; keep clear focus ring
           "focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 md:shadow-sm",
-          // Transitions only on desktop to avoid initial composite cost
           "md:transition-colors md:duration-200 md:ease-in-out",
           "hover:brightness-95",
         ].join(" ")}
@@ -107,7 +101,26 @@ function CourseRow({
 
 export default function HomePage() {
   const [openCourse, setOpenCourse] = useState<string | null>(null);
-  const techData: TechMap = technologies;
+  const [techData, setTechData] = useState<TechMap | null>(null);
+
+  // Lazy-load technologies after first paint (idle if available)
+  useEffect(() => {
+    const load = () =>
+      import("@/data/technologies").then((m) => setTechData(m.technologies));
+
+    const w = window as unknown as {
+      requestIdleCallback?: (
+        cb: (d: { didTimeout: boolean; timeRemaining: () => number }) => void,
+        opts?: { timeout?: number }
+      ) => number;
+    };
+
+    if (typeof w.requestIdleCallback === "function") {
+      w.requestIdleCallback(load, { timeout: 1200 });
+    } else {
+      setTimeout(load, 0);
+    }
+  }, []);
 
   return (
     <main className="flex flex-1 flex-col items-center justify-center px-4 py-10 text-center">
@@ -115,7 +128,6 @@ export default function HomePage() {
         <h1
           className={[
             "mb-8 text-4xl font-extrabold sm:text-5xl",
-            // Mobile: solid text color (cheap); Desktop: gradient text
             "text-gray-900 dark:text-white",
             "md:bg-gradient-to-r md:from-indigo-500 md:via-sky-400 md:to-cyan-400 md:bg-clip-text md:text-transparent",
           ].join(" ")}
@@ -141,19 +153,28 @@ export default function HomePage() {
           }
         >
           <div className="flex flex-col gap-2 sm:gap-3">
-            {Object.entries(techData).map(([courseName, list]) => (
-              <CourseRow
-                key={courseName}
-                name={courseName}
-                items={list}
-                open={openCourse === courseName}
-                onToggle={() =>
-                  setOpenCourse((prev) =>
-                    prev === courseName ? null : courseName
-                  )
-                }
-              />
-            ))}
+            {techData ? (
+              Object.entries(techData).map(([courseName, list]) => (
+                <CourseRow
+                  key={courseName}
+                  name={courseName}
+                  items={list}
+                  open={openCourse === courseName}
+                  onToggle={() =>
+                    setOpenCourse((prev) =>
+                      prev === courseName ? null : courseName
+                    )
+                  }
+                />
+              ))
+            ) : (
+              // lightweight skeleton sized to rows to avoid CLS
+              <>
+                <div className="h-10 rounded-xl bg-gray-100 dark:bg-gray-800" />
+                <div className="h-10 rounded-xl bg-gray-100 dark:bg-gray-800" />
+                <div className="h-10 rounded-xl bg-gray-100 dark:bg-gray-800" />
+              </>
+            )}
           </div>
         </section>
       </div>
