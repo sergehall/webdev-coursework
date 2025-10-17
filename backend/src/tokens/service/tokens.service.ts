@@ -1,9 +1,16 @@
 // src/tokens/tokens.service.ts
 import { Injectable } from "@nestjs/common";
-import { JwtService } from "@nestjs/jwt";
+import { JwtService, JwtSignOptions } from "@nestjs/jwt";
+import type { StringValue } from "ms";
 
 export interface QuizAnswersTokenPayload {
   quizId: string;
+}
+
+function normalizeTtl(ttl: string | number): number | StringValue {
+  if (typeof ttl === "number") return ttl;
+  // "3600" -> 3600; "1h"/"30m" остаются строками (StringValue)
+  return /^\d+$/.test(ttl) ? Number(ttl) : (ttl as unknown as StringValue);
 }
 
 @Injectable()
@@ -20,30 +27,19 @@ export class TokensService {
    */
   issueQuizAnswersToken(quizId: string, overrideTtl?: string | number): string {
     const payload: QuizAnswersTokenPayload = { quizId };
-    const options = overrideTtl ? { expiresIn: overrideTtl } : undefined;
 
-    // Optionally add subject: { subject: quizId }
+    const options: JwtSignOptions | undefined =
+      overrideTtl !== undefined
+        ? { expiresIn: normalizeTtl(overrideTtl) }
+        : undefined;
+
     return this.jwt.sign(payload, options);
   }
 
-  /**
-   * Verify token validity and return decoded payload.
-   * Throws on invalid signature or expiration.
-   *
-   * @param token - JWT string to verify.
-   * @returns Decoded payload (quizId).
-   */
   verifyQuizAnswersToken(token: string): QuizAnswersTokenPayload {
     return this.jwt.verify<QuizAnswersTokenPayload>(token);
   }
 
-  /**
-   * Non-throwing verification helper.
-   * Useful for debugging or when you want a boolean-style result.
-   *
-   * @param token - JWT string to verify.
-   * @returns { ok: true, payload } on success or { ok: false, error } on failure.
-   */
   tryVerifyQuizAnswersToken(
     token: string
   ):
