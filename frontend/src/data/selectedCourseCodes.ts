@@ -10,6 +10,6 @@ export const selectedCourseCodes: readonly CourseCode[] = [
   "CS 81",
   "CS 83",
   "CS 87A",
-  "CS 73A",
-  "CS 79E",
+  "CS 79C",
+  "CS 79D",
 ];
