@@ -1,14 +1,237 @@
-// src/data/technologies.ts
+// frontend/src/data/technologies.tsx
+import type { IconName } from "@/ui/icons";
+
 export interface Tech {
-  icon: string; // Lucide icon name, e.g. "FileCode2"
-  color: string; // Tailwind text-* color class
+  icon: IconName;
+  color: string;
   label: string;
   url: string;
 }
 
-export type TechnologyGroup = Record<string, Tech[]>;
-
-export const technologies: TechnologyGroup = {
+export const technologies = {
+  "CS 60 - Database Concepts & Applications": [
+    {
+      icon: "Database",
+      color: "text-blue-600",
+      label: "Relational Database Systems",
+      url: "https://en.wikipedia.org/wiki/Relational_database",
+    },
+    {
+      icon: "Table",
+      color: "text-indigo-600",
+      label: "Data Models & Database Schemas",
+      url: "https://en.wikipedia.org/wiki/Data_model",
+    },
+    {
+      icon: "Boxes",
+      color: "text-purple-600",
+      label: "ER Modeling (Entity Relationship Diagrams)",
+      url: "https://en.wikipedia.org/wiki/Entity%E2%80%93relationship_model",
+    },
+    {
+      icon: "GaugeCircle",
+      color: "text-green-600",
+      label: "Database Normalization",
+      url: "https://en.wikipedia.org/wiki/Database_normalization",
+    },
+    {
+      icon: "Key",
+      color: "text-yellow-600",
+      label: "Data & Referential Integrity",
+      url: "https://en.wikipedia.org/wiki/Referential_integrity",
+    },
+    {
+      icon: "Code2",
+      color: "text-rose-600",
+      label: "SQL Fundamentals",
+      url: "https://www.w3schools.com/sql/",
+    },
+    {
+      icon: "Braces",
+      color: "text-cyan-600",
+      label: "Advanced SQL (Joins & Subqueries)",
+      url: "https://www.sqltutorial.org/",
+    },
+    {
+      icon: "Lock",
+      color: "text-red-600",
+      label: "Transactions & Concurrency Control",
+      url: "https://en.wikipedia.org/wiki/Database_transaction",
+    },
+    {
+      icon: "FileCode2",
+      color: "text-amber-700",
+      label: "Stored Procedures & Programs",
+      url: "https://en.wikipedia.org/wiki/Stored_procedure",
+    },
+    {
+      icon: "Server",
+      color: "text-sky-600",
+      label: "DBMS & Cloud Databases (Oracle / Azure)",
+      url: "https://en.wikipedia.org/wiki/Database_management_system",
+    },
+  ],
+  "CS 70 - Network Fundamentals and Architecture": [
+    {
+      icon: "Route",
+      color: "text-indigo-600",
+      label: "Network Topologies & Architectures",
+      url: "https://en.wikipedia.org/wiki/Network_topology",
+    },
+    {
+      icon: "Boxes",
+      color: "text-slate-600",
+      label: "Network Media, Cabling & Physical Layer",
+      url: "https://en.wikipedia.org/wiki/Physical_layer",
+    },
+    {
+      icon: "Server",
+      color: "text-blue-600",
+      label: "Network Devices (Switches, Routers, Servers)",
+      url: "https://en.wikipedia.org/wiki/Networking_hardware",
+    },
+    {
+      icon: "Cloud",
+      color: "text-sky-600",
+      label: "TCP/IP Model & Network Protocols",
+      url: "https://en.wikipedia.org/wiki/Internet_protocol_suite",
+    },
+    {
+      icon: "GaugeCircle",
+      color: "text-orange-600",
+      label:
+        "Hands-on Network Labs & Certification Simulations (TestOut / CompTIA)",
+      url: "https://www.comptia.org/training/certmaster-learn/network-n10-008",
+    },
+    {
+      icon: "Regex",
+      color: "text-emerald-600",
+      label: "IP Addressing & Subnetting",
+      url: "https://en.wikipedia.org/wiki/Subnetwork",
+    },
+    {
+      icon: "Route",
+      color: "text-purple-600",
+      label: "Routing & Switching Fundamentals",
+      url: "https://en.wikipedia.org/wiki/Routing",
+    },
+    {
+      icon: "CloudSun",
+      color: "text-cyan-600",
+      label: "Network Services (DHCP, DNS, File Services)",
+      url: "https://en.wikipedia.org/wiki/Network_service",
+    },
+    {
+      icon: "Terminal",
+      color: "text-amber-600",
+      label: "Socket Programming & Client–Server Model",
+      url: "https://en.wikipedia.org/wiki/Network_socket",
+    },
+    {
+      icon: "Lock",
+      color: "text-red-600",
+      label: "Network Security Concepts & Controls",
+      url: "https://en.wikipedia.org/wiki/Network_security",
+    },
+    {
+      icon: "Atom",
+      color: "text-green-600",
+      label: "Wireless Networking & Remote Access",
+      url: "https://en.wikipedia.org/wiki/Wireless_network",
+    },
+    {
+      icon: "Cloud",
+      color: "text-teal-600",
+      label: "Cloud Networking & Virtualization",
+      url: "https://en.wikipedia.org/wiki/Cloud_computing",
+    },
+    {
+      icon: "Wrench",
+      color: "text-gray-600",
+      label: "Network Management, Monitoring & Troubleshooting",
+      url: "https://en.wikipedia.org/wiki/Network_management",
+    },
+    {
+      icon: "BadgeHelp",
+      color: "text-green-600",
+      label: "CompTIA Network+ Certification Preparation Labs",
+      url: "https://www.comptia.org/certifications/network",
+    },
+  ],
+  "CS 79A - Introduction to Cloud Computing": [
+    {
+      icon: "Cloud",
+      color: "text-violet-600",
+      label: "Cloud Computing Concepts & Service Models (IaaS, PaaS, SaaS)",
+      url: "https://en.wikipedia.org/wiki/Cloud_computing",
+    },
+    {
+      icon: "LayoutTemplate",
+      color: "text-indigo-600",
+      label: "Cloud Architecture & Global Infrastructure",
+      url: "https://en.wikipedia.org/wiki/Cloud_computing_architecture",
+    },
+    {
+      icon: "Server",
+      color: "text-blue-600",
+      label: "Virtual Machines & Compute Services (AWS EC2)",
+      url: "https://en.wikipedia.org/wiki/Amazon_EC2",
+    },
+    {
+      icon: "Database",
+      color: "text-teal-600",
+      label: "Cloud Storage Services (S3) & Data Management",
+      url: "https://en.wikipedia.org/wiki/Amazon_S3",
+    },
+    {
+      icon: "Route",
+      color: "text-purple-600",
+      label: "Virtual Private Cloud (VPC) & Cloud Networking",
+      url: "https://en.wikipedia.org/wiki/Virtual_private_cloud",
+    },
+    {
+      icon: "Boxes",
+      color: "text-slate-600",
+      label: "Virtualization & Cloud Resource Abstraction",
+      url: "https://en.wikipedia.org/wiki/Virtualization",
+    },
+    {
+      icon: "Code2",
+      color: "text-amber-600",
+      label: "Cloud Deployment, Configuration & Automation Basics",
+      url: "https://en.wikipedia.org/wiki/Cloud_computing#Automation",
+    },
+    {
+      icon: "Lock",
+      color: "text-red-600",
+      label: "Cloud Security, IAM, Policies & Compliance",
+      url: "https://en.wikipedia.org/wiki/Cloud_computing_security",
+    },
+    {
+      icon: "GaugeCircle",
+      color: "text-orange-600",
+      label: "Monitoring, Budgets, Alarms & Cost Management",
+      url: "https://en.wikipedia.org/wiki/Cloud_cost_management",
+    },
+    {
+      icon: "CloudSun",
+      color: "text-cyan-600",
+      label: "High Availability, Backup & Disaster Recovery",
+      url: "https://en.wikipedia.org/wiki/Disaster_recovery",
+    },
+    {
+      icon: "Terminal",
+      color: "text-emerald-600",
+      label: "AWS Console Usage & Command-Line Interaction",
+      url: "https://docs.aws.amazon.com/",
+    },
+    {
+      icon: "Wrench",
+      color: "text-gray-600",
+      label: "Hands-on AWS Labs, Case Studies & Real-World Scenarios",
+      url: "https://aws.amazon.com/whitepapers/",
+    },
+  ],
   "CS 80 - Internet Programming": [
     {
       icon: "FileCode2",
@@ -95,7 +318,6 @@ export const technologies: TechnologyGroup = {
       url: "https://learn.microsoft.com/en-us/dotnet/visual-basic/",
     },
   ],
-
   "CS 81 - JavaScript Programming": [
     {
       icon: "Code2",
@@ -236,7 +458,6 @@ export const technologies: TechnologyGroup = {
       url: "https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/Object_prototypes",
     },
   ],
-
   "CS 87A - Python Programming": [
     {
       icon: "Code2",
@@ -287,4 +508,6 @@ export const technologies: TechnologyGroup = {
       url: "https://docs.python.org/3/tutorial/inputoutput.html#reading-and-writing-files",
     },
   ],
-};
+} as const satisfies Record<string, readonly Tech[]>;
+
+export type CourseName = keyof typeof technologies;

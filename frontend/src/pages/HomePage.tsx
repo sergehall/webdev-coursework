@@ -1,115 +1,30 @@
-import React, { memo, useCallback, useMemo, useState } from "react";
-import {
-  Circle,
-  FileCode2,
-  Paintbrush2,
-  Code2,
-  Braces,
-  Route,
-  Cloud,
-  Wrench,
-  BadgeHelp,
-  Atom,
-  Palette,
-  Sparkles,
-  Rocket,
-  CloudSun,
-  GaugeCircle,
-  LayoutTemplate,
-  Regex,
-  Terminal,
-  FileText,
-} from "lucide-react";
+// frontend/src/pages/HomePage.tsx
+import { memo, useCallback, useMemo, useState } from "react";
 
-import type { Tech, TechnologyGroup } from "@/data/technologies";
-import { technologies } from "@/data/technologies";
-
-/** ------------------------------------------------------------------
- *  Small utilities (no external deps)
- *  ------------------------------------------------------------------ */
-// Tailwind class combiner (keeps code readable vs. [..].join(" "))
-function cn(...parts: Array<string | false | null | undefined>) {
-  return parts.filter(Boolean).join(" ");
-}
-
-// Safe, tiny slugify — stable id for a11y
-function slugify(input: string) {
-  return input
-    .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "") // strip diacritics
-    .replace(/[^\w\s-]/g, "")
-    .trim()
-    .replace(/\s+/g, "-")
-    .toLowerCase();
-}
-
-/** ------------------------------------------------------------------
- *  Icons map with strong typing
- *  ------------------------------------------------------------------ */
-const ICONS = {
-  Circle,
-  FileCode2,
-  Paintbrush2,
-  Code2,
-  Braces,
-  Route,
-  Cloud,
-  Wrench,
-  BadgeHelp,
-  Atom,
-  Palette,
-  Sparkles,
-  Rocket,
-  CloudSun,
-  GaugeCircle,
-  LayoutTemplate,
-  Regex,
-  Terminal,
-  FileText,
-} as const;
-
-type IconName = keyof typeof ICONS;
-
-type IconProps = { className?: string };
-
-function getIconComponent(name: string): React.ComponentType<IconProps> {
-  return (
-    (ICONS as Record<string, React.ComponentType<IconProps>>)[name] ?? Circle
-  );
-}
-
-/** ------------------------------------------------------------------
- *  Visual theming helpers
- *  ------------------------------------------------------------------ */
-const gradients = {
-  python:
-    "from-emerald-200 to-emerald-300 dark:from-emerald-900 dark:to-emerald-950",
-  js: "from-amber-200 to-orange-300 dark:from-amber-900 dark:to-orange-950",
-  default: "from-sky-200 to-blue-300 dark:from-sky-900 dark:to-indigo-950",
-} as const;
-
-function gradientFor(courseName: string): string {
-  const n = courseName.toLowerCase();
-  if (n.includes("python")) return gradients.python;
-  if (n.includes("javascript")) return gradients.js;
-  return gradients.default;
-}
+import { technologies, type CourseName, type Tech } from "@/data/technologies";
+import { gradientForCourse } from "@/ui/course-theme";
+import { getIconComponent } from "@/ui/icons";
+import { cn } from "@/utils/cn";
+import { slugify } from "@/utils/slugify";
 
 /** ------------------------------------------------------------------
  *  TechGrid (memoized)
+ *  - Uses a fixed icon container ("icon box") to keep icon sizing consistent
+ *    even when labels wrap across multiple lines.
  *  ------------------------------------------------------------------ */
 const TechGrid = memo(function TechGrid({
   items,
   courseKey,
 }: {
-  items: Tech[];
+  items: readonly Tech[];
   courseKey: string;
 }) {
   return (
     <div className="grid grid-cols-2 gap-3 pb-2 sm:grid-cols-3 lg:grid-cols-4">
       {items.map(({ icon, color, label, url }) => {
-        const Icon = getIconComponent(icon as IconName);
-        const itemKey = `${courseKey}__${label}__${url}`; // stable composite key
+        const Icon = getIconComponent(icon);
+        const itemKey = `${courseKey}__${url}`;
+
         return (
           <a
             key={itemKey}
@@ -117,17 +32,30 @@ const TechGrid = memo(function TechGrid({
             target="_blank"
             rel="noopener noreferrer"
             className={cn(
-              "flex items-center gap-2 rounded-xl border border-gray-200",
-              "bg-white p-2.5 text-gray-800 shadow-sm",
-              // Respect reduced motion users
+              "flex items-center gap-3 rounded-xl border border-gray-200",
+              "bg-white p-3 text-gray-800 shadow-sm",
               "transition-colors duration-200 motion-reduce:transition-none",
               "hover:border-gray-300 hover:bg-gray-100",
               "focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2",
               "dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700"
             )}
           >
-            <Icon className={cn("h-5 w-5", color)} />
-            <span className="text-sm font-medium">{label}</span>
+            {/* Fixed icon box for consistent optical sizing */}
+            <span
+              className={cn(
+                "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg",
+                "bg-black/5 ring-1 ring-black/10",
+                "dark:bg-white/5 dark:ring-white/10"
+              )}
+              aria-hidden="true"
+            >
+              <Icon size={20} strokeWidth={1.75} className={cn(color)} />
+            </span>
+
+            {/* Left-aligned label improves balance for multi-line text */}
+            <span className="text-left text-sm font-medium leading-snug">
+              {label}
+            </span>
           </a>
         );
       })}
@@ -144,14 +72,15 @@ const CourseRow = memo(function CourseRow({
   open,
   onToggle,
 }: {
-  name: string;
-  items: Tech[];
+  name: CourseName;
+  items: readonly Tech[];
   open: boolean;
   onToggle: () => void;
 }) {
-  const panelId = useMemo(() => `course-panel-${slugify(name)}`, [name]);
-  const buttonId = useMemo(() => `course-button-${slugify(name)}`, [name]);
-  const gradient = useMemo(() => gradientFor(name), [name]);
+  const slug = useMemo(() => slugify(name), [name]);
+  const panelId = `course-panel-${slug}`;
+  const buttonId = `course-button-${slug}`;
+  const gradient = useMemo(() => gradientForCourse(name), [name]);
 
   return (
     <div className="w-full">
@@ -161,6 +90,9 @@ const CourseRow = memo(function CourseRow({
         aria-expanded={open}
         aria-controls={panelId}
         onClick={onToggle}
+        onKeyDown={(e) => {
+          if (e.key === "Escape" && open) onToggle();
+        }}
         className={cn(
           // Layout & a11y
           "group relative isolate grid w-full grid-cols-[1fr_auto] items-center text-left",
@@ -186,6 +118,7 @@ const CourseRow = memo(function CourseRow({
             "transition-colors duration-200 motion-reduce:transition-none"
           )}
         />
+
         <span className="relative z-10 flex items-center justify-between gap-2">
           <span className="text-sm font-semibold sm:text-base">{name}</span>
           <span
@@ -197,15 +130,16 @@ const CourseRow = memo(function CourseRow({
         </span>
       </button>
 
-      <div
-        id={panelId}
-        role="region"
-        aria-labelledby={buttonId}
-        hidden={!open}
-        className={cn("px-2 pt-2 sm:px-3")}
-      >
-        {open && <TechGrid items={items} courseKey={panelId} />}
-      </div>
+      {open && (
+        <div
+          id={panelId}
+          role="region"
+          aria-labelledby={buttonId}
+          className="px-2 pt-2 sm:px-3"
+        >
+          <TechGrid items={items} courseKey={panelId} />
+        </div>
+      )}
     </div>
   );
 });
@@ -214,13 +148,14 @@ const CourseRow = memo(function CourseRow({
  *  Page
  *  ------------------------------------------------------------------ */
 export default function HomePage() {
-  const [openCourse, setOpenCourse] = useState<string | null>(null);
-  const techData: TechnologyGroup = technologies; // direct import, no async
+  const [openCourse, setOpenCourse] = useState<CourseName | null>(null);
 
-  // Precompute entries once (stable ref prevents children rerenders)
-  const techEntries = useMemo(() => Object.entries(techData), [techData]);
+  // Object.entries loses key types — cast once in a single, controlled place
+  const techEntries = Object.entries(technologies) as Array<
+    [CourseName, readonly Tech[]]
+  >;
 
-  const handleToggle = useCallback((courseName: string) => {
+  const handleToggle = useCallback((courseName: CourseName) => {
     setOpenCourse((prev) => (prev === courseName ? null : courseName));
   }, []);
 
