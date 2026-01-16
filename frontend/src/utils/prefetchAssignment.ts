@@ -1,5 +1,6 @@
 // prefetchAssignment.ts
 
+import assignmentCS60Components from "@/courses/assignment-registry/assignmentCS60Components";
 import assignmentCS80Components from "@/courses/assignment-registry/assignmentCS80Components";
 import assignmentCS81Components from "@/courses/assignment-registry/assignmentCS81Components";
 import assignmentCS87AComponents from "@/courses/assignment-registry/assignmentCS87AComponents";
@@ -13,6 +14,9 @@ export function prefetchAssignmentModule(
   let entry;
 
   switch (code) {
+    case "CS 60":
+      entry = assignmentCS60Components[id];
+      break;
     case "CS 81":
       entry = assignmentCS81Components[id];
       break;

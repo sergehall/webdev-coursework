@@ -1,4 +1,4 @@
-// frontend/src/courses/CS87A/assignments/mod1/tasks/Assignment2.tsx
+// frontend/src/courses/CS87A/assignments/mod1/tasks/Chapter4Overview.tsx
 import { useState } from "react";
 
 import ScreenshotGallery from "@/components/ScreenshotGallery";

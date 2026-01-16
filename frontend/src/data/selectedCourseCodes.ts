@@ -1,4 +1,4 @@
-// selectedCourseCodes.ts
+// frontend/src/data/selectedCourseCodes.ts
 
 import type { CourseCode } from "@/data/types/CourseCode";
 

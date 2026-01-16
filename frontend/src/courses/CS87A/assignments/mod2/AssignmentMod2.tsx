@@ -1,4 +1,4 @@
-// src/assignments/mod2/AssignmentMod2.tsx
+// src/assignments/mod2/AssignmentMod4.tsx
 import { useState } from "react";
 
 import Assignment2 from "@/courses/CS87A/assignments/mod2/tasks/Assignment2";

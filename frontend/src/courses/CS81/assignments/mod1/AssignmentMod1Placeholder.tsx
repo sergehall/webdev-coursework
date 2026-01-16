@@ -1,4 +1,4 @@
-// src/assignments/mod1/AssignmentMod1Placeholder.tsx
+// src/assignments/mod1/AssignmentPlaceholder.tsx
 
 export default function AssignmentMod1Placeholder() {
   return (

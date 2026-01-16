@@ -11,7 +11,7 @@ import { ModuleCompletionButton } from "@/components/buttons";
 import { useFinalModuleRedirect } from "@/hooks/useFinalModuleRedirect";
 
 export default function AssignmentMod1() {
-  useFinalModuleRedirect(12); // module 12 → redirect to /assignments/completed
+  useFinalModuleRedirect(12);
   const [openItem, setOpenItem] = useState<string | null>(null);
 
   const toggleItem = (key: string) => {

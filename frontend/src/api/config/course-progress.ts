@@ -1,5 +1,10 @@
 // @/api/config/course-progress.ts
 export const COURSE_PROGRESS_CONFIG = {
+  CS60: {
+    appId: "Database-Concepts-Applications",
+    maxModules: 10,
+    client_id_key: "clientId",
+  },
   CS81: {
     appId: "Javascript-Programming",
     maxModules: 12,

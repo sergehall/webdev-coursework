@@ -29,6 +29,13 @@ export default function ResourcesPage() {
       description: "Tutorials and references on web development languages",
     },
     {
+      title: "CompTIA",
+      href: "https://www.comptia.org",
+      icon: <ExternalLink className="h-5 w-5" />,
+      description:
+        "IT certifications and learning resources (A+, Network+, Security+)",
+    },
+    {
       title: "ChatGPT (AI Assistant)",
       href: "https://chat.openai.com",
       icon: <Bot className="h-5 w-5" />,

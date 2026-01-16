@@ -1,4 +1,4 @@
-// src/assignments/mod1/AssignmentMod1Placeholder.tsx
+// src/assignments/mod1/AssignmentPlaceholder.tsx
 export default function AssignmentMod1Placeholder() {
   return (
     <section className="space-y-6 rounded border border-gray-300 bg-gray-50 p-6 shadow-sm dark:border-gray-600 dark:bg-gray-900/10">

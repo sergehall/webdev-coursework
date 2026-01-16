@@ -2,6 +2,7 @@
 
 import type { FC } from "react";
 
+import CS60 from "@/courses/CS60/CS60";
 import CS87A from "@/courses/CS87A/CS87A";
 import CS81 from "@/courses/CS81/CS81";
 import CS80 from "@/courses/CS80/CS80";
@@ -17,7 +18,7 @@ export type CourseComponentMap = Record<
 const completedCourseComponents: CourseComponentMap = {
   "CS 60": {
     title: "Database Concepts and Applications",
-    component: null,
+    component: CS60,
   },
   "CS 70": {
     title: "Network Fundamentals and Architecture",
