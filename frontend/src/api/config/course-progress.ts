@@ -5,6 +5,11 @@ export const COURSE_PROGRESS_CONFIG = {
     maxModules: 10,
     client_id_key: "clientId",
   },
+  CS70: {
+    appId: "Network-Fundamentals-and-Architecture",
+    maxModules: 16,
+    client_id_key: "clientId",
+  },
   CS81: {
     appId: "Javascript-Programming",
     maxModules: 12,
@@ -16,7 +21,7 @@ export const COURSE_PROGRESS_CONFIG = {
     client_id_key: "clientId",
   },
   CS87A: {
-    appId: "Python Programming",
+    appId: "Python-Programming",
     maxModules: 6,
     client_id_key: "clientId",
   },
