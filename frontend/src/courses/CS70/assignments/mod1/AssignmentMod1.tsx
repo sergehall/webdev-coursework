@@ -1,8 +1,9 @@
 import { useState } from "react";
 
+import AssignmentInfo from "@/courses/CS60/assignments/modInfo/AssignmentInfo";
+import NetworkTopologies from "@/courses/CS70/assignments/mod1/tasks/NetworkTopologies";
 import AnimatedAccordionItem from "@/components/AnimatedAccordionItem";
 import { ModuleCompletionButton } from "@/components/buttons";
-import NetworkTopologies from "@/courses/CS70/assignments/mod1/tasks/NetworkTopologies";
 import { useFinalModuleRedirect } from "@/hooks/useFinalModuleRedirect";
 
 export default function AssignmentMod1() {
@@ -14,6 +15,14 @@ export default function AssignmentMod1() {
 
   return (
     <section className="space-y-6 rounded-xl bg-white p-6 shadow-md dark:bg-gray-900">
+      <AnimatedAccordionItem
+        title="Start Here – Network Fundamentals and Architecture"
+        isOpen={openItem === "info"}
+        onToggle={() => toggleItem("info")}
+      >
+        <AssignmentInfo />
+      </AnimatedAccordionItem>
+
       <AnimatedAccordionItem
         title="Week 1 – Network Topologies"
         isOpen={openItem === "01"}

@@ -1,6 +1,5 @@
-// frontend/src/courses/CS70/assignments/mod1/tasks/NetworkTopologies.tsx
-
-export default function NetworkTopologies() {
+// frontend/src/courses/CS70/weeks/NetworkTopologies.tsx
+const NetworkTopologies = () => {
   const dueDate = "Sep 7, 2025";
 
   const ungradedItems = [
@@ -33,6 +32,8 @@ export default function NetworkTopologies() {
 
   return (
     <div className="space-y-4">
+      <h2 className="text-xl font-bold">Week 1 – Network Topologies</h2>
+
       <div>
         <h3 className="text-md mb-1 font-semibold text-gray-700 dark:text-gray-300">
           Objective
@@ -95,6 +96,13 @@ export default function NetworkTopologies() {
           <li>Finish the Week 1 Module Quiz.</li>
         </ul>
       </div>
+
+      <div className="text-sm italic text-gray-700 dark:text-gray-400">
+        🗓️ All Week 1 items shown in the screenshot are due on{" "}
+        <strong>{dueDate}</strong>.
+      </div>
     </div>
   );
-}
+};
+
+export default NetworkTopologies;
