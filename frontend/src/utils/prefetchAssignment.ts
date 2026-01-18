@@ -2,6 +2,7 @@
 
 import assignmentCS60Components from "@/courses/assignment-registry/assignmentCS60Components";
 import assignmentCS70Components from "@/courses/assignment-registry/assignmentCS70Components";
+import assignmentCS79AComponents from "@/courses/assignment-registry/assignmentCS79AComponents";
 import assignmentCS80Components from "@/courses/assignment-registry/assignmentCS80Components";
 import assignmentCS81Components from "@/courses/assignment-registry/assignmentCS81Components";
 import assignmentCS87AComponents from "@/courses/assignment-registry/assignmentCS87AComponents";
@@ -20,6 +21,9 @@ export function prefetchAssignmentModule(
       break;
     case "CS 70":
       entry = assignmentCS70Components[id];
+      break;
+    case "CS 79A":
+      entry = assignmentCS79AComponents[id];
       break;
     case "CS 81":
       entry = assignmentCS81Components[id];

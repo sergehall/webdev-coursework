@@ -1,4 +1,4 @@
-// frontend/src/assignments/mod6/AssignmentMod6.tsx
+// frontend/src/assignments/mod6/AssignmentMod8.tsx
 import { useState } from "react";
 
 import Assignment6A from "@/courses/CS81/assignments/mod6/tasks/Assignment6a";

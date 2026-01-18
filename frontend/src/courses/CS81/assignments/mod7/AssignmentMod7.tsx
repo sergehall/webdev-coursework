@@ -1,4 +1,4 @@
-// src/assignments/mod7/AssignmentMod7.tsx
+// src/assignments/mod7/AssignmentMod8.tsx
 import { useState } from "react";
 
 import QuizModule7 from "@/courses/CS81/assignments/mod7/tasks/QuizModule7";

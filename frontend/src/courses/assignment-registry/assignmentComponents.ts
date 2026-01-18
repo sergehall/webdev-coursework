@@ -3,6 +3,7 @@ import React from "react";
 
 import assignmentCS60Components from "@/courses/assignment-registry/assignmentCS60Components";
 import assignmentCS70Components from "@/courses/assignment-registry/assignmentCS70Components";
+import assignmentCS79AComponents from "@/courses/assignment-registry/assignmentCS79AComponents";
 import assignmentCS80Components from "@/courses/assignment-registry/assignmentCS80Components";
 import assignmentCS81Components from "@/courses/assignment-registry/assignmentCS81Components";
 import assignmentCS87AComponents from "@/courses/assignment-registry/assignmentCS87AComponents";
@@ -22,6 +23,8 @@ export function assignmentComponents(
       return assignmentCS60Components[id];
     case "CS 70":
       return assignmentCS70Components[id];
+    case "CS 79A":
+      return assignmentCS79AComponents[id];
     case "CS 81":
       return assignmentCS81Components[id];
     case "CS 80":

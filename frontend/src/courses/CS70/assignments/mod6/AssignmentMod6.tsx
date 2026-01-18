@@ -1,4 +1,4 @@
-// frontend/src/courses/CS70/assignments/mod6/AssignmentMod6.tsx
+// frontend/src/courses/CS70/assignments/mod6/AssignmentMod8.tsx
 
 import { useState } from "react";
 

@@ -10,6 +10,11 @@ export const COURSE_PROGRESS_CONFIG = {
     maxModules: 16,
     client_id_key: "clientId",
   },
+  CS79A: {
+    appId: "Cloud-Computing-with-AWS",
+    maxModules: 8,
+    client_id_key: "clientId",
+  },
   CS81: {
     appId: "Javascript-Programming",
     maxModules: 12,

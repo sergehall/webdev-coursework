@@ -1,12 +1,12 @@
 // src/components/completedCourseComponents.tsx
-
 import type { FC } from "react";
 
 import CS60 from "@/courses/CS60/CS60";
 import CS70 from "@/courses/CS70/CS70";
-import CS87A from "@/courses/CS87A/CS87A";
-import CS81 from "@/courses/CS81/CS81";
+import CS79A from "@/courses/CS79A/CS79A";
 import CS80 from "@/courses/CS80/CS80";
+import CS81 from "@/courses/CS81/CS81";
+import CS87A from "@/courses/CS87A/CS87A";
 
 export type CourseComponentMap = Record<
   string,
@@ -27,7 +27,7 @@ const completedCourseComponents: CourseComponentMap = {
   },
   "CS 79A": {
     title: "Introduction to Cloud Computing",
-    component: null,
+    component: CS79A,
   },
   "CS 80": {
     title: "Internet Programming",
