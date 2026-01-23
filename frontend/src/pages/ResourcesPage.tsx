@@ -1,5 +1,5 @@
 // src/pages/ResourcesPage.tsx
-import { FileText, ExternalLink, Bot } from "lucide-react";
+import { ExternalLink, Bot } from "lucide-react";
 import { SiGithub } from "react-icons/si";
 
 export default function ResourcesPage() {
@@ -9,12 +9,6 @@ export default function ResourcesPage() {
       href: "https://github.com/SergeHall",
       icon: <SiGithub className="h-5 w-5" />,
       description: "Serge's GitHub with this project and more",
-    },
-    {
-      title: "CS81-Syllabus",
-      href: "/CS81-Syllabus-Sum25-Seno.pdf",
-      icon: <FileText className="h-5 w-5" />,
-      description: "Official syllabus for the course",
     },
     {
       title: "MDN Web Docs",
