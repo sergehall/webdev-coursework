@@ -4,7 +4,7 @@ import { IsNotEmpty, IsString, MaxLength } from "class-validator";
 
 export class VerifyTokenDto {
   @ApiProperty({
-    description: "Token previously issued by /quizzes/:quizId/answers-token",
+    description: "Token previously issued by /tokens/:quizId/answers-token",
     example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
   })
   @IsString()

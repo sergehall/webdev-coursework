@@ -1,8 +1,12 @@
 // src/swagger/api-doc.registry.ts
 import { applyDecorators } from "@nestjs/common";
 import { ApiBody, ApiConsumes } from "@nestjs/swagger";
+import { AppHealthDto } from "../app/dto/app-health.dto";
+import { AppInfoDto } from "../app/dto/app-info.dto";
 import { CorrectAnswerDto } from "../quiz/dto/correct-answer.dto";
+import { CreatedQuizQuestionDto } from "../quiz/dto/created-quiz-question.dto";
 import { QuizQuestionDto } from "../quiz/dto/quiz-question.dto";
+import { IssueAnswersTokenResponseDto } from "../tokens/dto/issue-answers-token-response.dto";
 import { EndpointKeys } from "./enums/endpoint-keys.enum";
 import { QuizzesMethods } from "./enums/quizzes-methods.enum";
 import { AppMethods } from "./enums/app-methods.enum";
@@ -17,7 +21,19 @@ export const ApiDocRegistry = {
         description,
         security: [{ type: "bearer", name: SWAGGER_SECURITY.ANSWERS_TOKEN }],
         ok: { type: CorrectAnswerDto, isArray: true },
-        responses: [{ status: 404, description: "Quiz not found" }],
+        params: [
+          {
+            name: "quizId",
+            required: true,
+            schema: { type: "string" },
+            example: "QuizModule1",
+            description: "Quiz identifier.",
+          },
+        ],
+        responses: [
+          { status: 404, description: "Quiz not found" },
+          { status: 401, description: "Missing/invalid/expired answers token" },
+        ],
       }),
 
     [QuizzesMethods.GetQuizQuestions]: (description?: string) =>
@@ -25,6 +41,15 @@ export const ApiDocRegistry = {
         summary: "Get quiz questions by quizId (public)",
         description,
         ok: { type: QuizQuestionDto, isArray: true },
+        params: [
+          {
+            name: "quizId",
+            required: true,
+            schema: { type: "string" },
+            example: "QuizModule1",
+            description: "Quiz identifier.",
+          },
+        ],
         responses: [{ status: 404, description: "Quiz not found" }],
       }),
 
@@ -34,19 +59,35 @@ export const ApiDocRegistry = {
           summary: "Create a question for a quiz (admin only)",
           description,
           security: [{ type: "apiKey", name: "adminKey" }],
-          ok: { type: QuizQuestionDto, isArray: false },
+          ok: { type: CreatedQuizQuestionDto, status: 201, isArray: false },
+          params: [
+            {
+              name: "quizId",
+              required: true,
+              schema: { type: "string" },
+              example: "QuizModule1",
+              description:
+                "Quiz identifier in route. Must match body.quizId if provided.",
+            },
+          ],
           responses: [
             { status: 400, description: "Bad Request" },
             { status: 401, description: "Invalid admin key" },
+            { status: 413, description: "Uploaded files are too large" },
           ],
         }),
         ApiConsumes("multipart/form-data"),
         ApiBody({
-          description: "Question payload with optional images[]",
+          description:
+            "Question payload with optional images[]. Current validation expects quizId and questionId in body.",
           schema: {
             type: "object",
             properties: {
-              // fields from CreateQuestionDto
+              quizId: {
+                type: "string",
+                example: "QuizModule1",
+              },
+              questionId: { type: "number", example: 3 },
               questionText: { type: "string", example: "What is JavaScript?" },
               options: {
                 type: "array",
@@ -58,15 +99,54 @@ export const ApiDocRegistry = {
                 items: { type: "string", format: "binary" },
               },
             },
-            required: ["questionText", "options"],
+            required: ["quizId", "questionId", "questionText", "options"],
           },
         })
       ),
+
+    [QuizzesMethods.IssueAnswersToken]: (description?: string) =>
+      ApiDoc({
+        summary: "Issue a short-lived answers token for quizId",
+        description,
+        ok: { type: IssueAnswersTokenResponseDto, status: 201 },
+        params: [
+          {
+            name: "quizId",
+            required: true,
+            schema: { type: "string" },
+            example: "QuizModule1",
+            description: "Quiz identifier bound into JWT payload.",
+          },
+        ],
+      }),
 
     [QuizzesMethods.GetProgress]: (description?: string) =>
       ApiDoc({
         summary: "Get user progress (public)",
         description,
+        queries: [
+          {
+            name: "clientId",
+            required: true,
+            schema: { type: "string" },
+            example: "35b43a38-e845-449d-9ee2-b43f1016bd27",
+            description: "Client/device identifier.",
+          },
+          {
+            name: "appId",
+            required: true,
+            schema: { type: "string" },
+            example: "Internet-Programming",
+            description: "Frontend app/course slug.",
+          },
+          {
+            name: "courseId",
+            required: true,
+            schema: { type: "string" },
+            example: "CS80",
+            description: "Course identifier.",
+          },
+        ],
         ok: { schema: { example: [1, 2, 5] } },
       }),
 
@@ -74,7 +154,11 @@ export const ApiDocRegistry = {
       ApiDoc({
         summary: "Mark a module as completed (public)",
         description,
-        ok: { schema: { example: {} } },
+        ok: {
+          status: 201,
+          description: "Progress marked successfully.",
+          schema: { example: {} },
+        },
         responses: [{ status: 400, description: "Bad Request" }],
       }),
 
@@ -82,7 +166,11 @@ export const ApiDocRegistry = {
       ApiDoc({
         summary: "Unmark a completed module (public)",
         description,
-        ok: { schema: { example: {} } },
+        ok: {
+          status: 200,
+          description: "Progress unmarked successfully.",
+          schema: { example: {} },
+        },
         responses: [{ status: 400, description: "Bad Request" }],
       }),
 
@@ -90,7 +178,11 @@ export const ApiDocRegistry = {
       ApiDoc({
         summary: "Reset user progress (public)",
         description,
-        ok: { schema: { example: {} } },
+        ok: {
+          status: 201,
+          description: "Progress reset successfully.",
+          schema: { example: {} },
+        },
       }),
 
     [QuizzesMethods.VerifyAnswersToken]: (description?: string) =>
@@ -98,26 +190,60 @@ export const ApiDocRegistry = {
         summary: "Verify a previously issued answers token (admin only)",
         description,
         security: [{ type: "apiKey", name: "adminKey" }],
+        params: [
+          {
+            name: "quizId",
+            required: true,
+            schema: { type: "string" },
+            example: "QuizModule1",
+            description: "Quiz identifier expected inside token payload.",
+          },
+        ],
         ok: {
+          status: 201,
           schema: {
             oneOf: [
-              { example: { ok: true, payload: { quizId: "quiz-1" } } },
-              { example: { ok: false, error: "Invalid or expired token" } },
+              {
+                type: "object",
+                properties: {
+                  ok: { type: "boolean", example: true },
+                  payload: {
+                    type: "object",
+                    properties: {
+                      quizId: { type: "string", example: "QuizModule1" },
+                    },
+                    required: ["quizId"],
+                  },
+                },
+                required: ["ok", "payload"],
+              },
+              {
+                type: "object",
+                properties: {
+                  ok: { type: "boolean", example: false },
+                  error: {
+                    type: "string",
+                    example: "Invalid or expired token",
+                  },
+                },
+                required: ["ok", "error"],
+              },
             ],
           },
         },
+        responses: [{ status: 400, description: "token is required" }],
       }),
   },
 
   [EndpointKeys.App]: {
     [AppMethods.GetHello]: (description?: string) =>
       ApiDoc({
-        summary: "Hello endpoint",
+        summary: "API landing page (HTML)",
         description,
         ok: {
           schema: {
-            example:
-              "Hello from backend --- Web Developer Learning Portal! ---",
+            type: "string",
+            example: "<!doctype html>...",
           },
         },
       }),
@@ -125,18 +251,22 @@ export const ApiDocRegistry = {
       ApiDoc({
         summary: "Service health check",
         description,
-        ok: { schema: { example: { ok: true } } },
+        ok: { type: AppHealthDto },
       }),
     [AppMethods.Info]: (description?: string) =>
       ApiDoc({
         summary: "Service info",
         description,
+        ok: { type: AppInfoDto },
+      }),
+    [AppMethods.Robots]: (description?: string) =>
+      ApiDoc({
+        summary: "Robots directives for crawlers",
+        description,
         ok: {
           schema: {
-            example: {
-              name: "SMC Backend API",
-              version: "1.0.0",
-            },
+            type: "string",
+            example: "User-agent: *\nAllow: /",
           },
         },
       }),

@@ -76,6 +76,13 @@ describe("Quiz API (e2e)", () => {
     expect(String(res.text)).toContain("Swagger UI");
   });
 
+  it("GET /openapi.json should return OpenAPI document", async () => {
+    const res = await request(app.getHttpServer()).get("/openapi.json");
+    expect(res.status).toBe(200);
+    expect(res.body?.openapi).toMatch(/^3\./);
+    expect(res.body?.paths).toBeDefined();
+  });
+
   it("GET / should return API landing page", async () => {
     const res = await request(app.getHttpServer()).get("/");
     expect(res.status).toBe(200);

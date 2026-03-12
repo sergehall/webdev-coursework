@@ -11,6 +11,7 @@ import {
   Delete,
 } from "@nestjs/common";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
+import { ApiTags } from "@nestjs/swagger";
 import type { Request } from "express";
 import { AnswersTokenGuard } from "../../guards/answers-token.guard";
 import { AdminApiKeyGuard } from "../../guards/admin-api-key.guard";
@@ -34,6 +35,7 @@ const ALLOWED_IMAGE_MIME_TYPES = new Set([
 ]);
 
 @Controller("quizzes")
+@ApiTags("Quizzes")
 export class QuizController {
   constructor(private readonly quizService: QuizService) {}
 

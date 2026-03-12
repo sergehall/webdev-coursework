@@ -5,8 +5,8 @@ import {
   ApiOperation,
   ApiResponse,
   ApiUnauthorizedResponse,
-  ApiOkResponse,
   ApiQuery,
+  ApiParam,
   ApiBearerAuth,
   ApiSecurity,
 } from "@nestjs/swagger";
@@ -26,7 +26,13 @@ export interface ApiDocOptions {
    * - [{ type: 'bearer', name?: SecuritySchemeName }] => attach named bearer scheme
    */
   security?: SecurityItem[];
-  ok?: { type?: Type<unknown>; schema?: Record<string, unknown>; isArray?: boolean };
+  ok?: {
+    status?: number;
+    description?: string;
+    type?: Type<unknown>;
+    schema?: Record<string, unknown>;
+    isArray?: boolean;
+  };
   responses?: Array<{
     status: number;
     type?: Type<unknown>;
@@ -34,6 +40,7 @@ export interface ApiDocOptions {
     schema?: Record<string, unknown>;
   }>;
   queries?: Parameters<typeof ApiQuery>[0][];
+  params?: Parameters<typeof ApiParam>[0][];
   /** Adds 401 automatically only for secured endpoints. */
   addUnauthorizedByDefault?: boolean;
   /** Default bearer name if not provided in a security item. */
@@ -48,6 +55,7 @@ export function ApiDoc(opts: ApiDocOptions = {}) {
     ok,
     responses = [],
     queries = [],
+    params = [],
     addUnauthorizedByDefault = true,
     defaultBearerName = SWAGGER_SECURITY.ANSWERS_TOKEN,
   } = opts;
@@ -69,10 +77,12 @@ export function ApiDoc(opts: ApiDocOptions = {}) {
     }
   }
 
-  // 200 OK / main successful response
+  // Main successful response (default 200 OK).
   if (ok?.type || ok?.schema) {
     ds.push(
-      ApiOkResponse({
+      ApiResponse({
+        status: ok.status ?? 200,
+        description: ok.description,
         ...(ok.type ? { type: ok.type } : {}),
         ...(ok.schema ? { schema: ok.schema } : {}),
         isArray: !!ok?.isArray,
@@ -85,6 +95,9 @@ export function ApiDoc(opts: ApiDocOptions = {}) {
 
   // Query parameters
   for (const q of queries) ds.push(ApiQuery(q));
+
+  // Path parameters
+  for (const p of params) ds.push(ApiParam(p));
 
   // Add 401 only for secured operations
   if (security.length > 0 && addUnauthorizedByDefault) {

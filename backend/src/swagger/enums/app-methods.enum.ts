@@ -3,4 +3,5 @@ export enum AppMethods {
   GetHello = "GetHello",
   Health = "Health",
   Info = "Info",
+  Robots = "Robots",
 }

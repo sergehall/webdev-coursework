@@ -42,8 +42,10 @@ export const createApp = (app: INestApplication): INestApplication => {
 
   // Swagger setup — register a named Bearer scheme (no global lock)
   const config = new DocumentBuilder()
-    .setTitle("SMC Backend API")
-    .setDescription("API for Web Developer Learning Portal")
+    .setTitle("Webdev Coursework API")
+    .setDescription(
+      "Public API for coursework progress, quizzes, tokenized answer access, and service metadata."
+    )
     .setVersion("1.0")
     .addApiKey(
       {
@@ -70,6 +72,7 @@ export const createApp = (app: INestApplication): INestApplication => {
 
   SwaggerModule.setup("/docs", app, document, {
     swaggerOptions: { persistAuthorization: true },
+    jsonDocumentUrl: "/openapi.json",
   });
 
   // CORS

@@ -1,11 +1,13 @@
 import { Controller, Get, Res } from "@nestjs/common";
 import type { Response } from "express";
 import { join } from "path";
+import { ApiTags } from "@nestjs/swagger";
 import { ApiDocService } from "./swagger/api-doc.service";
 import { AppMethods } from "./swagger/enums/app-methods.enum";
 import { EndpointKeys } from "./swagger/enums/endpoint-keys.enum";
 
 @Controller()
+@ApiTags("System")
 export class AppController {
   @ApiDocService.apply(EndpointKeys.App, AppMethods.Health)
   @Get("health")
@@ -38,6 +40,7 @@ export class AppController {
   }
 
   @Get("robots.txt")
+  @ApiDocService.apply(EndpointKeys.App, AppMethods.Robots)
   robots(@Res() res: Response): void {
     res.sendFile(join(__dirname, "..", "public", "robots.txt"));
   }
