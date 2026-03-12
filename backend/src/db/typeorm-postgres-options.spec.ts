@@ -8,6 +8,10 @@ function getSynchronizeOption(options: object): unknown {
   return Reflect.get(options, "synchronize");
 }
 
+function getUrlOption(options: object): unknown {
+  return Reflect.get(options, "url");
+}
+
 describe("TypeOrmPostgresOptions", () => {
   const originalEnv = process.env;
 
@@ -16,6 +20,7 @@ describe("TypeOrmPostgresOptions", () => {
     delete process.env.DYNO;
     delete process.env.POSTGRES_SSL;
     delete process.env.POSTGRES_SSL_REJECT_UNAUTHORIZED;
+    process.env.DATABASE_URL = "postgres://postgres:postgres@localhost:5432/app";
     process.env.NODE_ENV = "production";
   });
 
@@ -62,5 +67,24 @@ describe("TypeOrmPostgresOptions", () => {
     const options = await new TypeOrmPostgresOptions().createTypeOrmOptions();
 
     expect(getSynchronizeOption(options)).toBe(true);
+  });
+
+  it("uses DATABASE_URL as the connection source", async () => {
+    process.env.DATABASE_URL = "postgres://user:pass@db.example.com:5432/prod";
+    const options = await new TypeOrmPostgresOptions().createTypeOrmOptions();
+
+    expect(getUrlOption(options)).toBe(
+      "postgres://user:pass@db.example.com:5432/prod"
+    );
+  });
+
+  it("throws when DATABASE_URL is missing", async () => {
+    delete process.env.DATABASE_URL;
+
+    await expect(
+      new TypeOrmPostgresOptions().createTypeOrmOptions()
+    ).rejects.toThrow(
+      "DATABASE_URL is required for database connection configuration"
+    );
   });
 });

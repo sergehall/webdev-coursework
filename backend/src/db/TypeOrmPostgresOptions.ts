@@ -23,11 +23,13 @@ function parseBoolEnv(value: string | undefined): boolean | undefined {
 @Injectable()
 export class TypeOrmPostgresOptions implements TypeOrmOptionsFactory {
   async createTypeOrmOptions(): Promise<TypeOrmModuleOptions> {
-    const host = process.env.POSTGRES_HOST;
-    const port = parseInt(process.env.PG_PORT as string, 10) || 5432;
-    const username = process.env.POSTGRES_USER;
-    const password = process.env.POSTGRES_PASSWORD;
-    const database = process.env.POSTGRES_NAME_DB;
+    const databaseUrl = process.env.DATABASE_URL?.trim();
+    if (!databaseUrl) {
+      throw new Error(
+        "DATABASE_URL is required for database connection configuration"
+      );
+    }
+
     const isProduction = process.env.NODE_ENV === "production";
     // Keep schema sync opt-in only. Implicit dev synchronize can trigger
     // noisy/unsafe startup behavior and should not run by default.
@@ -53,11 +55,7 @@ export class TypeOrmPostgresOptions implements TypeOrmOptionsFactory {
 
     return {
       type: "postgres",
-      host,
-      port,
-      username,
-      password,
-      database,
+      url: databaseUrl,
       autoLoadEntities: true,
       entities: [CorrectAnswer, QuizQuestion],
       synchronize,

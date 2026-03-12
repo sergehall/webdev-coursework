@@ -133,6 +133,12 @@ yarn install:fresh
 
 ### 3. Run locally
 
+Create backend environment file:
+
+```bash
+cp backend/.env.example backend/.env
+```
+
 ```bash
 yarn dev
 ```
@@ -141,7 +147,7 @@ Default local endpoints:
 
 - Frontend dev: `http://localhost:5173`
 - Frontend preview (optional): `http://localhost:4173`
-- Backend dev: `http://localhost:3000`
+- Backend dev: `http://localhost:5050`
 
 ### 4. Quality checks
 
