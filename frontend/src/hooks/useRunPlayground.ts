@@ -5,57 +5,18 @@ import {
   normalizePlaygroundRelativePath,
   toCodePlaygroundUrl,
 } from "@/utils/playgroundPath";
+import {
+  detectSidecarNames,
+  dirname,
+  fetchSidecars,
+  resolveSidecarByName,
+} from "@/utils/playgroundPythonSidecars";
 import { runPythonWithTimeout } from "@/utils/runPythonWithTimeout";
 import { validateJavaScript } from "@/utils/secureJavaScript";
 import { sanitizeAndValidateCode } from "@/utils/securePython";
 import { runInSandboxedIframe } from "@/utils/sandboxIframe";
 
 type Setter<T> = React.Dispatch<React.SetStateAction<T>>;
-type SidecarFile = { name: string; content: string };
-
-// Heuristic: detect local modules / data mentioned in code
-function detectSidecarNames(code: string): string[] {
-  const need = new Set<string>();
-  if (/\bfrom\s+A05ClassPrH\b|\bimport\s+A05ClassPrH\b/.test(code)) {
-    need.add("A05ClassPrH.py");
-  }
-  if (/\bhouse\.tab\b/.test(code)) need.add("house.tab");
-  if (/\bpresident\.tab\b/.test(code)) need.add("president.tab");
-  return Array.from(need);
-}
-
-function joinRelativePath(baseDir: string, name: string): string {
-  return baseDir ? `${baseDir}/${name}` : name;
-}
-
-// Fetch sidecar files relative to a base folder (folder of the .py file)
-async function fetchSidecars(
-  baseDir: string,
-  names: string[],
-  log?: (t: string) => void
-): Promise<SidecarFile[]> {
-  const out: SidecarFile[] = [];
-  for (const name of names) {
-    try {
-      const rel = joinRelativePath(baseDir, name);
-      const url = toCodePlaygroundUrl(rel);
-      const res = await fetch(`${url}?t=${Date.now()}`);
-      if (!res.ok) {
-        log?.(`[host] sidecar not found: ${name} (${res.status})`);
-        continue;
-      }
-      out.push({ name, content: await res.text() });
-    } catch (e) {
-      log?.(`[host] failed to fetch sidecar ${name}: ${(e as Error).message}`);
-    }
-  }
-  return out;
-}
-
-function dirname(path: string): string {
-  const idx = path.lastIndexOf("/");
-  return idx >= 0 ? path.slice(0, idx) : "";
-}
 
 /**
  * Re-run button logic for both JS and Python.
@@ -206,17 +167,7 @@ export function useRunPlayground(
           (text) => setLogs((prev) => [...prev, text]),
           {
             // If sidecars are hosted under /code-playground, resolve them by name
-            resolver: async (name: string) => {
-              try {
-                const res = await fetch(
-                  `${toCodePlaygroundUrl(name)}?t=${Date.now()}`
-                );
-                if (!res.ok) return null;
-                return await res.text();
-              } catch {
-                return null;
-              }
-            },
+            resolver: resolveSidecarByName,
           }
         )
           .then((output) => {

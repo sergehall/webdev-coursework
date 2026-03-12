@@ -5,6 +5,7 @@ import { CodePlaygroundStatus } from "@/components/CodePlaygroundStatus";
 import { useConsoleInterceptor } from "@/hooks/useConsoleInterceptor";
 import { usePostMessageLogs } from "@/hooks/usePostMessageLogs";
 import { useRunPlayground } from "@/hooks/useRunPlayground";
+import { usePythonWorkerRunner } from "@/hooks/usePythonWorkerRunner";
 import { useCodePlaygroundFileCheck } from "@/hooks/useCodePlaygroundFileCheck";
 import { ConsoleOutput } from "@/components/ConsoleOutput";
 import {
@@ -12,7 +13,6 @@ import {
   normalizePlaygroundRelativePath,
 } from "@/utils/playgroundPath";
 import { validateJavaScript } from "@/utils/secureJavaScript";
-import { sanitizeAndValidateCode } from "@/utils/securePython";
 import { SANDBOX_IFRAME_ID, runInSandboxedIframe } from "@/utils/sandboxIframe";
 import {
   ClearConsoleButton,
@@ -43,6 +43,14 @@ export default function CodePlaygroundPage() {
 
   const { fileExists } = useCodePlaygroundFileCheck(rawFile);
 
+  const runPythonInWorker = usePythonWorkerRunner({
+    workerRef,
+    setLogs,
+    setInputResolver,
+    setPendingPrompt,
+    timeoutMs: PYTHON_TIMEOUT_MS,
+  });
+
   // Send console input back to worker
   const handleConsoleInput = (value: string) => {
     if (inputResolver) {
@@ -50,116 +58,6 @@ export default function CodePlaygroundPage() {
       setInputResolver(null);
       setPendingPrompt(null);
     }
-  };
-
-  // Helper to run Python code via worker (used by both auto-run and uploads)
-  const runPythonInWorker = (code: string) => {
-    const validated = sanitizeAndValidateCode(code);
-    if (!validated.valid || !validated.cleanedCode) {
-      setLogs((prev) => [
-        ...prev,
-        `🚫 Python blocked: ${validated.reason ?? "unsafe code detected"}`,
-      ]);
-      return;
-    }
-
-    if (workerRef.current) {
-      try {
-        workerRef.current.terminate();
-      } catch (e) {
-        // Worker may already be terminated; ignore
-        // (add a no-op so the block isn't empty)
-        void e;
-      }
-      workerRef.current = null;
-    }
-
-    let executionTimer: ReturnType<typeof setTimeout> | undefined;
-    const clearExecutionTimer = () => {
-      if (executionTimer) {
-        clearTimeout(executionTimer);
-        executionTimer = undefined;
-      }
-    };
-
-    const worker = new Worker(`workers/pyWorker.js?ts=${Date.now()}`); // cache-busting
-    workerRef.current = worker;
-    const cleanupWorker = () => {
-      clearExecutionTimer();
-      setInputResolver(null);
-      setPendingPrompt(null);
-      try {
-        worker.terminate();
-      } catch {
-        /* worker already stopped */
-      }
-      if (workerRef.current === worker) {
-        workerRef.current = null;
-      }
-    };
-
-    const armExecutionTimer = () => {
-      clearExecutionTimer();
-      executionTimer = setTimeout(() => {
-        setLogs((prev) => [
-          ...prev,
-          `❌ Python execution timed out after ${PYTHON_TIMEOUT_MS / 1000}s`,
-        ]);
-        cleanupWorker();
-      }, PYTHON_TIMEOUT_MS);
-    };
-
-    worker.onerror = (ev: ErrorEvent) => {
-      const msg =
-        ev.message ||
-        (ev.error && (ev.error as Error)?.message) ||
-        `${ev.filename}:${ev.lineno}:${ev.colno}` ||
-        String(ev);
-      setLogs((prev) => [...prev, `❌ Worker error: ${msg}`]);
-      cleanupWorker();
-    };
-
-    worker.onmessage = (e: MessageEvent) => {
-      const { type, text, prompt, id, error } = (e.data || {}) as {
-        type?: string;
-        text?: string;
-        prompt?: string;
-        id?: number;
-        error?: string;
-      };
-
-      if (type === "log") {
-        setLogs((prev) => [...prev, String(text ?? "")]);
-        return;
-      }
-      if (type === "input") {
-        clearExecutionTimer();
-        setPendingPrompt(String(prompt ?? "Input:"));
-        setLogs((prev) => [...prev, String(prompt ?? "Input:")]);
-        setInputResolver(() => (value: string) => {
-          armExecutionTimer();
-          setPendingPrompt(null);
-          worker.postMessage({ type: "inputResponse", id, value });
-        });
-        return;
-      }
-      if (type === "result") {
-        cleanupWorker();
-        return;
-      }
-      if (type === "error") {
-        setLogs((prev) => [
-          ...prev,
-          `❌ Error:\n${String(error ?? "Unknown")}`,
-        ]);
-        cleanupWorker();
-        return;
-      }
-    };
-
-    armExecutionTimer();
-    setLogs((prev) => [...prev, ">_"]);
-    worker.postMessage({ type: "start", code: validated.cleanedCode });
   };
 
   // Auto-run file if present in /code-playground
@@ -203,7 +101,7 @@ export default function CodePlaygroundPage() {
           ])
         );
     }
-  }, [file, fileExists]);
+  }, [file, fileExists, runPythonInWorker]);
 
   // Capture browser console + postMessage logs
   useConsoleInterceptor((msg) => setLogs((prev) => [...prev, msg]));

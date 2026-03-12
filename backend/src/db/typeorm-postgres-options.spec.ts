@@ -12,6 +12,18 @@ function getUrlOption(options: object): unknown {
   return Reflect.get(options, "url");
 }
 
+function getRetryAttemptsOption(options: object): unknown {
+  return Reflect.get(options, "retryAttempts");
+}
+
+function getRetryDelayOption(options: object): unknown {
+  return Reflect.get(options, "retryDelay");
+}
+
+function getExtraOptions(options: object): Record<string, unknown> {
+  return (Reflect.get(options, "extra") as Record<string, unknown>) ?? {};
+}
+
 describe("TypeOrmPostgresOptions", () => {
   const originalEnv = process.env;
 
@@ -86,5 +98,37 @@ describe("TypeOrmPostgresOptions", () => {
     ).rejects.toThrow(
       "DATABASE_URL is required for database connection configuration"
     );
+  });
+
+  it("applies safe defaults for connection pool and statement timeout", async () => {
+    delete process.env.TYPEORM_POOL_MAX;
+    delete process.env.TYPEORM_STATEMENT_TIMEOUT_MS;
+
+    const options = await new TypeOrmPostgresOptions().createTypeOrmOptions();
+    const extra = getExtraOptions(options);
+
+    expect(extra.max).toBe(10);
+    expect(extra.statement_timeout).toBe(15000);
+  });
+
+  it("clamps pool and timeout values to minimum safe positive integer", async () => {
+    process.env.TYPEORM_POOL_MAX = "0";
+    process.env.TYPEORM_STATEMENT_TIMEOUT_MS = "-5";
+
+    const options = await new TypeOrmPostgresOptions().createTypeOrmOptions();
+    const extra = getExtraOptions(options);
+
+    expect(extra.max).toBe(1);
+    expect(extra.statement_timeout).toBe(1);
+  });
+
+  it("keeps retry configuration safe and positive", async () => {
+    process.env.TYPEORM_RETRY_ATTEMPTS = "0";
+    process.env.TYPEORM_RETRY_DELAY_MS = "-100";
+
+    const options = await new TypeOrmPostgresOptions().createTypeOrmOptions();
+
+    expect(getRetryAttemptsOption(options)).toBe(1);
+    expect(getRetryDelayOption(options)).toBe(1);
   });
 });
