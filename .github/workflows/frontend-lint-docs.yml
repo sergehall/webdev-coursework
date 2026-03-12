@@ -14,6 +14,8 @@ permissions:
 
 jobs:
   test-only:
+    permissions:
+      contents: read
     uses: ./.github/workflows/frontend-common.yml
     with:
       environment: production

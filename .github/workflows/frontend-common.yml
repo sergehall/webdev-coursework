@@ -28,6 +28,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
+    permissions:
+      contents: read
     defaults:
       run:
         working-directory: ./frontend
@@ -40,6 +42,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          token: ${{ github.token }}
+          fetch-depth: 1
 
       - name: Setup Node.js
         uses: actions/setup-node@v4

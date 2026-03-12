@@ -12,6 +12,9 @@ permissions:
 
 jobs:
   build:
+    permissions:
+      contents: read
+      actions: write
     uses: ./.github/workflows/frontend-common.yml
     with:
       environment: production
