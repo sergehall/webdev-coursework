@@ -29,9 +29,9 @@ export class TypeOrmPostgresOptions implements TypeOrmOptionsFactory {
     const password = process.env.POSTGRES_PASSWORD;
     const database = process.env.POSTGRES_NAME_DB;
     const isProduction = process.env.NODE_ENV === "production";
-    const synchronize =
-      process.env.TYPEORM_SYNCHRONIZE === "true" ||
-      (!isProduction && process.env.TYPEORM_SYNCHRONIZE !== "false");
+    // Keep schema sync opt-in only. Implicit dev synchronize can trigger
+    // noisy/unsafe startup behavior and should not run by default.
+    const synchronize = process.env.TYPEORM_SYNCHRONIZE === "true";
     const retryAttempts = parseIntEnv(
       process.env.TYPEORM_RETRY_ATTEMPTS,
       3

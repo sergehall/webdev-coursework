@@ -4,7 +4,11 @@ function getSslOption(options: object): unknown {
   return Reflect.get(options, "ssl");
 }
 
-describe("TypeOrmPostgresOptions SSL behavior", () => {
+function getSynchronizeOption(options: object): unknown {
+  return Reflect.get(options, "synchronize");
+}
+
+describe("TypeOrmPostgresOptions", () => {
   const originalEnv = process.env;
 
   beforeEach(() => {
@@ -45,5 +49,18 @@ describe("TypeOrmPostgresOptions SSL behavior", () => {
     const options = await new TypeOrmPostgresOptions().createTypeOrmOptions();
 
     expect(getSslOption(options)).toBeUndefined();
+  });
+
+  it("keeps synchronize disabled by default", async () => {
+    const options = await new TypeOrmPostgresOptions().createTypeOrmOptions();
+
+    expect(getSynchronizeOption(options)).toBe(false);
+  });
+
+  it("enables synchronize only when TYPEORM_SYNCHRONIZE=true", async () => {
+    process.env.TYPEORM_SYNCHRONIZE = "true";
+    const options = await new TypeOrmPostgresOptions().createTypeOrmOptions();
+
+    expect(getSynchronizeOption(options)).toBe(true);
   });
 });
