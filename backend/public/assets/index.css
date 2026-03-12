@@ -19,7 +19,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding: clamp(44px, 26vh, 260px) 24px 24px;
+  padding: clamp(20px, 12vh, 120px) 24px 24px;
   color: var(--text);
   background:
     radial-gradient(80% 42% at 50% 0%, #18274a 0%, #111827 24%, #050b18 64%),

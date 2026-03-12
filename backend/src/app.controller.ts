@@ -5,6 +5,7 @@ import { ApiTags } from "@nestjs/swagger";
 import { ApiDocService } from "./swagger/api-doc.service";
 import { AppMethods } from "./swagger/enums/app-methods.enum";
 import { EndpointKeys } from "./swagger/enums/endpoint-keys.enum";
+import { getReleaseIdentifier } from "./app/release.utils";
 
 @Controller()
 @ApiTags("System")
@@ -32,10 +33,7 @@ export class AppController {
         health: "/health",
         info: "/info",
       },
-      release:
-        process.env.HEROKU_RELEASE_VERSION ??
-        process.env.RELEASE_VERSION ??
-        "local",
+      release: getReleaseIdentifier(),
     };
   }
 

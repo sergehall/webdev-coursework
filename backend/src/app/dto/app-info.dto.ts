@@ -27,7 +27,7 @@ export class AppInfoDto {
   @ApiProperty({
     example: "v103",
     description:
-      "Release identifier from environment (HEROKU_RELEASE_VERSION or RELEASE_VERSION).",
+      "Release identifier from environment (HEROKU_RELEASE_VERSION, RELEASE_VERSION, or commit-based fallback via SOURCE_VERSION/HEROKU_SLUG_COMMIT).",
   })
   release!: string;
 }
