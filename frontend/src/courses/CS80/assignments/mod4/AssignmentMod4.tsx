@@ -2,7 +2,7 @@
 import { useState } from "react";
 
 import AnimatedAccordionItem from "@/components/AnimatedAccordionItem";
-import Assignment4 from "@/courses/CS80/assignments/mod4/ tasks/Assignment4";
+import Assignment4 from "@/courses/CS80/assignments/mod4/tasks/Assignment4";
 import { ModuleCompletionButton } from "@/components/buttons";
 import { useFinalModuleRedirect } from "@/hooks/useFinalModuleRedirect";
 

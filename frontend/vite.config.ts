@@ -11,6 +11,14 @@ import { envSchema } from "./src/config/env/env.schema";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const courseChunkGroups: Array<[pathSegment: string, chunkName: string]> = [
+  ["/courses/CS60/", "course-cs60"],
+  ["/courses/CS70/", "course-cs70"],
+  ["/courses/CS79A/", "course-cs79a"],
+  ["/courses/CS80/", "course-cs80"],
+  ["/courses/CS81/", "course-cs81"],
+  ["/courses/CS87A/", "course-cs87a"],
+];
 
 export default defineConfig(({ mode }) => {
   const envVars = loadEnv(mode, process.cwd(), "");
@@ -21,10 +29,14 @@ export default defineConfig(({ mode }) => {
   }
   const env = parsed.data;
   const isProd = mode === "production";
+  const isDebugConfig = process.env.VITE_DEBUG_CONFIG === "1";
 
   if (!isProd) {
     console.log("✅ mode:", mode);
-    console.log("✅ Loaded env:", env);
+  }
+
+  if (!isProd && isDebugConfig) {
+    console.log("✅ Loaded env keys:", Object.keys(env).sort());
   }
 
   return {
@@ -74,9 +86,50 @@ export default defineConfig(({ mode }) => {
         : undefined,
       rollupOptions: {
         external: ["fsevents"],
-        // Let Rollup decide chunking. This avoids pulling an oversized vendor bundle on Home.
-        // If needed later, we can re-introduce very targeted splits.
-        output: {},
+        output: {
+          manualChunks(id) {
+            const matchedCourse = courseChunkGroups.find(([segment]) =>
+              id.includes(segment)
+            );
+            if (matchedCourse) {
+              return matchedCourse[1];
+            }
+
+            if (id.includes("node_modules")) {
+              if (
+                id.includes("react") ||
+                id.includes("scheduler") ||
+                id.includes("react-router")
+              ) {
+                return "vendor-react";
+              }
+              if (
+                id.includes("framer-motion") ||
+                id.includes("canvas-confetti") ||
+                id.includes("react-confetti")
+              ) {
+                return "vendor-motion";
+              }
+              if (
+                id.includes("lucide-react") ||
+                id.includes("react-icons") ||
+                id.includes("@floating-ui")
+              ) {
+                return "vendor-ui";
+              }
+              if (id.includes("@sentry")) {
+                return "vendor-sentry";
+              }
+              if (id.includes("zod")) {
+                return "vendor-zod";
+              }
+
+              return "vendor-misc";
+            }
+
+            return undefined;
+          },
+        },
       },
       chunkSizeWarningLimit: 700,
     },
