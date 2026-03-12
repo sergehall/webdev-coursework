@@ -31,10 +31,14 @@ export const ApiDocRegistry = {
     [QuizzesMethods.CreateQuestion]: (description?: string) =>
       applyDecorators(
         ApiDoc({
-          summary: "Create a question for a quiz (public)",
+          summary: "Create a question for a quiz (admin only)",
           description,
+          security: [{ type: "apiKey", name: "adminKey" }],
           ok: { type: QuizQuestionDto, isArray: false },
-          responses: [{ status: 400, description: "Bad Request" }],
+          responses: [
+            { status: 400, description: "Bad Request" },
+            { status: 401, description: "Invalid admin key" },
+          ],
         }),
         ApiConsumes("multipart/form-data"),
         ApiBody({

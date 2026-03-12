@@ -11,7 +11,9 @@ import {
   Delete,
 } from "@nestjs/common";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
+import type { Request } from "express";
 import { AnswersTokenGuard } from "../../guards/answers-token.guard";
+import { AdminApiKeyGuard } from "../../guards/admin-api-key.guard";
 import { ApiDocService } from "../../swagger/api-doc.service";
 import { EndpointKeys } from "../../swagger/enums/endpoint-keys.enum";
 import { QuizzesMethods } from "../../swagger/enums/quizzes-methods.enum";
@@ -22,6 +24,14 @@ import { ResetProgressDto } from "../dto/reset-progress.dto";
 
 import { QuizService } from "../service/quiz.service";
 import { CreateQuestionDto } from "../dto/create-question.dto";
+
+const MAX_QUESTION_IMAGE_UPLOAD_BYTES = 5 * 1024 * 1024; // 5 MB per file
+const ALLOWED_IMAGE_MIME_TYPES = new Set([
+  "image/png",
+  "image/jpeg",
+  "image/webp",
+  "image/gif",
+]);
 
 @Controller("quizzes")
 export class QuizController {
@@ -46,7 +56,22 @@ export class QuizController {
 
   @ApiDocService.apply(EndpointKeys.Quizzes, QuizzesMethods.CreateQuestion)
   @Post(":quizId/questions")
-  @UseInterceptors(FileFieldsInterceptor([{ name: "images", maxCount: 5 }]))
+  @UseGuards(AdminApiKeyGuard)
+  @UseInterceptors(
+    FileFieldsInterceptor([{ name: "images", maxCount: 5 }], {
+      limits: {
+        files: 5,
+        fileSize: MAX_QUESTION_IMAGE_UPLOAD_BYTES,
+      },
+      fileFilter: (
+        _req: Request,
+        file: Express.Multer.File,
+        callback: (error: Error | null, acceptFile: boolean) => void
+      ) => {
+        callback(null, ALLOWED_IMAGE_MIME_TYPES.has(file.mimetype));
+      },
+    })
+  )
   async createQuestion(
     @Param("quizId") quizId: string,
     @Body() dto: CreateQuestionDto,

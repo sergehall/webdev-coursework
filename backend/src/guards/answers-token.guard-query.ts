@@ -7,7 +7,7 @@ import {
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Request } from "express";
-import { createHash } from "crypto";
+import { createHash, timingSafeEqual } from "crypto";
 
 @Injectable()
 export class AnswersTokenGuardQuery implements CanActivate {
@@ -34,13 +34,13 @@ export class AnswersTokenGuardQuery implements CanActivate {
       .update(`${quizId}:${secret}`)
       .digest("hex");
 
-    if (process.env.NODE_ENV === "development") {
-      console.debug(
-        `[Token Debug] quizId=${quizId}, token=${token}, expected=${expectedToken}`
-      );
-    }
+    const expected = Buffer.from(expectedToken, "utf8");
+    const received = Buffer.from(token, "utf8");
+    const isMatch =
+      expected.length === received.length &&
+      timingSafeEqual(expected, received);
 
-    if (token !== expectedToken) {
+    if (!isMatch) {
       throw new UnauthorizedException("Invalid token");
     }
 

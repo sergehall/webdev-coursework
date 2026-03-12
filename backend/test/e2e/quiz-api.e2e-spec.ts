@@ -3,18 +3,11 @@ import type { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
 import { AppModule } from "../../src/app.module";
 import { createApp } from "../../src/create-app";
-import { createHash } from "crypto";
-import { ConfigService } from "@nestjs/config";
 
 describe("Quiz API (e2e)", () => {
   let app: INestApplication;
-  let configService: ConfigService;
 
   const quizId = "QuizModule1";
-
-  function generateToken(quizId: string, secret: string) {
-    return createHash("sha256").update(`${quizId}:${secret}`).digest("hex");
-  }
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -24,8 +17,6 @@ describe("Quiz API (e2e)", () => {
     app = moduleRef.createNestApplication();
     app = createApp(app);
     await app.init();
-
-    configService = app.get(ConfigService);
   });
 
   afterAll(async () => {
@@ -48,14 +39,15 @@ describe("Quiz API (e2e)", () => {
   });
 
   it("GET /api/quizzes/:quizId/answers should return 200 with valid token", async () => {
-    const secret = configService.get<string>("QUIZ_SECRET_KEY");
-    if (!secret) {
-      throw new Error("QUIZ_SECRET_KEY is not defined in test environment");
-    }
-    const token = generateToken(quizId, secret);
+    const tokenRes = await request(app.getHttpServer()).post(
+      `/api/tokens/${quizId}/answers-token`
+    );
+    expect(tokenRes.status).toBe(201);
+    expect(typeof tokenRes.body?.token).toBe("string");
+    const token = tokenRes.body.token as string;
 
     const res = await request(app.getHttpServer())
-      .get(`/api/quizzes/${quizId}/answers?token=${token}`)
+      .get(`/api/quizzes/${quizId}/answers`)
       .set("Authorization", `Bearer ${token}`);
 
     expect(res.status).toBe(200);

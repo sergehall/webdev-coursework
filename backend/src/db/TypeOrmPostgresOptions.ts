@@ -3,6 +3,16 @@ import { Injectable } from "@nestjs/common";
 import { CorrectAnswer } from "../quiz/entities/correct-answer.entity";
 import { QuizQuestion } from "../quiz/entities/quiz-question.entity";
 
+function parseIntEnv(
+  value: string | undefined,
+  fallback: number,
+  min = 1
+): number {
+  const parsed = Number.parseInt(value ?? "", 10);
+  if (Number.isNaN(parsed)) return fallback;
+  return parsed < min ? min : parsed;
+}
+
 @Injectable()
 export class TypeOrmPostgresOptions implements TypeOrmOptionsFactory {
   async createTypeOrmOptions(): Promise<TypeOrmModuleOptions> {
@@ -15,15 +25,24 @@ export class TypeOrmPostgresOptions implements TypeOrmOptionsFactory {
     const synchronize =
       process.env.TYPEORM_SYNCHRONIZE === "true" ||
       (!isProduction && process.env.TYPEORM_SYNCHRONIZE !== "false");
-    const retryAttempts = Number.parseInt(
-      process.env.TYPEORM_RETRY_ATTEMPTS ?? "3",
-      10
+    const retryAttempts = parseIntEnv(
+      process.env.TYPEORM_RETRY_ATTEMPTS,
+      3
     );
-    const retryDelay = Number.parseInt(
-      process.env.TYPEORM_RETRY_DELAY_MS ?? "1000",
-      10
+    const retryDelay = parseIntEnv(
+      process.env.TYPEORM_RETRY_DELAY_MS,
+      1000
+    );
+    const poolMax = parseIntEnv(process.env.TYPEORM_POOL_MAX, 10);
+    const statementTimeoutMs = parseIntEnv(
+      process.env.TYPEORM_STATEMENT_TIMEOUT_MS,
+      15000
     );
     const useSsl = process.env.POSTGRES_SSL !== "false";
+    const sslRejectUnauthorized =
+      process.env.POSTGRES_SSL_REJECT_UNAUTHORIZED != null
+        ? process.env.POSTGRES_SSL_REJECT_UNAUTHORIZED === "true"
+        : isProduction;
 
     return {
       type: "postgres",
@@ -35,10 +54,16 @@ export class TypeOrmPostgresOptions implements TypeOrmOptionsFactory {
       autoLoadEntities: true,
       entities: [CorrectAnswer, QuizQuestion],
       synchronize,
-      retryAttempts: Number.isNaN(retryAttempts) ? 3 : retryAttempts,
-      retryDelay: Number.isNaN(retryDelay) ? 1000 : retryDelay,
+      retryAttempts,
+      retryDelay,
       logging: false,
-      ...(useSsl ? { ssl: { rejectUnauthorized: false } } : {}),
+      extra: {
+        max: poolMax,
+        statement_timeout: statementTimeoutMs,
+      },
+      ...(useSsl
+        ? { ssl: { rejectUnauthorized: sslRejectUnauthorized } }
+        : {}),
     };
   }
 }

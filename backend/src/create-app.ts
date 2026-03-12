@@ -8,6 +8,14 @@ import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import type { Request, Response, NextFunction } from "express";
 import { SWAGGER_SECURITY } from "./swagger/security.constants";
 
+function parseAllowedOrigins(value: string | undefined): string[] {
+  if (!value) return [];
+  return value
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+}
+
 export const createApp = (app: INestApplication): INestApplication => {
   // DI support in validators
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
@@ -30,6 +38,9 @@ export const createApp = (app: INestApplication): INestApplication => {
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      forbidUnknownValues: true,
       stopAtFirstError: false,
       exceptionFactory: (errors) => {
         const customErrors = errors.map((e) => ({
@@ -74,8 +85,26 @@ export const createApp = (app: INestApplication): INestApplication => {
   });
 
   // CORS
+  const allowedOrigins = parseAllowedOrigins(process.env.ALLOWED_ORIGINS);
   app.enableCors({
-    origin: process.env.ALLOWED_ORIGINS?.split(",") ?? "*",
+    origin: (
+      origin: string | undefined,
+      callback: (error: Error | null, allow?: boolean) => void
+    ) => {
+      // Allow non-browser clients (no Origin header).
+      if (!origin) {
+        callback(null, true);
+        return;
+      }
+
+      // If no explicit allowlist is configured, allow all origins.
+      if (allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+
+      callback(new Error("Not allowed by CORS"), false);
+    },
     credentials: true,
   });
 
