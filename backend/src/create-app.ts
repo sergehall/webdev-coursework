@@ -6,7 +6,7 @@ import { configureSwagger } from "./bootstrap/configure-swagger";
 import { configureValidation } from "./bootstrap/configure-validation";
 
 export const createApp = (app: INestApplication): INestApplication => {
-  // Cookie middleware
+  // Cookie middleware!
   app.use(cookieParser());
 
   configureValidation(app);
