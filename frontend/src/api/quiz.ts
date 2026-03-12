@@ -16,7 +16,7 @@ export interface FetchQuizResponse {
  */
 async function fetchAnswersToken(quizId: string): Promise<string> {
   const { token } = await apiFetch<{ token: string }>(
-    `/api/tokens/${quizId}/answers-token`,
+    `/tokens/${quizId}/answers-token`,
     { method: "POST" }
   );
   return token;
@@ -33,8 +33,8 @@ export async function fetchQuiz(quizId: string): Promise<FetchQuizResponse> {
 
   // 2) Fetch questions and answers in parallel
   const [questionDtos, answers] = await Promise.all([
-    apiFetch<QuestionDto[]>(`/api/quizzes/${quizId}/questions`),
-    apiFetch<CorrectAnswerDto[]>(`/api/quizzes/${quizId}/answers`, {
+    apiFetch<QuestionDto[]>(`/quizzes/${quizId}/questions`),
+    apiFetch<CorrectAnswerDto[]>(`/quizzes/${quizId}/answers`, {
       headers: { Authorization: `Bearer ${token}` },
     }),
   ]);

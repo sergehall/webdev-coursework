@@ -6,7 +6,7 @@ describe("envSchema", () => {
   test("passes with valid environment variables", () => {
     const result = envSchema.parse({
       VITE_ENVIRONMENT: "development",
-      VITE_API_URL: "https://example.com/api",
+      VITE_API_URL: "https://example.com",
       VITE_QUIZ_SECRET: "supersecret",
     });
 

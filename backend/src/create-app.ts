@@ -5,7 +5,6 @@ import { useContainer } from "class-validator";
 import { AppModule } from "./app.module";
 import * as cookieParser from "cookie-parser";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
-import type { Request, Response, NextFunction } from "express";
 import { SWAGGER_SECURITY } from "./swagger/security.constants";
 
 function parseAllowedOrigins(value: string | undefined): string[] {
@@ -22,17 +21,6 @@ export const createApp = (app: INestApplication): INestApplication => {
 
   // Cookie middleware
   app.use(cookieParser());
-
-  app.use((req: Request, res: Response, next: NextFunction) => {
-    if (req.originalUrl === "/") {
-      res.redirect("/api");
-    } else {
-      next();
-    }
-  });
-
-  // Set global prefix for API routes
-  app.setGlobalPrefix("api");
 
   // Global pipes
   app.useGlobalPipes(
@@ -80,7 +68,7 @@ export const createApp = (app: INestApplication): INestApplication => {
 
   const document = SwaggerModule.createDocument(app, config);
 
-  SwaggerModule.setup("/api/docs", app, document, {
+  SwaggerModule.setup("/docs", app, document, {
     swaggerOptions: { persistAuthorization: true },
   });
 

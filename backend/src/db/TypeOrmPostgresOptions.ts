@@ -13,6 +13,13 @@ function parseIntEnv(
   return parsed < min ? min : parsed;
 }
 
+function parseBoolEnv(value: string | undefined): boolean | undefined {
+  if (value == null) return undefined;
+  if (value === "true") return true;
+  if (value === "false") return false;
+  return undefined;
+}
+
 @Injectable()
 export class TypeOrmPostgresOptions implements TypeOrmOptionsFactory {
   async createTypeOrmOptions(): Promise<TypeOrmModuleOptions> {
@@ -38,11 +45,11 @@ export class TypeOrmPostgresOptions implements TypeOrmOptionsFactory {
       process.env.TYPEORM_STATEMENT_TIMEOUT_MS,
       15000
     );
-    const useSsl = process.env.POSTGRES_SSL !== "false";
+    const useSsl = parseBoolEnv(process.env.POSTGRES_SSL) ?? true;
+    const isHerokuDyno = Boolean(process.env.DYNO);
     const sslRejectUnauthorized =
-      process.env.POSTGRES_SSL_REJECT_UNAUTHORIZED != null
-        ? process.env.POSTGRES_SSL_REJECT_UNAUTHORIZED === "true"
-        : isProduction;
+      parseBoolEnv(process.env.POSTGRES_SSL_REJECT_UNAUTHORIZED) ??
+      (isHerokuDyno ? false : isProduction);
 
     return {
       type: "postgres",

@@ -23,7 +23,7 @@ export async function fetchProgress(
   const { appId } = COURSE_PROGRESS_CONFIG[courseId];
 
   return apiFetch<number[]>(
-    `/api/quizzes/progress?clientId=${clientId}&appId=${appId}&courseId=${courseId}`
+    `/quizzes/progress?clientId=${clientId}&appId=${appId}&courseId=${courseId}`
   );
 }
 
@@ -32,7 +32,7 @@ export async function markModuleCompleted(
 ): Promise<void> {
   const { appId } = COURSE_PROGRESS_CONFIG[body.courseId];
 
-  await apiFetch<void, ProgressRequest>("/api/quizzes/progress", {
+  await apiFetch<void, ProgressRequest>("/quizzes/progress", {
     method: "POST",
     body: {
       ...body,
@@ -46,7 +46,7 @@ export async function unmarkModuleCompleted(
 ): Promise<void> {
   const { appId } = COURSE_PROGRESS_CONFIG[body.courseId];
 
-  await apiFetch<void, ProgressRequest>("/api/quizzes/progress", {
+  await apiFetch<void, ProgressRequest>("/quizzes/progress", {
     method: "DELETE",
     body: {
       ...body,
@@ -58,7 +58,7 @@ export async function unmarkModuleCompleted(
 export async function resetAllModules(body: ResetProgress): Promise<void> {
   const { appId } = COURSE_PROGRESS_CONFIG[body.courseId];
 
-  await apiFetch<void, ResetProgress>("/api/quizzes/progress/reset", {
+  await apiFetch<void, ResetProgress>("/quizzes/progress/reset", {
     method: "POST",
     body: {
       ...body,

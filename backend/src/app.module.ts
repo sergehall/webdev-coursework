@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { TypeOrmModule } from "@nestjs/typeorm";
@@ -12,10 +17,16 @@ import { TokensModule } from "./tokens/tokens.module";
 
 @Module({
   imports: [
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, "..", "uploads"),
-      serveRoot: "/uploads",
-    }),
+    ServeStaticModule.forRoot(
+      {
+        rootPath: join(__dirname, "..", "uploads"),
+        serveRoot: "/uploads",
+      },
+      {
+        rootPath: join(__dirname, "..", "public", "assets"),
+        serveRoot: "/assets",
+      }
+    ),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ".env",
@@ -31,6 +42,8 @@ import { TokensModule } from "./tokens/tokens.module";
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(HttpLoggingMiddleware).forRoutes("*"); // Apply logger middleware to all routes
+    consumer
+      .apply(HttpLoggingMiddleware)
+      .forRoutes({ path: "*path", method: RequestMethod.ALL }); // all routes
   }
 }
