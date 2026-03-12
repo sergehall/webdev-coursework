@@ -15,7 +15,6 @@ jobs:
       run_tests: false
       run_build: false
     secrets:
-      VITE_ENVIRONMENT: ${{ secrets.VITE_ENVIRONMENT }}
       VITE_API_URL: ${{ secrets.VITE_API_URL }}
       VITE_QUIZ_SECRET: ${{ secrets.VITE_QUIZ_SECRET }}
       VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
