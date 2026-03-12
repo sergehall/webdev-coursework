@@ -3,7 +3,12 @@ import { BookOpen, Sparkles, Info, School } from "lucide-react";
 
 import { TagBadge, tagIconMap } from "@/components/tags";
 import type { TagIconLabel } from "@/components/tags";
-import type { Course, BaseCourse } from "@/data/webDeveloperCourses";
+import {
+  isBaseCourse,
+  isCourseGroup,
+  type Course,
+  type BaseCourse,
+} from "@/data/webDeveloperCourses";
 
 interface Props {
   course: Course;
@@ -22,13 +27,11 @@ const ExpandedCourseCard: React.FC<Props> = ({
   readOnly = false,
   compact = false,
 }) => {
-  const display: BaseCourse = selected ?? (course as BaseCourse);
+  const display: BaseCourse =
+    selected ?? (isBaseCourse(course) ? course : course.options[0]);
 
   const combinedTags = Array.from(
-    new Set([
-      ...("tags" in course ? course.tags : []),
-      ...(selected?.tags ?? []),
-    ])
+    new Set([...course.tags, ...(selected?.tags ?? [])])
   );
 
   const padding = compact ? "p-3" : "p-6";
@@ -57,7 +60,7 @@ const ExpandedCourseCard: React.FC<Props> = ({
       )}
 
       {/* Course option selector */}
-      {!readOnly && "options" in course && (
+      {!readOnly && isCourseGroup(course) && (
         <div>
           <label className="mb-1 block font-semibold">Choose one option:</label>
           <select

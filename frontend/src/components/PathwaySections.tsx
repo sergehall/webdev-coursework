@@ -13,29 +13,32 @@ const PathwaySections = () => {
   };
 
   return (
-    <div className="divide-y divide-gray-200 rounded-xl border bg-gradient-to-t from-gray-100 via-gray-200 to-gray-300 p-6 dark:border-gray-700 dark:from-gray-800 dark:via-gray-800 dark:to-gray-900">
+    <div className="divide-y divide-gray-200 rounded-xl border bg-gradient-to-t from-gray-100 via-gray-200 to-gray-300 px-4 py-0 dark:border-gray-700 dark:from-gray-800 dark:via-gray-800 dark:to-gray-900 sm:px-5">
       {programSections.map((section, idx) => {
         const isOpen = openIndex === idx;
         return (
-          <section key={section.title} className="py-5">
+          <section
+            key={section.title}
+            className="py-3 first:pt-2 last:pb-2 sm:py-3.5"
+          >
             <button
               type="button"
               aria-expanded={isOpen}
               onClick={() => toggle(idx)}
-              className="flex w-full items-center gap-4 text-left text-2xl font-semibold text-slate-800 outline-none dark:text-white"
+              className="flex w-full items-center gap-3 text-left text-lg font-normal text-slate-800 outline-none dark:text-white sm:text-xl"
             >
               <span
-                className={`flex h-9 w-9 items-center justify-center rounded-full text-white transition-colors ${
+                className={`flex h-7 w-7 items-center justify-center rounded-full text-white transition-colors sm:h-8 sm:w-8 ${
                   isOpen ? "bg-blue-600" : "bg-yellow-400"
                 }`}
               >
-                {isOpen ? <Minus size={20} /> : <Plus size={20} />}
+                {isOpen ? <Minus size={16} /> : <Plus size={16} />}
               </span>
               {section.title}
             </button>
 
             {isOpen && (
-              <div className="mt-4 rounded-md p-4 text-base leading-7 text-slate-700 dark:text-gray-200">
+              <div className="mt-2.5 rounded-md p-2 text-sm leading-6 text-slate-700 dark:text-gray-200 sm:p-3">
                 {section.content}
               </div>
             )}

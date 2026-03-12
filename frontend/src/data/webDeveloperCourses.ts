@@ -24,6 +24,12 @@ export type CourseGroup = {
 
 export type Course = BaseCourse | CourseGroup;
 
+export const isCourseGroup = (course: Course): course is CourseGroup =>
+  "options" in course;
+
+export const isBaseCourse = (course: Course): course is BaseCourse =>
+  "code" in course;
+
 export const courses: Course[] = [
   {
     code: "CS 60",
