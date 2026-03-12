@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
 
+import {
+  normalizePlaygroundRelativePath,
+  toCodePlaygroundUrl,
+} from "@/utils/playgroundPath";
+
 export function useCodePlaygroundFileCheck(file: string | null) {
   const [fileExists, setFileExists] = useState<boolean | null>(null);
 
@@ -9,9 +14,16 @@ export function useCodePlaygroundFileCheck(file: string | null) {
       return;
     }
 
-    const path = `/code-playground/${file}`;
-    const isJS = file.endsWith(".js") || file.endsWith(".mjs");
-    const isPy = file.endsWith(".py");
+    const safeFile = normalizePlaygroundRelativePath(file);
+    if (!safeFile) {
+      setFileExists(false);
+      return;
+    }
+
+    const path = toCodePlaygroundUrl(safeFile);
+    const lower = safeFile.toLowerCase();
+    const isJS = lower.endsWith(".js") || lower.endsWith(".mjs");
+    const isPy = lower.endsWith(".py");
 
     const checkFile = async () => {
       try {

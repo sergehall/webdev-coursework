@@ -1,7 +1,13 @@
 // src/hooks/useRunPlayground.ts
 import type React from "react";
 
+import {
+  normalizePlaygroundRelativePath,
+  toCodePlaygroundUrl,
+} from "@/utils/playgroundPath";
 import { runPythonWithTimeout } from "@/utils/runPythonWithTimeout";
+import { validateJavaScript } from "@/utils/secureJavaScript";
+import { sanitizeAndValidateCode } from "@/utils/securePython";
 import { runInSandboxedIframe } from "@/utils/sandboxIframe";
 
 type Setter<T> = React.Dispatch<React.SetStateAction<T>>;
@@ -18,16 +24,21 @@ function detectSidecarNames(code: string): string[] {
   return Array.from(need);
 }
 
-// Fetch sidecar files relative to a base URL (folder of the .py file)
+function joinRelativePath(baseDir: string, name: string): string {
+  return baseDir ? `${baseDir}/${name}` : name;
+}
+
+// Fetch sidecar files relative to a base folder (folder of the .py file)
 async function fetchSidecars(
-  baseUrl: string,
+  baseDir: string,
   names: string[],
   log?: (t: string) => void
 ): Promise<SidecarFile[]> {
   const out: SidecarFile[] = [];
   for (const name of names) {
     try {
-      const url = baseUrl.endsWith("/") ? baseUrl + name : `${baseUrl}/${name}`;
+      const rel = joinRelativePath(baseDir, name);
+      const url = toCodePlaygroundUrl(rel);
       const res = await fetch(`${url}?t=${Date.now()}`);
       if (!res.ok) {
         log?.(`[host] sidecar not found: ${name} (${res.status})`);
@@ -63,6 +74,8 @@ export function useRunPlayground(
   setInputResolver: Setter<((value: string) => void) | null>
 ) {
   return () => {
+    const safeFile = normalizePlaygroundRelativePath(file);
+
     // Kill previous worker (if any)
     if (workerRef.current) {
       try {
@@ -80,14 +93,28 @@ export function useRunPlayground(
     const isFileRun = Boolean(file) && fileExists !== false;
 
     // ---------- Run from /code-playground ----------
-    if (isFileRun && file) {
-      const isJS = file.toLowerCase().endsWith(".js");
-      const isPY = file.toLowerCase().endsWith(".py");
+    if (isFileRun && safeFile) {
+      const isJS =
+        safeFile.toLowerCase().endsWith(".js") ||
+        safeFile.toLowerCase().endsWith(".mjs");
+      const isPY = safeFile.toLowerCase().endsWith(".py");
 
       if (isJS) {
-        void fetch(`/code-playground/${file}?t=${Date.now()}`)
+        void fetch(`${toCodePlaygroundUrl(safeFile)}?t=${Date.now()}`)
           .then((res) => (res.ok ? res.text() : Promise.reject(res.statusText)))
-          .then((code) => runInSandboxedIframe(code))
+          .then((code) => {
+            const validation = validateJavaScript(code, {
+              allowBrowserGlobals: true,
+            });
+            if (!validation.valid) {
+              setLogs((prev) => [
+                ...prev,
+                `🚫 JS blocked: ${validation.reason ?? "unsafe code detected"}`,
+              ]);
+              return;
+            }
+            runInSandboxedIframe(code);
+          })
           .catch((err) =>
             setLogs((prev) => [...prev, `❌ Failed to run JS: ${String(err)}`])
           );
@@ -95,62 +122,57 @@ export function useRunPlayground(
       }
 
       if (isPY) {
-        // 1) fetch main .py code
-        void fetch(`/code-playground/${file}?t=${Date.now()}`)
-          .then((res) => (res.ok ? res.text() : Promise.reject(res.statusText)))
-          .then(async (code) => {
-            // 2) detect & fetch sidecars from the SAME folder
-            const baseDir = dirname(file);
-            const names = detectSidecarNames(code);
-            const sidecars = await fetchSidecars(
-              `/code-playground/${baseDir}`,
-              names,
-              (t) => setLogs((prev) => [...prev, t])
+        void (async () => {
+          try {
+            const res = await fetch(
+              `${toCodePlaygroundUrl(safeFile)}?t=${Date.now()}`
+            );
+            if (!res.ok) throw new Error(res.statusText);
+
+            const code = await res.text();
+            const validation = sanitizeAndValidateCode(code);
+            if (!validation.valid || !validation.cleanedCode) {
+              setLogs((prev) => [
+                ...prev,
+                `🚫 Python blocked: ${validation.reason ?? "unsafe code detected"}`,
+              ]);
+              return;
+            }
+
+            const safeCode = validation.cleanedCode;
+            const baseDir = dirname(safeFile);
+            const names = detectSidecarNames(safeCode);
+            const sidecars = await fetchSidecars(baseDir, names, (t) =>
+              setLogs((prev) => [...prev, t])
             );
 
-            // 3) spawn worker and wire events
-            const worker = new Worker("/workers/pyWorker.js"); // classic worker
-            workerRef.current = worker;
+            const extras = Object.fromEntries(
+              sidecars.map((f) => [f.name, f.content])
+            ) as Record<string, string>;
 
-            worker.onmessage = (e) => {
-              const { type, text, prompt, id, error } = e.data || {};
+            const output = await runPythonWithTimeout(
+              safeCode,
+              120000,
+              async (prompt) => {
+                setLogs((prev) => [...prev, prompt]);
+                return new Promise((resolve) =>
+                  setInputResolver(() => resolve)
+                );
+              },
+              (text) => setLogs((prev) => [...prev, text]),
+              { extras }
+            );
 
-              if (type === "log") {
-                setLogs((prev) => [...prev, String(text ?? "")]);
-                return;
-              }
-              if (type === "input") {
-                setLogs((prev) => [...prev, String(prompt ?? "Input:")]);
-                setInputResolver(() => (value: string) => {
-                  worker.postMessage({ type: "inputResponse", id, value });
-                });
-                return;
-              }
-              if (type === "result") {
-                worker.terminate();
-                workerRef.current = null;
-                return;
-              }
-              if (type === "error") {
-                setLogs((prev) => [
-                  ...prev,
-                  `❌ Error:\n${String(error ?? "Unknown")}`,
-                ]);
-                worker.terminate();
-                workerRef.current = null;
-                return;
-              }
-            };
-
-            // 4) start worker with code + sidecars
-            worker.postMessage({ type: "start", code, files: sidecars });
-          })
-          .catch((err) => {
+            if (output) {
+              setLogs((prev) => [...prev, output]);
+            }
+          } catch (err) {
             setLogs((prev) => [
               ...prev,
               `❌ Failed to run Python: ${String(err)}`,
             ]);
-          });
+          }
+        })();
         return;
       }
 
@@ -163,10 +185,19 @@ export function useRunPlayground(
       const isPyUpload = filename.toLowerCase().endsWith(".py");
 
       if (isPyUpload) {
+        const validation = sanitizeAndValidateCode(lastUploadedCode);
+        if (!validation.valid || !validation.cleanedCode) {
+          setLogs((prev) => [
+            ...prev,
+            `🚫 Python blocked: ${validation.reason ?? "unsafe code detected"}`,
+          ]);
+          return;
+        }
+
         // Use runPythonWithTimeout with streaming + input.
         // Sidecars для upload-режима отдаст сам runPythonWithTimeout (через resolver).
         void runPythonWithTimeout(
-          lastUploadedCode,
+          validation.cleanedCode,
           300000, // 5 min (paused during input())
           async (prompt) => {
             setLogs((prev) => [...prev, prompt]);
@@ -178,7 +209,7 @@ export function useRunPlayground(
             resolver: async (name: string) => {
               try {
                 const res = await fetch(
-                  `/code-playground/${name}?t=${Date.now()}`
+                  `${toCodePlaygroundUrl(name)}?t=${Date.now()}`
                 );
                 if (!res.ok) return null;
                 return await res.text();
@@ -199,6 +230,15 @@ export function useRunPlayground(
       }
 
       // JS upload -> iframe
+      const validation = validateJavaScript(lastUploadedCode);
+      if (!validation.valid) {
+        setLogs((prev) => [
+          ...prev,
+          `🚫 JS blocked: ${validation.reason ?? "unsafe code detected"}`,
+        ]);
+        return;
+      }
+
       runInSandboxedIframe(lastUploadedCode);
       return;
     }

@@ -1,13 +1,10 @@
-// src/components/buttons/SecureJsUploadButton.tsx
-
-import * as esprima from "esprima";
-import * as estraverse from "estraverse";
 import React, { useRef } from "react";
 import { Upload } from "lucide-react";
 
 import { BaseButton, ColoredButton } from "@/components/buttons";
 import type { ButtonSize, ButtonType } from "@/components/buttons/BaseButton";
 import type { Variants } from "@/components/buttons/types/variants";
+import { JS_MAX_FILE_SIZE, validateJavaScript } from "@/utils/secureJavaScript";
 
 type SecureJsUploadButtonProps = {
   onSafeUpload: (code: string, filename: string) => void;
@@ -18,78 +15,6 @@ type SecureJsUploadButtonProps = {
   size?: ButtonSize;
   type?: ButtonType;
   disabled?: boolean;
-};
-
-const MAX_FILE_SIZE = 50_000; // 50KB
-const MAX_LINE_COUNT = 1000;
-const MAX_CODE_LENGTH = 10_000;
-
-// --- JavaScript AST-based security validator ---
-const isSafeJavaScript = (code: string): boolean => {
-  try {
-    if (
-      code.length > MAX_CODE_LENGTH ||
-      code.split("\n").length > MAX_LINE_COUNT
-    )
-      return false;
-
-    const ast = esprima.parseScript(code);
-    let isSafe = true;
-
-    estraverse.traverse(ast, {
-      enter(node) {
-        const isCall = (name: string) =>
-          node.type === "CallExpression" &&
-          node.callee.type === "Identifier" &&
-          node.callee.name === name;
-
-        const isUnsafeMember =
-          node.type === "CallExpression" &&
-          node.callee.type === "MemberExpression" &&
-          node.callee.property.type === "Identifier" &&
-          ["write", "assign", "replace", "open"].includes(
-            node.callee.property.name
-          );
-
-        const isAssignmentToDangerousHTML =
-          node.type === "AssignmentExpression" &&
-          node.left.type === "MemberExpression" &&
-          node.left.property.type === "Identifier" &&
-          ["innerHTML", "outerHTML"].includes(node.left.property.name);
-
-        if (
-          isCall("eval") ||
-          isCall("Function") ||
-          isCall("setTimeout") ||
-          isCall("setInterval") ||
-          isUnsafeMember ||
-          isAssignmentToDangerousHTML ||
-          (node.type === "NewExpression" &&
-            node.callee.type === "Identifier" &&
-            node.callee.name === "Function") ||
-          [
-            "ImportDeclaration",
-            "ExportNamedDeclaration",
-            "ExportDefaultDeclaration",
-          ].includes(node.type) ||
-          node.type === "WithStatement" ||
-          (node.type === "Identifier" &&
-            ["window", "document", "globalThis", "self"].includes(node.name)) ||
-          (node.type === "WhileStatement" &&
-            node.test.type === "Literal" &&
-            node.test.value === true) ||
-          (node.type === "ForStatement" && node.test === null)
-        ) {
-          isSafe = false;
-        }
-      },
-    });
-
-    return isSafe;
-  } catch (err) {
-    console.error("JS parse error:", err);
-    return false;
-  }
 };
 
 export default function SecureJsUploadButton({
@@ -115,19 +40,26 @@ export default function SecureJsUploadButton({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (!file.name.endsWith(".js") || file.size > MAX_FILE_SIZE) {
+    if (!file.name.endsWith(".js") || file.size > JS_MAX_FILE_SIZE) {
       alert("⚠️ Invalid or too large JS file.");
+      if (inputRef.current) inputRef.current.value = "";
       return;
     }
 
     const reader = new FileReader();
     reader.onload = () => {
       const code = reader.result as string;
-      if (!isSafeJavaScript(code)) {
-        alert("⚠️ File blocked: unsafe JavaScript patterns detected.");
+      const result = validateJavaScript(code);
+      if (!result.valid) {
+        alert(
+          `⚠️ File blocked: unsafe JavaScript patterns detected.\nReason: ${result.reason ?? "Unknown"}`
+        );
         return;
       }
       onSafeUpload(code, file.name);
+    };
+    reader.onloadend = () => {
+      if (inputRef.current) inputRef.current.value = "";
     };
 
     reader.readAsText(file);

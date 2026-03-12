@@ -1,6 +1,8 @@
 // src/hooks/usePostMessageLogs.ts
 import { useEffect } from "react";
 
+import { SANDBOX_IFRAME_ID } from "@/utils/sandboxIframe";
+
 type SandboxLogMessage = {
   source?: "sandbox";
   type: "log";
@@ -10,6 +12,10 @@ type SandboxLogMessage = {
 export function usePostMessageLogs(onLog: (msg: string) => void): void {
   useEffect(() => {
     const handler = (event: MessageEvent<unknown>) => {
+      const sandboxFrame = document.getElementById(SANDBOX_IFRAME_ID);
+      if (!(sandboxFrame instanceof HTMLIFrameElement)) return;
+      if (event.source !== sandboxFrame.contentWindow) return;
+
       const data = event.data as Partial<SandboxLogMessage>;
       if (data?.type !== "log" || data?.source !== "sandbox") return;
 

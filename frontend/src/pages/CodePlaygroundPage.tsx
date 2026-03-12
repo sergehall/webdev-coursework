@@ -7,7 +7,13 @@ import { usePostMessageLogs } from "@/hooks/usePostMessageLogs";
 import { useRunPlayground } from "@/hooks/useRunPlayground";
 import { useCodePlaygroundFileCheck } from "@/hooks/useCodePlaygroundFileCheck";
 import { ConsoleOutput } from "@/components/ConsoleOutput";
-import { runInSandboxedIframe } from "@/utils/sandboxIframe";
+import {
+  toCodePlaygroundUrl,
+  normalizePlaygroundRelativePath,
+} from "@/utils/playgroundPath";
+import { validateJavaScript } from "@/utils/secureJavaScript";
+import { sanitizeAndValidateCode } from "@/utils/securePython";
+import { SANDBOX_IFRAME_ID, runInSandboxedIframe } from "@/utils/sandboxIframe";
 import {
   ClearConsoleButton,
   RunAgainButton,
@@ -15,11 +21,14 @@ import {
   SecurePythonUploadButton,
 } from "@/components/buttons";
 
+const PYTHON_TIMEOUT_MS = 45_000;
+
 export default function CodePlaygroundPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
-  const file = searchParams.get("file");
+  const rawFile = searchParams.get("file");
+  const file = normalizePlaygroundRelativePath(rawFile);
 
   const workerRef = useRef<Worker | null>(null);
   const [logs, setLogs] = useState<string[]>([]);
@@ -32,7 +41,7 @@ export default function CodePlaygroundPage() {
   >(null);
   const [pendingPrompt, setPendingPrompt] = useState<string | null>(null);
 
-  const { fileExists } = useCodePlaygroundFileCheck(file);
+  const { fileExists } = useCodePlaygroundFileCheck(rawFile);
 
   // Send console input back to worker
   const handleConsoleInput = (value: string) => {
@@ -45,6 +54,15 @@ export default function CodePlaygroundPage() {
 
   // Helper to run Python code via worker (used by both auto-run and uploads)
   const runPythonInWorker = (code: string) => {
+    const validated = sanitizeAndValidateCode(code);
+    if (!validated.valid || !validated.cleanedCode) {
+      setLogs((prev) => [
+        ...prev,
+        `🚫 Python blocked: ${validated.reason ?? "unsafe code detected"}`,
+      ]);
+      return;
+    }
+
     if (workerRef.current) {
       try {
         workerRef.current.terminate();
@@ -55,8 +73,42 @@ export default function CodePlaygroundPage() {
       }
       workerRef.current = null;
     }
+
+    let executionTimer: ReturnType<typeof setTimeout> | undefined;
+    const clearExecutionTimer = () => {
+      if (executionTimer) {
+        clearTimeout(executionTimer);
+        executionTimer = undefined;
+      }
+    };
+
     const worker = new Worker(`workers/pyWorker.js?ts=${Date.now()}`); // cache-busting
     workerRef.current = worker;
+    const cleanupWorker = () => {
+      clearExecutionTimer();
+      setInputResolver(null);
+      setPendingPrompt(null);
+      try {
+        worker.terminate();
+      } catch {
+        /* worker already stopped */
+      }
+      if (workerRef.current === worker) {
+        workerRef.current = null;
+      }
+    };
+
+    const armExecutionTimer = () => {
+      clearExecutionTimer();
+      executionTimer = setTimeout(() => {
+        setLogs((prev) => [
+          ...prev,
+          `❌ Python execution timed out after ${PYTHON_TIMEOUT_MS / 1000}s`,
+        ]);
+        cleanupWorker();
+      }, PYTHON_TIMEOUT_MS);
+    };
+
     worker.onerror = (ev: ErrorEvent) => {
       const msg =
         ev.message ||
@@ -64,6 +116,7 @@ export default function CodePlaygroundPage() {
         `${ev.filename}:${ev.lineno}:${ev.colno}` ||
         String(ev);
       setLogs((prev) => [...prev, `❌ Worker error: ${msg}`]);
+      cleanupWorker();
     };
 
     worker.onmessage = (e: MessageEvent) => {
@@ -80,15 +133,18 @@ export default function CodePlaygroundPage() {
         return;
       }
       if (type === "input") {
+        clearExecutionTimer();
         setPendingPrompt(String(prompt ?? "Input:"));
         setLogs((prev) => [...prev, String(prompt ?? "Input:")]);
         setInputResolver(() => (value: string) => {
+          armExecutionTimer();
+          setPendingPrompt(null);
           worker.postMessage({ type: "inputResponse", id, value });
         });
         return;
       }
       if (type === "result") {
-        worker.terminate();
+        cleanupWorker();
         return;
       }
       if (type === "error") {
@@ -96,26 +152,38 @@ export default function CodePlaygroundPage() {
           ...prev,
           `❌ Error:\n${String(error ?? "Unknown")}`,
         ]);
-        worker.terminate();
+        cleanupWorker();
         return;
       }
     };
 
+    armExecutionTimer();
     setLogs((prev) => [...prev, ">_"]);
-    worker.postMessage({ type: "start", code });
+    worker.postMessage({ type: "start", code: validated.cleanedCode });
   };
 
   // Auto-run file if present in /code-playground
   useEffect(() => {
     if (!file || fileExists !== true) return;
 
-    const isPython = file.endsWith(".py");
-    const isJavaScript = file.endsWith(".js");
+    const lower = file.toLowerCase();
+    const isPython = lower.endsWith(".py");
+    const isJavaScript = lower.endsWith(".js") || lower.endsWith(".mjs");
 
     if (isJavaScript) {
-      void fetch(`/code-playground/${file}`)
+      void fetch(toCodePlaygroundUrl(file))
         .then((res) => (res.ok ? res.text() : Promise.reject(res.statusText)))
         .then((code) => {
+          const validation = validateJavaScript(code, {
+            allowBrowserGlobals: true,
+          });
+          if (!validation.valid) {
+            setLogs((prev) => [
+              ...prev,
+              `🚫 JS blocked: ${validation.reason ?? "unsafe code detected"}`,
+            ]);
+            return;
+          }
           setLogs((prev) => [...prev, ">_"]);
           runInSandboxedIframe(code);
         })
@@ -125,7 +193,7 @@ export default function CodePlaygroundPage() {
     }
 
     if (isPython) {
-      void fetch(`/code-playground/${file}`)
+      void fetch(toCodePlaygroundUrl(file))
         .then((res) => (res.ok ? res.text() : Promise.reject(res.statusText)))
         .then((code) => runPythonInWorker(code))
         .catch((err) =>
@@ -166,7 +234,7 @@ export default function CodePlaygroundPage() {
       const wasPython = filename?.endsWith(".py") ?? false;
 
       if (isPython !== wasPython) {
-        document.getElementById("sandboxed-iframe")?.remove();
+        document.getElementById(SANDBOX_IFRAME_ID)?.remove();
       }
 
       setFilename(name);
@@ -188,7 +256,7 @@ export default function CodePlaygroundPage() {
       </h2>
 
       <CodePlaygroundStatus
-        file={file}
+        file={file ?? rawFile}
         fileExists={fileExists}
         filename={filename}
         lastUploadedCode={lastUploadedCode}
