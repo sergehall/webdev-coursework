@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "packageManager": "yarn@4.9.2",
+  "packageManager": "yarn@4.12.0",
   "workspaces": [
     "frontend",
     "backend"
@@ -16,6 +16,7 @@
     "dev:backend": "yarn workspace backend start:dev",
     "test:backend": "yarn workspace backend test",
     "test:frontend": "yarn workspace frontend test",
+    "typecheck": "yarn workspace frontend typecheck && yarn workspace backend typecheck",
     "lint": "yarn workspace frontend lint && yarn workspace backend lint",
     "lint:fix": "yarn workspace frontend lint:fix && yarn workspace backend lint:fix",
     "format": "yarn workspace frontend format && yarn workspace backend format",
@@ -23,6 +24,7 @@
     "check:backend": "yarn workspace backend check",
     "clean:meta": "rimraf .yarn/cache .yarn/install-state.* .pnp.* yarn.lock backend/dist backend/node_modules frontend/dist frontend/node_modules",
     "clean:full": "yarn clean:meta && rimraf frontend/dist backend/dist",
+    "build:fast": "concurrently \"yarn workspace frontend build:fast\" \"yarn workspace backend build\"",
     "build": "concurrently \"yarn workspace frontend build\" \"yarn workspace backend build\"",
     "heroku-postbuild": "yarn --cwd backend build"
   },

@@ -5,7 +5,7 @@
   "description": "SMC Backend API",
   "author": "Serge Hall",
   "private": true,
-  "packageManager": "yarn@4.9.2",
+  "packageManager": "yarn@4.12.0",
   "license": "MIT",
   "engines": {
     "node": "20.11.1"
@@ -23,6 +23,7 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
     "lint:fix": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "check": "tsc --noEmit && eslint .",
