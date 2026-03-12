@@ -50,7 +50,6 @@ jobs:
 
       - name: Enable Corepack + Yarn (Berry)
         run: |
-          npm i -g corepack
           corepack enable
           corepack prepare yarn@4.9.2 --activate
           yarn -v
@@ -67,6 +66,14 @@ jobs:
 
       - name: Install deps
         run: yarn install --immutable
+
+      - name: Lint
+        if: inputs.run_lint
+        run: yarn lint
+
+      - name: Tests
+        if: inputs.run_tests
+        run: yarn test:run
 
       - name: Build
         if: inputs.run_build
