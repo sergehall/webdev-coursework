@@ -56,17 +56,17 @@ const WebDevMajorRequirements: React.FC = () => {
             <div
               key={courseCode}
               className="rounded-xl border bg-blue-50 p-4 shadow transition-all duration-200 dark:bg-gray-800"
-              onClick={() => toggleExpand(courseCode)}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ")
-                  toggleExpand(courseCode);
-              }}
             >
-              {expanded !== courseCode ? (
+              <button
+                type="button"
+                className="w-full text-left"
+                onClick={() => toggleExpand(courseCode)}
+                aria-expanded={expanded === courseCode}
+              >
                 <div className="flex items-center gap-4">
-                  <div className="text-xl text-yellow-500">+</div>
+                  <div className="text-xl text-yellow-500">
+                    {expanded === courseCode ? "-" : "+"}
+                  </div>
                   <div>
                     <div className="text-lg font-bold">{displayCode}</div>
                     <div className="font-semibold text-gray-800 dark:text-gray-200">
@@ -74,18 +74,27 @@ const WebDevMajorRequirements: React.FC = () => {
                     </div>
                   </div>
                 </div>
-              ) : (
-                <ExpandedCourseCard
-                  course={course}
-                  selected={selected}
-                  selectedCode={selectedOption[courseCode]}
-                  onSelectChange={(value) =>
-                    setSelectedOption((prev) => ({
-                      ...prev,
-                      [courseCode]: value,
-                    }))
-                  }
-                />
+              </button>
+
+              {expanded === courseCode && (
+                <div
+                  className="mt-4"
+                  onClick={(e) => e.stopPropagation()}
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onTouchStart={(e) => e.stopPropagation()}
+                >
+                  <ExpandedCourseCard
+                    course={course}
+                    selected={selected}
+                    selectedCode={selectedOption[courseCode]}
+                    onSelectChange={(value) =>
+                      setSelectedOption((prev) => ({
+                        ...prev,
+                        [courseCode]: value,
+                      }))
+                    }
+                  />
+                </div>
               )}
             </div>
           );

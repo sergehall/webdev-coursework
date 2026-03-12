@@ -63,7 +63,7 @@ const ExpandedCourseCard: React.FC<Props> = ({
           <select
             value={selectedCode || ""}
             onChange={(e) => onSelectChange?.(e.target.value)}
-            className="w-full rounded-md border-2 border-blue-500 bg-white p-2 text-gray-900 focus:border-blue-700 focus:outline-none dark:border-blue-400 dark:bg-gray-900 dark:text-white"
+            className="w-full appearance-auto rounded-md border-2 border-blue-500 bg-white p-2 text-gray-900 focus:border-blue-700 focus:outline-none dark:border-blue-400 dark:bg-gray-900 dark:text-white"
           >
             <option value="" disabled hidden>
               — Select a course —
