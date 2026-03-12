@@ -2,7 +2,7 @@
   "id": "/",
   "name": "WebDev Coursework — SMC Web Programming Platform",
   "short_name": "WebDev Coursework",
-  "description": "Modular full-stack coursework platform for Santa Monica College Web Programming courses (CS 60, 70, 73A, 79A, 79E, 80, 81, 83, 87A) with React, Vite, NestJS, PostgreSQL, and Yarn 4 workspaces.",
+  "description": "Modular full-stack coursework platform for Santa Monica College web programming courses (CS 60, 70, 79A, 79C, 79D, 80, 81, 85, 87A) built with React, Vite, NestJS, PostgreSQL, and Yarn 4 workspaces.",
   "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",
@@ -36,16 +36,16 @@
 
   "screenshots": [
     {
-      "src": "/screenshots/dashboard-wide.webp",
+      "src": "/screenshots/dashboard-wide.png",
       "sizes": "1280x720",
-      "type": "image/webp",
+      "type": "image/png",
       "form_factor": "wide",
       "label": "Dashboard — course modules and progress on desktop"
     },
     {
-      "src": "/screenshots/mobile-home.webp",
+      "src": "/screenshots/mobile-home.png",
       "sizes": "720x1280",
-      "type": "image/webp",
+      "type": "image/png",
       "form_factor": "narrow",
       "label": "Mobile — courses list and quick actions"
     }
@@ -55,8 +55,8 @@
     {
       "name": "Courses",
       "short_name": "Courses",
-      "description": "Browse all course modules (CS 60, 70, 73A, 79A, 79E, 80, 81, 83, 87A)",
-      "url": "/courses",
+      "description": "Browse all coursework modules and classes.",
+      "url": "/coursework",
       "icons": [
         {
           "src": "/icons/icon-192.png",
@@ -66,10 +66,10 @@
       ]
     },
     {
-      "name": "Progress",
-      "short_name": "Progress",
-      "description": "View your module progress and achievements",
-      "url": "/progress",
+      "name": "Path",
+      "short_name": "Path",
+      "description": "View the web developer pathway and requirements.",
+      "url": "/web-developer-path",
       "icons": [
         {
           "src": "/icons/icon-192.png",
@@ -79,10 +79,10 @@
       ]
     },
     {
-      "name": "Docs",
-      "short_name": "Docs",
-      "description": "Read setup instructions and platform docs",
-      "url": "/docs",
+      "name": "Resources",
+      "short_name": "Resources",
+      "description": "Open study resources and references.",
+      "url": "/resources",
       "icons": [
         {
           "src": "/icons/icon-192.png",
