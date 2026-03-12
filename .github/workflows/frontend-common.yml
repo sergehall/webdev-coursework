@@ -24,6 +24,10 @@ on:
       VITE_SENTRY_DSN:
         required: true
 
+permissions:
+  contents: read
+  actions: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
