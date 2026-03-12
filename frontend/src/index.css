@@ -61,6 +61,11 @@
       "Apple Color Emoji",
       "Segoe UI Emoji";
   }
+
+  a,
+  button {
+    -webkit-tap-highlight-color: transparent;
+  }
 }
 
 /* --- Components & utilities --- */

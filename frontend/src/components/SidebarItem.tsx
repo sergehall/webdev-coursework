@@ -15,10 +15,14 @@ export default function SidebarItem({
   external = false,
 }: SidebarItemProps) {
   const location = useLocation();
+  const noTapHighlightStyle = {
+    WebkitTapHighlightColor: "transparent",
+  } as const;
 
   const baseLinkStyle =
-    "flex items-center gap-2 md:gap-3 px-3 py-2 md:px-4 md:py-3 rounded text-sm font-medium " +
-    "transition-colors duration-200 min-h-[44px] min-w-[44px] " +
+    "[-webkit-tap-highlight-color:transparent] flex items-center gap-2 md:gap-3 px-3 py-2 md:px-4 md:py-3 " +
+    "rounded border border-transparent text-sm font-medium min-h-[44px] min-w-[44px] " +
+    "transition-[background-color,border-color,color] duration-150 " +
     "focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 " +
     "focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900";
 
@@ -30,8 +34,9 @@ export default function SidebarItem({
       "dark:border-green-800 dark:from-emerald-800 dark:via-emerald-900 dark:to-emerald-950 font-semibold"
     : "";
 
-  const hoverStyle =
-    "hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-700 dark:hover:text-white";
+  const inactiveStyle =
+    "bg-transparent hover:bg-gray-200 hover:text-gray-900 " +
+    "dark:hover:bg-gray-700 dark:hover:text-white dark:active:bg-emerald-800 dark:active:text-white";
 
   const Content = (
     <>
@@ -50,7 +55,8 @@ export default function SidebarItem({
         target="_blank"
         rel="noopener noreferrer"
         aria-label={label}
-        className={`${baseLinkStyle} ${hoverStyle}`}
+        style={noTapHighlightStyle}
+        className={`${baseLinkStyle} ${inactiveStyle}`}
       >
         {Content}
       </a>
@@ -62,7 +68,8 @@ export default function SidebarItem({
       to={to}
       aria-label={label}
       aria-current={isActive ? "page" : undefined}
-      className={`${baseLinkStyle} ${activeStyle} ${hoverStyle}`}
+      style={noTapHighlightStyle}
+      className={`${baseLinkStyle} ${isActive ? activeStyle : inactiveStyle}`}
     >
       {Content}
     </Link>
