@@ -48,8 +48,10 @@ export class TokensService {
     try {
       const payload = this.verifyQuizAnswersToken(token);
       return { ok: true, payload };
-    } catch (e: any) {
-      return { ok: false, error: e?.message ?? "Invalid token" };
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "Invalid or expired token";
+      return { ok: false, error: message };
     }
   }
 }

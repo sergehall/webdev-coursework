@@ -6,14 +6,22 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import { Request } from "express";
-import { TokensService } from "../tokens/service/tokens.service";
+import {
+  QuizAnswersTokenPayload,
+  TokensService,
+} from "../tokens/service/tokens.service";
+
+type RequestWithQuizAnswersPayload = Request & {
+  quizAnswersTokenPayload?: QuizAnswersTokenPayload;
+};
 
 @Injectable()
 export class AnswersTokenGuard implements CanActivate {
   constructor(private readonly tokensService: TokensService) {}
 
   canActivate(context: ExecutionContext): boolean {
-    const request = context.switchToHttp().getRequest<Request>();
+    const request =
+      context.switchToHttp().getRequest<RequestWithQuizAnswersPayload>();
 
     const authHeader = request.headers["authorization"];
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -38,7 +46,7 @@ export class AnswersTokenGuard implements CanActivate {
     }
 
     // You could attach payload to request for later use in handlers
-    (request as any).quizAnswersTokenPayload = payload;
+    request.quizAnswersTokenPayload = payload;
 
     return true;
   }

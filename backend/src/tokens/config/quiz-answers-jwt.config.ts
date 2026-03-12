@@ -1,6 +1,6 @@
 // src/tokens/config/quiz-answers-jwt.config.ts
 import { ConfigModule, ConfigService } from "@nestjs/config";
-import { JwtModuleAsyncOptions, JwtModuleOptions } from "@nestjs/jwt";
+import type { JwtModuleAsyncOptions, JwtModuleOptions } from "@nestjs/jwt";
 import type { StringValue } from "ms";
 
 export class QuizAnswersJwtConfig {

@@ -1,7 +1,10 @@
 import { NestFactory } from "@nestjs/core";
+import type { NestExpressApplication } from "@nestjs/platform-express";
 import { AppModule } from "../src/app.module";
 import * as createAppModule from "../src/create-app";
 import { bootstrap } from "../src/main";
+
+type AppBootstrapMock = Pick<NestExpressApplication, "listen" | "getUrl">;
 
 describe("bootstrap", () => {
   afterEach(() => {
@@ -15,17 +18,17 @@ describe("bootstrap", () => {
       .mockImplementation(async (_port: number, cb?: () => void) => {
         cb?.();
       });
-    const appMock = {
+    const appMock: AppBootstrapMock = {
       listen,
       getUrl: jest.fn().mockResolvedValue("http://localhost:5050"),
     };
 
     const createSpy = jest
       .spyOn(NestFactory, "create")
-      .mockResolvedValue(appMock as any);
+      .mockResolvedValue(appMock as NestExpressApplication);
     const createAppSpy = jest
       .spyOn(createAppModule, "createApp")
-      .mockImplementation(() => appMock as any);
+      .mockImplementation(() => appMock as NestExpressApplication);
     const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
 
     await bootstrap();
@@ -50,15 +53,17 @@ describe("bootstrap", () => {
       .mockImplementation(async (_port: number, cb?: () => void) => {
         cb?.();
       });
-    const appMock = {
+    const appMock: AppBootstrapMock = {
       listen,
       getUrl: jest.fn().mockResolvedValue("http://localhost:6061"),
     };
 
-    jest.spyOn(NestFactory, "create").mockResolvedValue(appMock as any);
+    jest
+      .spyOn(NestFactory, "create")
+      .mockResolvedValue(appMock as NestExpressApplication);
     jest
       .spyOn(createAppModule, "createApp")
-      .mockImplementation(() => appMock as any);
+      .mockImplementation(() => appMock as NestExpressApplication);
     jest.spyOn(console, "log").mockImplementation(() => {});
 
     await bootstrap();

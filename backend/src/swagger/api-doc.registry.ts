@@ -93,7 +93,7 @@ export const ApiDocRegistry = {
       ApiDoc({
         summary: "Verify a previously issued answers token (admin only)",
         description,
-        security: [{ type: "bearer", name: "adminKey" as any }],
+        security: [{ type: "apiKey", name: "adminKey" }],
         ok: {
           schema: {
             oneOf: [

@@ -1,4 +1,5 @@
-import React, { lazy } from "react";
+import type React from "react";
+import { lazy } from "react";
 
 // A map of all CS87A assignments and their placeholders, keyed by module ID
 const assignmentCS87AComponents: Record<

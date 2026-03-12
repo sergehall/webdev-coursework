@@ -1,4 +1,5 @@
-import React, { lazy } from "react";
+import type React from "react";
+import { lazy } from "react";
 
 // A map of all CS60 assignments and their placeholders, keyed by module ID
 const assignmentCS60Components: Record<

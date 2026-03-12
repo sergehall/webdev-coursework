@@ -1,5 +1,5 @@
 // src/hooks/useRunPlayground.ts
-import React from "react";
+import type React from "react";
 
 import { runPythonWithTimeout } from "@/utils/runPythonWithTimeout";
 import { runInSandboxedIframe } from "@/utils/sandboxIframe";

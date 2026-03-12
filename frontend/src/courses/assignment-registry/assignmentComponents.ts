@@ -1,5 +1,5 @@
 // src/data/assignmentComponents.ts
-import React from "react";
+import type React from "react";
 
 import assignmentCS60Components from "@/courses/assignment-registry/assignmentCS60Components";
 import assignmentCS70Components from "@/courses/assignment-registry/assignmentCS70Components";

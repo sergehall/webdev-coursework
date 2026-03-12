@@ -1,5 +1,6 @@
 // frontend/src/courses/assignment-registry/assignmentCS79AComponents.ts
-import React, { lazy } from "react";
+import type React from "react";
+import { lazy } from "react";
 
 const assignmentCS79AComponents: Record<
   string,

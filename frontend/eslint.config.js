@@ -77,6 +77,16 @@ export default [
         "warn",
         { argsIgnorePattern: "^_" },
       ],
+      "@typescript-eslint/no-explicit-any": "error",
+      "@typescript-eslint/ban-ts-comment": [
+        "error",
+        {
+          "ts-ignore": "allow-with-description",
+          "ts-expect-error": "allow-with-description",
+          minimumDescriptionLength: 3,
+        },
+      ],
+      "@typescript-eslint/consistent-type-imports": "warn",
       "no-redeclare": "off",
       "@typescript-eslint/no-redeclare": "off",
 

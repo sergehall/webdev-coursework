@@ -1,5 +1,6 @@
 // src/swagger/api-doc.builder.ts
-import { applyDecorators, Type } from "@nestjs/common";
+import type { Type } from "@nestjs/common";
+import { applyDecorators } from "@nestjs/common";
 import {
   ApiOperation,
   ApiResponse,
@@ -7,10 +8,14 @@ import {
   ApiOkResponse,
   ApiQuery,
   ApiBearerAuth,
+  ApiSecurity,
 } from "@nestjs/swagger";
-import { SWAGGER_SECURITY, SecuritySchemeName } from "./security.constants";
+import type { SecuritySchemeName } from "./security.constants";
+import { SWAGGER_SECURITY } from "./security.constants";
 
-type SecurityItem = { type: "bearer"; name?: SecuritySchemeName };
+type SecurityItem =
+  | { type: "bearer"; name?: SecuritySchemeName }
+  | { type: "apiKey"; name: string };
 
 export interface ApiDocOptions {
   summary?: string;
@@ -21,12 +26,12 @@ export interface ApiDocOptions {
    * - [{ type: 'bearer', name?: SecuritySchemeName }] => attach named bearer scheme
    */
   security?: SecurityItem[];
-  ok?: { type?: Type<any>; schema?: any; isArray?: boolean };
+  ok?: { type?: Type<unknown>; schema?: Record<string, unknown>; isArray?: boolean };
   responses?: Array<{
     status: number;
-    type?: Type<any>;
+    type?: Type<unknown>;
     description?: string;
-    schema?: any;
+    schema?: Record<string, unknown>;
   }>;
   queries?: Parameters<typeof ApiQuery>[0][];
   /** Adds 401 automatically only for secured endpoints. */
@@ -47,7 +52,7 @@ export function ApiDoc(opts: ApiDocOptions = {}) {
     defaultBearerName = SWAGGER_SECURITY.ANSWERS_TOKEN,
   } = opts;
 
-  const ds: any[] = [];
+  const ds: Parameters<typeof applyDecorators> = [];
 
   if (summary || description) {
     ds.push(ApiOperation({ summary, description }));
@@ -58,6 +63,8 @@ export function ApiDoc(opts: ApiDocOptions = {}) {
     for (const s of security) {
       if (s.type === "bearer") {
         ds.push(ApiBearerAuth(s.name ?? defaultBearerName));
+      } else if (s.type === "apiKey") {
+        ds.push(ApiSecurity(s.name));
       }
     }
   }
