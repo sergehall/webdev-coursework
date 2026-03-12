@@ -10,7 +10,7 @@ import { courses } from "@/data/webDeveloperCourses";
 import type { BaseCourse } from "@/data/webDeveloperCourses";
 
 export default function CourseworkPage() {
-  const [visibleCount, setVisibleCount] = useState(8);
+  const [visibleCount, setVisibleCount] = useState(9);
 
   //  We collect all possible courses (including options)
   const allCourses: BaseCourse[] = courses.flatMap((course) =>
@@ -44,7 +44,7 @@ export default function CourseworkPage() {
           Select a completed course to access its assignments
         </h3>
 
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
           {selectedCourses.slice(0, visibleCount).map((course) => {
             const isCompleted = activeCodesSet.has(
               course.code as (typeof activeCourseCodes)[number]
