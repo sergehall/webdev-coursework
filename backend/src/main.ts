@@ -1,10 +1,10 @@
 //  src/main.ts
 import { NestFactory } from "@nestjs/core";
-import { AppModule } from "./app.module.js";
+import { AppModule } from "./app.module";
 import type { NestExpressApplication } from "@nestjs/platform-express";
-import { createApp } from "./create-app.js";
+import { createApp } from "./create-app";
 
-async function bootstrap() {
+export async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     rawBody: true,
   });
@@ -22,6 +22,8 @@ async function bootstrap() {
   console.log(`📡 App is reachable at: ${baseUrl}`);
 }
 
-bootstrap().catch((err) => {
-  console.error("❌ Error starting app:", err);
-});
+if (process.env.NODE_ENV !== "test") {
+  bootstrap().catch((err) => {
+    console.error("❌ Error starting app:", err);
+  });
+}
