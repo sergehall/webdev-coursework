@@ -20,6 +20,7 @@
     "lint": "yarn workspace frontend lint && yarn workspace backend lint",
     "lint:fix": "yarn workspace frontend lint:fix && yarn workspace backend lint:fix",
     "format": "yarn workspace frontend format && yarn workspace backend format",
+    "format:check": "yarn workspace frontend format:check && yarn workspace backend format:check",
     "check:frontend": "yarn workspace frontend check",
     "check:backend": "yarn workspace backend check",
     "clean:meta": "rimraf .yarn/cache .yarn/install-state.* .pnp.* yarn.lock backend/dist backend/node_modules frontend/dist frontend/node_modules",

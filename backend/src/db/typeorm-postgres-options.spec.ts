@@ -32,7 +32,8 @@ describe("TypeOrmPostgresOptions", () => {
     delete process.env.DYNO;
     delete process.env.POSTGRES_SSL;
     delete process.env.POSTGRES_SSL_REJECT_UNAUTHORIZED;
-    process.env.DATABASE_URL = "postgres://postgres:postgres@localhost:5432/app";
+    process.env.DATABASE_URL =
+      "postgres://postgres:postgres@localhost:5432/app";
     process.env.NODE_ENV = "production";
   });
 

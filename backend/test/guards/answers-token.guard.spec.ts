@@ -1,5 +1,5 @@
 // backend/__tests__/guards/answers-token.guard.spec.ts
-import type { ExecutionContext} from "@nestjs/common";
+import type { ExecutionContext } from "@nestjs/common";
 import { UnauthorizedException } from "@nestjs/common";
 import type { ConfigService } from "@nestjs/config";
 import { createHash } from "crypto";
@@ -31,21 +31,27 @@ describe("AnswersTokenGuardQuery", () => {
     }) as unknown as ExecutionContext;
 
   it("should allow access with valid token", () => {
-    const guard = new AnswersTokenGuardQuery(configServiceMock as ConfigService);
+    const guard = new AnswersTokenGuardQuery(
+      configServiceMock as ConfigService
+    );
     const context = createMockContext({ quizId }, { token });
 
     expect(guard.canActivate(context)).toBe(true);
   });
 
   it("should throw if token is invalid", () => {
-    const guard = new AnswersTokenGuardQuery(configServiceMock as ConfigService);
+    const guard = new AnswersTokenGuardQuery(
+      configServiceMock as ConfigService
+    );
     const context = createMockContext({ quizId }, { token: "invalid" });
 
     expect(() => guard.canActivate(context)).toThrow(UnauthorizedException);
   });
 
   it("should throw if token is missing", () => {
-    const guard = new AnswersTokenGuardQuery(configServiceMock as ConfigService);
+    const guard = new AnswersTokenGuardQuery(
+      configServiceMock as ConfigService
+    );
     const context = createMockContext({ quizId }, {});
 
     expect(() => guard.canActivate(context)).toThrow(UnauthorizedException);

@@ -20,8 +20,9 @@ export class AnswersTokenGuard implements CanActivate {
   constructor(private readonly tokensService: TokensService) {}
 
   canActivate(context: ExecutionContext): boolean {
-    const request =
-      context.switchToHttp().getRequest<RequestWithQuizAnswersPayload>();
+    const request = context
+      .switchToHttp()
+      .getRequest<RequestWithQuizAnswersPayload>();
 
     const authHeader = request.headers["authorization"];
     if (!authHeader || !authHeader.startsWith("Bearer ")) {

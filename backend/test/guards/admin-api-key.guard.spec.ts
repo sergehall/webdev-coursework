@@ -1,4 +1,7 @@
-import { InternalServerErrorException, UnauthorizedException } from "@nestjs/common";
+import {
+  InternalServerErrorException,
+  UnauthorizedException,
+} from "@nestjs/common";
 import type { ConfigService } from "@nestjs/config";
 import type { ExecutionContext } from "@nestjs/common";
 import type { Request } from "express";
@@ -8,9 +11,7 @@ function createExecutionContext(
   headerValue?: string | string[]
 ): ExecutionContext {
   const req = {
-    headers: headerValue
-      ? { "x-admin-key": headerValue }
-      : {},
+    headers: headerValue ? { "x-admin-key": headerValue } : {},
   } as unknown as Request;
 
   return {

@@ -3,7 +3,9 @@ import { applyDecorators } from "@nestjs/common";
 import { ApiDocRegistry } from "./api-doc.registry";
 import type { EndpointKeys } from "./enums/endpoint-keys.enum";
 
-type ApiDocFactory = (description?: string) => ReturnType<typeof applyDecorators>;
+type ApiDocFactory = (
+  description?: string
+) => ReturnType<typeof applyDecorators>;
 type ApiDocRegistryShape = Record<
   EndpointKeys,
   Partial<Record<string, ApiDocFactory>>
