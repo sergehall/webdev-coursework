@@ -4,10 +4,22 @@ import { BrowserRouter } from "react-router-dom";
 
 import App from "./App";
 import { applySavedTheme } from "./utils/theme";
+import { envSchema } from "./config/env/env.schema";
 
 import AppProviders from "@/AppProviders";
 
 import "./index.css";
+
+// Validate environment variables at runtime startup so misconfigured
+// deployments fail immediately with a clear message rather than producing
+// cryptic network errors later.
+const envResult = envSchema.safeParse(import.meta.env);
+if (!envResult.success) {
+  const formatted = envResult.error.issues
+    .map((i) => `  • ${i.path.join(".")}: ${i.message}`)
+    .join("\n");
+  throw new Error(`Invalid environment variables:\n${formatted}`);
+}
 
 // Apply saved theme preference or fall back to system setting
 try {
