@@ -60,6 +60,12 @@ export default function ShowModalButton({
                   >
                     Download {file.filename}
                   </a>
+                ) : filename.endsWith(".pdf") ? (
+                  <iframe
+                    src={file.fileUrl}
+                    title={file.filename}
+                    className="h-[700px] w-full rounded border bg-white"
+                  />
                 ) : codeExtensions.some((ext) => filename.endsWith(ext)) ? (
                   <iframe
                     src={file.fileUrl}

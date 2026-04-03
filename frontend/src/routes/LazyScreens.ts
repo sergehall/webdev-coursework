@@ -6,7 +6,7 @@ import { lazy } from "react";
 export const Home = lazy(() => import("../pages/HomePage"));
 export const NotFound = lazy(() => import("../pages/NotFound"));
 
-// Pages по Assignments
+// Assignment-related pages
 export const CourseworkPage = lazy(() => import("../pages/./CourseworkPage"));
 export const AssignmentWrapper = lazy(
   () => import("../components/AssignmentWrapper")

@@ -156,7 +156,7 @@ export function useRunPlayground(
         }
 
         // Use runPythonWithTimeout with streaming + input.
-        // Sidecars для upload-режима отдаст сам runPythonWithTimeout (через resolver).
+        // runPythonWithTimeout provides sidecars for upload mode through the resolver.
         void runPythonWithTimeout(
           validation.cleanedCode,
           300000, // 5 min (paused during input())

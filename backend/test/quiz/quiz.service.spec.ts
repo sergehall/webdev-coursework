@@ -70,7 +70,9 @@ describe("QuizService", () => {
     it("throws when the quiz has no questions", async () => {
       quizQuestionRepo.findAllByQuizId.mockResolvedValue([]);
 
-      await expect(service.getQuizWithQuestions("missing-quiz")).rejects.toThrow(
+      await expect(
+        service.getQuizWithQuestions("missing-quiz")
+      ).rejects.toThrow(
         new NotFoundException('Quiz with ID "missing-quiz" not found')
       );
     });

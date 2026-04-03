@@ -11,7 +11,7 @@ import AutoAssignmentRouter from "@/routes/AutoAssignmentRouter";
 export default function AppRoutes() {
   return (
     <Routes>
-      {/* Корневой Layout — только один раз */}
+      {/* Root layout, mounted only once */}
       <Route element={<Layout />}>
         {/* Home */}
         <Route

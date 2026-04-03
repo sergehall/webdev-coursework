@@ -1,7 +1,7 @@
 import { useFinalModuleRedirect } from "@/hooks/useFinalModuleRedirect";
 
 export default function AssignmentMod4Placeholder() {
-  useFinalModuleRedirect(5); // модуль 5 → перенаправление на следующий
+  useFinalModuleRedirect(5); // Module 5 redirects to the next assignment
 
   return (
     <section className="space-y-6 rounded border border-indigo-300 bg-indigo-50 p-6 dark:border-indigo-700 dark:bg-indigo-900/10">

@@ -5,10 +5,7 @@ import type { TokensService } from "../../src/tokens/service/tokens.service";
 
 describe("TokensController", () => {
   let tokensService: jest.Mocked<
-    Pick<
-      TokensService,
-      "issueQuizAnswersToken" | "tryVerifyQuizAnswersToken"
-    >
+    Pick<TokensService, "issueQuizAnswersToken" | "tryVerifyQuizAnswersToken">
   >;
   let controller: TokensController;
 
@@ -17,7 +14,9 @@ describe("TokensController", () => {
       issueQuizAnswersToken: jest.fn(),
       tryVerifyQuizAnswersToken: jest.fn(),
     };
-    controller = new TokensController(tokensService as unknown as TokensService);
+    controller = new TokensController(
+      tokensService as unknown as TokensService
+    );
   });
 
   it("returns a freshly issued answers token", () => {

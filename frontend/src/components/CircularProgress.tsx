@@ -44,7 +44,7 @@ export default function CircularProgress({
           },
           path: {
             stroke: "#22c55e",
-            filter: "drop-shadow(0 0 6px rgba(34,197,94,0.6))", // только на заполненной части
+            filter: "drop-shadow(0 0 6px rgba(34,197,94,0.6))", // only on the filled segment
           },
           trail: {
             stroke: isDark ? "#1f2937" : "#e5e7eb",

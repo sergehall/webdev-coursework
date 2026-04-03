@@ -4,6 +4,7 @@ import type { FC } from "react";
 import CS60 from "@/courses/CS60/CS60";
 import CS70 from "@/courses/CS70/CS70";
 import CS79A from "@/courses/CS79A/CS79A";
+import CS79C from "@/courses/CS79C/CS79C";
 import CS80 from "@/courses/CS80/CS80";
 import CS81 from "@/courses/CS81/CS81";
 import CS87A from "@/courses/CS87A/CS87A";
@@ -91,7 +92,7 @@ const completedCourseComponents: CourseComponentMap = {
   },
   "CS 79C": {
     title: "Compute Engines in Amazon Web Services",
-    component: null,
+    component: CS79C,
   },
   "CS 79E": {
     title: "Best Practices in Amazon Web Services",
