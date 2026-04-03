@@ -15,7 +15,6 @@ import {
 import { validateJavaScript } from "@/utils/secureJavaScript";
 import {
   SANDBOX_IFRAME_ID,
-  HTML_PREVIEW_IFRAME_ID,
   runInSandboxedIframe,
   runHtmlInSandboxedIframe,
 } from "@/utils/sandboxIframe";
@@ -41,7 +40,7 @@ export default function CodePlaygroundPage() {
   const [logs, setLogs] = useState<string[]>([]);
   const [filename, setFilename] = useState<string | null>(null);
   const [lastUploadedCode, setLastUploadedCode] = useState<string | null>(null);
-  const [htmlPreviewActive, setHtmlPreviewActive] = useState(false);
+  const [pendingHtml, setPendingHtml] = useState<string | null>(null);
   const [jsonContent, setJsonContent] = useState<string | null>(null);
   const htmlPreviewContainerRef = useRef<HTMLDivElement>(null);
 
@@ -113,6 +112,14 @@ export default function CodePlaygroundPage() {
     }
   }, [file, fileExists, runPythonInWorker]);
 
+  // Inject HTML into the preview container after React commits the DOM.
+  // useEffect runs after every render where pendingHtml changes,
+  // at which point the container div is guaranteed to exist in the DOM.
+  useEffect(() => {
+    if (!pendingHtml || !htmlPreviewContainerRef.current) return;
+    runHtmlInSandboxedIframe(pendingHtml, "html-preview-container");
+  }, [pendingHtml]);
+
   // Capture browser console + postMessage logs
   useConsoleInterceptor((msg) => setLogs((prev) => [...prev, msg]));
   usePostMessageLogs((msg) => setLogs((prev) => [...prev, msg]));
@@ -131,7 +138,7 @@ export default function CodePlaygroundPage() {
   // Shared cleanup: reset all active runners when switching file types
   const clearActiveRunners = () => {
     document.getElementById(SANDBOX_IFRAME_ID)?.remove();
-    setHtmlPreviewActive(false);
+    setPendingHtml(null);
     setJsonContent(null);
   };
 
@@ -153,12 +160,8 @@ export default function CodePlaygroundPage() {
       if (lower.endsWith(".py")) {
         runPythonInWorker(code);
       } else if (lower.endsWith(".html") || lower.endsWith(".htm")) {
-        setHtmlPreviewActive(true);
-        // Defer so the container div renders first
-        setTimeout(() => {
-          const container = document.getElementById("html-preview-container");
-          if (container) runHtmlInSandboxedIframe(code, "html-preview-container");
-        }, 0);
+        // Setting pendingHtml triggers useEffect after React commits the container div
+        setPendingHtml(code);
       } else if (lower.endsWith(".json")) {
         try {
           setJsonContent(JSON.stringify(JSON.parse(code), null, 2));
@@ -199,7 +202,7 @@ export default function CodePlaygroundPage() {
         )}
       </div>
 
-      {htmlPreviewActive && (
+      {pendingHtml !== null && (
         <div
           id="html-preview-container"
           ref={htmlPreviewContainerRef}
@@ -213,7 +216,7 @@ export default function CodePlaygroundPage() {
         </pre>
       )}
 
-      {!htmlPreviewActive && (
+      {pendingHtml === null && (
         <ConsoleOutput
           logs={logs}
           onInput={inputResolver ? handleConsoleInput : undefined}
