@@ -10,6 +10,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { join } from "path";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
+import { CircuitBreakerService } from "./app/circuit-breaker.service";
 import { TypeOrmPostgresOptions } from "./db/TypeOrmPostgresOptions";
 import { HttpLoggingMiddleware } from "./middlewares/http-logging.middleware";
 import { QuizModule } from "./quiz/quiz.module";
@@ -38,7 +39,7 @@ import { TokensModule } from "./tokens/tokens.module";
     TokensModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, CircuitBreakerService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
