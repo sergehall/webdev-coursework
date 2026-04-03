@@ -26,18 +26,33 @@ async function fetchAnswersToken(quizId: string): Promise<string> {
  * Fetch quiz questions and correct answers.
  * - Questions are public
  * - Answers require a short-lived token (Authorization: Bearer)
+ * - On 401 the token is refreshed once and the answers request is retried
  */
 export async function fetchQuiz(quizId: string): Promise<FetchQuizResponse> {
   // 1) Get a short-lived token from the server (no secrets on the client)
-  const token = await fetchAnswersToken(quizId);
+  let token = await fetchAnswersToken(quizId);
 
   // 2) Fetch questions and answers in parallel
-  const [questionDtos, answers] = await Promise.all([
-    apiFetch<QuestionDto[]>(`/quizzes/${quizId}/questions`),
-    apiFetch<CorrectAnswerDto[]>(`/quizzes/${quizId}/answers`, {
+  let answers: CorrectAnswerDto[];
+  const questionDtosPromise = apiFetch<QuestionDto[]>(`/quizzes/${quizId}/questions`);
+
+  try {
+    answers = await apiFetch<CorrectAnswerDto[]>(`/quizzes/${quizId}/answers`, {
       headers: { Authorization: `Bearer ${token}` },
-    }),
-  ]);
+    });
+  } catch (err) {
+    // If the token expired mid-flight, refresh once and retry
+    const isUnauthorized =
+      err instanceof Error && err.message.toLowerCase().includes("401");
+    if (!isUnauthorized) throw err;
+
+    token = await fetchAnswersToken(quizId);
+    answers = await apiFetch<CorrectAnswerDto[]>(`/quizzes/${quizId}/answers`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  }
+
+  const [questionDtos] = await Promise.all([questionDtosPromise]);
 
   // 3) Build answer map (questionId -> correct indexes)
   const answerMap: Record<number, number[]> = {};
