@@ -560,6 +560,12 @@ export const technologies = {
   ],
   "CS 79C - Compute Engines in Amazon Web Services": [
     {
+      icon: "Database",
+      color: "text-sky-600",
+      label: "AWS Storage Volumes with S3, EBS and EFS",
+      url: "https://docs.aws.amazon.com/whitepapers/latest/aws-overview/storage-services.html",
+    },
+    {
       icon: "Server",
       color: "text-blue-600",
       label: "Provisioning and Operating EC2 Instances",
@@ -584,6 +590,12 @@ export const technologies = {
       url: "https://aws.amazon.com/what-is/distributed-system/",
     },
     {
+      icon: "Boxes",
+      color: "text-fuchsia-600",
+      label: "Containers, Kubernetes and Amazon EKS",
+      url: "https://docs.aws.amazon.com/eks/latest/userguide/what-is-eks.html",
+    },
+    {
       icon: "Route",
       color: "text-orange-600",
       label: "VPC Networking for Compute Workloads",
@@ -596,16 +608,34 @@ export const technologies = {
       url: "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AMIs.html",
     },
     {
+      icon: "CloudSun",
+      color: "text-cyan-500",
+      label: "Messaging and API Workflows with SNS, SQS and API Gateway",
+      url: "https://docs.aws.amazon.com/whitepapers/latest/aws-overview/application-integration-services.html",
+    },
+    {
       icon: "Wrench",
       color: "text-slate-600",
       label: "Compute Cost, Performance and Right-Sizing Skills",
       url: "https://docs.aws.amazon.com/wellarchitected/latest/cost-optimization-pillar/welcome.html",
     },
     {
+      icon: "Rocket",
+      color: "text-yellow-500",
+      label: "Serverless Functions with AWS Lambda and DynamoDB",
+      url: "https://docs.aws.amazon.com/lambda/latest/dg/welcome.html",
+    },
+    {
       icon: "Terminal",
       color: "text-rose-600",
       label: "Hands-on AWS Console and CLI Operations",
       url: "https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-welcome.html",
+    },
+    {
+      icon: "FileText",
+      color: "text-indigo-600",
+      label: "Infrastructure as Code with AWS CloudFormation",
+      url: "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/Welcome.html",
     },
   ],
   "CS 87A - Python Programming": [

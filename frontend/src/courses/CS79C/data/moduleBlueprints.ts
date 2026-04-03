@@ -47,6 +47,7 @@ export type CS79CModuleBlueprint = {
     previewFiles?: Array<{
       fileUrl: string;
       filename: string;
+      buttonLabel?: string;
     }>;
   }>;
   assignmentsAndLabs?: string[];
@@ -4225,15 +4226,12 @@ export const cs79cModuleBlueprints: CS79CModuleBlueprint[] = [
             fileUrl:
               "/code-playground/CS79C/final-project/CS79C_AWS_Cloud_Stack_Report_Siarhei_Hancharou.pdf",
             filename: "CS79C_AWS_Cloud_Stack_Report_Siarhei_Hancharou.pdf",
-          },
-          {
-            fileUrl:
-              "/code-playground/CS79C/final-project/CS79C_Final_Project_Report_Siarhei_Hancharou.pdf",
-            filename: "CS79C_Final_Project_Report_Siarhei_Hancharou.pdf",
+            buttonLabel: "AWS Cloud Stack",
           },
           {
             fileUrl: "/code-playground/CS79C/final-project/final-report.html",
             filename: "final-report.html",
+            buttonLabel: "Final report",
           },
         ],
         whyItMattersHeading: "Project Requirements",

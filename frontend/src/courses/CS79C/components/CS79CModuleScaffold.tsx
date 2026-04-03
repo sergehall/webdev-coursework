@@ -28,7 +28,7 @@ export default function CS79CModuleScaffold({
     {}
   );
   const [openTaskPreviews, setOpenTaskPreviews] = useState<
-    Record<string, boolean>
+    Record<string, string | null>
   >({});
 
   const toggleTextTask = (taskId: string) => {
@@ -38,10 +38,10 @@ export default function CS79CModuleScaffold({
     }));
   };
 
-  const toggleTaskPreview = (taskId: string) => {
+  const toggleTaskPreview = (taskId: string, fileUrl: string) => {
     setOpenTaskPreviews((prev) => ({
       ...prev,
-      [taskId]: !prev[taskId],
+      [taskId]: prev[taskId] === fileUrl ? null : fileUrl,
     }));
   };
 
@@ -359,13 +359,19 @@ export default function CS79CModuleScaffold({
 
             {task.previewFiles?.length ? (
               <div className="mt-1 flex flex-wrap gap-3">
-                <ToggleModalButton
-                  isOpen={!!openTaskPreviews[task.id]}
-                  label={
-                    task.previewFiles.length > 1 ? "View Files" : "View File"
-                  }
-                  toggle={() => toggleTaskPreview(task.id)}
-                />
+                {task.previewFiles.map((file) => {
+                  const isOpen = openTaskPreviews[task.id] === file.fileUrl;
+                  const buttonLabel = file.buttonLabel ?? file.filename;
+
+                  return (
+                    <ToggleModalButton
+                      key={file.fileUrl}
+                      isOpen={isOpen}
+                      label={isOpen ? `Close ${buttonLabel}` : buttonLabel}
+                      toggle={() => toggleTaskPreview(task.id, file.fileUrl)}
+                    />
+                  );
+                })}
               </div>
             ) : null}
 
@@ -392,8 +398,15 @@ export default function CS79CModuleScaffold({
             {task.previewFiles?.length ? (
               <ShowModalButton
                 isOpen={!!openTaskPreviews[task.id]}
-                onClose={() => toggleTaskPreview(task.id)}
-                files={task.previewFiles}
+                onClose={() =>
+                  setOpenTaskPreviews((prev) => ({
+                    ...prev,
+                    [task.id]: null,
+                  }))
+                }
+                files={task.previewFiles.filter(
+                  (file) => file.fileUrl === openTaskPreviews[task.id]
+                )}
               />
             ) : null}
           </div>
