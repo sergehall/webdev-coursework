@@ -51,55 +51,90 @@ The platform currently reflects this active SMC pathway:
 
 ## Tech Stack
 
-### Frontend
+### Frontend App
 
-- React 19
-- TypeScript
-- Vite
-- Tailwind CSS
-- React Router
+- React 19 + React DOM 19
+- TypeScript 5
+- Vite 7
+- React Router 7
+- Tailwind CSS 3 + PostCSS + Autoprefixer
 - Framer Motion
-- Vitest + Testing Library
+- Lucide React + React Icons
+- Zod environment validation
+- Sentry browser instrumentation
+- Vitest 3 + Testing Library + JSDOM
 
-### Backend
+### Backend API
 
 - NestJS 11
-- TypeScript
-- TypeORM
-- PostgreSQL
-- Jest + Supertest
+- TypeScript 5
+- TypeORM 0.3
+- PostgreSQL via `pg`
+- JWT-based quiz token flows with `@nestjs/jwt`
+- Swagger/OpenAPI via `@nestjs/swagger`
+- `class-validator` + `class-transformer`
+- Jest 29 + Supertest
 
-### Tooling
+### Tooling and Monorepo
 
-- Yarn 4 Workspaces (Plug'n'Play)
-- ESLint
-- Prettier
-- Concurrent dev workflow
+- Yarn 4 workspaces with Plug'n'Play
+- ESLint 9
+- Prettier 3
+- Concurrent frontend/backend local dev workflow
+- Vercel frontend deployment and Heroku-oriented backend build flow
 
 ---
 
 ## Monorepo Layout
 
+<details>
+<summary><strong>Show monorepo layout</strong></summary>
+
 ```text
 webdev-coursework/
-├── frontend/                  # React + Vite application
+├── .github/workflows/         # CI and deployment automation
+├── docs/                      # Retrospectives and project notes
+├── frontend/                  # React + Vite learning platform
+│   ├── public/                # Static assets, icons, code-playground files
+│   ├── assets/                # Local design/source assets
 │   ├── src/
-│   │   ├── components/
-│   │   ├── courses/
-│   │   ├── data/
-│   │   ├── pages/
-│   │   ├── routes/
-│   │   ├── hooks/
-│   │   ├── utils/
-│   │   └── ...
-│   └── public/
-├── backend/                   # NestJS API
+│   │   ├── api/               # Frontend API clients and config
+│   │   ├── components/        # Shared UI components and buttons
+│   │   ├── config/            # Environment validation and app config
+│   │   ├── context/           # Theme and progress providers
+│   │   ├── courses/           # Course/module content and assignment scaffolds
+│   │   ├── data/              # Course metadata and static datasets
+│   │   ├── hooks/             # Reusable React hooks
+│   │   ├── layout/            # App shell layout
+│   │   ├── pages/             # Route-level screens
+│   │   ├── routes/            # Router wiring and lazy screen loading
+│   │   ├── styles/            # Global CSS layers and resets
+│   │   ├── test/              # Shared frontend test helpers
+│   │   ├── ui/                # UI utilities, icons, theme helpers
+│   │   └── utils/             # Sandbox, security, and helper utilities
+│   ├── vite.config.ts
+│   └── setupTests.ts
+├── backend/                   # NestJS API and quiz/progress services
+│   ├── public/                # Static assets served by Nest
+│   ├── uploads/               # Uploaded/generated backend files
 │   ├── src/
-│   ├── test/
-│   └── ...
-├── package.json               # Root workspace scripts
+│   │   ├── app/               # Health/info endpoints and app DTOs
+│   │   ├── bootstrap/         # CORS, Swagger, validation bootstrap helpers
+│   │   ├── db/                # TypeORM/Postgres configuration
+│   │   ├── guards/            # Admin and quiz auth guards
+│   │   ├── middlewares/       # Request logging middleware
+│   │   ├── quiz/              # Quiz API, DTOs, entities, repositories, service
+│   │   ├── swagger/           # API documentation registry/builders
+│   │   └── tokens/            # JWT answer-token issuance flow
+│   ├── test/                  # Backend unit and e2e tests
+│   ├── nest-cli.json
+│   └── tsconfig*.json
+├── package.json               # Root workspace orchestration scripts
+├── yarn.lock
 └── README.md
 ```
+
+</details>
 
 ---
 
@@ -131,25 +166,76 @@ If needed, you can use:
 yarn install:fresh
 ```
 
-### 3. Run locally
+### 3. Configure environment files
 
-Create backend environment file:
+This repo does not currently include committed `.env.example` files, so create
+the local env files manually.
 
-```bash
-cp backend/.env.example backend/.env
+<details>
+<summary><strong>Show frontend/.env.local example</strong></summary>
+
+Create `frontend/.env.local`:
+
+```dotenv
+VITE_ENVIRONMENT=development
+VITE_API_URL=http://localhost:5050
+VITE_QUIZ_SECRET=dev-quiz-secret
+# Optional:
+# VITE_SENTRY_DSN=https://examplePublicKey@o0.ingest.sentry.io/0
 ```
+
+</details>
+
+<details>
+<summary><strong>Show backend/.env example</strong></summary>
+
+Create `backend/.env`:
+
+```dotenv
+PORT=5050
+DATABASE_URL=postgres://postgres:postgres@localhost:5432/webdev_coursework
+QUIZ_SECRET_KEY=dev-quiz-secret
+QUIZ_ANSWERS_JWT_SECRET=replace-with-a-long-random-string
+QUIZ_ANSWERS_JWT_TTL=1h
+QUIZ_JWT_ISSUER=webdev-coursework
+QUIZ_JWT_AUDIENCE=webdev-coursework-frontend
+ADMIN_API_KEY=dev-admin-key
+ALLOWED_ORIGINS=http://localhost:5173
+POSTGRES_SSL=false
+TYPEORM_SYNCHRONIZE=false
+```
+
+</details>
+
+Notes:
+
+- `VITE_API_URL` should point to the backend server.
+- `VITE_QUIZ_SECRET` and `QUIZ_SECRET_KEY` should match.
+- `DATABASE_URL` must be valid or the Nest app will fail during startup.
+- `POSTGRES_SSL=false` is the typical local setting.
+
+### 4. Run locally
+
+Start both workspaces:
 
 ```bash
 yarn dev
 ```
 
+Or start each app independently:
+
+```bash
+yarn dev:frontend
+yarn dev:backend
+```
+
 Default local endpoints:
 
 - Frontend dev: `http://localhost:5173`
-- Frontend preview (optional): `http://localhost:4173`
-- Backend dev: `http://localhost:5050`
+- Frontend preview: `http://localhost:4173`
+- Backend API: `http://localhost:5050`
 
-### 4. Quality checks
+### 5. Quality checks
 
 ```bash
 yarn lint
@@ -158,7 +244,14 @@ yarn test:frontend
 yarn test:backend
 ```
 
-### 5. Production build
+For workspace-specific verification, you can also run:
+
+```bash
+yarn check:frontend
+yarn check:backend
+```
+
+### 6. Production build
 
 ```bash
 yarn build
@@ -168,22 +261,32 @@ yarn build
 
 ## Root Scripts
 
-| Script                | Description                         |
-| --------------------- | ----------------------------------- |
-| `yarn install:strict` | Install using immutable lockfile    |
-| `yarn install:fresh`  | Standard install (non-immutable)    |
-| `yarn dev`            | Run frontend + backend together     |
-| `yarn dev:frontend`   | Run frontend only                   |
-| `yarn dev:backend`    | Run backend only                    |
-| `yarn lint`           | Lint both workspaces                |
-| `yarn lint:fix`       | Auto-fix lint where possible        |
-| `yarn typecheck`      | Type-check frontend + backend       |
-| `yarn test:frontend`  | Run frontend tests                  |
-| `yarn test:backend`   | Run backend tests                   |
-| `yarn build`          | Build frontend + backend            |
-| `yarn build:fast`     | Faster build flow                   |
-| `yarn clean:meta`     | Clean cache/install metadata        |
-| `yarn clean:full`     | Full cleanup of generated artifacts |
+<details>
+<summary><strong>Show root scripts</strong></summary>
+
+| Script                  | Description                                    |
+| ----------------------- | ---------------------------------------------- |
+| `yarn install:strict`   | Install with immutable lockfile enforcement    |
+| `yarn install:fresh`    | Standard workspace install                     |
+| `yarn dev`              | Run frontend and backend together              |
+| `yarn dev:frontend`     | Start only the frontend workspace              |
+| `yarn dev:backend`      | Start only the backend workspace               |
+| `yarn test:frontend`    | Run frontend tests from the root               |
+| `yarn test:backend`     | Run backend tests from the root                |
+| `yarn typecheck`        | Run frontend and backend TypeScript checks     |
+| `yarn lint`             | Lint both workspaces                           |
+| `yarn lint:fix`         | Auto-fix lint issues in both workspaces        |
+| `yarn format`           | Run Prettier across both workspaces            |
+| `yarn format:check`     | Check formatting across both workspaces        |
+| `yarn check:frontend`   | Run frontend combined checks                   |
+| `yarn check:backend`    | Run backend combined checks                    |
+| `yarn clean:meta`       | Remove cache, lock metadata, and build outputs |
+| `yarn clean:full`       | Run full cleanup for generated artifacts       |
+| `yarn build:fast`       | Build frontend fast path + backend build       |
+| `yarn build`            | Full frontend build + backend build            |
+| `yarn heroku-postbuild` | Build the backend for Heroku-style deploys     |
+
+</details>
 
 ---
 
@@ -191,22 +294,31 @@ yarn build
 
 Run from root using `yarn workspace frontend <script>`:
 
-| Script         | Description                       |
-| -------------- | --------------------------------- |
-| `start:dev`    | Start Vite dev server             |
-| `preview`      | Preview production frontend build |
-| `typecheck`    | Run TypeScript checks             |
-| `build:bundle` | Build frontend bundle with Vite   |
-| `build:fast`   | Fast frontend build               |
-| `build`        | Typecheck + build                 |
-| `lint`         | Lint frontend code                |
-| `lint:fix`     | Auto-fix lint issues              |
-| `check`        | Typecheck + lint                  |
-| `format`       | Run Prettier on frontend          |
-| `test`         | Run Vitest in watch mode          |
-| `test:run`     | Run Vitest once                   |
-| `test:ci`      | Run tests with coverage           |
-| `test:ui`      | Run Vitest UI                     |
+<details>
+<summary><strong>Show frontend workspace scripts</strong></summary>
+
+| Script           | Description                                     |
+| ---------------- | ----------------------------------------------- |
+| `start:dev`      | Start the Vite development server               |
+| `preview`        | Preview the production frontend build           |
+| `typecheck`      | Run frontend TypeScript checks                  |
+| `build:bundle`   | Build the Vite production bundle                |
+| `build:fast`     | Shortcut for `build:bundle`                     |
+| `build`          | Typecheck and then build the frontend           |
+| `install:strict` | Immutable install inside the frontend workspace |
+| `tailwind:init`  | Generate Tailwind config scaffolding            |
+| `build:css`      | Run Tailwind CSS build/watch output             |
+| `lint`           | Lint frontend source files                      |
+| `lint:fix`       | Auto-fix frontend lint issues                   |
+| `check`          | Run frontend typecheck and lint                 |
+| `format`         | Format frontend files with Prettier             |
+| `format:check`   | Check frontend formatting                       |
+| `test`           | Run Vitest in watch mode                        |
+| `test:run`       | Run Vitest once                                 |
+| `test:ci`        | Run Vitest with coverage                        |
+| `test:ui`        | Open the Vitest UI                              |
+
+</details>
 
 ---
 
@@ -214,22 +326,32 @@ Run from root using `yarn workspace frontend <script>`:
 
 Run from root using `yarn workspace backend <script>`:
 
-| Script       | Description                        |
-| ------------ | ---------------------------------- |
-| `start:dev`  | Start backend in watch mode        |
-| `start`      | Start backend normally             |
-| `start:prod` | Run built backend from `dist/`     |
-| `build`      | Build backend                      |
-| `typecheck`  | Run TypeScript checks              |
-| `lint`       | Lint backend code                  |
-| `lint:fix`   | Auto-fix lint issues               |
-| `check`      | Typecheck + lint                   |
-| `format`     | Run Prettier on backend            |
-| `test`       | Run backend unit/integration tests |
-| `test:e2e`   | Run backend E2E tests              |
-| `test:watch` | Run backend tests in watch mode    |
-| `test:cov`   | Run tests with coverage            |
-| `test:debug` | Debug backend tests                |
+<details>
+<summary><strong>Show backend workspace scripts</strong></summary>
+
+| Script           | Description                                    |
+| ---------------- | ---------------------------------------------- |
+| `prebuild`       | Clean backend `dist/` before building          |
+| `build`          | Build the NestJS backend                       |
+| `build2`         | Alternate TypeScript-only backend build        |
+| `start`          | Start the backend normally                     |
+| `start:dev`      | Start the backend in watch mode                |
+| `start:debug`    | Start the backend in debug + watch mode        |
+| `start:prod`     | Run the built backend from `dist/main.js`      |
+| `typecheck`      | Run backend TypeScript checks                  |
+| `lint`           | Lint backend source and test files             |
+| `lint:fix`       | Auto-fix backend lint issues                   |
+| `check`          | Run backend typecheck and lint                 |
+| `format`         | Format backend files with Prettier             |
+| `format:check`   | Check backend formatting                       |
+| `install:strict` | Immutable install inside the backend workspace |
+| `test`           | Run backend test suites                        |
+| `test:e2e`       | Run backend end-to-end tests                   |
+| `test:watch`     | Run backend tests in watch mode                |
+| `test:cov`       | Run backend tests with coverage                |
+| `test:debug`     | Run backend tests with the Node inspector      |
+
+</details>
 
 ---
 
