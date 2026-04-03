@@ -1,11 +1,47 @@
 // frontend/src/pages/HomePage.tsx
-import { memo, useCallback, useMemo, useState } from "react";
+import {
+  memo,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+  type TouchEvent,
+} from "react";
 
 import { technologies, type CourseName, type Tech } from "@/data/technologies";
 import { gradientForCourse } from "@/ui/course-theme";
 import { getIconComponent } from "@/ui/icons";
 import { cn } from "@/utils/cn";
 import { slugify } from "@/utils/slugify";
+
+const PULL_THRESHOLD = 96;
+const MAX_PULL_DISTANCE = 132;
+const PULL_DAMPING = 0.45;
+
+type PullState = "idle" | "pulling" | "ready" | "refreshing";
+
+type TouchGesture = {
+  startX: number;
+  startY: number;
+  active: boolean;
+  dragging: boolean;
+};
+
+export function reloadHomePage() {
+  window.location.reload();
+}
+
+function clampPullDistance(distance: number) {
+  return Math.min(distance * PULL_DAMPING, MAX_PULL_DISTANCE);
+}
+
+function isAtTop(container: HTMLElement | null) {
+  return (
+    window.scrollY <= 0 &&
+    document.documentElement.scrollTop <= 0 &&
+    (container?.scrollTop ?? 0) <= 0
+  );
+}
 
 /** ------------------------------------------------------------------
  *  TechGrid (memoized)
@@ -148,7 +184,26 @@ const CourseRow = memo(function CourseRow({
  *  Page
  *  ------------------------------------------------------------------ */
 export default function HomePage() {
+  return <HomePageContent onRefresh={reloadHomePage} />;
+}
+
+type HomePageContentProps = {
+  onRefresh?: () => void;
+};
+
+export function HomePageContent({
+  onRefresh = reloadHomePage,
+}: HomePageContentProps) {
   const [openCourse, setOpenCourse] = useState<CourseName | null>(null);
+  const [pullDistance, setPullDistance] = useState(0);
+  const [pullState, setPullState] = useState<PullState>("idle");
+  const pageRef = useRef<HTMLElement | null>(null);
+  const touchGestureRef = useRef<TouchGesture>({
+    startX: 0,
+    startY: 0,
+    active: false,
+    dragging: false,
+  });
 
   // Object.entries loses key types — cast once in a single, controlled place
   const techEntries = Object.entries(technologies) as Array<
@@ -159,9 +214,123 @@ export default function HomePage() {
     setOpenCourse((prev) => (prev === courseName ? null : courseName));
   }, []);
 
+  const resetPullGesture = useCallback(() => {
+    touchGestureRef.current = {
+      startX: 0,
+      startY: 0,
+      active: false,
+      dragging: false,
+    };
+    setPullDistance(0);
+    setPullState("idle");
+  }, []);
+
+  const handleTouchStart = useCallback((event: TouchEvent<HTMLElement>) => {
+    const touch = event.touches[0];
+
+    if (!touch || !isAtTop(pageRef.current)) {
+      return;
+    }
+
+    touchGestureRef.current = {
+      startX: touch.clientX,
+      startY: touch.clientY,
+      active: true,
+      dragging: false,
+    };
+  }, []);
+
+  const handleTouchMove = useCallback(
+    (event: TouchEvent<HTMLElement>) => {
+      const touch = event.touches[0];
+      const gesture = touchGestureRef.current;
+
+      if (!touch || !gesture.active) {
+        return;
+      }
+
+      const deltaX = touch.clientX - gesture.startX;
+      const deltaY = touch.clientY - gesture.startY;
+
+      if (deltaY <= 0 || !isAtTop(pageRef.current)) {
+        resetPullGesture();
+        return;
+      }
+
+      if (!gesture.dragging && Math.abs(deltaX) > Math.abs(deltaY)) {
+        touchGestureRef.current.active = false;
+        return;
+      }
+
+      touchGestureRef.current.dragging = true;
+
+      const nextDistance = clampPullDistance(deltaY);
+
+      setPullDistance(nextDistance);
+      setPullState(nextDistance >= PULL_THRESHOLD ? "ready" : "pulling");
+    },
+    [resetPullGesture]
+  );
+
+  const handleTouchEnd = useCallback(() => {
+    const shouldRefresh = pullDistance >= PULL_THRESHOLD;
+
+    touchGestureRef.current = {
+      startX: 0,
+      startY: 0,
+      active: false,
+      dragging: false,
+    };
+
+    if (!shouldRefresh) {
+      setPullDistance(0);
+      setPullState("idle");
+      return;
+    }
+
+    setPullState("refreshing");
+    setPullDistance(0);
+    onRefresh();
+  }, [onRefresh, pullDistance]);
+
+  const pullMessage =
+    pullState === "ready"
+      ? "Release to refresh"
+      : pullState === "refreshing"
+        ? "Refreshing..."
+        : "Pull down to refresh";
+
   return (
-    <main className="flex flex-1 flex-col items-center justify-center px-4 py-10 text-center">
-      <div className="w-full max-w-5xl">
+    <main
+      ref={pageRef}
+      className="relative flex flex-1 flex-col items-center justify-center overflow-hidden px-4 py-10 text-center"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchEnd}
+    >
+      <div
+        aria-live="polite"
+        className={cn(
+          "pointer-events-none absolute left-1/2 top-3 z-20 -translate-x-1/2 rounded-full",
+          "border border-sky-200 bg-white/90 px-4 py-2 text-xs font-semibold text-sky-700 shadow-sm",
+          "transition-all duration-200 motion-reduce:transition-none",
+          "dark:border-sky-900 dark:bg-slate-900/90 dark:text-sky-200",
+          pullState === "idle" && pullDistance === 0
+            ? "translate-y-[-1rem] opacity-0"
+            : "translate-y-0 opacity-100"
+        )}
+      >
+        {pullMessage}
+      </div>
+
+      <div
+        className="w-full max-w-5xl transition-transform duration-200 motion-reduce:transition-none"
+        style={{
+          transform:
+            pullDistance > 0 ? `translateY(${pullDistance}px)` : undefined,
+        }}
+      >
         <h1 className="mb-10 bg-gradient-to-r from-indigo-500 via-sky-400 to-cyan-400 bg-clip-text text-5xl font-extrabold text-transparent drop-shadow-lg">
           Welcome to the Web Developer Learning Portal
         </h1>
