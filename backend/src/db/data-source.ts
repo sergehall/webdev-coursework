@@ -10,13 +10,14 @@
 // CLI can load it without booting the full NestJS application.
 
 import "reflect-metadata";
-import * as dotenv from "dotenv";
 import { DataSource } from "typeorm";
 import { CorrectAnswer } from "../quiz/entities/correct-answer.entity";
 import { QuizQuestion } from "../quiz/entities/quiz-question.entity";
 import { QuizProgress } from "../quiz/entities/quiz-progress.entity";
 
-dotenv.config({ path: `${__dirname}/../../.env` });
+// The TypeORM CLI reads DATABASE_URL from the environment.
+// In local dev set it via:  export $(cat .env | xargs) && yarn migration:run
+// or use a tool like dotenv-cli:  npx dotenv -e .env -- yarn migration:run
 
 const databaseUrl = process.env.DATABASE_URL?.trim();
 if (!databaseUrl) {
