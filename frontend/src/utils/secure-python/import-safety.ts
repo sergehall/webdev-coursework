@@ -15,14 +15,22 @@ import {
  *  - disallow aliases in both `import` and `from ... import ...`
  *  - ban star-imports
  *  - for local modules, enforce per-symbol allowlist on from-imports
+ *  - extraAllowed: additional local module names to permit (e.g. uploaded sidecars)
  */
-export function hasOnlySafeImports(code: string): {
+export function hasOnlySafeImports(
+  code: string,
+  extraAllowed?: Set<string>
+): {
   ok: boolean;
   reason?: string;
 } {
   const importRe = /^\s*import\s+([a-zA-Z0-9_., \t]+)$/gm;
   const fromImportRe =
     /^\s*from\s+([a-zA-Z0-9_.]+)\s+import\s+([a-zA-Z0-9_.*, \t]+)$/gm;
+
+  const extraAllowedLC = extraAllowed
+    ? new Set(Array.from(extraAllowed, (s) => s.toLowerCase()))
+    : null;
 
   let m: RegExpExecArray | null;
 
@@ -38,7 +46,13 @@ export function hasOnlySafeImports(code: string): {
     }
     const names = rawItems.map(baseModule).filter(Boolean);
     for (const mod of names) {
-      if (!(SAFE_IMPORTS_LC.has(mod) || ALLOWED_LOCAL_MODULES_LC.has(mod))) {
+      if (
+        !(
+          SAFE_IMPORTS_LC.has(mod) ||
+          ALLOWED_LOCAL_MODULES_LC.has(mod) ||
+          extraAllowedLC?.has(mod)
+        )
+      ) {
         return { ok: false, reason: `Forbidden import: ${mod}` };
       }
     }
@@ -48,7 +62,13 @@ export function hasOnlySafeImports(code: string): {
   while ((m = fromImportRe.exec(code))) {
     const rawModule = m[1];
     const mod = baseModule(rawModule);
-    if (!(SAFE_IMPORTS_LC.has(mod) || ALLOWED_LOCAL_MODULES_LC.has(mod))) {
+    if (
+      !(
+        SAFE_IMPORTS_LC.has(mod) ||
+        ALLOWED_LOCAL_MODULES_LC.has(mod) ||
+        extraAllowedLC?.has(mod)
+      )
+    ) {
       return { ok: false, reason: `Forbidden import: ${mod}` };
     }
 
@@ -107,12 +127,13 @@ export function hasOnlySafeImports(code: string): {
     return { ok: false, reason: "breakpoint() is not allowed." };
   }
 
-  // Block dunder attribute access used in class-hierarchy escapes:
+  // Block dunder *attribute access* used in class-hierarchy escapes:
   //   ().__class__.__mro__[0].__subclasses__()
-  //   ().__class__.__bases__[0].__subclasses__()
   //   func.__globals__["__builtins__"]
+  // The regex requires a preceding "." so that method *definitions*
+  // like `def __init__(self)` or `def __str__(self)` are not blocked.
   if (
-    /__(?:class|mro|bases|subclasses|init|globals|builtins|dict|qualname|module|code|func|closure|wrapped)__/.test(
+    /\.__(?:class|mro|bases|subclasses|init|globals|builtins|dict|qualname|module|code|func|closure|wrapped)__/.test(
       code
     )
   ) {

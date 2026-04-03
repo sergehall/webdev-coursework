@@ -6,8 +6,14 @@ import {
 import { hasOnlySafeImports } from "@/utils/secure-python/import-safety";
 import { hasOnlySafeOpenCalls } from "@/utils/secure-python/open-call-safety";
 
-/** Sanitize and validate Python code */
-export function sanitizeAndValidateCode(code: string): ValidateResult {
+/**
+ * Sanitize and validate Python code.
+ * @param extraAllowed - additional module names (without .py) to allow in imports
+ */
+export function sanitizeAndValidateCode(
+  code: string,
+  extraAllowed?: Set<string>
+): ValidateResult {
   const cleanedCode = code
     .replace(/^\uFEFF/, "")
     .replace(/[^\x20-\x7E\r\n\t]+/g, "");
@@ -20,7 +26,7 @@ export function sanitizeAndValidateCode(code: string): ValidateResult {
   if (lines.length > MAX_LINE_COUNT)
     return { valid: false, reason: "Too many lines." };
 
-  const imp = hasOnlySafeImports(cleanedCode);
+  const imp = hasOnlySafeImports(cleanedCode, extraAllowed);
   if (!imp.ok) return { valid: false, reason: imp.reason };
 
   const op = hasOnlySafeOpenCalls(cleanedCode);

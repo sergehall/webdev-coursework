@@ -84,10 +84,19 @@ function SecurePythonUploadButton({
         // Read all files in parallel
         const rawCodes = await Promise.all(files.map(readFileAsText));
 
+        // Build the set of all uploaded module names so each file
+        // may import from the other uploaded files.
+        const uploadedModuleNames = new Set(
+          files.map((f) => f.name.replace(/\.py$/i, "").toLowerCase())
+        );
+
         // Validate each file through the security pipeline
         const validated: Array<{ name: string; code: string }> = [];
         for (let i = 0; i < files.length; i++) {
-          const { valid, reason, cleanedCode } = sanitizeAndValidateCode(rawCodes[i]);
+          const { valid, reason, cleanedCode } = sanitizeAndValidateCode(
+            rawCodes[i],
+            uploadedModuleNames
+          );
           if (!valid || !cleanedCode) {
             alert(`🚫 Unsafe Python code blocked in "${files[i].name}".\nReason: ${reason}`);
             if (inputRef.current) inputRef.current.value = "";

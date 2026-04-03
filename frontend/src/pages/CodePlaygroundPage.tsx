@@ -12,6 +12,11 @@ import {
   toCodePlaygroundUrl,
   normalizePlaygroundRelativePath,
 } from "@/utils/playgroundPath";
+import {
+  detectSidecarNames,
+  dirname,
+  fetchSidecars,
+} from "@/utils/playgroundPythonSidecars";
 import { validateJavaScript } from "@/utils/secureJavaScript";
 import {
   SANDBOX_IFRAME_ID,
@@ -101,15 +106,31 @@ export default function CodePlaygroundPage() {
     }
 
     if (isPython) {
-      void fetch(toCodePlaygroundUrl(file))
-        .then((res) => (res.ok ? res.text() : Promise.reject(res.statusText)))
-        .then((code) => runPythonInWorker(code))
-        .catch((err) =>
+      void (async () => {
+        try {
+          const res = await fetch(toCodePlaygroundUrl(file));
+          if (!res.ok) throw new Error(res.statusText);
+          const code = await res.text();
+
+          // Auto-fetch any sidecar modules that live next to the .py file
+          const baseDir = dirname(file);
+          const sidecarNames = detectSidecarNames(code);
+          const sidecars = await fetchSidecars(baseDir, sidecarNames, (t) =>
+            setLogs((prev) => [...prev, t])
+          );
+          const extras =
+            sidecars.length > 0
+              ? Object.fromEntries(sidecars.map((f) => [f.name, f.content]))
+              : undefined;
+
+          runPythonInWorker(code, extras);
+        } catch (err) {
           setLogs((prev) => [
             ...prev,
             `❌ Failed to run Python: ${String(err)}`,
-          ])
-        );
+          ]);
+        }
+      })();
     }
   }, [file, fileExists, runPythonInWorker]);
 
