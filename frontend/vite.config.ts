@@ -56,6 +56,9 @@ export default defineConfig(({ mode }) => {
           target: env.VITE_API_URL,
           changeOrigin: true,
           secure: true,
+          // Fail fast in dev instead of hanging when backend is slow/down
+          timeout: 10_000,
+          proxyTimeout: 10_000,
         },
       },
     },
