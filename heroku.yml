@@ -1,0 +1,14 @@
+build:
+  docker: {}
+
+run:
+  web: yarn --cwd backend start:prod
+
+# Heroku will poll GET /health every 10 s during deployment.
+# If the endpoint does not return 2xx within the grace period the
+# release is considered failed and the previous slug is kept active.
+healthcheck:
+  web:
+    path: /health
+    timeout: 10
+    grace_period: 60
