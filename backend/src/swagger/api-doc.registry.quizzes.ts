@@ -3,6 +3,8 @@ import { ApiBody, ApiConsumes } from "@nestjs/swagger";
 import { CorrectAnswerDto } from "../quiz/dto/correct-answer.dto";
 import { CreatedQuizQuestionDto } from "../quiz/dto/created-quiz-question.dto";
 import { QuizQuestionDto } from "../quiz/dto/quiz-question.dto";
+import { QuizProgressDto } from "../quiz/dto/quiz-progress.dto";
+import { ResetProgressDto } from "../quiz/dto/reset-progress.dto";
 import { IssueAnswersTokenResponseDto } from "../tokens/dto/issue-answers-token-response.dto";
 import { ApiDoc } from "./api-doc.builder";
 import { QuizzesMethods } from "./enums/quizzes-methods.enum";
@@ -27,6 +29,7 @@ export const quizzesApiDocRegistry = {
       responses: [
         { status: 404, description: "Quiz not found" },
         { status: 401, description: "Missing/invalid/expired answers token" },
+        { status: 500, description: "Internal server error" },
       ],
     }),
 
@@ -44,7 +47,10 @@ export const quizzesApiDocRegistry = {
           description: "Quiz identifier.",
         },
       ],
-      responses: [{ status: 404, description: "Quiz not found" }],
+      responses: [
+        { status: 404, description: "Quiz not found" },
+        { status: 500, description: "Internal server error" },
+      ],
     }),
 
   [QuizzesMethods.CreateQuestion]: (description?: string) =>
@@ -65,9 +71,11 @@ export const quizzesApiDocRegistry = {
           },
         ],
         responses: [
-          { status: 400, description: "Bad Request" },
+          { status: 400, description: "Bad Request — validation failed" },
           { status: 401, description: "Invalid admin key" },
+          { status: 403, description: "Forbidden — admin key required" },
           { status: 413, description: "Uploaded files are too large" },
+          { status: 500, description: "Internal server error" },
         ],
       }),
       ApiConsumes("multipart/form-data"),
@@ -142,42 +150,65 @@ export const quizzesApiDocRegistry = {
         },
       ],
       ok: { schema: { example: [1, 2, 5] } },
+      responses: [
+        { status: 400, description: "Bad Request — missing or invalid query params" },
+        { status: 500, description: "Internal server error" },
+      ],
     }),
 
   [QuizzesMethods.MarkProgress]: (description?: string) =>
-    ApiDoc({
-      summary: "Mark a module as completed (public)",
-      description,
-      ok: {
-        status: 201,
-        description: "Progress marked successfully.",
-        schema: { example: {} },
-      },
-      responses: [{ status: 400, description: "Bad Request" }],
-    }),
+    applyDecorators(
+      ApiDoc({
+        summary: "Mark a module as completed (public)",
+        description,
+        ok: {
+          status: 201,
+          description: "Progress marked successfully.",
+          schema: { example: {} },
+        },
+        responses: [
+          { status: 400, description: "Bad Request — validation failed" },
+          { status: 500, description: "Internal server error" },
+        ],
+      }),
+      ApiBody({ type: QuizProgressDto })
+    ),
 
   [QuizzesMethods.UnmarkProgress]: (description?: string) =>
-    ApiDoc({
-      summary: "Unmark a completed module (public)",
-      description,
-      ok: {
-        status: 200,
-        description: "Progress unmarked successfully.",
-        schema: { example: {} },
-      },
-      responses: [{ status: 400, description: "Bad Request" }],
-    }),
+    applyDecorators(
+      ApiDoc({
+        summary: "Unmark a completed module (public)",
+        description,
+        ok: {
+          status: 200,
+          description: "Progress unmarked successfully.",
+          schema: { example: {} },
+        },
+        responses: [
+          { status: 400, description: "Bad Request — validation failed" },
+          { status: 500, description: "Internal server error" },
+        ],
+      }),
+      ApiBody({ type: QuizProgressDto })
+    ),
 
   [QuizzesMethods.ResetProgress]: (description?: string) =>
-    ApiDoc({
-      summary: "Reset user progress (public)",
-      description,
-      ok: {
-        status: 201,
-        description: "Progress reset successfully.",
-        schema: { example: {} },
-      },
-    }),
+    applyDecorators(
+      ApiDoc({
+        summary: "Reset user progress (public)",
+        description,
+        ok: {
+          status: 201,
+          description: "Progress reset successfully.",
+          schema: { example: {} },
+        },
+        responses: [
+          { status: 400, description: "Bad Request — validation failed" },
+          { status: 500, description: "Internal server error" },
+        ],
+      }),
+      ApiBody({ type: ResetProgressDto })
+    ),
 
   [QuizzesMethods.VerifyAnswersToken]: (description?: string) =>
     ApiDoc({
@@ -225,6 +256,10 @@ export const quizzesApiDocRegistry = {
           ],
         },
       },
-      responses: [{ status: 400, description: "token is required" }],
+      responses: [
+        { status: 400, description: "token is required" },
+        { status: 403, description: "Forbidden — admin key required" },
+        { status: 500, description: "Internal server error" },
+      ],
     }),
 } as const;

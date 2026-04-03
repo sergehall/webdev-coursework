@@ -15,6 +15,7 @@ export class QuizProgressDto {
   @IsString()
   courseId!: string;
 
+  @ApiProperty({ example: 3, description: "Module number to mark/unmark." })
   @Type(() => Number)
   @IsNumber()
   moduleNumber!: number;

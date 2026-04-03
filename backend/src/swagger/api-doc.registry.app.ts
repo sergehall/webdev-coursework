@@ -20,6 +20,13 @@ export const appApiDocRegistry = {
       summary: "Service health check",
       description,
       ok: { type: AppHealthDto },
+      responses: [
+        {
+          status: 503,
+          type: AppHealthDto,
+          description: "Service unavailable — database is unreachable",
+        },
+      ],
     }),
   [AppMethods.Info]: (description?: string) =>
     ApiDoc({
