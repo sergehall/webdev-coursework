@@ -1,9 +1,9 @@
 // src/utils/sandboxIframe.ts
-// Runs arbitrary JS code inside a hidden, sandboxed iframe.
-// Intercepts console.log and forwards safe, stringified messages to the parent,
-// avoiding "undefined" spam and non-serializable values.
+// Runs code inside a hidden, sandboxed iframe.
+// Intercepts console.log and forwards safe, stringified messages to the parent.
 
 export const SANDBOX_IFRAME_ID = "sandboxed-iframe";
+export const HTML_PREVIEW_IFRAME_ID = "html-preview-iframe";
 
 const escapeScriptCloseTag = (jsonString: string): string =>
   jsonString.replace(/</g, "\\u003c");
@@ -97,4 +97,50 @@ export function runInSandboxedIframe(code: string) {
   `;
 
   document.body.appendChild(iframe);
+}
+
+/**
+ * Display an uploaded HTML file in a visible, sandboxed preview iframe.
+ * - allow-scripts: inline scripts run inside the sandbox
+ * - NO allow-same-origin: iframe cannot access parent DOM or localStorage
+ * - CSP blocks all network requests and external resources
+ * Returns the iframe element so the caller can mount it in the UI.
+ */
+export function runHtmlInSandboxedIframe(
+  html: string,
+  containerId: string
+): void {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  // Remove any existing preview iframe inside this container
+  const existing = container.querySelector(`#${HTML_PREVIEW_IFRAME_ID}`);
+  if (existing) existing.remove();
+
+  const iframe = document.createElement("iframe");
+  iframe.id = HTML_PREVIEW_IFRAME_ID;
+  iframe.sandbox.add("allow-scripts");
+  iframe.referrerPolicy = "no-referrer";
+  iframe.style.width = "100%";
+  iframe.style.height = "400px";
+  iframe.style.border = "1px solid #ccc";
+  iframe.style.borderRadius = "8px";
+  iframe.style.background = "#fff";
+
+  // Inject CSP as the very first tag to block external resources
+  const csp =
+    "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; form-action 'none'; base-uri 'none';";
+
+  // Prepend meta CSP so it applies even if the HTML has its own <head>
+  const safeHtml = html.replace(
+    /(<head[^>]*>)/i,
+    `$1<meta http-equiv="Content-Security-Policy" content="${csp}">`
+  );
+  // If no <head> tag exists, prepend the meta before everything
+  const finalHtml = safeHtml.includes("<head")
+    ? safeHtml
+    : `<meta http-equiv="Content-Security-Policy" content="${csp}">${safeHtml}`;
+
+  iframe.srcdoc = finalHtml;
+  container.appendChild(iframe);
 }

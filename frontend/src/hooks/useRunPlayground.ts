@@ -14,7 +14,7 @@ import {
 import { runPythonWithTimeout } from "@/utils/runPythonWithTimeout";
 import { validateJavaScript } from "@/utils/secureJavaScript";
 import { sanitizeAndValidateCode } from "@/utils/securePython";
-import { runInSandboxedIframe } from "@/utils/sandboxIframe";
+import { runInSandboxedIframe, runHtmlInSandboxedIframe } from "@/utils/sandboxIframe";
 
 type Setter<T> = React.Dispatch<React.SetStateAction<T>>;
 
@@ -59,6 +59,40 @@ export function useRunPlayground(
         safeFile.toLowerCase().endsWith(".js") ||
         safeFile.toLowerCase().endsWith(".mjs");
       const isPY = safeFile.toLowerCase().endsWith(".py");
+
+      const isHTML =
+        safeFile.toLowerCase().endsWith(".html") ||
+        safeFile.toLowerCase().endsWith(".htm");
+      const isJSON = safeFile.toLowerCase().endsWith(".json");
+
+      if (isHTML) {
+        void fetch(`${toCodePlaygroundUrl(safeFile)}?t=${Date.now()}`)
+          .then((res) => (res.ok ? res.text() : Promise.reject(res.statusText)))
+          .then((html) => {
+            runHtmlInSandboxedIframe(html, "html-preview-container");
+          })
+          .catch((err) =>
+            setLogs((prev) => [...prev, `❌ Failed to load HTML: ${String(err)}`])
+          );
+        return;
+      }
+
+      if (isJSON) {
+        void fetch(`${toCodePlaygroundUrl(safeFile)}?t=${Date.now()}`)
+          .then((res) => (res.ok ? res.text() : Promise.reject(res.statusText)))
+          .then((raw) => {
+            try {
+              const formatted = JSON.stringify(JSON.parse(raw), null, 2);
+              setLogs((prev) => [...prev, formatted]);
+            } catch {
+              setLogs((prev) => [...prev, "❌ Invalid JSON."]);
+            }
+          })
+          .catch((err) =>
+            setLogs((prev) => [...prev, `❌ Failed to load JSON: ${String(err)}`])
+          );
+        return;
+      }
 
       if (isJS) {
         void fetch(`${toCodePlaygroundUrl(safeFile)}?t=${Date.now()}`)
@@ -137,7 +171,7 @@ export function useRunPlayground(
         return;
       }
 
-      setLogs((prev) => [...prev, "⚠️ Unsupported file type."]);
+      setLogs((prev) => [...prev, "⚠️ Unsupported file type. Supported: .js, .mjs, .py, .html, .htm, .json"]);
       return;
     }
 

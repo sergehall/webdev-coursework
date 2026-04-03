@@ -13,12 +13,19 @@ import {
   normalizePlaygroundRelativePath,
 } from "@/utils/playgroundPath";
 import { validateJavaScript } from "@/utils/secureJavaScript";
-import { SANDBOX_IFRAME_ID, runInSandboxedIframe } from "@/utils/sandboxIframe";
+import {
+  SANDBOX_IFRAME_ID,
+  HTML_PREVIEW_IFRAME_ID,
+  runInSandboxedIframe,
+  runHtmlInSandboxedIframe,
+} from "@/utils/sandboxIframe";
 import {
   ClearConsoleButton,
   RunAgainButton,
   SecureJsUploadButton,
   SecurePythonUploadButton,
+  SecureHtmlUploadButton,
+  SecureJsonUploadButton,
 } from "@/components/buttons";
 
 const PYTHON_TIMEOUT_MS = 45_000;
@@ -34,6 +41,9 @@ export default function CodePlaygroundPage() {
   const [logs, setLogs] = useState<string[]>([]);
   const [filename, setFilename] = useState<string | null>(null);
   const [lastUploadedCode, setLastUploadedCode] = useState<string | null>(null);
+  const [htmlPreviewActive, setHtmlPreviewActive] = useState(false);
+  const [jsonContent, setJsonContent] = useState<string | null>(null);
+  const htmlPreviewContainerRef = useRef<HTMLDivElement>(null);
 
   // Input prompt integration for bottom input bar
   const [inputResolver, setInputResolver] = useState<
@@ -118,6 +128,13 @@ export default function CodePlaygroundPage() {
     setInputResolver
   );
 
+  // Shared cleanup: reset all active runners when switching file types
+  const clearActiveRunners = () => {
+    document.getElementById(SANDBOX_IFRAME_ID)?.remove();
+    setHtmlPreviewActive(false);
+    setJsonContent(null);
+  };
+
   // Upload handler
   const handleUpload = (code: string, name: string) => {
     void (async () => {
@@ -128,24 +145,35 @@ export default function CodePlaygroundPage() {
         search: search.toString(),
       });
 
-      const isPython = name.endsWith(".py");
-      const wasPython = filename?.endsWith(".py") ?? false;
-
-      if (isPython !== wasPython) {
-        document.getElementById(SANDBOX_IFRAME_ID)?.remove();
-      }
-
+      clearActiveRunners();
       setFilename(name);
       setLastUploadedCode(code);
 
-      if (isPython) {
-        runPythonInWorker(code); // unified path for Python
+      const lower = name.toLowerCase();
+      if (lower.endsWith(".py")) {
+        runPythonInWorker(code);
+      } else if (lower.endsWith(".html") || lower.endsWith(".htm")) {
+        setHtmlPreviewActive(true);
+        // Defer so the container div renders first
+        setTimeout(() => {
+          const container = document.getElementById("html-preview-container");
+          if (container) runHtmlInSandboxedIframe(code, "html-preview-container");
+        }, 0);
+      } else if (lower.endsWith(".json")) {
+        try {
+          setJsonContent(JSON.stringify(JSON.parse(code), null, 2));
+        } catch {
+          setLogs((prev) => [...prev, "❌ Invalid JSON."]);
+        }
       } else {
         setLogs((prev) => [...prev, ">_"]);
         runInSandboxedIframe(code);
       }
     })();
   };
+
+  const handleHtmlUpload = (html: string, name: string) => handleUpload(html, name);
+  const handleJsonUpload = (json: string, name: string) => handleUpload(json, name);
 
   return (
     <div className="p-3">
@@ -161,19 +189,37 @@ export default function CodePlaygroundPage() {
       />
 
       <div className="mt-4 grid w-full grid-cols-1 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-3">
-        <ClearConsoleButton onClear={() => setLogs([])} />
+        <ClearConsoleButton onClear={() => { setLogs([]); clearActiveRunners(); }} />
         <SecureJsUploadButton onSafeUpload={handleUpload} />
         <SecurePythonUploadButton onSafeUpload={handleUpload} />
+        <SecureHtmlUploadButton onSafeUpload={handleHtmlUpload} />
+        <SecureJsonUploadButton onSafeUpload={handleJsonUpload} />
         {(file || lastUploadedCode) && (
           <RunAgainButton onRunAgain={handleRunAgain} />
         )}
       </div>
 
-      <ConsoleOutput
-        logs={logs}
-        onInput={inputResolver ? handleConsoleInput : undefined}
-        awaitingPrompt={pendingPrompt || undefined}
-      />
+      {htmlPreviewActive && (
+        <div
+          id="html-preview-container"
+          ref={htmlPreviewContainerRef}
+          className="mt-4 w-full overflow-hidden rounded-xl border border-gray-300 dark:border-gray-600"
+        />
+      )}
+
+      {jsonContent && (
+        <pre className="mt-4 max-h-[500px] overflow-auto rounded-xl bg-gray-100 p-4 font-mono text-sm text-gray-800 dark:bg-gray-900 dark:text-gray-200">
+          {jsonContent}
+        </pre>
+      )}
+
+      {!htmlPreviewActive && (
+        <ConsoleOutput
+          logs={logs}
+          onInput={inputResolver ? handleConsoleInput : undefined}
+          awaitingPrompt={pendingPrompt || undefined}
+        />
+      )}
     </div>
   );
 }

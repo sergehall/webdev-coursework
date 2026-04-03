@@ -44,13 +44,31 @@ export function validateJavaScript(
           node.callee.type === "Identifier" &&
           node.callee.name === name;
 
+        // Block dangerous methods only when called on known browser globals,
+        // so legitimate uses like "str".replace() or Object.assign() are allowed.
+        const DANGEROUS_GLOBALS = new Set([
+          "window",
+          "document",
+          "location",
+          "history",
+          "navigator",
+        ]);
         const isUnsafeMemberCall =
           node.type === "CallExpression" &&
           node.callee.type === "MemberExpression" &&
+          node.callee.object.type === "Identifier" &&
+          DANGEROUS_GLOBALS.has(
+            (node.callee.object as { name: string }).name
+          ) &&
           node.callee.property.type === "Identifier" &&
-          ["write", "assign", "replace", "open"].includes(
-            node.callee.property.name
-          );
+          [
+            "write",
+            "assign",
+            "replace",
+            "open",
+            "pushState",
+            "replaceState",
+          ].includes(node.callee.property.name);
 
         const isDangerousHtmlAssignment =
           node.type === "AssignmentExpression" &&
@@ -92,6 +110,11 @@ export function validateJavaScript(
           node.type === "ExportDefaultDeclaration"
         ) {
           reason = "ES module import/export is not allowed in playground mode.";
+          return;
+        }
+        // Dynamic import() — AST type is ImportExpression, not caught by isCall()
+        if (node.type === "ImportExpression") {
+          reason = "Dynamic import() is not allowed.";
           return;
         }
         if (node.type === "WithStatement") {

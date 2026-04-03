@@ -87,5 +87,40 @@ export function hasOnlySafeImports(code: string): {
     return { ok: false, reason: "Forbidden builtin call detected." };
   }
 
+  // Block introspection builtins that allow sandbox escape by accessing
+  // __builtins__ or the class hierarchy at runtime.
+  if (/\b(getattr|setattr|delattr|hasattr)\s*\(/.test(code)) {
+    return {
+      ok: false,
+      reason: "getattr/setattr/delattr/hasattr are not allowed.",
+    };
+  }
+
+  if (/\b(globals|locals|vars|dir)\s*\(/.test(code)) {
+    return {
+      ok: false,
+      reason: "globals()/locals()/vars()/dir() are not allowed.",
+    };
+  }
+
+  if (/\bbreakpoint\s*\(/.test(code)) {
+    return { ok: false, reason: "breakpoint() is not allowed." };
+  }
+
+  // Block dunder attribute access used in class-hierarchy escapes:
+  //   ().__class__.__mro__[0].__subclasses__()
+  //   ().__class__.__bases__[0].__subclasses__()
+  //   func.__globals__["__builtins__"]
+  if (
+    /__(?:class|mro|bases|subclasses|init|globals|builtins|dict|qualname|module|code|func|closure|wrapped)__/.test(
+      code
+    )
+  ) {
+    return {
+      ok: false,
+      reason: "Dunder attribute access is not allowed.",
+    };
+  }
+
   return { ok: true };
 }

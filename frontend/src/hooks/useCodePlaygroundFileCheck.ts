@@ -24,6 +24,8 @@ export function useCodePlaygroundFileCheck(file: string | null) {
     const lower = safeFile.toLowerCase();
     const isJS = lower.endsWith(".js") || lower.endsWith(".mjs");
     const isPy = lower.endsWith(".py");
+    const isHtml = lower.endsWith(".html") || lower.endsWith(".htm");
+    const isJson = lower.endsWith(".json");
 
     const checkFile = async () => {
       try {
@@ -44,15 +46,20 @@ export function useCodePlaygroundFileCheck(file: string | null) {
               "text/x-python",
               "",
             ];
-
-            const isSafeType = safeContentTypes.some((type) =>
-              contentType.includes(type)
-            );
-
-            if (isSafeType) {
+            if (safeContentTypes.some((t) => contentType.includes(t))) {
               setFileExists(true);
               return;
             }
+          }
+
+          if (isHtml && (contentType.includes("text/html") || contentType.includes("text/plain"))) {
+            setFileExists(true);
+            return;
+          }
+
+          if (isJson && (contentType.includes("application/json") || contentType.includes("text/plain"))) {
+            setFileExists(true);
+            return;
           }
         }
 

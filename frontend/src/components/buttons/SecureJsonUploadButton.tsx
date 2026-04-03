@@ -4,10 +4,11 @@ import { Upload } from "lucide-react";
 import { BaseButton, ColoredButton } from "@/components/buttons";
 import type { ButtonSize, ButtonType } from "@/components/buttons/BaseButton";
 import type { Variants } from "@/components/buttons/types/variants";
-import { JS_MAX_FILE_SIZE, validateJavaScript } from "@/utils/secureJavaScript";
 
-type SecureJsUploadButtonProps = {
-  onSafeUpload: (code: string, filename: string) => void;
+const MAX_JSON_FILE_SIZE = 100_000; // 100 KB
+
+type SecureJsonUploadButtonProps = {
+  onSafeUpload: (json: string, filename: string) => void;
   label?: string;
   icon?: React.ReactNode;
   className?: string;
@@ -17,53 +18,54 @@ type SecureJsUploadButtonProps = {
   disabled?: boolean;
 };
 
-export default function SecureJsUploadButton({
+export default function SecureJsonUploadButton({
   onSafeUpload,
-  label = "Upload .js / .mjs file",
+  label = "Upload .json file",
   icon,
   className = "",
-  variant = "success",
+  variant = "secondary",
   size = "sm",
   type = "button",
   disabled = false,
-}: SecureJsUploadButtonProps) {
+}: SecureJsonUploadButtonProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const finalIcon = icon ?? <Upload size={16} />;
 
   const handleClick = () => {
-    if (!disabled && inputRef.current) {
-      inputRef.current.click();
-    }
+    if (!disabled) inputRef.current?.click();
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const isValidExt =
-      file.name.endsWith(".js") || file.name.endsWith(".mjs");
-    if (!isValidExt || file.size > JS_MAX_FILE_SIZE) {
-      alert("⚠️ Invalid or too large JS/MJS file.");
+    if (!file.name.toLowerCase().endsWith(".json")) {
+      alert("🚫 Only .json files are allowed.");
+      if (inputRef.current) inputRef.current.value = "";
+      return;
+    }
+    if (file.size > MAX_JSON_FILE_SIZE) {
+      alert("⚠️ File too large. Max size is 100 KB.");
       if (inputRef.current) inputRef.current.value = "";
       return;
     }
 
     const reader = new FileReader();
     reader.onload = () => {
-      const code = reader.result as string;
-      const result = validateJavaScript(code);
-      if (!result.valid) {
-        alert(
-          `⚠️ File blocked: unsafe JavaScript patterns detected.\nReason: ${result.reason ?? "Unknown"}`
-        );
+      const raw = String(reader.result ?? "");
+      try {
+        // Validate it is actually parseable JSON
+        JSON.parse(raw);
+      } catch {
+        alert("❌ Invalid JSON — file could not be parsed.");
+        if (inputRef.current) inputRef.current.value = "";
         return;
       }
-      onSafeUpload(code, file.name);
+      onSafeUpload(raw, file.name);
     };
     reader.onloadend = () => {
       if (inputRef.current) inputRef.current.value = "";
     };
-
     reader.readAsText(file);
   };
 
@@ -83,11 +85,10 @@ export default function SecureJsUploadButton({
       >
         {label}
       </BaseButton>
-
       <input
         ref={inputRef}
         type="file"
-        accept=".js,.mjs"
+        accept=".json"
         onChange={handleChange}
         hidden
       />
