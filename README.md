@@ -1,24 +1,38 @@
 # WebDev Coursework Platform
 
-A full-stack educational monorepo that documents my step-by-step journey through Santa Monica College Web Development coursework.
+A full-stack academic portfolio and learning platform built around my Santa
+Monica College Web Development coursework.
 
 This project is both:
 
-- a working learning platform (frontend + backend)
-- a portfolio of real coursework artifacts, assignments, and technical growth
+- a working full-stack platform with frontend and backend applications
+- a documented record of coursework, assignments, and applied technical growth
 
 ---
 
 ## Project Purpose
 
-This repository tracks how I am building practical web development skills over time:
+This repository serves as a structured academic portfolio documenting my
+progress through Santa Monica College Web Development coursework.
 
-- designing frontend interfaces
-- implementing backend APIs
-- learning databases, networking, cloud, and security
-- organizing coursework in a production-style monorepo
+It brings together the knowledge, assignments, and practical outcomes from the
+classes I have completed, while showing how that learning was applied in a real
+project environment. The platform is designed to capture both the educational
+journey and the hands-on implementation work behind it.
 
-It is intentionally structured like a professional engineering project while staying true to its academic purpose.
+Through this project, I use a single application to:
+
+- document coursework, assignments, and learning progress
+- reinforce new concepts through practical implementation
+- apply classroom knowledge across frontend, backend, databases, cloud,
+  networking, and security
+- organize academic work inside a production-style monorepo
+- build a portfolio project that reflects both training and real development
+  practice
+
+Although this is an educational project, it is intentionally developed with
+professional engineering structure and workflows so that it functions both as a
+learning tool and as a long-term portfolio artifact.
 
 ---
 
@@ -40,12 +54,12 @@ The platform currently reflects this active SMC pathway:
 
 ## What The Platform Includes
 
-- Course-centric UI with pathway and coursework views
-- Assignment/module organization per class
-- Code Playground for safe JS/Python practice
-- Progress tracking flows and completion feedback
-- Backend API for coursework-related data and quiz/progress logic
-- Responsive interface for desktop and mobile
+- Course-centered navigation with home, pathway, coursework, and resources views
+- Per-course assignment and module organization with route-based loading
+- Sandboxed Code Playground for JavaScript and Python practice
+- Progress tracking, module completion flows, and end-of-course completion pages
+- Backend API for coursework metadata, quiz delivery, answer-token flows, and progress persistence
+- Responsive layout that adapts across desktop and mobile navigation patterns
 
 ---
 
@@ -139,6 +153,9 @@ webdev-coursework/
 ---
 
 ## Getting Started
+
+<details>
+<summary><strong>Show getting started</strong></summary>
 
 ### 1. Prerequisites
 
@@ -257,6 +274,8 @@ yarn check:backend
 yarn build
 ```
 
+</details>
+
 ---
 
 ## Root Scripts
@@ -290,71 +309,6 @@ yarn build
 
 ---
 
-## Frontend Workspace Commands
-
-Run from root using `yarn workspace frontend <script>`:
-
-<details>
-<summary><strong>Show frontend workspace scripts</strong></summary>
-
-| Script           | Description                                     |
-| ---------------- | ----------------------------------------------- |
-| `start:dev`      | Start the Vite development server               |
-| `preview`        | Preview the production frontend build           |
-| `typecheck`      | Run frontend TypeScript checks                  |
-| `build:bundle`   | Build the Vite production bundle                |
-| `build:fast`     | Shortcut for `build:bundle`                     |
-| `build`          | Typecheck and then build the frontend           |
-| `install:strict` | Immutable install inside the frontend workspace |
-| `tailwind:init`  | Generate Tailwind config scaffolding            |
-| `build:css`      | Run Tailwind CSS build/watch output             |
-| `lint`           | Lint frontend source files                      |
-| `lint:fix`       | Auto-fix frontend lint issues                   |
-| `check`          | Run frontend typecheck and lint                 |
-| `format`         | Format frontend files with Prettier             |
-| `format:check`   | Check frontend formatting                       |
-| `test`           | Run Vitest in watch mode                        |
-| `test:run`       | Run Vitest once                                 |
-| `test:ci`        | Run Vitest with coverage                        |
-| `test:ui`        | Open the Vitest UI                              |
-
-</details>
-
----
-
-## Backend Workspace Commands
-
-Run from root using `yarn workspace backend <script>`:
-
-<details>
-<summary><strong>Show backend workspace scripts</strong></summary>
-
-| Script           | Description                                    |
-| ---------------- | ---------------------------------------------- |
-| `prebuild`       | Clean backend `dist/` before building          |
-| `build`          | Build the NestJS backend                       |
-| `build2`         | Alternate TypeScript-only backend build        |
-| `start`          | Start the backend normally                     |
-| `start:dev`      | Start the backend in watch mode                |
-| `start:debug`    | Start the backend in debug + watch mode        |
-| `start:prod`     | Run the built backend from `dist/main.js`      |
-| `typecheck`      | Run backend TypeScript checks                  |
-| `lint`           | Lint backend source and test files             |
-| `lint:fix`       | Auto-fix backend lint issues                   |
-| `check`          | Run backend typecheck and lint                 |
-| `format`         | Format backend files with Prettier             |
-| `format:check`   | Check backend formatting                       |
-| `install:strict` | Immutable install inside the backend workspace |
-| `test`           | Run backend test suites                        |
-| `test:e2e`       | Run backend end-to-end tests                   |
-| `test:watch`     | Run backend tests in watch mode                |
-| `test:cov`       | Run backend tests with coverage                |
-| `test:debug`     | Run backend tests with the Node inspector      |
-
-</details>
-
----
-
 ## Learning Focus Areas
 
 This project is designed to show growth across:
@@ -371,15 +325,6 @@ This project is designed to show growth across:
 
 - Frontend: [webdev-coursework.com](https://webdev-coursework.com)
 - Backend API: [api.webdev-coursework.com](https://api.webdev-coursework.com)
-
----
-
-## Author
-
-**Serge Hall**
-
-- GitHub: [@SergeHall](https://github.com/SergeHall)
-- Email: `serge.hall.dev@gmail.com`
 
 ---
 
