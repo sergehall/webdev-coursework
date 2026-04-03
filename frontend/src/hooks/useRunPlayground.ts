@@ -32,7 +32,8 @@ export function useRunPlayground(
   lastUploadedCode: string | null,
   filename: string | null,
   setLogs: Setter<string[]>,
-  setInputResolver: Setter<((value: string) => void) | null>
+  setInputResolver: Setter<((value: string) => void) | null>,
+  uploadedExtras?: Record<string, string>
 ) {
   return () => {
     const safeFile = normalizePlaygroundRelativePath(file);
@@ -190,7 +191,7 @@ export function useRunPlayground(
         }
 
         // Use runPythonWithTimeout with streaming + input.
-        // runPythonWithTimeout provides sidecars for upload mode through the resolver.
+        // uploadedExtras takes priority; fall back to server resolver for hosted sidecars.
         void runPythonWithTimeout(
           validation.cleanedCode,
           300000, // 5 min (paused during input())
@@ -200,7 +201,8 @@ export function useRunPlayground(
           },
           (text) => setLogs((prev) => [...prev, text]),
           {
-            // If sidecars are hosted under /code-playground, resolve them by name
+            extras: uploadedExtras,
+            // resolver fills any remaining sidecars from the server (hosted /code-playground files)
             resolver: resolveSidecarByName,
           }
         )

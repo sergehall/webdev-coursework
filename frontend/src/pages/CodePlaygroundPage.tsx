@@ -40,6 +40,7 @@ export default function CodePlaygroundPage() {
   const [logs, setLogs] = useState<string[]>([]);
   const [filename, setFilename] = useState<string | null>(null);
   const [lastUploadedCode, setLastUploadedCode] = useState<string | null>(null);
+  const [uploadedSidecars, setUploadedSidecars] = useState<Record<string, string>>({});
   const [pendingHtml, setPendingHtml] = useState<string | null>(null);
   const [jsonContent, setJsonContent] = useState<string | null>(null);
   const htmlPreviewContainerRef = useRef<HTMLDivElement>(null);
@@ -132,7 +133,8 @@ export default function CodePlaygroundPage() {
     lastUploadedCode,
     filename,
     setLogs,
-    setInputResolver
+    setInputResolver,
+    uploadedSidecars
   );
 
   // Shared cleanup: reset all active runners when switching file types
@@ -140,10 +142,11 @@ export default function CodePlaygroundPage() {
     document.getElementById(SANDBOX_IFRAME_ID)?.remove();
     setPendingHtml(null);
     setJsonContent(null);
+    setUploadedSidecars({});
   };
 
   // Upload handler
-  const handleUpload = (code: string, name: string) => {
+  const handleUpload = (code: string, name: string, extras?: Record<string, string>) => {
     void (async () => {
       const search = new URLSearchParams(location.search);
       search.delete("file");
@@ -158,7 +161,15 @@ export default function CodePlaygroundPage() {
 
       const lower = name.toLowerCase();
       if (lower.endsWith(".py")) {
-        runPythonInWorker(code);
+        const sidecars = extras ?? {};
+        setUploadedSidecars(sidecars);
+        if (Object.keys(sidecars).length) {
+          setLogs((prev) => [
+            ...prev,
+            `[modules] loaded: ${Object.keys(sidecars).join(", ")}`,
+          ]);
+        }
+        runPythonInWorker(code, sidecars);
       } else if (lower.endsWith(".html") || lower.endsWith(".htm")) {
         // Setting pendingHtml triggers useEffect after React commits the container div
         setPendingHtml(code);
@@ -175,8 +186,8 @@ export default function CodePlaygroundPage() {
     })();
   };
 
-  const handleHtmlUpload = (html: string, name: string) => handleUpload(html, name);
-  const handleJsonUpload = (json: string, name: string) => handleUpload(json, name);
+  const handleHtmlUpload = (html: string, name: string) => { handleUpload(html, name); };
+  const handleJsonUpload = (json: string, name: string) => { handleUpload(json, name); };
 
   // When HTML preview is active the page fills the entire main area
   // (header → footer) using flex-col + h-full so the iframe can flex-1.

@@ -21,7 +21,7 @@ export function usePythonWorkerRunner({
   timeoutMs = 45_000,
 }: UsePythonWorkerRunnerOptions) {
   return useCallback(
-    (code: string) => {
+    (code: string, extras?: Record<string, string>) => {
       const validated = sanitizeAndValidateCode(code);
       if (!validated.valid || !validated.cleanedCode) {
         setLogs((prev) => [
@@ -127,7 +127,13 @@ export function usePythonWorkerRunner({
 
       armExecutionTimer();
       setLogs((prev) => [...prev, ">_"]);
-      worker.postMessage({ type: "start", code: validated.cleanedCode });
+
+      // Build sidecar file list from extras (already validated by the upload button)
+      const files = extras
+        ? Object.entries(extras).map(([name, content]) => ({ name, content }))
+        : [];
+
+      worker.postMessage({ type: "start", code: validated.cleanedCode, files });
     },
     [setInputResolver, setLogs, setPendingPrompt, timeoutMs, workerRef]
   );

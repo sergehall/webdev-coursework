@@ -12,12 +12,27 @@ type Options = {
   sidecarNames?: string[];
 };
 
+const STDLIB_PREFIXES = new Set([
+  "os", "sys", "re", "io", "abc", "ast", "csv", "math", "time", "json",
+  "copy", "enum", "glob", "gzip", "html", "http", "logging", "pathlib",
+  "random", "shutil", "socket", "string", "struct", "tempfile", "threading",
+  "traceback", "typing", "unittest", "urllib", "uuid", "warnings", "xml",
+  "collections", "contextlib", "dataclasses", "datetime", "decimal",
+  "functools", "itertools", "operator", "pickle", "pprint", "queue",
+  "statistics", "subprocess", "textwrap", "zlib",
+  "numpy", "pandas", "matplotlib", "scipy", "sklearn", "requests",
+  "PIL", "cv2", "torch", "flask", "django", "__future__",
+]);
+
 function detectSidecarNames(code: string): string[] {
   const need = new Set<string>();
-  if (/\bfrom\s+A05ClassPrH\b|\bimport\s+A05ClassPrH\b/.test(code))
-    need.add("A05ClassPrH.py");
-  if (/\bhouse\.tab\b/.test(code)) need.add("house.tab");
-  if (/\bpresident\.tab\b/.test(code)) need.add("president.tab");
+  const importRe = /^\s*(?:from|import)\s+([A-Za-z_][A-Za-z0-9_]*)\b/gm;
+  let m: RegExpExecArray | null;
+  while ((m = importRe.exec(code)) !== null) {
+    if (!STDLIB_PREFIXES.has(m[1])) need.add(`${m[1]}.py`);
+  }
+  const tabRe = /\b([A-Za-z_][A-Za-z0-9_]*)\.tab\b/g;
+  while ((m = tabRe.exec(code)) !== null) need.add(`${m[1]}.tab`);
   return Array.from(need);
 }
 

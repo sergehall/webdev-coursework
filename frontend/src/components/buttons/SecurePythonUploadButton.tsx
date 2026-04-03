@@ -11,7 +11,8 @@ import {
 } from "@/utils/securePython";
 
 type SecurePythonUploadButtonProps = {
-  onSafeUpload: (code: string, filename: string) => void;
+  // extras: validated sidecar module content keyed by filename (e.g. "A05ClassPrH.py")
+  onSafeUpload: (code: string, filename: string, extras?: Record<string, string>) => void;
   label?: string;
   icon?: React.ReactNode;
   className?: string;
@@ -21,9 +22,31 @@ type SecurePythonUploadButtonProps = {
   disabled?: boolean;
 };
 
+/** Read a File as text via FileReader — returns a Promise<string>. */
+function readFileAsText(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result ?? ""));
+    reader.onerror = () => reject(reader.error);
+    reader.readAsText(file);
+  });
+}
+
+/**
+ * Determine which file is the "main" entry point among multiple .py files.
+ * Preference: file that contains `if __name__ == "__main__"`.
+ * Fallback: first file in the list.
+ */
+function detectMainIndex(codes: string[]): number {
+  const idx = codes.findIndex((c) =>
+    /if\s+__name__\s*==\s*["']__main__["']/.test(c)
+  );
+  return idx >= 0 ? idx : 0;
+}
+
 function SecurePythonUploadButton({
   onSafeUpload,
-  label = "Upload .py file",
+  label = "Upload .py file(s)",
   icon,
   className = "",
   variant = "blue",
@@ -39,41 +62,56 @@ function SecurePythonUploadButton({
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const files = Array.from(e.target.files ?? []);
+    if (files.length === 0) return;
 
-    if (!isValidPythonFile(file)) {
-      alert("🚫 Invalid file type. Only .py files are allowed.");
-      // reset
-      if (inputRef.current) inputRef.current.value = "";
-      return;
+    // Validate extension + size for every selected file
+    for (const file of files) {
+      if (!isValidPythonFile(file)) {
+        alert(`🚫 Invalid file: "${file.name}". Only .py files are allowed.`);
+        if (inputRef.current) inputRef.current.value = "";
+        return;
+      }
+      if (file.size > MAX_FILE_SIZE) {
+        alert(`⚠️ File too large: "${file.name}". Max allowed size is 50KB.`);
+        if (inputRef.current) inputRef.current.value = "";
+        return;
+      }
     }
-    if (file.size > MAX_FILE_SIZE) {
-      alert("⚠️ File too large. Max allowed size is 50KB.");
-      if (inputRef.current) inputRef.current.value = "";
-      return;
-    }
 
-    try {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const code = String(reader.result ?? "");
-        const { valid, reason, cleanedCode } = sanitizeAndValidateCode(code);
+    void (async () => {
+      try {
+        // Read all files in parallel
+        const rawCodes = await Promise.all(files.map(readFileAsText));
 
-        if (!valid) {
-          alert(`🚫 Unsafe Python code blocked.\nReason: ${reason}`);
-          return;
+        // Validate each file through the security pipeline
+        const validated: Array<{ name: string; code: string }> = [];
+        for (let i = 0; i < files.length; i++) {
+          const { valid, reason, cleanedCode } = sanitizeAndValidateCode(rawCodes[i]);
+          if (!valid || !cleanedCode) {
+            alert(`🚫 Unsafe Python code blocked in "${files[i].name}".\nReason: ${reason}`);
+            if (inputRef.current) inputRef.current.value = "";
+            return;
+          }
+          validated.push({ name: files[i].name, code: cleanedCode });
         }
 
-        onSafeUpload(cleanedCode!, file.name);
-      };
-      reader.readAsText(file);
-    } catch (err) {
-      console.error("🐍 Python file load error:", err);
-      alert("❌ Unexpected error while loading the Python file.");
-    } finally {
-      if (inputRef.current) inputRef.current.value = "";
-    }
+        // Detect main vs sidecars
+        const mainIdx = detectMainIndex(validated.map((v) => v.code));
+        const main = validated[mainIdx];
+        const extras: Record<string, string> = {};
+        for (let i = 0; i < validated.length; i++) {
+          if (i !== mainIdx) extras[validated[i].name] = validated[i].code;
+        }
+
+        onSafeUpload(main.code, main.name, Object.keys(extras).length ? extras : undefined);
+      } catch (err) {
+        console.error("🐍 Python file load error:", err);
+        alert("❌ Unexpected error while loading the Python file(s).");
+      } finally {
+        if (inputRef.current) inputRef.current.value = "";
+      }
+    })();
   };
 
   const colorClass = ColoredButton({ variant, className });
@@ -96,6 +134,7 @@ function SecurePythonUploadButton({
         ref={inputRef}
         type="file"
         accept=".py"
+        multiple
         onChange={handleChange}
         hidden
       />
