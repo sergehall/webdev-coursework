@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 
 import { ProgressContext } from "./ProgressContext";
@@ -22,29 +22,50 @@ const ProgressProvider = ({ children }: { children: React.ReactNode }) => {
   const [completedModules, setCompletedModules] = useState<
     Partial<Record<CourseId, number[]>>
   >({});
+  const [isLoadingProgress, setIsLoadingProgress] = useState(false);
+  const [progressError, setProgressError] = useState<Error | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   const hasValidContext = !!(clientId && validCourseId);
   const currentConfig = validCourseId
     ? COURSE_PROGRESS_CONFIG[validCourseId]
     : undefined;
 
+  const retryProgress = useCallback(() => {
+    setProgressError(null);
+    setRetryCount((n) => n + 1);
+  }, []);
+
+  // Track the latest load call to discard stale results on fast course switches
+  const loadIdRef = useRef(0);
+
   useEffect(() => {
     if (!hasValidContext || !currentConfig || !validCourseId) return;
 
+    const loadId = ++loadIdRef.current;
+
     const load = async () => {
+      setIsLoadingProgress(true);
+      setProgressError(null);
       try {
         const data = await fetchProgress(clientId, validCourseId);
+        if (loadId !== loadIdRef.current) return; // stale response, discard
         setCompletedModules((prev) => ({
           ...prev,
           [validCourseId]: data,
         }));
       } catch (err) {
-        console.error("Failed to fetch progress:", err);
+        if (loadId !== loadIdRef.current) return;
+        const error = err instanceof Error ? err : new Error(String(err));
+        console.error("Failed to fetch progress:", error);
+        setProgressError(error);
+      } finally {
+        if (loadId === loadIdRef.current) setIsLoadingProgress(false);
       }
     };
 
     load();
-  }, [clientId, validCourseId, currentConfig, hasValidContext]);
+  }, [clientId, validCourseId, currentConfig, hasValidContext, retryCount]);
 
   const markAsCompleted = useCallback(
     async (mod: number) => {
@@ -98,6 +119,9 @@ const ProgressProvider = ({ children }: { children: React.ReactNode }) => {
         markAsCompleted: async () => {},
         unmarkAsCompleted: async () => {},
         maxModules: 0,
+        isLoadingProgress: false,
+        progressError: null,
+        retryProgress,
       };
     }
 
@@ -107,6 +131,9 @@ const ProgressProvider = ({ children }: { children: React.ReactNode }) => {
       markAsCompleted,
       unmarkAsCompleted,
       maxModules: currentConfig.maxModules,
+      isLoadingProgress,
+      progressError,
+      retryProgress,
     };
   }, [
     completedModules,
@@ -115,6 +142,9 @@ const ProgressProvider = ({ children }: { children: React.ReactNode }) => {
     currentConfig,
     validCourseId,
     hasValidContext,
+    isLoadingProgress,
+    progressError,
+    retryProgress,
   ]);
 
   return (

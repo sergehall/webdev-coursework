@@ -9,6 +9,9 @@ export interface ProgressContextType {
   markAsCompleted: (mod: number) => Promise<void>;
   unmarkAsCompleted: (mod: number) => Promise<void>;
   maxModules: number;
+  isLoadingProgress: boolean;
+  progressError: Error | null;
+  retryProgress: () => void;
 }
 
 export const ProgressContext = createContext<ProgressContextType | undefined>(
