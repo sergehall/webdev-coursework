@@ -178,8 +178,15 @@ export default function CodePlaygroundPage() {
   const handleHtmlUpload = (html: string, name: string) => handleUpload(html, name);
   const handleJsonUpload = (json: string, name: string) => handleUpload(json, name);
 
+  // When HTML preview is active the page fills the entire main area
+  // (header → footer) using flex-col + h-full so the iframe can flex-1.
+  const pageClass =
+    pendingHtml !== null
+      ? "flex h-full flex-col p-3"
+      : "p-3";
+
   return (
-    <div className="p-3">
+    <div className={pageClass}>
       <h2 className="mb-4 rounded-xl bg-gradient-to-r from-blue-200 to-purple-300 px-6 py-4 text-3xl font-bold text-slate-700 shadow dark:from-blue-600 dark:to-purple-600 dark:text-white">
         Code Playground
       </h2>
@@ -206,7 +213,7 @@ export default function CodePlaygroundPage() {
         <div
           id="html-preview-container"
           ref={htmlPreviewContainerRef}
-          className="mt-4 w-full overflow-hidden rounded-xl border border-gray-300 dark:border-gray-600"
+          className="mt-4 min-h-0 flex-1 overflow-hidden rounded-xl border border-gray-300 dark:border-gray-600"
         />
       )}
 

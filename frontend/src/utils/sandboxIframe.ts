@@ -122,10 +122,10 @@ export function runHtmlInSandboxedIframe(
   iframe.sandbox.add("allow-scripts");
   iframe.referrerPolicy = "no-referrer";
   iframe.style.width = "100%";
-  iframe.style.height = "400px";
-  iframe.style.border = "1px solid #ccc";
-  iframe.style.borderRadius = "8px";
+  iframe.style.height = "100%";
+  iframe.style.border = "none";
   iframe.style.background = "#fff";
+  iframe.style.display = "block";
 
   // Inject CSP as the very first tag to block external resources
   const csp =
