@@ -11,6 +11,10 @@ export async function bootstrap() {
 
   createApp(app);
 
+  // Enable NestJS lifecycle shutdown hooks (SIGTERM/SIGINT).
+  // This gives in-flight requests time to finish before the process exits.
+  app.enableShutdownHooks();
+
   const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 5050;
 
   // Start the application and listen on the specified port
