@@ -14,7 +14,7 @@
 #  2) House winners party breakdown (D/R/Other) for (year, state)
 # And renders a pie chart on a Tkinter Canvas.
 
-import os
+from pathlib import Path
 import tkinter as tk
 from tkinter import messagebox
 
@@ -110,14 +110,14 @@ class House:
 
 # ----------------------------- File Helpers -----------------------------
 
-def _read_tab_file_lines(basename):
+def _read_tab_file_lines(basename: str) -> list[str]:
     """
     Read a .tab file from the same directory as this script.
     Returns list[str] (lines).
     """
-    base_dir = os.path.dirname(__file__)
-    file_path = os.path.join(base_dir, basename)
-    with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+    base_dir = Path(__file__).resolve().parent
+    file_path = base_dir / basename
+    with file_path.open("r", encoding="utf-8", errors="ignore") as f:
         return f.readlines()
 
 
@@ -611,7 +611,10 @@ class MyGUI:
             return
         if self._resize_job is not None:
             self.main_window.after_cancel(self._resize_job)
-        self._resize_job = self.main_window.after(80, self._apply_responsive_layout)
+        self._resize_job = self.main_window.after(
+            80,
+            lambda: self._apply_responsive_layout(),
+        )
 
     def _apply_responsive_layout(self):
         self._resize_job = None
@@ -753,7 +756,7 @@ class MyGUI:
             fg=self.COLORS["muted_fg"],
         ).pack(anchor="center")
 
-    def _note_label(self, parent, text, fg_color):
+    def _note_label(self, parent, text, fg_color) -> tk.Label:
         """Create a legend label that respects theme colors."""
         return tk.Label(
             parent,
