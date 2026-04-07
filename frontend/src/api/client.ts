@@ -15,7 +15,13 @@ export async function apiFetch<TResponse, TBody = undefined>(
   endpoint: string,
   options: ApiFetchOptions<TBody> = {}
 ): Promise<TResponse> {
-  const { body, headers, timeoutMs = DEFAULT_TIMEOUT_MS, signal: externalSignal, ...rest } = options;
+  const {
+    body,
+    headers,
+    timeoutMs = DEFAULT_TIMEOUT_MS,
+    signal: externalSignal,
+    ...rest
+  } = options;
 
   const controller = new AbortController();
   const timerId = setTimeout(() => controller.abort(), timeoutMs);

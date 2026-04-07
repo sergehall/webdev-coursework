@@ -34,7 +34,9 @@ export async function fetchQuiz(quizId: string): Promise<FetchQuizResponse> {
 
   // 2) Fetch questions and answers in parallel
   let answers: CorrectAnswerDto[];
-  const questionDtosPromise = apiFetch<QuestionDto[]>(`/quizzes/${quizId}/questions`);
+  const questionDtosPromise = apiFetch<QuestionDto[]>(
+    `/quizzes/${quizId}/questions`
+  );
 
   try {
     answers = await apiFetch<CorrectAnswerDto[]>(`/quizzes/${quizId}/answers`, {

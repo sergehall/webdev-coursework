@@ -14,7 +14,10 @@ import {
 import { runPythonWithTimeout } from "@/utils/runPythonWithTimeout";
 import { validateJavaScript } from "@/utils/secureJavaScript";
 import { sanitizeAndValidateCode } from "@/utils/securePython";
-import { runInSandboxedIframe, runHtmlInSandboxedIframe } from "@/utils/sandboxIframe";
+import {
+  runInSandboxedIframe,
+  runHtmlInSandboxedIframe,
+} from "@/utils/sandboxIframe";
 
 type Setter<T> = React.Dispatch<React.SetStateAction<T>>;
 
@@ -73,7 +76,10 @@ export function useRunPlayground(
             runHtmlInSandboxedIframe(html, "html-preview-container");
           })
           .catch((err) =>
-            setLogs((prev) => [...prev, `❌ Failed to load HTML: ${String(err)}`])
+            setLogs((prev) => [
+              ...prev,
+              `❌ Failed to load HTML: ${String(err)}`,
+            ])
           );
         return;
       }
@@ -90,7 +96,10 @@ export function useRunPlayground(
             }
           })
           .catch((err) =>
-            setLogs((prev) => [...prev, `❌ Failed to load JSON: ${String(err)}`])
+            setLogs((prev) => [
+              ...prev,
+              `❌ Failed to load JSON: ${String(err)}`,
+            ])
           );
         return;
       }
@@ -172,7 +181,10 @@ export function useRunPlayground(
         return;
       }
 
-      setLogs((prev) => [...prev, "⚠️ Unsupported file type. Supported: .js, .mjs, .py, .html, .htm, .json"]);
+      setLogs((prev) => [
+        ...prev,
+        "⚠️ Unsupported file type. Supported: .js, .mjs, .py, .html, .htm, .json",
+      ]);
       return;
     }
 

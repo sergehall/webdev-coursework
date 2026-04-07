@@ -40,8 +40,7 @@ export default function SecureJsUploadButton({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const isValidExt =
-      file.name.endsWith(".js") || file.name.endsWith(".mjs");
+    const isValidExt = file.name.endsWith(".js") || file.name.endsWith(".mjs");
     if (!isValidExt || file.size > JS_MAX_FILE_SIZE) {
       alert("⚠️ Invalid or too large JS/MJS file.");
       if (inputRef.current) inputRef.current.value = "";

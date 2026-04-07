@@ -39,7 +39,10 @@ export default function SecureHtmlUploadButton({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (!file.name.toLowerCase().endsWith(".html") && !file.name.toLowerCase().endsWith(".htm")) {
+    if (
+      !file.name.toLowerCase().endsWith(".html") &&
+      !file.name.toLowerCase().endsWith(".htm")
+    ) {
       alert("🚫 Only .html / .htm files are allowed.");
       if (inputRef.current) inputRef.current.value = "";
       return;

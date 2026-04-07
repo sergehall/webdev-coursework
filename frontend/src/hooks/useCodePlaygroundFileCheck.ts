@@ -52,12 +52,20 @@ export function useCodePlaygroundFileCheck(file: string | null) {
             }
           }
 
-          if (isHtml && (contentType.includes("text/html") || contentType.includes("text/plain"))) {
+          if (
+            isHtml &&
+            (contentType.includes("text/html") ||
+              contentType.includes("text/plain"))
+          ) {
             setFileExists(true);
             return;
           }
 
-          if (isJson && (contentType.includes("application/json") || contentType.includes("text/plain"))) {
+          if (
+            isJson &&
+            (contentType.includes("application/json") ||
+              contentType.includes("text/plain"))
+          ) {
             setFileExists(true);
             return;
           }

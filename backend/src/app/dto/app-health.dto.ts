@@ -4,7 +4,8 @@ export class AppHealthDto {
   @ApiProperty({
     enum: ["ok", "error"],
     example: "ok",
-    description: 'Overall service status. "error" when the database is unreachable.',
+    description:
+      'Overall service status. "error" when the database is unreachable.',
   })
   status!: "ok" | "error";
 

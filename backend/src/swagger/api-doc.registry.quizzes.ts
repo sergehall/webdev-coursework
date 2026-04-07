@@ -151,7 +151,10 @@ export const quizzesApiDocRegistry = {
       ],
       ok: { schema: { example: [1, 2, 5] } },
       responses: [
-        { status: 400, description: "Bad Request — missing or invalid query params" },
+        {
+          status: 400,
+          description: "Bad Request — missing or invalid query params",
+        },
         { status: 500, description: "Internal server error" },
       ],
     }),

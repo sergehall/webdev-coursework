@@ -12,7 +12,11 @@ import {
 
 type SecurePythonUploadButtonProps = {
   // extras: validated sidecar module content keyed by filename (e.g. "A05ClassPrH.py")
-  onSafeUpload: (code: string, filename: string, extras?: Record<string, string>) => void;
+  onSafeUpload: (
+    code: string,
+    filename: string,
+    extras?: Record<string, string>
+  ) => void;
   label?: string;
   icon?: React.ReactNode;
   className?: string;
@@ -98,7 +102,9 @@ function SecurePythonUploadButton({
             uploadedModuleNames
           );
           if (!valid || !cleanedCode) {
-            alert(`🚫 Unsafe Python code blocked in "${files[i].name}".\nReason: ${reason}`);
+            alert(
+              `🚫 Unsafe Python code blocked in "${files[i].name}".\nReason: ${reason}`
+            );
             if (inputRef.current) inputRef.current.value = "";
             return;
           }
@@ -113,7 +119,11 @@ function SecurePythonUploadButton({
           if (i !== mainIdx) extras[validated[i].name] = validated[i].code;
         }
 
-        onSafeUpload(main.code, main.name, Object.keys(extras).length ? extras : undefined);
+        onSafeUpload(
+          main.code,
+          main.name,
+          Object.keys(extras).length ? extras : undefined
+        );
       } catch (err) {
         console.error("🐍 Python file load error:", err);
         alert("❌ Unexpected error while loading the Python file(s).");
