@@ -29,19 +29,39 @@ export async function bootstrap() {
   // This gives in-flight requests time to finish before the process exits.
   app.enableShutdownHooks();
 
-  const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 5050;
+  const rawPort = process.env.PORT;
+  const port = rawPort ? parseInt(rawPort, 10) : 5050;
+  if (rawPort && (Number.isNaN(port) || port < 1 || port > 65535)) {
+    startupLogger.warn(
+      `Invalid PORT value "${rawPort}" — falling back to 5050`
+    );
+  }
+  const resolvedPort = Number.isNaN(port) || port < 1 || port > 65535 ? 5050 : port;
 
-  // Start the application and listen on the specified port
-  await app.listen(port, () => {
-    console.log(`🚀 Backend API is running on http://localhost:${port}`);
-  });
+  await app.listen(resolvedPort);
 
   const baseUrl = await app.getUrl();
-  console.log(`📡 App is reachable at: ${baseUrl}`);
+  startupLogger.log(`App is reachable at: ${baseUrl}`);
 }
 
 if (process.env.NODE_ENV !== "test") {
-  bootstrap().catch((err) => {
-    console.error("❌ Error starting app:", err);
+  // Catch unhandled promise rejections that escape all other handlers.
+  process.on("unhandledRejection", (reason: unknown) => {
+    startupLogger.error("Unhandled promise rejection", String(reason));
+    process.exit(1);
+  });
+
+  // Catch synchronous exceptions that were never caught.
+  process.on("uncaughtException", (err: Error) => {
+    startupLogger.error(`Uncaught exception: ${err.message}`, err.stack);
+    process.exit(1);
+  });
+
+  bootstrap().catch((err: unknown) => {
+    startupLogger.error(
+      "Fatal error during bootstrap",
+      err instanceof Error ? err.stack : String(err)
+    );
+    process.exit(1);
   });
 }
