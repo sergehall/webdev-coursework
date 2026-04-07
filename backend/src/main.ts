@@ -36,7 +36,8 @@ export async function bootstrap() {
       `Invalid PORT value "${rawPort}" — falling back to 5050`
     );
   }
-  const resolvedPort = Number.isNaN(port) || port < 1 || port > 65535 ? 5050 : port;
+  const resolvedPort =
+    Number.isNaN(port) || port < 1 || port > 65535 ? 5050 : port;
 
   await app.listen(resolvedPort);
 
