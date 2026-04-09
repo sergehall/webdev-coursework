@@ -5,7 +5,10 @@ interface SplashScreenProps {
   duration?: number;
 }
 
-export function SplashScreen({ onComplete, duration = 2200 }: SplashScreenProps) {
+export function SplashScreen({
+  onComplete,
+  duration = 2200,
+}: SplashScreenProps) {
   const [phase, setPhase] = useState<"visible" | "fading" | "done">("visible");
 
   useEffect(() => {
