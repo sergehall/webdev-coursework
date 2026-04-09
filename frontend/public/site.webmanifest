@@ -1,7 +1,7 @@
 {
   "id": "/",
-  "name": "WebDev Coursework — SMC Web Programming Platform",
-  "short_name": "WebDev Coursework",
+  "name": "WebDev Coursework Platform",
+  "short_name": "WCP",
   "description": "Modular full-stack coursework platform for Santa Monica College web programming courses (CS 60, 70, 79A, 79C, 79D, 80, 81, 85, 87A) built with React, Vite, NestJS, PostgreSQL, and Yarn 4 workspaces.",
   "start_url": "/?source=pwa",
   "scope": "/",
@@ -12,8 +12,8 @@
     "minimal-ui",
     "browser"
   ],
-  "background_color": "#111827",
-  "theme_color": "#111827",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
   "lang": "en",
   "orientation": "any",
   "categories": ["education", "programming", "developer tools", "productivity"],
@@ -21,13 +21,13 @@
 
   "icons": [
     {
-      "src": "/icons/icon-192.png",
+      "src": "/android-chrome-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icons/icon-512.png",
+      "src": "/android-chrome-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
