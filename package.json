@@ -27,7 +27,11 @@
     "clean:full": "yarn clean:meta && rimraf frontend/dist backend/dist",
     "build:fast": "concurrently \"yarn workspace frontend build:fast\" \"yarn workspace backend build\"",
     "build": "concurrently \"yarn workspace frontend build\" \"yarn workspace backend build\"",
-    "heroku-postbuild": "yarn --cwd backend build"
+    "heroku-postbuild": "yarn workspace frontend build:bundle && yarn --cwd backend build"
+  },
+  "engines": {
+    "node": "24.14.0",
+    "yarn": "4.x"
   },
   "dependencies": {
     "cors": "^2.8.5",
