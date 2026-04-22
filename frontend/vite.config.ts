@@ -5,10 +5,6 @@ import * as path from "path";
 import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 
-// Use relative path instead of "@/..." alias here
-// Because Vite config is executed before alias resolution is applied
-import { envSchema } from "./src/config/env/env.schema";
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const courseChunkGroups: Array<[pathSegment: string, chunkName: string]> = [
@@ -22,13 +18,7 @@ const courseChunkGroups: Array<[pathSegment: string, chunkName: string]> = [
 ];
 
 export default defineConfig(({ mode }) => {
-  const envVars = loadEnv(mode, process.cwd(), "");
-  const parsed = envSchema.safeParse(envVars);
-  if (!parsed.success) {
-    console.error("❌ Invalid environment variables:", parsed.error.format());
-    throw new Error("❌ Environment validation failed. Check your .env file.");
-  }
-  const env = parsed.data;
+  const env = loadEnv(mode, process.cwd(), "");
   const isProd = mode === "production";
   const isDebugConfig = process.env.VITE_DEBUG_CONFIG === "1";
 
@@ -53,7 +43,7 @@ export default defineConfig(({ mode }) => {
       open: true,
       proxy: {
         "/api": {
-          target: env.VITE_API_URL,
+          target: env.VITE_API_URL ?? "http://localhost:5050",
           changeOrigin: true,
           secure: true,
           // Fail fast in dev instead of hanging when backend is slow/down
@@ -66,7 +56,7 @@ export default defineConfig(({ mode }) => {
       alias: { "@": path.resolve(__dirname, "src") },
     },
     define: {
-      __APP_ENV__: JSON.stringify(env.VITE_ENVIRONMENT),
+      __APP_ENV__: JSON.stringify(env.VITE_ENVIRONMENT ?? mode),
       "process.env.NODE_ENV": JSON.stringify(
         isProd ? "production" : "development"
       ),
