@@ -20,6 +20,11 @@ export const COURSE_PROGRESS_CONFIG = {
     maxModules: 10,
     client_id_key: "clientId",
   },
+  CS79D: {
+    appId: "Security-in-Amazon-Web-Services",
+    maxModules: 8,
+    client_id_key: "clientId",
+  },
   CS81: {
     appId: "Javascript-Programming",
     maxModules: 12,

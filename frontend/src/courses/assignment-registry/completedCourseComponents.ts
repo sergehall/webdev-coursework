@@ -5,6 +5,7 @@ import CS60 from "@/courses/CS60/CS60";
 import CS70 from "@/courses/CS70/CS70";
 import CS79A from "@/courses/CS79A/CS79A";
 import CS79C from "@/courses/CS79C/CS79C";
+import CS79D from "@/courses/CS79D/CS79D";
 import CS80 from "@/courses/CS80/CS80";
 import CS81 from "@/courses/CS81/CS81";
 import CS87A from "@/courses/CS87A/CS87A";
@@ -76,7 +77,7 @@ const completedCourseComponents: CourseComponentMap = {
   },
   "CS 79D": {
     title: "Security in Amazon Web Services",
-    component: null,
+    component: CS79D,
   },
   "CS 77A": {
     title: "Salesforce Administration Essentials",

@@ -102,3 +102,4 @@ frontend/.env.test.example
 
 # TypeScript build info cache
 tsconfig.tsbuildinfo
+/.claude/
