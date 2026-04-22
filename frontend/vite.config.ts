@@ -5,6 +5,8 @@ import * as path from "path";
 import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 
+import { envSchema } from "./src/config/env/env.schema";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const courseChunkGroups: Array<[pathSegment: string, chunkName: string]> = [
@@ -12,22 +14,26 @@ const courseChunkGroups: Array<[pathSegment: string, chunkName: string]> = [
   ["/courses/CS70/", "course-cs70"],
   ["/courses/CS79A/", "course-cs79a"],
   ["/courses/CS79C/", "course-cs79c"],
+  ["/courses/CS79D/", "course-cs79d"],
   ["/courses/CS80/", "course-cs80"],
   ["/courses/CS81/", "course-cs81"],
   ["/courses/CS87A/", "course-cs87a"],
 ];
 
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), "");
+  const rawEnv = loadEnv(mode, process.cwd(), "");
+  const parsed = envSchema.safeParse(rawEnv);
+
+  if (!parsed.success) {
+    console.error("❌ Invalid environment variables:", parsed.error.format());
+    throw new Error("❌ Environment validation failed. Check your .env file.");
+  }
+
+  const env = parsed.data;
   const isProd = mode === "production";
-  const isDebugConfig = process.env.VITE_DEBUG_CONFIG === "1";
 
   if (!isProd) {
     console.log("✅ mode:", mode);
-  }
-
-  if (!isProd && isDebugConfig) {
-    console.log("✅ Loaded env keys:", Object.keys(env).sort());
   }
 
   return {
@@ -43,10 +49,9 @@ export default defineConfig(({ mode }) => {
       open: true,
       proxy: {
         "/api": {
-          target: env.VITE_API_URL ?? "http://localhost:5050",
+          target: env.VITE_API_URL || "http://localhost:5050",
           changeOrigin: true,
           secure: true,
-          // Fail fast in dev instead of hanging when backend is slow/down
           timeout: 10_000,
           proxyTimeout: 10_000,
         },
@@ -56,7 +61,7 @@ export default defineConfig(({ mode }) => {
       alias: { "@": path.resolve(__dirname, "src") },
     },
     define: {
-      __APP_ENV__: JSON.stringify(env.VITE_ENVIRONMENT ?? mode),
+      __APP_ENV__: JSON.stringify(env.VITE_ENVIRONMENT),
       "process.env.NODE_ENV": JSON.stringify(
         isProd ? "production" : "development"
       ),

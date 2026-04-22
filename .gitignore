@@ -4,6 +4,10 @@
 dist
 build
 
+# Frontend dist copied into backend for serving
+backend/public/index.html
+backend/public/assets/
+
 # Environment variables
 .env
 .env.dev
