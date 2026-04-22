@@ -147,7 +147,8 @@ export const cs79dModuleBlueprints: CS79DModuleBlueprint[] = [
       "Quiz: Security Introduction — 26 pts",
       "Total Week 1 — 61 pts",
     ],
-    milestone: "AWS Learner Lab access confirmed, all Week 1 deliverables submitted",
+    milestone:
+      "AWS Learner Lab access confirmed, all Week 1 deliverables submitted",
     textTasks: [
       {
         id: "tell-us-about-you",
@@ -272,9 +273,7 @@ export const cs79dModuleBlueprints: CS79DModuleBlueprint[] = [
       "Screenshot of MFA device registration",
       "Written analysis of least-privilege applied",
     ],
-    importantDates: [
-      "Week 2 deliverables due: May 1, 2026",
-    ],
+    importantDates: ["Week 2 deliverables due: May 1, 2026"],
     assessmentContext: [
       "Discussion — participation points",
       "Lab assignment — IAM configuration",
@@ -289,7 +288,8 @@ export const cs79dModuleBlueprints: CS79DModuleBlueprint[] = [
     dateLabel: "May 4–8, 2026",
     overview:
       "This module covers network-level security in AWS — VPCs, subnets, security groups, network ACLs, and VPN connections. You will build and test a secure network architecture in the Learner Lab.",
-    topicLine: "Scheduled topic: Infrastructure Security — VPC and Network Controls",
+    topicLine:
+      "Scheduled topic: Infrastructure Security — VPC and Network Controls",
     focusAreas: [
       "Amazon VPC architecture",
       "Security groups vs. network ACLs",
@@ -323,15 +323,14 @@ export const cs79dModuleBlueprints: CS79DModuleBlueprint[] = [
       "Screenshot of security group configuration",
       "VPC Flow Logs sample output",
     ],
-    importantDates: [
-      "Week 3 deliverables due: May 8, 2026",
-    ],
+    importantDates: ["Week 3 deliverables due: May 8, 2026"],
     assessmentContext: [
       "Discussion — network security scenario",
       "Lab assignment — VPC and security group configuration",
       "Quiz: Infrastructure Security",
     ],
-    milestone: "Secure VPC architecture deployed with working security group rules",
+    milestone:
+      "Secure VPC architecture deployed with working security group rules",
   },
   {
     id: 4,
@@ -340,7 +339,8 @@ export const cs79dModuleBlueprints: CS79DModuleBlueprint[] = [
     dateLabel: "May 11–15, 2026",
     overview:
       "Encryption at rest and in transit is mandatory in any production AWS environment. This module covers AWS KMS, S3 encryption options, SSL/TLS configuration, and secrets management with AWS Secrets Manager.",
-    topicLine: "Scheduled topic: Data Protection — KMS, S3, and Secrets Manager",
+    topicLine:
+      "Scheduled topic: Data Protection — KMS, S3, and Secrets Manager",
     focusAreas: [
       "AWS Key Management Service (KMS)",
       "S3 encryption — SSE-S3, SSE-KMS, SSE-C",
@@ -374,9 +374,7 @@ export const cs79dModuleBlueprints: CS79DModuleBlueprint[] = [
       "Screenshot of S3 bucket encryption settings",
       "Secrets Manager secret confirmation",
     ],
-    importantDates: [
-      "Week 4 deliverables due: May 15, 2026",
-    ],
+    importantDates: ["Week 4 deliverables due: May 15, 2026"],
     assessmentContext: [
       "Discussion — encryption scenario analysis",
       "Lab assignment — KMS and S3 encryption",
@@ -391,7 +389,8 @@ export const cs79dModuleBlueprints: CS79DModuleBlueprint[] = [
     dateLabel: "May 18–22, 2026",
     overview:
       "You cannot secure what you cannot see. This module covers the AWS observability and audit stack — CloudTrail for API activity, CloudWatch for metrics and alarms, Config for configuration drift, and AWS Security Hub for centralised findings.",
-    topicLine: "Scheduled topic: Monitoring and Auditing — CloudTrail, CloudWatch, Config",
+    topicLine:
+      "Scheduled topic: Monitoring and Auditing — CloudTrail, CloudWatch, Config",
     focusAreas: [
       "AWS CloudTrail — API activity logging",
       "Amazon CloudWatch — metrics, logs, and alarms",
@@ -426,15 +425,14 @@ export const cs79dModuleBlueprints: CS79DModuleBlueprint[] = [
       "AWS Config compliance dashboard screenshot",
       "Security Hub findings summary",
     ],
-    importantDates: [
-      "Week 5 deliverables due: May 22, 2026",
-    ],
+    importantDates: ["Week 5 deliverables due: May 22, 2026"],
     assessmentContext: [
       "Discussion — monitoring strategy for a real scenario",
       "Lab assignment — CloudTrail and CloudWatch setup",
       "Quiz: Monitoring and Auditing",
     ],
-    milestone: "CloudTrail, CloudWatch alarms, Config rules, and Security Hub active",
+    milestone:
+      "CloudTrail, CloudWatch alarms, Config rules, and Security Hub active",
   },
   {
     id: 6,
@@ -443,7 +441,8 @@ export const cs79dModuleBlueprints: CS79DModuleBlueprint[] = [
     dateLabel: "May 25–29, 2026",
     overview:
       "With logging in place, this module focuses on active threat detection and structured incident response. Amazon GuardDuty, AWS Detective, and the AWS Incident Response framework are the core tools explored.",
-    topicLine: "Scheduled topic: Threat Detection — GuardDuty, Detective, and IR",
+    topicLine:
+      "Scheduled topic: Threat Detection — GuardDuty, Detective, and IR",
     focusAreas: [
       "Amazon GuardDuty — intelligent threat detection",
       "AWS Detective — security investigations",
@@ -477,15 +476,14 @@ export const cs79dModuleBlueprints: CS79DModuleBlueprint[] = [
       "Incident response runbook draft",
       "EventBridge rule configuration",
     ],
-    importantDates: [
-      "Week 6 deliverables due: May 29, 2026",
-    ],
+    importantDates: ["Week 6 deliverables due: May 29, 2026"],
     assessmentContext: [
       "Discussion — real-world cloud incident case study",
       "Lab assignment — GuardDuty and automated response",
       "Quiz: Threat Detection and Incident Response",
     ],
-    milestone: "GuardDuty enabled, incident response runbook drafted, automated alert wired",
+    milestone:
+      "GuardDuty enabled, incident response runbook drafted, automated alert wired",
   },
   {
     id: 7,
@@ -528,15 +526,14 @@ export const cs79dModuleBlueprints: CS79DModuleBlueprint[] = [
       "Compliance mapping table (regulation → AWS control)",
       "Trusted Advisor security findings summary",
     ],
-    importantDates: [
-      "Week 7 deliverables due: June 5, 2026",
-    ],
+    importantDates: ["Week 7 deliverables due: June 5, 2026"],
     assessmentContext: [
       "Discussion — choosing the right compliance framework",
       "Lab assignment — SCP and AWS Artifact",
       "Quiz: Compliance and Governance",
     ],
-    milestone: "SCP configured, compliance report reviewed, control mapping completed",
+    milestone:
+      "SCP configured, compliance report reviewed, control mapping completed",
   },
   {
     id: 8,
