@@ -16,7 +16,9 @@ export const envSchema = z
     // Set to a full URL only when the API lives on a different origin.
     VITE_API_URL: z
       .union([
-        z.string().url("VITE_API_URL must be a valid URL starting with http or https"),
+        z
+          .string()
+          .url("VITE_API_URL must be a valid URL starting with http or https"),
         z.literal(""),
       ])
       .default(""),
