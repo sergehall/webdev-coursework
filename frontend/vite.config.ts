@@ -20,6 +20,30 @@ const courseChunkGroups: Array<[pathSegment: string, chunkName: string]> = [
   ["/courses/CS87A/", "course-cs87a"],
 ];
 
+const contentSecurityPolicy = [
+  "default-src 'self'",
+  "base-uri 'self'",
+  "object-src 'none'",
+  "frame-ancestors 'self'",
+  "form-action 'self'",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' https://cdn.jsdelivr.net https://code.jquery.com",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob: https://images.unsplash.com https://avatars.githubusercontent.com https://randomuser.me https://www.smc.edu https://www.google.com",
+  "font-src 'self' data:",
+  "connect-src 'self' ws://localhost:* ws://127.0.0.1:* http://localhost:* http://127.0.0.1:* https://cdn.jsdelivr.net https://*.ingest.sentry.io https://*.ingest.us.sentry.io",
+  "media-src 'self' data: blob:",
+  "worker-src 'self' blob:",
+  "frame-src 'self' blob:",
+  "manifest-src 'self'",
+].join("; ");
+
+const securityHeaders = {
+  "Content-Security-Policy": contentSecurityPolicy,
+  "Cross-Origin-Resource-Policy": "same-origin",
+  "X-Content-Type-Options": "nosniff",
+  "X-Frame-Options": "SAMEORIGIN",
+};
+
 export default defineConfig(({ mode }) => {
   const rawEnv = loadEnv(mode, process.cwd(), "");
   const parsed = envSchema.safeParse(rawEnv);
@@ -47,6 +71,7 @@ export default defineConfig(({ mode }) => {
     server: {
       port: 5173,
       open: true,
+      headers: securityHeaders,
       proxy: {
         "/api": {
           target: env.VITE_API_URL || "http://localhost:5050",
@@ -56,6 +81,9 @@ export default defineConfig(({ mode }) => {
           proxyTimeout: 10_000,
         },
       },
+    },
+    preview: {
+      headers: securityHeaders,
     },
     resolve: {
       alias: { "@": path.resolve(__dirname, "src") },
