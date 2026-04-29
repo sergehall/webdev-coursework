@@ -90,18 +90,7 @@
     </script>
 
     <!-- Early theme apply to avoid flicker (tiny and synchronous) -->
-    <script>
-      (function () {
-        try {
-          var stored = localStorage.getItem("theme");
-          var systemDark = window.matchMedia(
-            "(prefers-color-scheme: dark)"
-          ).matches;
-          var dark = stored ? stored === "dark" : systemDark;
-          document.documentElement.classList.toggle("dark", dark);
-        } catch (e) {}
-      })();
-    </script>
+    <script src="/theme-init.js"></script>
 
     <!-- Keep third-party beacons/scripts out of the initial path; load them after onload/idle in app code -->
   </head>

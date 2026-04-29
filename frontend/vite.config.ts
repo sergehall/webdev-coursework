@@ -20,13 +20,33 @@ const courseChunkGroups: Array<[pathSegment: string, chunkName: string]> = [
   ["/courses/CS87A/", "course-cs87a"],
 ];
 
-const contentSecurityPolicy = [
+const jsonLdScriptHash =
+  "'sha256-mqaaJKyEBAtrHnTmEqRs3kIzLcqrfe/bwtUYbNSfq2s='";
+
+const productionContentSecurityPolicy = [
   "default-src 'self'",
   "base-uri 'self'",
   "object-src 'none'",
   "frame-ancestors 'self'",
   "form-action 'self'",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' https://cdn.jsdelivr.net https://code.jquery.com",
+  `script-src 'self' ${jsonLdScriptHash} 'wasm-unsafe-eval' https://cdn.jsdelivr.net https://code.jquery.com`,
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob: https://images.unsplash.com https://avatars.githubusercontent.com https://randomuser.me https://www.smc.edu https://www.google.com",
+  "font-src 'self' data:",
+  "connect-src 'self' https://cdn.jsdelivr.net https://*.ingest.sentry.io https://*.ingest.us.sentry.io",
+  "media-src 'self' data: blob:",
+  "worker-src 'self' blob:",
+  "frame-src 'self' blob:",
+  "manifest-src 'self'",
+].join("; ");
+
+const developmentContentSecurityPolicy = [
+  "default-src 'self'",
+  "base-uri 'self'",
+  "object-src 'none'",
+  "frame-ancestors 'self'",
+  "form-action 'self'",
+  `script-src 'self' ${jsonLdScriptHash} 'unsafe-eval' 'wasm-unsafe-eval' https://cdn.jsdelivr.net https://code.jquery.com`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https://images.unsplash.com https://avatars.githubusercontent.com https://randomuser.me https://www.smc.edu https://www.google.com",
   "font-src 'self' data:",
@@ -37,8 +57,15 @@ const contentSecurityPolicy = [
   "manifest-src 'self'",
 ].join("; ");
 
-const securityHeaders = {
-  "Content-Security-Policy": contentSecurityPolicy,
+const productionSecurityHeaders = {
+  "Content-Security-Policy": productionContentSecurityPolicy,
+  "Cross-Origin-Resource-Policy": "same-origin",
+  "X-Content-Type-Options": "nosniff",
+  "X-Frame-Options": "SAMEORIGIN",
+};
+
+const developmentSecurityHeaders = {
+  "Content-Security-Policy": developmentContentSecurityPolicy,
   "Cross-Origin-Resource-Policy": "same-origin",
   "X-Content-Type-Options": "nosniff",
   "X-Frame-Options": "SAMEORIGIN",
@@ -71,7 +98,7 @@ export default defineConfig(({ mode }) => {
     server: {
       port: 5173,
       open: true,
-      headers: securityHeaders,
+      headers: developmentSecurityHeaders,
       proxy: {
         "/api": {
           target: env.VITE_API_URL || "http://localhost:5050",
@@ -83,7 +110,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     preview: {
-      headers: securityHeaders,
+      headers: productionSecurityHeaders,
     },
     resolve: {
       alias: { "@": path.resolve(__dirname, "src") },

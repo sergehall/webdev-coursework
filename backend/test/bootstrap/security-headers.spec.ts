@@ -7,6 +7,11 @@ import {
 } from "../../src/bootstrap/security-headers";
 
 describe("security headers", () => {
+  const getDirective = (name: string): string =>
+    contentSecurityPolicy
+      .split("; ")
+      .find((directive) => directive.startsWith(`${name} `)) ?? "";
+
   it("defines security headers with defensive defaults", () => {
     expect(securityHeaders["X-Content-Type-Options"]).toBe("nosniff");
     expect(securityHeaders["X-Frame-Options"]).toBe("SAMEORIGIN");
@@ -17,7 +22,17 @@ describe("security headers", () => {
     expect(contentSecurityPolicy).toContain("script-src 'self'");
   });
 
-  it("attaches the CSP header to responses", () => {
+  it("keeps script-src free of unsafe inline and data sources", () => {
+    const scriptSrc = getDirective("script-src");
+
+    expect(scriptSrc).toContain(
+      "'sha256-mqaaJKyEBAtrHnTmEqRs3kIzLcqrfe/bwtUYbNSfq2s='"
+    );
+    expect(scriptSrc).not.toContain("'unsafe-inline'");
+    expect(scriptSrc).not.toContain("data:");
+  });
+
+  it("attaches security headers to responses", () => {
     let middleware:
       | ((req: Request, res: Response, next: NextFunction) => void)
       | undefined;

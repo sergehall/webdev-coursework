@@ -10,6 +10,10 @@ describe("security headers", () => {
         acc[header.key] = header.value;
         return acc;
       }, {}) ?? {};
+  const getDirective = (name: string): string =>
+    headers["Content-Security-Policy"]
+      ?.split("; ")
+      .find((directive) => directive.startsWith(`${name} `)) ?? "";
 
   it("publishes a Content Security Policy through Vercel", () => {
     expect(headers["Content-Security-Policy"]).toContain("default-src 'self'");
@@ -18,6 +22,16 @@ describe("security headers", () => {
       "frame-ancestors 'self'"
     );
     expect(headers["Content-Security-Policy"]).toContain("script-src 'self'");
+  });
+
+  it("keeps script-src free of unsafe inline and data sources", () => {
+    const scriptSrc = getDirective("script-src");
+
+    expect(scriptSrc).toContain(
+      "'sha256-mqaaJKyEBAtrHnTmEqRs3kIzLcqrfe/bwtUYbNSfq2s='"
+    );
+    expect(scriptSrc).not.toContain("'unsafe-inline'");
+    expect(scriptSrc).not.toContain("data:");
   });
 
   it("publishes hardening headers through Vercel", () => {
