@@ -217,7 +217,7 @@ QUIZ_ANSWERS_JWT_TTL=1h
 QUIZ_JWT_ISSUER=webdev-coursework
 QUIZ_JWT_AUDIENCE=webdev-coursework-frontend
 ADMIN_API_KEY=dev-admin-key
-ALLOWED_ORIGINS=http://localhost:5173
+ALLOWED_ORIGINS=http://localhost:3000
 POSTGRES_SSL=false
 TYPEORM_SYNCHRONIZE=false
 ```
@@ -248,7 +248,7 @@ yarn dev:backend
 
 Default local endpoints:
 
-- Frontend dev: `http://localhost:5173`
+- Frontend dev: `http://localhost:3000`
 - Frontend preview: `http://localhost:4173`
 - Backend API: `http://localhost:5050`
 

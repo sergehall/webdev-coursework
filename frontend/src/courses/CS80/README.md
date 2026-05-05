@@ -80,7 +80,7 @@ Welcome! This project contains my assignments and coursework for **CS 80 – Int
    ```
 
 6. **Open in browser**  
-   Visit [http://localhost:5173](http://localhost:5173) or the URL shown in your terminal
+   Visit [http://localhost:3000](http://localhost:3000) or the URL shown in your terminal
 
 </details>
 

@@ -40,23 +40,6 @@ const productionContentSecurityPolicy = [
   "manifest-src 'self'",
 ].join("; ");
 
-const developmentContentSecurityPolicy = [
-  "default-src 'self'",
-  "base-uri 'self'",
-  "object-src 'none'",
-  "frame-ancestors 'self'",
-  "form-action 'self'",
-  `script-src 'self' ${jsonLdScriptHash} 'unsafe-eval' 'wasm-unsafe-eval' https://cdn.jsdelivr.net https://code.jquery.com`,
-  "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https://images.unsplash.com https://avatars.githubusercontent.com https://randomuser.me https://www.smc.edu https://www.google.com",
-  "font-src 'self' data:",
-  "connect-src 'self' ws://localhost:* ws://127.0.0.1:* http://localhost:* http://127.0.0.1:* https://cdn.jsdelivr.net https://*.ingest.sentry.io https://*.ingest.us.sentry.io",
-  "media-src 'self' data: blob:",
-  "worker-src 'self' blob:",
-  "frame-src 'self' blob:",
-  "manifest-src 'self'",
-].join("; ");
-
 const productionSecurityHeaders = {
   "Content-Security-Policy": productionContentSecurityPolicy,
   "Cross-Origin-Resource-Policy": "same-origin",
@@ -65,7 +48,6 @@ const productionSecurityHeaders = {
 };
 
 const developmentSecurityHeaders = {
-  "Content-Security-Policy": developmentContentSecurityPolicy,
   "Cross-Origin-Resource-Policy": "same-origin",
   "X-Content-Type-Options": "nosniff",
   "X-Frame-Options": "SAMEORIGIN",
@@ -96,8 +78,11 @@ export default defineConfig(({ mode }) => {
       }),
     ],
     server: {
-      port: 5173,
-      open: true,
+      host: "127.0.0.1",
+      port: 3000,
+      strictPort: true,
+      hmr: false,
+      open: "http://localhost:3000",
       headers: developmentSecurityHeaders,
       proxy: {
         "/api": {
