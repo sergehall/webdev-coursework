@@ -1,6 +1,6 @@
 import { Entity, PrimaryColumn, Column } from "typeorm";
 
-@Entity("correct_answers")
+@Entity("webdev_correct_answers")
 export class CorrectAnswer {
   @PrimaryColumn({ name: "quiz_id", type: "varchar" })
   quizId!: string;

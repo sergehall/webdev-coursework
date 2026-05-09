@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn, Unique } from "typeorm";
 
-@Entity("quiz_progress")
+@Entity("webdev_quiz_progress")
 @Unique(["clientId", "appId", "courseId"])
 export class QuizProgress {
   @PrimaryGeneratedColumn()
