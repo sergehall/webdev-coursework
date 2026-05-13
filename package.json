@@ -12,7 +12,7 @@
     "install:strict": "yarn install --immutable",
     "install:fresh": "yarn install",
     "dev": "concurrently \"yarn dev:frontend\" \"yarn dev:backend\"",
-    "dev:frontend": "yarn workspace frontend start:dev",
+    "dev:frontend": "cross-env VITE_API_URL= yarn workspace frontend start:dev",
     "dev:backend": "yarn workspace backend start:dev",
     "test:backend": "yarn workspace backend test",
     "test:frontend": "yarn workspace frontend test",

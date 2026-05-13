@@ -64,6 +64,8 @@ export default defineConfig(({ mode }) => {
 
   const env = parsed.data;
   const isProd = mode === "production";
+  const localApiProxyTarget =
+    rawEnv.VITE_LOCAL_API_URL || "http://localhost:5050";
 
   if (!isProd) {
     console.log("✅ mode:", mode);
@@ -86,7 +88,21 @@ export default defineConfig(({ mode }) => {
       headers: developmentSecurityHeaders,
       proxy: {
         "/api": {
-          target: env.VITE_API_URL || "http://localhost:5050",
+          target: localApiProxyTarget,
+          changeOrigin: true,
+          secure: true,
+          timeout: 10_000,
+          proxyTimeout: 10_000,
+        },
+        "/quizzes": {
+          target: localApiProxyTarget,
+          changeOrigin: true,
+          secure: true,
+          timeout: 10_000,
+          proxyTimeout: 10_000,
+        },
+        "/tokens": {
+          target: localApiProxyTarget,
           changeOrigin: true,
           secure: true,
           timeout: 10_000,
