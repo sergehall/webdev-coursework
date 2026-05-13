@@ -34,6 +34,12 @@ describe("security headers", () => {
     expect(scriptSrc).not.toContain("data:");
   });
 
+  it("allows the production API origin for progress writes", () => {
+    const connectSrc = getDirective("connect-src");
+
+    expect(connectSrc).toContain("https://api.webdev-coursework.com");
+  });
+
   it("publishes hardening headers through Vercel", () => {
     expect(headers["X-Content-Type-Options"]).toBe("nosniff");
     expect(headers["X-Frame-Options"]).toBe("SAMEORIGIN");

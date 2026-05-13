@@ -33,7 +33,7 @@ const productionContentSecurityPolicy = [
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https://images.unsplash.com https://avatars.githubusercontent.com https://randomuser.me https://www.smc.edu https://www.google.com",
   "font-src 'self' data:",
-  "connect-src 'self' https://cdn.jsdelivr.net https://*.ingest.sentry.io https://*.ingest.us.sentry.io",
+  "connect-src 'self' https://api.webdev-coursework.com https://cdn.jsdelivr.net https://*.ingest.sentry.io https://*.ingest.us.sentry.io",
   "media-src 'self' data: blob:",
   "worker-src 'self' blob:",
   "frame-src 'self' blob:",
