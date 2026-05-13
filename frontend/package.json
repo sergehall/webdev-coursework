@@ -19,8 +19,9 @@
     "check": "tsc --noEmit && eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "vitest",
+    "test": "vitest run",
     "test:run": "vitest run",
+    "test:watch": "vitest",
     "test:ci": "vitest run --coverage",
     "test:ui": "vitest --ui",
     "generate:favicons": "node scripts/generate-favicons.mjs"

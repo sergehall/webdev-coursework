@@ -31,5 +31,7 @@ describe("frontend scripts smoke", () => {
     expect(scripts["build:bundle"]).toBe("vite build");
     expect(scripts["build"]).toContain("typecheck");
     expect(scripts["build"]).toContain("build:bundle");
+    expect(scripts["test"]).toBe("vitest run");
+    expect(scripts["test:watch"]).toBe("vitest");
   });
 });
