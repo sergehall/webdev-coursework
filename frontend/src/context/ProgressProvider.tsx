@@ -83,38 +83,64 @@ const ProgressProvider = ({ children }: { children: React.ReactNode }) => {
       )
         return;
 
+      // Optimistic update
       setCompletedModules((prev) => ({
         ...prev,
-        [validCourseId]: [...(prev[validCourseId] || []), mod],
+        [validCourseId]: [...(prev[validCourseId] ?? []), mod],
       }));
 
-      await markModuleCompleted({
-        clientId,
-        appId: currentConfig.appId,
-        moduleNumber: mod,
-        courseId: validCourseId,
-      });
+      try {
+        await markModuleCompleted({
+          clientId,
+          appId: currentConfig.appId,
+          moduleNumber: mod,
+          courseId: validCourseId,
+        });
+      } catch (err) {
+        // Roll back optimistic update on failure
+        setCompletedModules((prev) => ({
+          ...prev,
+          [validCourseId]: (prev[validCourseId] ?? []).filter((m) => m !== mod),
+        }));
+        throw err;
+      }
     },
     [clientId, validCourseId, currentConfig, completedModules, hasValidContext]
   );
 
   const unmarkAsCompleted = useCallback(
     async (mod: number) => {
-      if (!hasValidContext || !currentConfig || !validCourseId) return;
+      if (
+        !hasValidContext ||
+        !currentConfig ||
+        !validCourseId ||
+        !completedModules[validCourseId]?.includes(mod)
+      )
+        return;
 
+      // Optimistic update
       setCompletedModules((prev) => ({
         ...prev,
-        [validCourseId]: (prev[validCourseId] || []).filter((m) => m !== mod),
+        [validCourseId]: (prev[validCourseId] ?? []).filter((m) => m !== mod),
       }));
 
-      await unmarkModuleCompleted({
-        clientId,
-        appId: currentConfig.appId,
-        moduleNumber: mod,
-        courseId: validCourseId,
-      });
+      try {
+        await unmarkModuleCompleted({
+          clientId,
+          appId: currentConfig.appId,
+          moduleNumber: mod,
+          courseId: validCourseId,
+        });
+      } catch (err) {
+        // Roll back optimistic update on failure
+        setCompletedModules((prev) => ({
+          ...prev,
+          [validCourseId]: [...(prev[validCourseId] ?? []), mod],
+        }));
+        throw err;
+      }
     },
-    [clientId, validCourseId, currentConfig, hasValidContext]
+    [clientId, validCourseId, currentConfig, completedModules, hasValidContext]
   );
 
   const value = useMemo(() => {
