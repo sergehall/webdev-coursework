@@ -14,7 +14,7 @@
     "dev": "concurrently \"yarn dev:frontend\" \"yarn dev:backend\"",
     "dev:frontend": "cross-env VITE_API_URL= yarn workspace frontend start:dev",
     "dev:backend": "yarn workspace backend start:dev",
-    "test:backend": "yarn workspace backend test",
+    "test:backend": "bash -lc 'if [ -s \"$HOME/.nvm/nvm.sh\" ]; then source \"$HOME/.nvm/nvm.sh\" && nvm exec --silent \"$(cat .nvmrc)\" yarn workspace backend test; else yarn workspace backend test; fi'",
     "test:frontend": "yarn workspace frontend test",
     "typecheck": "yarn workspace frontend typecheck && yarn workspace backend typecheck",
     "lint": "yarn workspace frontend lint && yarn workspace backend lint",
