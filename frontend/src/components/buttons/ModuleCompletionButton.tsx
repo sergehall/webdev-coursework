@@ -1,4 +1,4 @@
-import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { CheckCircle, Loader2, XCircle } from "lucide-react";
 
 import { useCompletedModules } from "@/hooks/useCompletedModules";
@@ -8,14 +8,16 @@ import type { Variants } from "@/components/buttons/types/variants";
 
 const ERROR_DISMISS_MS = 4_000;
 
+type MutationError = {
+  readonly message: string;
+};
+
 interface ModuleCompletionButtonProps {
   moduleId: number;
   size?: ButtonSize;
   type?: ButtonType;
   className?: string;
   disabled?: boolean;
-  icon?: ReactNode;
-  variant?: Variants;
 }
 
 export default function ModuleCompletionButton({
@@ -29,10 +31,22 @@ export default function ModuleCompletionButton({
     useCompletedModules();
 
   const [isPending, setIsPending] = useState(false);
-  const [mutationError, setMutationError] = useState<string | null>(null);
+  const [mutationError, setMutationError] = useState<MutationError | null>(
+    null
+  );
   const dismissTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isMountedRef = useRef(true);
+  const errorId = useId();
 
-  // Auto-dismiss the error message after a delay
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+      if (dismissTimerRef.current !== null) {
+        clearTimeout(dismissTimerRef.current);
+      }
+    };
+  }, []);
+
   useEffect(() => {
     if (!mutationError) return;
 
@@ -50,7 +64,7 @@ export default function ModuleCompletionButton({
   const isCompleted = completedModules.includes(moduleId);
 
   const handleClick = useCallback(async () => {
-    if (isPending) return;
+    if (disabled || isPending) return;
     setIsPending(true);
     setMutationError(null);
     try {
@@ -60,11 +74,24 @@ export default function ModuleCompletionButton({
         await markAsCompleted(moduleId);
       }
     } catch {
-      setMutationError("Could not save progress. Please try again.");
+      if (isMountedRef.current) {
+        setMutationError({
+          message: "Could not save progress. Please try again.",
+        });
+      }
     } finally {
-      setIsPending(false);
+      if (isMountedRef.current) {
+        setIsPending(false);
+      }
     }
-  }, [isPending, isCompleted, moduleId, markAsCompleted, unmarkAsCompleted]);
+  }, [
+    disabled,
+    isPending,
+    isCompleted,
+    moduleId,
+    markAsCompleted,
+    unmarkAsCompleted,
+  ]);
 
   const variant: Variants = isCompleted ? "red" : "emerald";
 
@@ -74,7 +101,7 @@ export default function ModuleCompletionButton({
       ? `Cancel module ${moduleId}`
       : `Complete module ${moduleId}`;
 
-  const icon: ReactNode = isPending ? (
+  const icon = isPending ? (
     <Loader2 size={16} className="animate-spin" />
   ) : isCompleted ? (
     <XCircle size={16} />
@@ -99,13 +126,14 @@ export default function ModuleCompletionButton({
         title={label}
         aria-label={label}
         aria-busy={isPending}
+        aria-describedby={mutationError ? errorId : undefined}
       >
         {label}
       </BaseButton>
 
       {mutationError && (
-        <p role="alert" className="text-sm text-red-500">
-          {mutationError}
+        <p id={errorId} role="alert" className="text-sm text-red-500">
+          {mutationError.message}
         </p>
       )}
     </div>
