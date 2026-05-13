@@ -444,7 +444,7 @@ export default function CS79DModuleScaffold({
         </AnimatedAccordionItem>
       ) : null}
 
-<ModuleCompletionButton moduleId={module.id} />
+      <ModuleCompletionButton moduleId={module.id} />
     </section>
   );
 }
