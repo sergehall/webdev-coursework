@@ -24,6 +24,7 @@ export default function CS79DModuleScaffold({
   useFinalModuleRedirect(8);
   const [isOverviewOpen, setIsOverviewOpen] = useState(false);
   const [isQuizOpen, setIsQuizOpen] = useState(false);
+  const [isMidtermOpen, setIsMidtermOpen] = useState(false);
   const [openTextTasks, setOpenTextTasks] = useState<Record<string, boolean>>(
     {}
   );
@@ -428,21 +429,22 @@ export default function CS79DModuleScaffold({
         </AnimatedAccordionItem>
       ) : null}
 
-      <div className="rounded-xl border border-dashed border-gray-300 bg-gray-50 p-5 dark:border-gray-700 dark:bg-gray-800/50">
-        <h3 className="text-base font-semibold text-gray-900 dark:text-white">
-          Current Scaffold Status
-        </h3>
-        <p className="mt-2 text-sm leading-7 text-gray-700 dark:text-gray-300">
-          This module is built from Spring 2026 syllabus data. The next pass
-          layers in your completed labs, screenshots, quiz answers, and
-          submission-ready notes without changing the structure.
-        </p>
-        <p className="mt-3 text-sm font-medium text-gray-800 dark:text-gray-200">
-          Milestone: {module.milestone}
-        </p>
-      </div>
+      {module.midtermQuiz ? (
+        <AnimatedAccordionItem
+          title={`Midterm: ${module.midtermQuiz.title}`}
+          isOpen={isMidtermOpen}
+          onToggle={() => setIsMidtermOpen((prev) => !prev)}
+        >
+          <CS79DStaticQuiz
+            title={module.midtermQuiz.title}
+            dueLabel={module.midtermQuiz.dueLabel}
+            questions={module.midtermQuiz.questions}
+            answers={module.midtermQuiz.answers}
+          />
+        </AnimatedAccordionItem>
+      ) : null}
 
-      <ModuleCompletionButton moduleId={module.id} />
+<ModuleCompletionButton moduleId={module.id} />
     </section>
   );
 }
