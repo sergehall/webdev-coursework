@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { StrictMode } from "react";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
 import ModuleCompletionButton from "./ModuleCompletionButton";
@@ -99,5 +100,41 @@ describe("ModuleCompletionButton", () => {
     );
     expect(button).toHaveAttribute("aria-describedby", alert.id);
     expect(button).not.toBeDisabled();
+  });
+
+  test("clears pending state after a successful mutation in React StrictMode", async () => {
+    const user = userEvent.setup();
+    const markAsCompleted = vi.fn().mockResolvedValue(undefined);
+    const unmarkAsCompleted = vi.fn();
+
+    useCompletedModulesMock.mockReturnValue({
+      courseId: "CS81",
+      completedModules: [],
+      markAsCompleted,
+      unmarkAsCompleted,
+      maxModules: 12,
+      isLoadingProgress: false,
+      progressError: null,
+      retryProgress: vi.fn(),
+    });
+
+    render(
+      <StrictMode>
+        <ModuleCompletionButton moduleId={3} />
+      </StrictMode>
+    );
+
+    await user.click(
+      screen.getByRole("button", { name: /complete module 3/i })
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("button", { name: /complete module 3/i })
+      ).not.toBeDisabled();
+    });
+    expect(
+      screen.queryByRole("button", { name: /saving/i })
+    ).not.toBeInTheDocument();
   });
 });

@@ -35,10 +35,12 @@ export default function ModuleCompletionButton({
     null
   );
   const dismissTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const isMountedRef = useRef(true);
+  const isMountedRef = useRef(false);
   const errorId = useId();
 
   useEffect(() => {
+    isMountedRef.current = true;
+
     return () => {
       isMountedRef.current = false;
       if (dismissTimerRef.current !== null) {
