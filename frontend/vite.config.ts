@@ -76,7 +76,6 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react({
         jsxImportSource: undefined,
-        babel: isProd ? { plugins: [] } : undefined,
       }),
     ],
     server: {

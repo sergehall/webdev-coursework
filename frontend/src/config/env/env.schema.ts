@@ -5,10 +5,8 @@ export const envSchema = z
   .object({
     VITE_ENVIRONMENT: z
       .enum(["development", "production", "test"], {
-        errorMap: () => ({
-          message:
-            "VITE_ENVIRONMENT must be one of: 'development', 'production', 'test'",
-        }),
+        error:
+          "VITE_ENVIRONMENT must be one of: 'development', 'production', 'test'",
       })
       .default("production"),
 

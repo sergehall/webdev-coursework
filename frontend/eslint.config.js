@@ -5,8 +5,8 @@ import tseslintPlugin from "@typescript-eslint/eslint-plugin";
 import tseslintParser from "@typescript-eslint/parser";
 import reactPlugin from "eslint-plugin-react";
 import reactHooksPlugin from "eslint-plugin-react-hooks";
-import vitestPlugin from "eslint-plugin-vitest";
-import importPlugin from "eslint-plugin-import";
+import vitestPlugin from "@vitest/eslint-plugin";
+import importPlugin from "eslint-plugin-import-x";
 import prettierConfig from "eslint-config-prettier";
 import globals from "globals";
 
@@ -61,7 +61,7 @@ export default [
       "@typescript-eslint": tseslintPlugin,
       react: reactPlugin,
       "react-hooks": reactHooksPlugin,
-      import: importPlugin,
+      "import-x": importPlugin,
       vitest: vitestPlugin,
     },
     rules: {
@@ -98,7 +98,7 @@ export default [
       "vitest/no-identical-title": "error",
       "vitest/prefer-to-be": "warn",
 
-      "import/order": [
+      "import-x/order": [
         "warn",
         {
           groups: [

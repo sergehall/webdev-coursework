@@ -30,6 +30,7 @@ if (!("IntersectionObserver" in globalThis)) {
   class IntersectionObserverMock implements IntersectionObserver {
     readonly root: Element | null = null;
     readonly rootMargin: string = "";
+    readonly scrollMargin: string = "";
     readonly thresholds: ReadonlyArray<number> = [];
 
     observe = vi.fn();
