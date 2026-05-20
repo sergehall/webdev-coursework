@@ -1,7 +1,6 @@
-/* --- Base layer: resets and minimal defaults --- */
-@tailwind base;
+@import "tailwindcss";
+@config "../tailwind.config.js";
 
-/* Your base overrides must come AFTER @tailwind base */
 @layer base {
   :root {
     color-scheme: dark light;
@@ -67,7 +66,3 @@
     -webkit-tap-highlight-color: transparent;
   }
 }
-
-/* --- Components & utilities --- */
-@tailwind components;
-@tailwind utilities;
