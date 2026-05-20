@@ -19,7 +19,7 @@ const WebsiteRegistrationForm = () => {
       {submitted && <SuccessBar message="Registration successful" />}
 
       {/* Task prompt block */}
-      <div className="w-full rounded-md border-l-4 border-yellow-400 bg-yellow-50 px-4 py-2 text-[0.95rem] font-medium italic text-yellow-800 dark:border-gray-600 dark:bg-gray-500/40 dark:text-gray-100">
+      <div className="w-full rounded-md border-l-4 border-yellow-400 bg-yellow-50 px-4 py-2 text-[0.95rem] font-medium text-yellow-800 italic dark:border-gray-600 dark:bg-gray-500/40 dark:text-gray-100">
         <strong>Task:</strong> Create a website registration form to obtain a
         user’s first name, last name and e-mail address. In addition, include an
         optional survey question that asks the user’s year in college (e.g.,

@@ -15,6 +15,8 @@ export default function CS79DStaticQuiz({
   questions,
   answers,
 }: CS79DStaticQuizProps) {
+  const hasQuestions = questions.length > 0;
+
   return (
     <section className="space-y-4">
       <header className="space-y-2">
@@ -32,7 +34,14 @@ export default function CS79DStaticQuiz({
         </p>
       </header>
 
-      <QuizGenerator questions={questions} answers={answers} />
+      {hasQuestions ? (
+        <QuizGenerator questions={questions} answers={answers} />
+      ) : (
+        <div className="rounded-xl border border-dashed border-rose-300 bg-rose-50 p-5 text-sm leading-7 text-slate-700 dark:border-rose-800 dark:bg-rose-950/30 dark:text-slate-200">
+          Quiz questions and answers will be added here after the Canvas quiz
+          content is ready.
+        </div>
+      )}
     </section>
   );
 }

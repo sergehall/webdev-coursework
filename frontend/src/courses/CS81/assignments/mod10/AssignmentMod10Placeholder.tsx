@@ -28,7 +28,7 @@ export default function AssignmentMod10Placeholder() {
         </ul>
       </div>
 
-      <div className="text-sm italic text-emerald-800 dark:text-emerald-300">
+      <div className="text-sm text-emerald-800 italic dark:text-emerald-300">
         ✅ Controlled components give you full control over form behavior in
         React.
       </div>

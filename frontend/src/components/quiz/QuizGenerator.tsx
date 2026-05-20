@@ -42,7 +42,7 @@ const QuizGenerator = ({ questions, answers }: QuizProps) => {
         </div>
       ) : (
         <div className="space-y-2 text-center">
-          <p className="text-sm italic text-gray-600 dark:text-gray-400">
+          <p className="text-sm text-gray-600 italic dark:text-gray-400">
             Correct answers are hidden.
           </p>
           <p className="text-lg font-semibold text-green-700 dark:text-green-300">

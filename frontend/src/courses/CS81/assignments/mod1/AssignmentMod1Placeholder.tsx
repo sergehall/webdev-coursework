@@ -34,7 +34,7 @@ export default function AssignmentMod1Placeholder() {
         </ul>
       </div>
 
-      <div className="text-sm italic text-gray-700 dark:text-gray-400">
+      <div className="text-sm text-gray-700 italic dark:text-gray-400">
         🧠 These basics are the foundation of everything else you'll do in
         JavaScript — take your time to explore and experiment.
       </div>

@@ -97,7 +97,7 @@ export default function Chapter3Overview() {
         </ul>
       </div>
 
-      <p className="text-sm italic text-gray-700 dark:text-gray-400">
+      <p className="text-sm text-gray-700 italic dark:text-gray-400">
         🧠 Chapter 3 is where the course “clicks”: the relational model becomes
         the foundation for schemas, keys, and eventually writing correct SQL.
       </p>

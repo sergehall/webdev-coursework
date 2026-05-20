@@ -27,7 +27,7 @@ export default function AssignmentMod6Placeholder() {
           instead of jQuery. These modern tools offer better performance and
           readability in React apps.
         </p>
-        <p className="mt-2 text-sm italic text-rose-700 dark:text-rose-300">
+        <p className="mt-2 text-sm text-rose-700 italic dark:text-rose-300">
           jQuery is no longer required for asynchronous requests in modern web
           development.
         </p>

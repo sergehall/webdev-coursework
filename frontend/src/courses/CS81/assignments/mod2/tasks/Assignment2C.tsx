@@ -67,28 +67,28 @@ const Assignment2C = () => {
           type="number"
           value={distance}
           onChange={(e) => setDistance(e.target.value)}
-          className="w-full rounded border border-gray-300 bg-gray-100 px-3 py-1.5 text-black dark:border-gray-600 dark:bg-gray-800 dark:text-white sm:w-auto"
+          className="w-full rounded border border-gray-300 bg-gray-100 px-3 py-1.5 text-black sm:w-auto dark:border-gray-600 dark:bg-gray-800 dark:text-white"
           placeholder="Distance (miles)"
         />
         <input
           type="text"
           value={mode}
           onChange={(e) => setMode(e.target.value)}
-          className="w-full rounded border border-gray-300 bg-gray-100 px-3 py-1.5 text-black dark:border-gray-600 dark:bg-gray-800 dark:text-white sm:w-auto"
+          className="w-full rounded border border-gray-300 bg-gray-100 px-3 py-1.5 text-black sm:w-auto dark:border-gray-600 dark:bg-gray-800 dark:text-white"
           placeholder="Mode (car, bus, bike, walk)"
         />
         <input
           type="text"
           value={landmark}
           onChange={(e) => setLandmark(e.target.value)}
-          className="w-full rounded border border-gray-300 bg-gray-100 px-3 py-1.5 text-black dark:border-gray-600 dark:bg-gray-800 dark:text-white sm:w-auto"
+          className="w-full rounded border border-gray-300 bg-gray-100 px-3 py-1.5 text-black sm:w-auto dark:border-gray-600 dark:bg-gray-800 dark:text-white"
           placeholder="Landmark name"
         />
         <input
           type="number"
           value={landmarkMile}
           onChange={(e) => setLandmarkMile(e.target.value)}
-          className="w-full rounded border border-gray-300 bg-gray-100 px-3 py-1.5 text-black dark:border-gray-600 dark:bg-gray-800 dark:text-white sm:w-auto"
+          className="w-full rounded border border-gray-300 bg-gray-100 px-3 py-1.5 text-black sm:w-auto dark:border-gray-600 dark:bg-gray-800 dark:text-white"
           placeholder="Landmark Mile"
         />
       </div>

@@ -29,7 +29,7 @@ export default function AssignmentMod8Placeholder() {
         </ul>
       </div>
 
-      <div className="text-sm italic text-sky-800 dark:text-sky-300">
+      <div className="text-sm text-sky-800 italic dark:text-sky-300">
         🔁 React state drives your UI — when state changes, components
         re-render. Props are read-only data you send *down* the component tree.
       </div>

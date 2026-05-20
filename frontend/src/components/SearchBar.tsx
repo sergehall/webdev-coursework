@@ -19,7 +19,7 @@ const SearchBar = ({ value, onChange, onSearch }: Props) => {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={handleKeyDown}
-        className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+        className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-800 focus:ring-2 focus:ring-blue-400 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
       />
       <button
         onClick={onSearch}

@@ -21,7 +21,7 @@ const QuestionCard = ({
   return (
     <div className="rounded-lg border border-gray-300 bg-gray-100 p-4 shadow-lg dark:border-gray-600 dark:bg-gray-900">
       <div className="mb-2 flex items-center justify-between">
-        <span className="text-sm font-semibold uppercase leading-tight tracking-wide text-blue-600 dark:text-blue-400">
+        <span className="text-sm leading-tight font-semibold tracking-wide text-blue-600 uppercase dark:text-blue-400">
           Question {index + 1}
         </span>
         {submitted && (

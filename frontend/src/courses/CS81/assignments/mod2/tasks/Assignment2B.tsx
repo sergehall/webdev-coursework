@@ -66,7 +66,7 @@ const Assignment2B = () => {
         min="1"
         value={maxValue}
         onChange={(e) => setMaxValue(e.target.value)}
-        className="w-full rounded border border-gray-300 bg-gray-100 px-3 py-1.5 text-black dark:border-gray-600 dark:bg-gray-800 dark:text-white sm:w-auto"
+        className="w-full rounded border border-gray-300 bg-gray-100 px-3 py-1.5 text-black sm:w-auto dark:border-gray-600 dark:bg-gray-800 dark:text-white"
         placeholder="Enter max number (e.g. 120)"
       />
 

@@ -143,7 +143,7 @@ export default function Chapter7Overview() {
         </div>
       </div>
 
-      <p className="text-sm italic text-gray-700 dark:text-gray-400">
+      <p className="text-sm text-gray-700 italic dark:text-gray-400">
         🧠 SQL is a core skill for this course—focus on building confidence with
         table creation, data manipulation, and SELECT queries.
       </p>

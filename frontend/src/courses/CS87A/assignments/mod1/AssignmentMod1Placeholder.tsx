@@ -29,7 +29,7 @@ export default function AssignmentMod1Placeholder() {
         </ul>
       </div>
 
-      <div className="text-sm italic text-gray-700 dark:text-gray-400">
+      <div className="text-sm text-gray-700 italic dark:text-gray-400">
         This assignment will help you verify your Python installation and get
         comfortable running basic scripts before moving on to more complex
         tasks.

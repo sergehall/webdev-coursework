@@ -146,7 +146,7 @@ export default function Chapter10Overview() {
         </div>
       </div>
 
-      <p className="text-sm italic text-gray-700 dark:text-gray-400">
+      <p className="text-sm text-gray-700 italic dark:text-gray-400">
         🎓 You’ve made it to the finish line — stay calm, review the key topics,
         and good luck!
       </p>

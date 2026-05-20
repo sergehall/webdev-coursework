@@ -23,7 +23,7 @@ const ComponentRenderModal = ({
       <div className="max-h-[90vh] w-full max-w-5xl overflow-y-auto px-4 py-6">
         <div className="relative rounded-lg bg-gray-100 p-8 shadow-2xl dark:bg-gray-900">
           {renderCloseButton && (
-            <div className="absolute right-4 top-4">{renderCloseButton}</div>
+            <div className="absolute top-4 right-4">{renderCloseButton}</div>
           )}
           {title && (
             <>
@@ -31,7 +31,7 @@ const ComponentRenderModal = ({
                 {title}
               </h2>
               {description && (
-                <p className="mb-6 text-center text-sm italic text-gray-600 dark:text-gray-400">
+                <p className="mb-6 text-center text-sm text-gray-600 italic dark:text-gray-400">
                   {description}
                 </p>
               )}

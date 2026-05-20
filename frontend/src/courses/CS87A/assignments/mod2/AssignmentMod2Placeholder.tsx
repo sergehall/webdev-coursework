@@ -24,7 +24,7 @@ export default function AssignmentMod2Placeholder() {
           and keep running until all three are correct or the player chooses to
           quit.
         </p>
-        <p className="mt-2 text-sm italic text-orange-700 dark:text-orange-300">
+        <p className="mt-2 text-sm text-orange-700 italic dark:text-orange-300">
           Loop until done: prompt → check → feedback → retry remaining only.
         </p>
       </div>

@@ -109,7 +109,7 @@ export default function Chapter8Overview() {
         </ul>
       </div>
 
-      <p className="text-sm italic text-gray-700 dark:text-gray-400">
+      <p className="text-sm text-gray-700 italic dark:text-gray-400">
         🧠 Joins are one of the most important SQL skills—focus on understanding
         how tables relate and how join conditions affect your result set.
       </p>

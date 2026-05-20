@@ -120,7 +120,7 @@ export default function Chapter5Overview() {
         </ul>
       </div>
 
-      <p className="text-sm italic text-gray-700 dark:text-gray-400">
+      <p className="text-sm text-gray-700 italic dark:text-gray-400">
         🧠 Reviewing ER diagrams, keys, and specialization hierarchies now will
         significantly improve your performance on the midterm.
       </p>

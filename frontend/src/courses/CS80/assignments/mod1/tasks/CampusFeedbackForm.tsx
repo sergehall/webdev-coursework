@@ -21,7 +21,7 @@ const CampusFeedbackForm = () => {
       {submitted && <SuccessBar message="Feedback submitted successfully" />}
 
       {/* Task prompt block */}
-      <div className="w-full rounded-md border-l-4 border-yellow-400 bg-yellow-50 px-4 py-2 text-[0.95rem] font-medium italic text-yellow-800 dark:border-gray-600 dark:bg-gray-500/40 dark:text-gray-100">
+      <div className="w-full rounded-md border-l-4 border-yellow-400 bg-yellow-50 px-4 py-2 text-[0.95rem] font-medium text-yellow-800 italic dark:border-gray-600 dark:bg-gray-500/40 dark:text-gray-100">
         <strong>Task:</strong> A local university has asked you to create an
         HTML5 document that allows prospective college students to provide
         feedback about their campus visit. Your HTML5 document should contain a

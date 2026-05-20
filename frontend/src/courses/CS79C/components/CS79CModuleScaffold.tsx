@@ -49,7 +49,7 @@ export default function CS79CModuleScaffold({
     <section className="space-y-6 rounded-xl bg-white p-6 shadow-md dark:bg-gray-900">
       <header className="space-y-3">
         <div className="flex flex-wrap items-center gap-3">
-          <span className="rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-sky-700 dark:bg-sky-900/40 dark:text-sky-200">
+          <span className="rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold tracking-[0.2em] text-sky-700 uppercase dark:bg-sky-900/40 dark:text-sky-200">
             {module.isFinalProject ? "Capstone" : `Module ${module.id}`}
           </span>
           <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-800 dark:bg-amber-900/40 dark:text-amber-200">
@@ -78,7 +78,7 @@ export default function CS79CModuleScaffold({
         <div className="space-y-6">
           <div className="grid gap-4 lg:grid-cols-3">
             <article className="rounded-xl border border-sky-200 bg-sky-50 p-4 dark:border-sky-900/50 dark:bg-sky-950/40">
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-sky-800 dark:text-sky-200">
+              <h3 className="text-sm font-semibold tracking-wide text-sky-800 uppercase dark:text-sky-200">
                 Focus Areas
               </h3>
               <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-700 dark:text-slate-200">
@@ -89,7 +89,7 @@ export default function CS79CModuleScaffold({
             </article>
 
             <article className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 dark:border-emerald-900/50 dark:bg-emerald-950/40">
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-emerald-800 dark:text-emerald-200">
+              <h3 className="text-sm font-semibold tracking-wide text-emerald-800 uppercase dark:text-emerald-200">
                 Starter Tasks
               </h3>
               <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-700 dark:text-slate-200">
@@ -100,7 +100,7 @@ export default function CS79CModuleScaffold({
             </article>
 
             <article className="rounded-xl border border-violet-200 bg-violet-50 p-4 dark:border-violet-900/50 dark:bg-violet-950/40">
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-violet-800 dark:text-violet-200">
+              <h3 className="text-sm font-semibold tracking-wide text-violet-800 uppercase dark:text-violet-200">
                 Artifact Targets
               </h3>
               <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-700 dark:text-slate-200">
@@ -113,7 +113,7 @@ export default function CS79CModuleScaffold({
 
           <div className="grid gap-4 lg:grid-cols-2">
             <article className="rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/50">
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-900 dark:text-white">
+              <h3 className="text-sm font-semibold tracking-wide text-gray-900 uppercase dark:text-white">
                 Objectives Aligned
               </h3>
               <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-gray-700 dark:text-gray-300">
@@ -124,7 +124,7 @@ export default function CS79CModuleScaffold({
             </article>
 
             <article className="rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/50">
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-900 dark:text-white">
+              <h3 className="text-sm font-semibold tracking-wide text-gray-900 uppercase dark:text-white">
                 Outcome Alignment
               </h3>
               <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-gray-700 dark:text-gray-300">
@@ -137,7 +137,7 @@ export default function CS79CModuleScaffold({
 
           {module.moduleSummary && module.moduleSummary.length > 0 ? (
             <article className="rounded-xl border border-cyan-200 bg-cyan-50 p-4 dark:border-cyan-900/50 dark:bg-cyan-950/30">
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-cyan-900 dark:text-cyan-100">
+              <h3 className="text-sm font-semibold tracking-wide text-cyan-900 uppercase dark:text-cyan-100">
                 Module Summary
               </h3>
               <div className="mt-3 overflow-x-auto">
@@ -166,7 +166,7 @@ export default function CS79CModuleScaffold({
 
           {module.readingHighlights && module.readingHighlights.length > 0 ? (
             <article className="rounded-xl border border-lime-200 bg-lime-50 p-4 dark:border-lime-900/50 dark:bg-lime-950/30">
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-lime-900 dark:text-lime-100">
+              <h3 className="text-sm font-semibold tracking-wide text-lime-900 uppercase dark:text-lime-100">
                 Required Reading and Lecture Notes
               </h3>
               <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-lime-950/90 dark:text-lime-100/90">
@@ -179,7 +179,7 @@ export default function CS79CModuleScaffold({
 
           {module.serviceHighlights && module.serviceHighlights.length > 0 ? (
             <article className="rounded-xl border border-teal-200 bg-teal-50 p-4 dark:border-teal-900/50 dark:bg-teal-950/30">
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-teal-900 dark:text-teal-100">
+              <h3 className="text-sm font-semibold tracking-wide text-teal-900 uppercase dark:text-teal-100">
                 AWS Services Highlighted in This Module
               </h3>
               <div className="mt-3 overflow-x-auto">
@@ -213,7 +213,7 @@ export default function CS79CModuleScaffold({
           {module.overviewScreenshots &&
           module.overviewScreenshots.length > 0 ? (
             <article className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-900/40">
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-900 dark:text-slate-100">
+              <h3 className="text-sm font-semibold tracking-wide text-slate-900 uppercase dark:text-slate-100">
                 Overview Snapshot
               </h3>
               <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">
@@ -226,7 +226,7 @@ export default function CS79CModuleScaffold({
 
           <div className="grid gap-4 lg:grid-cols-3">
             <article className="rounded-xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-900/50 dark:bg-amber-950/30">
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-amber-900 dark:text-amber-100">
+              <h3 className="text-sm font-semibold tracking-wide text-amber-900 uppercase dark:text-amber-100">
                 Syllabus Context
               </h3>
               <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-amber-900/80 dark:text-amber-100/90">
@@ -237,7 +237,7 @@ export default function CS79CModuleScaffold({
             </article>
 
             <article className="rounded-xl border border-rose-200 bg-rose-50 p-4 dark:border-rose-900/50 dark:bg-rose-950/30">
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-rose-900 dark:text-rose-100">
+              <h3 className="text-sm font-semibold tracking-wide text-rose-900 uppercase dark:text-rose-100">
                 Important Dates
               </h3>
               <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-rose-900/80 dark:text-rose-100/90">
@@ -248,7 +248,7 @@ export default function CS79CModuleScaffold({
             </article>
 
             <article className="rounded-xl border border-indigo-200 bg-indigo-50 p-4 dark:border-indigo-900/50 dark:bg-indigo-950/30">
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-indigo-900 dark:text-indigo-100">
+              <h3 className="text-sm font-semibold tracking-wide text-indigo-900 uppercase dark:text-indigo-100">
                 Assessment Context
               </h3>
               <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-indigo-900/80 dark:text-indigo-100/90">
@@ -261,7 +261,7 @@ export default function CS79CModuleScaffold({
 
           <div className="grid gap-4 lg:grid-cols-2">
             <article className="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-900/40">
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-900 dark:text-white">
+              <h3 className="text-sm font-semibold tracking-wide text-gray-900 uppercase dark:text-white">
                 Course Resources From Syllabus
               </h3>
               <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-gray-700 dark:text-gray-300">
@@ -275,7 +275,7 @@ export default function CS79CModuleScaffold({
             </article>
 
             <article className="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-900/40">
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-900 dark:text-white">
+              <h3 className="text-sm font-semibold tracking-wide text-gray-900 uppercase dark:text-white">
                 Course-Wide Reference
               </h3>
               <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-gray-700 dark:text-gray-300">
@@ -284,7 +284,7 @@ export default function CS79CModuleScaffold({
                 ))}
               </ul>
               <div className="mt-4 border-t border-gray-200 pt-4 dark:border-gray-700">
-                <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                <p className="text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400">
                   Session checkpoints
                 </p>
                 <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-gray-700 dark:text-gray-300">
@@ -308,7 +308,7 @@ export default function CS79CModuleScaffold({
           <div className="space-y-4 rounded-xl border border-cyan-200 bg-cyan-50 p-5 dark:border-cyan-900/50 dark:bg-cyan-950/30">
             {task.objective ? (
               <div className="rounded-xl border border-cyan-200 bg-white/70 p-4 dark:border-cyan-800 dark:bg-slate-950/30">
-                <h4 className="text-sm font-semibold uppercase tracking-wide text-cyan-900 dark:text-cyan-100">
+                <h4 className="text-sm font-semibold tracking-wide text-cyan-900 uppercase dark:text-cyan-100">
                   Objective
                 </h4>
                 <p className="mt-2 text-sm leading-7 text-slate-700 dark:text-slate-200">
@@ -320,7 +320,7 @@ export default function CS79CModuleScaffold({
             <div className="grid gap-4 lg:grid-cols-2">
               {task.tasks && task.tasks.length > 0 ? (
                 <article className="rounded-xl border border-cyan-200 bg-white/70 p-4 dark:border-cyan-800 dark:bg-slate-950/30">
-                  <h4 className="text-sm font-semibold uppercase tracking-wide text-cyan-900 dark:text-cyan-100">
+                  <h4 className="text-sm font-semibold tracking-wide text-cyan-900 uppercase dark:text-cyan-100">
                     Task
                   </h4>
                   <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-700 dark:text-slate-200">
@@ -334,7 +334,7 @@ export default function CS79CModuleScaffold({
               {task.submissionInstructions &&
               task.submissionInstructions.length > 0 ? (
                 <article className="rounded-xl border border-cyan-200 bg-white/70 p-4 dark:border-cyan-800 dark:bg-slate-950/30">
-                  <h4 className="text-sm font-semibold uppercase tracking-wide text-cyan-900 dark:text-cyan-100">
+                  <h4 className="text-sm font-semibold tracking-wide text-cyan-900 uppercase dark:text-cyan-100">
                     Submission Instructions
                   </h4>
                   <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-700 dark:text-slate-200">
@@ -348,7 +348,7 @@ export default function CS79CModuleScaffold({
 
             {task.whyItMatters ? (
               <div className="rounded-xl border border-cyan-200 bg-white/70 p-4 dark:border-cyan-800 dark:bg-slate-950/30">
-                <h4 className="text-sm font-semibold uppercase tracking-wide text-cyan-900 dark:text-cyan-100">
+                <h4 className="text-sm font-semibold tracking-wide text-cyan-900 uppercase dark:text-cyan-100">
                   {task.whyItMattersHeading ?? "Why It Matters"}
                 </h4>
                 <p className="mt-2 text-sm leading-7 text-slate-700 dark:text-slate-200">
@@ -382,7 +382,7 @@ export default function CS79CModuleScaffold({
                     key={`${task.id}-${section.title}`}
                     className="rounded-xl border border-cyan-200 bg-white/70 p-4 dark:border-cyan-800 dark:bg-slate-950/30"
                   >
-                    <h4 className="text-sm font-semibold uppercase tracking-wide text-cyan-900 dark:text-cyan-100">
+                    <h4 className="text-sm font-semibold tracking-wide text-cyan-900 uppercase dark:text-cyan-100">
                       {section.title}
                     </h4>
                     <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-700 dark:text-slate-200">

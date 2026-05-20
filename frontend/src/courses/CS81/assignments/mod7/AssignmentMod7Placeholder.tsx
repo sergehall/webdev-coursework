@@ -19,7 +19,7 @@ export default function AssignmentMod7Placeholder() {
           components and managing state declaratively. We'll be using functional
           components throughout this course.
         </p>
-        <p className="mt-2 text-sm italic text-sky-700 dark:text-sky-300">
+        <p className="mt-2 text-sm text-sky-700 italic dark:text-sky-300">
           JSX might look like HTML, but it's actually JavaScript – don't forget
           the curly braces!
         </p>

@@ -4,7 +4,7 @@ const ClientVsServerExplanation = () => {
   return (
     <div className="space-y-4">
       {/* Task prompt block – styled as a highlighted note */}
-      <div className="rounded-md border-l-4 border-yellow-400 bg-yellow-50 px-4 py-2 text-[0.95rem] font-medium italic text-yellow-800 dark:border-gray-600 dark:bg-gray-500/40 dark:text-gray-100">
+      <div className="rounded-md border-l-4 border-yellow-400 bg-yellow-50 px-4 py-2 text-[0.95rem] font-medium text-yellow-800 italic dark:border-gray-600 dark:bg-gray-500/40 dark:text-gray-100">
         <strong>Task:</strong> Describe the difference between client-side
         programming and server-side programming.
       </div>

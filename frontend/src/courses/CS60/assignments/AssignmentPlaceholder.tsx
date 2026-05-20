@@ -35,7 +35,7 @@ export default function AssignmentPlaceholder() {
         </ul>
       </div>
 
-      <div className="text-sm italic text-gray-700 dark:text-gray-400">
+      <div className="text-sm text-gray-700 italic dark:text-gray-400">
         📘 Select a module from the navigation to begin working on assignments
         and problem sets for this course.
       </div>

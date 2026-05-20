@@ -68,7 +68,7 @@ export default function Chapter6Overview() {
         </ul>
       </div>
 
-      <p className="text-sm italic text-gray-700 dark:text-gray-400">
+      <p className="text-sm text-gray-700 italic dark:text-gray-400">
         🧠 Normalization is essential for building clean, reliable database
         designs—mastering these rules will make your schemas easier to maintain
         and query.

@@ -98,7 +98,7 @@ export default function Chapter4Overview() {
         </div>
       </div>
 
-      <p className="text-sm italic text-gray-700 dark:text-gray-400">
+      <p className="text-sm text-gray-700 italic dark:text-gray-400">
         🧠 ER modeling is the bridge between real-world requirements and clean
         relational database design—mastering it will make normalization and SQL
         much easier.

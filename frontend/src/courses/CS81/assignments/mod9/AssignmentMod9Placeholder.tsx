@@ -33,7 +33,7 @@ export default function AssignmentMod9Placeholder() {
         </ul>
       </div>
 
-      <div className="text-sm italic text-sky-800 dark:text-sky-300">
+      <div className="text-sm text-sky-800 italic dark:text-sky-300">
         ⚡ Events make your UI responsive; effects make it dynamic. Master both
         to unlock the power of React.
       </div>

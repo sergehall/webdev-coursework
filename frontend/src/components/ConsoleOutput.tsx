@@ -55,7 +55,7 @@ export function ConsoleOutput({ logs, onInput, awaitingPrompt }: Props) {
         aria-live="polite"
       >
         {joined ? (
-          <pre className="whitespace-pre-wrap break-words">{joined}</pre>
+          <pre className="break-words whitespace-pre-wrap">{joined}</pre>
         ) : (
           <div className="opacity-60">console is empty…</div>
         )}
@@ -67,7 +67,7 @@ export function ConsoleOutput({ logs, onInput, awaitingPrompt }: Props) {
           onSubmit={handleSubmit}
           className="flex items-center gap-2 border-t border-slate-800 bg-[#0f0f10] p-2"
         >
-          <span className="select-none font-mono text-xs text-slate-400">
+          <span className="font-mono text-xs text-slate-400 select-none">
             {awaitingPrompt || "Input:"}
           </span>
           <input

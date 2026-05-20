@@ -97,7 +97,7 @@ const NetworkTopologies = () => {
         </ul>
       </div>
 
-      <div className="text-sm italic text-gray-700 dark:text-gray-400">
+      <div className="text-sm text-gray-700 italic dark:text-gray-400">
         🗓️ All Week 1 items shown in the screenshot are due on{" "}
         <strong>{dueDate}</strong>.
       </div>

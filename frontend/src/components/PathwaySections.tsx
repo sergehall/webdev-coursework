@@ -13,7 +13,7 @@ const PathwaySections = () => {
   };
 
   return (
-    <div className="divide-y divide-gray-200 rounded-xl border bg-gradient-to-t from-gray-100 via-gray-200 to-gray-300 px-4 py-0 dark:border-gray-700 dark:from-gray-800 dark:via-gray-800 dark:to-gray-900 sm:px-5">
+    <div className="divide-y divide-gray-200 rounded-xl border bg-gradient-to-t from-gray-100 via-gray-200 to-gray-300 px-4 py-0 sm:px-5 dark:border-gray-700 dark:from-gray-800 dark:via-gray-800 dark:to-gray-900">
       {programSections.map((section, idx) => {
         const isOpen = openIndex === idx;
         return (
@@ -25,7 +25,7 @@ const PathwaySections = () => {
               type="button"
               aria-expanded={isOpen}
               onClick={() => toggle(idx)}
-              className="flex w-full items-center gap-3 text-left text-lg font-normal text-slate-800 outline-none dark:text-white sm:text-xl"
+              className="flex w-full items-center gap-3 text-left text-lg font-normal text-slate-800 outline-none sm:text-xl dark:text-white"
             >
               <span
                 className={`flex h-7 w-7 items-center justify-center rounded-full text-white transition-colors sm:h-8 sm:w-8 ${
@@ -38,7 +38,7 @@ const PathwaySections = () => {
             </button>
 
             {isOpen && (
-              <div className="mt-2.5 rounded-md p-2 text-sm leading-6 text-slate-700 dark:text-gray-200 sm:p-3">
+              <div className="mt-2.5 rounded-md p-2 text-sm leading-6 text-slate-700 sm:p-3 dark:text-gray-200">
                 {section.content}
               </div>
             )}

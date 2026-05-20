@@ -32,7 +32,7 @@ const CodePreviewModal = ({
       <div className="relative w-[95%] max-w-4xl rounded-lg bg-white p-6 text-sm shadow-lg dark:bg-gray-800">
         {/* Optional external close button */}
         {renderCloseButton && (
-          <div className="absolute right-3 top-2">{renderCloseButton}</div>
+          <div className="absolute top-2 right-3">{renderCloseButton}</div>
         )}
 
         {/* Optional header override or fallback to filename */}

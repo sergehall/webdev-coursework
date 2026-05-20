@@ -73,7 +73,7 @@ const WebDevMajorRequirements: React.FC = () => {
 
   return (
     <section className="w-full rounded-xl border border-gray-200 bg-white p-6 shadow-md dark:border-gray-700 dark:bg-gray-900">
-      <p className="mb-2 text-sm italic text-gray-600 dark:text-gray-400">
+      <p className="mb-2 text-sm text-gray-600 italic dark:text-gray-400">
         These are the courses required specifically for the major. General
         Education and elective requirements can be found at{" "}
         <a

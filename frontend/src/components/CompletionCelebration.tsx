@@ -35,7 +35,7 @@ export default function CompletionCelebration() {
           <Trophy className="h-8 w-8 text-white" />
         </motion.div>
 
-        <h2 className="mb-2 mt-4 text-3xl font-extrabold tracking-tight">
+        <h2 className="mt-4 mb-2 text-3xl font-extrabold tracking-tight">
           All Modules Completed!
         </h2>
 
@@ -48,7 +48,7 @@ export default function CompletionCelebration() {
           <Sparkles className="h-5 w-5 text-yellow-400" />
         </p>
 
-        <p className="text-sm italic text-gray-600 dark:text-gray-300">
+        <p className="text-sm text-gray-600 italic dark:text-gray-300">
           Your journey through the code realms is complete.
         </p>
 

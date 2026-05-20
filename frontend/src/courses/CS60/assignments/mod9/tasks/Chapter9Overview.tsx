@@ -60,7 +60,7 @@ export default function Chapter9Overview() {
         </ul>
       </div>
 
-      <p className="text-sm italic text-gray-700 dark:text-gray-400">
+      <p className="text-sm text-gray-700 italic dark:text-gray-400">
         🧠 Strong database design reduces redundancy, improves consistency, and
         makes SQL queries easier to write and maintain.
       </p>

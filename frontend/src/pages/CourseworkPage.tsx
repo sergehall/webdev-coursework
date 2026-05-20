@@ -40,7 +40,7 @@ export default function CourseworkPage() {
           Web Developer Coursework & Assignments
         </h1>
 
-        <h3 className="mb-6 text-xl font-semibold text-gray-800 dark:text-white sm:text-2xl">
+        <h3 className="mb-6 text-xl font-semibold text-gray-800 sm:text-2xl dark:text-white">
           Select a completed course to access its assignments
         </h3>
 

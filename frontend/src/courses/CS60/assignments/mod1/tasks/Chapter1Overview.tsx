@@ -76,7 +76,7 @@ export default function Chapter1Overview() {
         </ul>
       </div>
 
-      <p className="text-sm italic text-gray-700 dark:text-gray-400">
+      <p className="text-sm text-gray-700 italic dark:text-gray-400">
         📘 Completing these setup steps early will ensure you are ready for SQL,
         data modeling, and problem set work in the upcoming chapters.
       </p>

@@ -18,7 +18,7 @@ const FavoriteDailyDeals = () => {
   return (
     <div className="space-y-4">
       {/* Task prompt block */}
-      <div className="rounded-md border-l-4 border-yellow-400 bg-yellow-50 px-4 py-2 text-[0.95rem] font-medium italic text-yellow-800 dark:border-gray-600 dark:bg-gray-500/40 dark:text-gray-100">
+      <div className="rounded-md border-l-4 border-yellow-400 bg-yellow-50 px-4 py-2 text-[0.95rem] font-medium text-yellow-800 italic dark:border-gray-600 dark:bg-gray-500/40 dark:text-gray-100">
         <strong>Task:</strong> Create an HTML5 document that contains links to
         your five favorite daily deals websites (possibly Groupon, Living
         Social, etc.). Your page should contain the heading “My Favorite Daily
@@ -62,7 +62,7 @@ const FavoriteDailyDeals = () => {
             </ul>
           </div>
         ) : (
-          <pre className="whitespace-pre-wrap text-sm text-gray-100 dark:text-gray-100">
+          <pre className="text-sm whitespace-pre-wrap text-gray-100 dark:text-gray-100">
             &lt;!-- HTML file preview hidden. Click "Show Preview" --&gt;
           </pre>
         )}

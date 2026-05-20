@@ -55,7 +55,7 @@ export const TagBadge = ({ label }: { label: TagIconLabel }) => {
         <div
           ref={refs.setFloating} // Tooltip element
           style={floatingStyles} // Inline styles calculated by Floating UI
-          className="z-50 whitespace-nowrap rounded-md bg-white px-3 py-1.5 text-sm font-medium text-gray-800 shadow-lg dark:bg-gray-200 dark:text-gray-900"
+          className="z-50 rounded-md bg-white px-3 py-1.5 text-sm font-medium whitespace-nowrap text-gray-800 shadow-lg dark:bg-gray-200 dark:text-gray-900"
         >
           {label}
         </div>

@@ -19,7 +19,7 @@ export default function AssignmentMod2Placeholder() {
           self-contained scripts that follow logical flow and make use of proper
           syntax.
         </p>
-        <p className="mt-2 text-sm italic text-orange-700 dark:text-orange-300">
+        <p className="mt-2 text-sm text-orange-700 italic dark:text-orange-300">
           Clear structure is the foundation of every good program.
         </p>
       </div>

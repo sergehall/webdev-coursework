@@ -112,7 +112,7 @@ export default function Chapter2Overview() {
         </div>
       )}
 
-      <p className="text-sm italic text-gray-700 dark:text-gray-400">
+      <p className="text-sm text-gray-700 italic dark:text-gray-400">
         🧠 Strong data modeling skills make everything else easier—ER modeling,
         schema design, normalization, and writing correct SQL.
       </p>

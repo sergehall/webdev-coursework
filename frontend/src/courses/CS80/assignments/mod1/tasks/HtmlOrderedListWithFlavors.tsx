@@ -8,7 +8,7 @@ const HtmlOrderedListWithFlavors = () => {
   return (
     <div className="space-y-4">
       {/* Task prompt block */}
-      <div className="rounded-md border-l-4 border-yellow-400 bg-yellow-50 px-4 py-2 text-[0.95rem] font-medium italic text-yellow-800 dark:border-gray-600 dark:bg-gray-500/40 dark:text-gray-100">
+      <div className="rounded-md border-l-4 border-yellow-400 bg-yellow-50 px-4 py-2 text-[0.95rem] font-medium text-yellow-800 italic dark:border-gray-600 dark:bg-gray-500/40 dark:text-gray-100">
         <strong>Task:</strong> Create an HTML5 document containing an ordered
         list of three items—ice cream, soft serve and frozen yogurt. Each
         ordered list item should contain a nested, unordered list of your
@@ -60,7 +60,7 @@ const HtmlOrderedListWithFlavors = () => {
             </ol>
           </div>
         ) : (
-          <pre className="whitespace-pre-wrap text-sm text-gray-100 dark:text-gray-100">
+          <pre className="text-sm whitespace-pre-wrap text-gray-100 dark:text-gray-100">
             {`<ol>
   <li>Ice Cream
     <ul>

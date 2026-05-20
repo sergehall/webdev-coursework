@@ -4,7 +4,7 @@ import { tagIcons } from "./TagIcons";
 
 export const TagLegend = () => {
   return (
-    <section className="w-full rounded-xl border bg-gradient-to-t from-gray-100 via-gray-200 to-gray-300 px-4 py-2 shadow-md dark:border-gray-700 dark:from-gray-800 dark:via-gray-800 dark:to-gray-900 sm:px-5 sm:py-2">
+    <section className="w-full rounded-xl border bg-gradient-to-t from-gray-100 via-gray-200 to-gray-300 px-4 py-2 shadow-md sm:px-5 sm:py-2 dark:border-gray-700 dark:from-gray-800 dark:via-gray-800 dark:to-gray-900">
       <h2 className="mb-2 text-lg font-normal text-gray-900 dark:text-gray-100">
         Icon Key
       </h2>

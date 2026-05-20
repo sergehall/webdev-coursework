@@ -64,7 +64,7 @@ const AutocompleteDayForm = () => {
 
   return (
     <div className="space-y-6">
-      <div className="w-full rounded-md border-l-4 border-yellow-400 bg-yellow-50 px-4 py-2 text-[0.95rem] font-medium italic text-yellow-800 dark:border-gray-600 dark:bg-gray-500/40 dark:text-gray-100">
+      <div className="w-full rounded-md border-l-4 border-yellow-400 bg-yellow-50 px-4 py-2 text-[0.95rem] font-medium text-yellow-800 italic dark:border-gray-600 dark:bg-gray-500/40 dark:text-gray-100">
         <strong>Task:</strong> Create an autocomplete input element with an
         associated <code>&lt;datalist&gt;</code> that contains the days of the
         week.
@@ -94,7 +94,7 @@ const AutocompleteDayForm = () => {
                 onChange={(e) => setSelectedDay(e.target.value)}
                 placeholder="Start typing..."
                 required
-                className="w-full rounded-md border border-gray-300 bg-gray-100 px-3 py-2 text-gray-900 focus:outline-none focus:ring focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:ring-blue-600"
+                className="w-full rounded-md border border-gray-300 bg-gray-100 px-3 py-2 text-gray-900 focus:ring focus:ring-blue-300 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:ring-blue-600"
               />
               <datalist id="days">
                 {Object.keys(funnyResponses).map((day) => (

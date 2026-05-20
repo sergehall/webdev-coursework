@@ -89,7 +89,7 @@ const TechGrid = memo(function TechGrid({
             </span>
 
             {/* Left-aligned label improves balance for multi-line text */}
-            <span className="text-left text-sm font-medium leading-snug">
+            <span className="text-left text-sm leading-snug font-medium">
               {label}
             </span>
           </a>
@@ -312,7 +312,7 @@ export function HomePageContent({
       <div
         aria-live="polite"
         className={cn(
-          "pointer-events-none absolute left-1/2 top-3 z-20 -translate-x-1/2 rounded-full",
+          "pointer-events-none absolute top-3 left-1/2 z-20 -translate-x-1/2 rounded-full",
           "border border-sky-200 bg-white/90 px-4 py-2 text-xs font-semibold text-sky-700 shadow-sm",
           "transition-all duration-200 motion-reduce:transition-none",
           "dark:border-sky-900 dark:bg-slate-900/90 dark:text-sky-200",
@@ -335,11 +335,11 @@ export function HomePageContent({
           Welcome to the Web Developer Learning Portal
         </h1>
 
-        <h2 className="mb-4 text-lg font-semibold text-gray-800 dark:text-white sm:text-2xl">
+        <h2 className="mb-4 text-lg font-semibold text-gray-800 sm:text-2xl dark:text-white">
           Explore the technologies you'll master throughout each course module.
         </h2>
 
-        <p className="mb-8 text-sm italic text-gray-500 dark:text-gray-400">
+        <p className="mb-8 text-sm text-gray-500 italic dark:text-gray-400">
           Select a course to view its full technology stack.
         </p>
 

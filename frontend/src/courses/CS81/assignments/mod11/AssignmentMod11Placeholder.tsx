@@ -29,7 +29,7 @@ export default function AssignmentMod11Placeholder() {
         </ul>
       </div>
 
-      <div className="text-sm italic text-cyan-800 dark:text-cyan-300">
+      <div className="text-sm text-cyan-800 italic dark:text-cyan-300">
         🌐 APIs allow your app to connect to the world. Practice working with
         async data the right way.
       </div>

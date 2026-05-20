@@ -41,7 +41,7 @@ export default function AssignmentMod12Placeholder() {
         </ul>
       </div>
 
-      <div className="text-sm italic text-fuchsia-800 dark:text-fuchsia-300">
+      <div className="text-sm text-fuchsia-800 italic dark:text-fuchsia-300">
         🎓 This is your chance to demonstrate your full-stack front-end skills —
         be creative, clean, and proud of your code!
       </div>

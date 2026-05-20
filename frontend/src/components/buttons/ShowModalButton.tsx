@@ -23,6 +23,7 @@ export default function ShowModalButton({
   if (!isOpen || !files.length) return null;
 
   const codeExtensions = [".tsx", ".ts", ".jsx", ".js"];
+  const imageExtensions = [".png", ".jpg", ".jpeg", ".webp", ".gif"];
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
@@ -71,6 +72,12 @@ export default function ShowModalButton({
                     src={file.fileUrl}
                     title={file.filename}
                     className="h-[600px] w-full rounded border bg-gray-100 dark:bg-gray-800"
+                  />
+                ) : imageExtensions.some((ext) => filename.endsWith(ext)) ? (
+                  <img
+                    src={file.fileUrl}
+                    alt={file.filename}
+                    className="mx-auto max-h-[78vh] max-w-full rounded border bg-white object-contain dark:border-gray-600"
                   />
                 ) : (
                   <p className="text-gray-500">Unsupported file type</p>
