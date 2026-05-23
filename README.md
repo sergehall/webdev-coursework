@@ -159,12 +159,14 @@ webdev-coursework/
 
 ### 1. Prerequisites
 
-- **Node.js**: `24.14.0`
-- **Yarn**: `4.12.0` (via Corepack)
+- **Node.js**: `24.15.0`
+- **Yarn**: `4.14.1` (via Corepack)
 
 ```bash
+nvm use
 node -v
 yarn -v
+yarn runtime:check
 ```
 
 ### 2. Clone and install
@@ -173,7 +175,7 @@ yarn -v
 git clone https://github.com/sergehall/webdev-coursework
 cd webdev-coursework
 corepack enable
-corepack prepare yarn@4.12.0 --activate
+corepack prepare yarn@4.14.1 --activate
 yarn install:strict
 ```
 

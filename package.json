@@ -11,6 +11,7 @@
   "scripts": {
     "install:strict": "yarn install --immutable",
     "install:fresh": "yarn install",
+    "runtime:check": "node scripts/check-node-runtime.mjs",
     "dev": "concurrently \"yarn dev:frontend\" \"yarn dev:backend\"",
     "dev:frontend": "cross-env VITE_API_URL= yarn workspace frontend start:dev",
     "dev:backend": "yarn workspace backend start:dev",
@@ -30,7 +31,7 @@
     "heroku-postbuild": "yarn workspace frontend build:bundle && cp -r frontend/dist/. backend/public/ && yarn --cwd backend build"
   },
   "engines": {
-    "node": "24.14.1",
+    "node": "24.x",
     "yarn": "4.x"
   },
   "dependencies": {
