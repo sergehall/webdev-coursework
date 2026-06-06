@@ -89,7 +89,7 @@ export default function CourseworkPage() {
 
                 {/* If the course is not completed, we display a label. */}
                 {!isCompleted && (
-                  <div className="mt-auto inline-flex w-fit items-center gap-2 rounded-full border border-amber-300/80 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700 dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-300">
+                  <div className="mt-auto inline-flex w-fit items-center gap-2 rounded-full border border-yellow-300/50 bg-yellow-50/70 px-2.5 py-1 text-xs font-semibold text-yellow-700/75 dark:border-yellow-400/25 dark:bg-yellow-400/5 dark:text-yellow-200/70">
                     <XCircle className="h-4 w-4" />
                     Not Yet Completed
                   </div>
