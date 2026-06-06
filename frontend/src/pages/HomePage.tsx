@@ -331,7 +331,7 @@ export function HomePageContent({
             pullDistance > 0 ? `translateY(${pullDistance}px)` : undefined,
         }}
       >
-        <h1 className="mb-10 bg-gradient-to-r from-indigo-500 via-sky-400 to-cyan-400 bg-clip-text text-5xl font-extrabold text-transparent drop-shadow-lg">
+        <h1 className="mb-10 bg-gradient-to-r from-indigo-500 via-sky-400 to-cyan-400 bg-clip-text text-4xl leading-tight font-extrabold text-transparent drop-shadow-lg sm:text-5xl">
           Welcome to the Web Developer Learning Portal
         </h1>
 

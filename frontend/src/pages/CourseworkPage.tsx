@@ -36,7 +36,7 @@ export default function CourseworkPage() {
         transition={{ duration: 0.8 }}
         className="mx-auto w-full max-w-6xl text-center"
       >
-        <h1 className="mb-10 bg-gradient-to-r from-indigo-500 via-sky-400 to-cyan-400 bg-clip-text text-5xl font-extrabold text-transparent drop-shadow-lg">
+        <h1 className="mb-10 bg-gradient-to-r from-indigo-500 via-sky-400 to-cyan-400 bg-clip-text text-4xl leading-tight font-extrabold text-transparent drop-shadow-lg sm:text-5xl">
           Web Developer Coursework & Assignments
         </h1>
 
@@ -55,10 +55,10 @@ export default function CourseworkPage() {
 
             const cardContent = (
               <div
-                className={`group relative flex h-full flex-col justify-between overflow-hidden rounded-xl border p-4 text-left shadow-sm transition-all duration-300 hover:shadow-md ${
+                className={`group relative flex h-full min-h-28 flex-col justify-between overflow-hidden rounded-xl border p-4 text-left shadow-sm transition-all duration-300 hover:shadow-md ${
                   isCompleted
                     ? "border-green-400 bg-gradient-to-l from-emerald-100 to-emerald-200 dark:border-green-800 dark:from-emerald-800 dark:via-emerald-900 dark:to-emerald-950"
-                    : "border-gray-300 bg-gradient-to-l from-gray-100 via-gray-200 to-gray-300 dark:border-gray-700 dark:from-gray-800 dark:via-gray-900 dark:to-gray-950"
+                    : "border-amber-300 bg-gradient-to-l from-amber-50 via-gray-100 to-gray-200 dark:border-amber-500/40 dark:from-slate-800 dark:via-slate-900 dark:to-gray-950"
                 }`}
               >
                 {/* When hovering over, a description is displayed. */}
@@ -71,7 +71,7 @@ export default function CourseworkPage() {
                     className={`text-sm font-medium ${
                       isCompleted
                         ? "text-gray-800 dark:text-white"
-                        : "text-gray-500 dark:text-gray-400"
+                        : "text-gray-700 dark:text-gray-300"
                     }`}
                   >
                     {course.code}
@@ -80,7 +80,7 @@ export default function CourseworkPage() {
                     className={`text-lg font-bold ${
                       isCompleted
                         ? "text-gray-900 dark:text-white"
-                        : "text-gray-500 dark:text-gray-400"
+                        : "text-gray-800 dark:text-gray-100"
                     }`}
                   >
                     {course.title}
@@ -89,7 +89,7 @@ export default function CourseworkPage() {
 
                 {/* If the course is not completed, we display a label. */}
                 {!isCompleted && (
-                  <div className="mt-auto flex items-center gap-2 text-xs font-medium text-gray-400 dark:text-gray-500">
+                  <div className="mt-auto inline-flex w-fit items-center gap-2 rounded-full border border-amber-300/80 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700 dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-300">
                     <XCircle className="h-4 w-4" />
                     Not Yet Completed
                   </div>
