@@ -58,7 +58,7 @@ export default function CourseworkPage() {
                 className={`group relative flex h-full min-h-28 flex-col justify-between overflow-hidden rounded-xl border p-4 text-left shadow-sm transition-all duration-300 hover:shadow-md ${
                   isCompleted
                     ? "border-green-400 bg-gradient-to-l from-emerald-100 to-emerald-200 dark:border-green-800 dark:from-emerald-800 dark:via-emerald-900 dark:to-emerald-950"
-                    : "border-amber-300 bg-gradient-to-l from-amber-50 via-gray-100 to-gray-200 dark:border-amber-500/40 dark:from-slate-800 dark:via-slate-900 dark:to-gray-950"
+                    : "border-gray-300 bg-gradient-to-l from-gray-50 via-gray-100 to-gray-200 hover:border-yellow-300 dark:border-gray-700 dark:from-slate-800 dark:via-slate-900 dark:to-gray-950 dark:hover:border-yellow-400/45"
                 }`}
               >
                 {/* When hovering over, a description is displayed. */}
