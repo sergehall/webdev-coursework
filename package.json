@@ -35,8 +35,7 @@
     "heroku-postbuild": "yarn workspace frontend build:bundle && cp -r frontend/dist/. backend/public/ && yarn --cwd backend build"
   },
   "engines": {
-    "node": "24.x",
-    "yarn": "4.x"
+    "node": "24.x"
   },
   "dependencies": {
     "cors": "^2.8.5",
