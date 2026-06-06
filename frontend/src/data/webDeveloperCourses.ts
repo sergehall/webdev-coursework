@@ -32,6 +32,19 @@ export const isBaseCourse = (course: Course): course is BaseCourse =>
 
 export const courses: Course[] = [
   {
+    code: "CS 56",
+    title: "Advanced Java Programming",
+    units: 3,
+    tags: ["Not Yet Completed"],
+    description:
+      "Java is a general-purpose language for writing platform-independent robust, secure programs. This course continues where CS 55 leaves off in developing mastery of the use of Java programming language and its extensive APIs. Topics covered include exceptions, multithreading, multimedia, Input/Output, Java Database Connectivity (JDBC), Servlets, Remote Method Invocation (RMI), and networking.",
+    descriptionSummary:
+      "Continues Java programming beyond CS 55 with advanced APIs and platform-independent application development. Covers exceptions, multithreading, multimedia, I/O, JDBC, Servlets, RMI, and networking.",
+    skillsAdvisory: "CS 55",
+    prerequisite: "None",
+    transfersTo: "UC, CSU",
+  },
+  {
     code: "CS 60",
     title: "Database Concepts and Applications",
     units: 3,

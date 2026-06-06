@@ -5,6 +5,7 @@ export const courseGradients = {
   python: "from-teal-200 to-emerald-300 dark:from-teal-900 dark:to-emerald-950",
   js: "from-lime-200 to-emerald-300 dark:from-lime-900 dark:to-emerald-950",
   php: "from-green-200 to-teal-300 dark:from-green-900 dark:to-teal-950",
+  java: "from-orange-200 to-amber-300 dark:from-orange-900 dark:to-amber-950",
   database: "from-rose-200 to-red-300 dark:from-rose-900 dark:to-red-950",
   internetJs:
     "from-emerald-200 to-green-300 dark:from-emerald-900 dark:to-green-950",
@@ -18,6 +19,7 @@ export const courseGradients = {
 export type CourseGradientKey = keyof typeof courseGradients;
 
 export const COURSE_THEME_BY_NAME = {
+  "CS 56 - Advanced Java Programming": "java",
   "CS 60 - Database Concepts & Applications": "database",
   "CS 70 - Network Fundamentals and Architecture": "network",
   "CS 79A - Introduction to Cloud Computing": "cloud",

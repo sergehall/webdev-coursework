@@ -64,12 +64,30 @@ describe("<CourseworkPage />", () => {
   it("keeps unavailable coursework blocks non-clickable", () => {
     renderCourseworkPage();
 
+    expect(screen.getByText(/Advanced Java Programming/i)).toBeInTheDocument();
     expect(screen.getByText(/PHP Programming/i)).toBeInTheDocument();
 
     expect(
       screen.queryByRole("link", {
+        name: /CS 56[\s\S]*Advanced Java Programming/i,
+      })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", {
         name: /CS 85[\s\S]*PHP Programming/i,
       })
+    ).not.toBeInTheDocument();
+  });
+
+  it("shows all 10 selected coursework cards without loading more", () => {
+    renderCourseworkPage();
+
+    expect(screen.getByText(/Advanced Java Programming/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Security in Amazon Web Services/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /load more/i })
     ).not.toBeInTheDocument();
   });
 });

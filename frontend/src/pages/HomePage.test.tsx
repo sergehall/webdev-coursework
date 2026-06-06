@@ -7,9 +7,14 @@ import * as HomePageModule from "./HomePage";
 const HomePage = HomePageModule.default;
 
 describe("<HomePage />", () => {
-  it("shows new course accordions for CS 85, CS 79D, and CS 79C", () => {
+  it("shows new course accordions for CS 56, CS 85, CS 79D, and CS 79C", () => {
     render(<HomePage />);
 
+    expect(
+      screen.getByRole("button", {
+        name: /CS 56 - Advanced Java Programming/i,
+      })
+    ).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: /CS 85 - PHP Programming/i })
     ).toBeInTheDocument();
@@ -48,6 +53,28 @@ describe("<HomePage />", () => {
     expect(
       screen.queryByText(/PHP Syntax, Control Flow & Reusable Functions/i)
     ).not.toBeInTheDocument();
+  });
+
+  it("shows the expanded CS 56 Java stack", async () => {
+    const user = userEvent.setup();
+
+    render(<HomePage />);
+
+    await user.click(
+      screen.getByRole("button", {
+        name: /CS 56 - Advanced Java Programming/i,
+      })
+    );
+
+    expect(
+      screen.getByText(/Exception Handling and Robust Program Design/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/Java Database Connectivity \(JDBC\)/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/Remote Method Invocation \(RMI\)/i)
+    ).toBeInTheDocument();
   });
 
   it("shows the expanded CS 79C AWS stack from the 10 modules", async () => {

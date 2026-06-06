@@ -9,6 +9,56 @@ export interface Tech {
 }
 
 export const technologies = {
+  "CS 56 - Advanced Java Programming": [
+    {
+      icon: "Code2",
+      color: "text-orange-600",
+      label: "Advanced Java Language Features",
+      url: "https://docs.oracle.com/javase/tutorial/java/",
+    },
+    {
+      icon: "BadgeHelp",
+      color: "text-red-600",
+      label: "Exception Handling and Robust Program Design",
+      url: "https://docs.oracle.com/javase/tutorial/essential/exceptions/",
+    },
+    {
+      icon: "GaugeCircle",
+      color: "text-emerald-600",
+      label: "Multithreading and Concurrent Execution",
+      url: "https://docs.oracle.com/javase/tutorial/essential/concurrency/",
+    },
+    {
+      icon: "FileText",
+      color: "text-blue-600",
+      label: "Input/Output Streams and File Processing",
+      url: "https://docs.oracle.com/javase/tutorial/essential/io/",
+    },
+    {
+      icon: "Database",
+      color: "text-teal-600",
+      label: "Java Database Connectivity (JDBC)",
+      url: "https://docs.oracle.com/javase/tutorial/jdbc/",
+    },
+    {
+      icon: "Server",
+      color: "text-indigo-600",
+      label: "Servlets and Server-Side Java Foundations",
+      url: "https://jakarta.ee/specifications/servlet/",
+    },
+    {
+      icon: "Route",
+      color: "text-purple-600",
+      label: "Remote Method Invocation (RMI)",
+      url: "https://docs.oracle.com/javase/tutorial/rmi/",
+    },
+    {
+      icon: "Cloud",
+      color: "text-sky-600",
+      label: "Networking APIs and Distributed Programs",
+      url: "https://docs.oracle.com/javase/tutorial/networking/",
+    },
+  ],
   "CS 60 - Database Concepts & Applications": [
     {
       icon: "Database",

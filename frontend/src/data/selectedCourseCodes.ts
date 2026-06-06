@@ -3,6 +3,7 @@
 import type { CourseCode } from "@/data/types/CourseCode";
 
 export const selectedCourseCodes: readonly CourseCode[] = [
+  "CS 56",
   "CS 60",
   "CS 70",
   "CS 79A",
