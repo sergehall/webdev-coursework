@@ -733,16 +733,16 @@ export default function ProjectsPage() {
         </p>
       </header>
 
-      <section className="grid grid-cols-3 gap-2 rounded-lg border border-gray-200 bg-white p-3 shadow-sm sm:gap-5 sm:p-5 dark:border-gray-700 dark:bg-gray-800">
+      <section className="grid grid-cols-3 gap-2 rounded-lg border border-gray-200 bg-white p-3 shadow-sm sm:gap-4 sm:p-4 dark:border-gray-700 dark:bg-gray-800">
         {showcaseStats.map((stat) => (
-          <div key={stat.label} className="min-w-0 space-y-1">
-            <p className="text-base leading-tight font-extrabold break-words text-gray-950 sm:text-3xl dark:text-white">
+          <div key={stat.label} className="min-w-0 space-y-0.5 sm:space-y-1">
+            <p className="text-base leading-tight font-extrabold break-words text-gray-950 sm:text-2xl dark:text-white">
               {stat.value}
             </p>
-            <p className="text-[11px] leading-4 font-bold text-gray-800 sm:text-sm dark:text-gray-100">
+            <p className="text-[11px] leading-4 font-bold text-gray-800 sm:text-xs dark:text-gray-100">
               {stat.label}
             </p>
-            <p className="hidden text-xs leading-5 text-gray-600 sm:block dark:text-gray-300">
+            <p className="hidden text-[11px] leading-4 text-gray-600 sm:block dark:text-gray-300">
               {stat.description}
             </p>
           </div>
