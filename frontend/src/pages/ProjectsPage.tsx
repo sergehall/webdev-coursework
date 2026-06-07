@@ -7,6 +7,8 @@ import {
 } from "react";
 import {
   BookOpen,
+  ChevronDown,
+  ChevronUp,
   ExternalLink,
   GitBranch,
   Image as ImageIcon,
@@ -128,6 +130,34 @@ function hasMatchingProject(
   );
 }
 
+function useIsCompactProjectsLayout() {
+  const [isCompact, setIsCompact] = useState(() => {
+    if (typeof window === "undefined" || !window.matchMedia) {
+      return false;
+    }
+
+    return window.matchMedia("(max-width: 767px)").matches;
+  });
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) {
+      return;
+    }
+
+    const mediaQuery = window.matchMedia("(max-width: 767px)");
+    const updateLayout = () => setIsCompact(mediaQuery.matches);
+
+    updateLayout();
+    mediaQuery.addEventListener("change", updateLayout);
+
+    return () => {
+      mediaQuery.removeEventListener("change", updateLayout);
+    };
+  }, []);
+
+  return isCompact;
+}
+
 function ProjectLink({
   href,
   label,
@@ -157,14 +187,61 @@ function ProjectLink({
   );
 }
 
+function ProjectLinks({
+  project,
+  tone = "dark",
+}: {
+  readonly project: ProjectShowcaseItem;
+  readonly tone?: "default" | "dark";
+}) {
+  return (
+    <div className="flex flex-wrap gap-3">
+      {project.liveUrl && (
+        <ProjectLink
+          href={project.liveUrl}
+          label="Live site"
+          icon={<ExternalLink className="h-4 w-4" aria-hidden="true" />}
+          tone={tone}
+        />
+      )}
+      {project.sourceUrl && (
+        <ProjectLink
+          href={project.sourceUrl}
+          label="Source"
+          icon={<SiGithub className="h-4 w-4" aria-hidden="true" />}
+          tone={tone}
+        />
+      )}
+      {project.docsUrl && (
+        <ProjectLink
+          href={project.docsUrl}
+          label="Docs"
+          icon={<BookOpen className="h-4 w-4" aria-hidden="true" />}
+          tone={tone}
+        />
+      )}
+      {project.architectureUrl && (
+        <ProjectLink
+          href={project.architectureUrl}
+          label="Architecture"
+          icon={<GitBranch className="h-4 w-4" aria-hidden="true" />}
+          tone={tone}
+        />
+      )}
+    </div>
+  );
+}
+
 function ProjectPreviewButton({
   project,
   index,
   onPreview,
+  compact = false,
 }: {
   readonly project: ProjectShowcaseItem;
   readonly index: number;
   readonly onPreview: (project: ProjectShowcaseItem) => void;
+  readonly compact?: boolean;
 }) {
   const displayNumber = String(index + 1).padStart(2, "0");
 
@@ -173,7 +250,12 @@ function ProjectPreviewButton({
       type="button"
       onClick={() => onPreview(project)}
       aria-label={`Preview ${project.title} screenshot`}
-      className="group relative aspect-[500/380] min-h-[280px] w-full overflow-hidden border-b border-white/10 bg-slate-950 text-left text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-offset-2 lg:min-h-[380px]"
+      className={cn(
+        "group relative aspect-[500/380] w-full overflow-hidden bg-slate-950 text-left text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-offset-2",
+        compact
+          ? "border-b border-gray-200 dark:border-gray-700"
+          : "min-h-[280px] border-b border-white/10 lg:min-h-[380px]"
+      )}
     >
       <img
         src={project.imageUrl}
@@ -183,41 +265,55 @@ function ProjectPreviewButton({
         loading={index === 0 ? "eager" : "lazy"}
         className="absolute inset-0 h-full w-full object-cover transition duration-300 group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
       />
-      <span className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/10 to-slate-950/45" />
+      {!compact && (
+        <>
+          <span className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/10 to-slate-950/45" />
 
-      <span className="relative z-10 flex h-full min-h-[280px] flex-col justify-between p-5 lg:min-h-[380px]">
-        <span className="flex items-center justify-between gap-4">
-          <span className="inline-flex h-11 w-11 items-center justify-center rounded border border-white/15 bg-slate-950/45 text-sm font-bold shadow-sm backdrop-blur">
-            {displayNumber}
-          </span>
-          <span
-            className={cn(
-              "inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold shadow-sm backdrop-blur",
-              statusStyles[project.status]
-            )}
-          >
-            {statusLabels[project.status]}
-          </span>
-        </span>
+          <span className="relative z-10 flex h-full min-h-[280px] flex-col justify-between p-5 lg:min-h-[380px]">
+            <span className="flex items-center justify-between gap-4">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded border border-white/15 bg-slate-950/45 text-sm font-bold shadow-sm backdrop-blur">
+                {displayNumber}
+              </span>
+              <span
+                className={cn(
+                  "inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold shadow-sm backdrop-blur",
+                  statusStyles[project.status]
+                )}
+              >
+                {statusLabels[project.status]}
+              </span>
+            </span>
 
-        <span className="max-w-sm space-y-2">
-          <span className="block text-xs font-bold tracking-wide text-sky-100 uppercase">
-            {project.previewLabel}
+            <span className="max-w-sm space-y-2">
+              <span className="block text-xs font-bold tracking-wide text-sky-100 uppercase">
+                {project.previewLabel}
+              </span>
+              <span className="block text-sm leading-6 text-slate-100">
+                {project.previewDescription}
+              </span>
+              <span className="inline-flex items-center gap-2 text-xs font-semibold text-white/85">
+                <ImageIcon className="h-4 w-4" aria-hidden="true" />
+                Click to enlarge
+              </span>
+            </span>
           </span>
-          <span className="block text-sm leading-6 text-slate-100">
-            {project.previewDescription}
-          </span>
-          <span className="inline-flex items-center gap-2 text-xs font-semibold text-white/85">
-            <ImageIcon className="h-4 w-4" aria-hidden="true" />
-            Click to enlarge
-          </span>
-        </span>
-      </span>
+        </>
+      )}
     </button>
   );
 }
 
-function ProjectMediaPanel({ project, index, onPreview }: ProjectCardProps) {
+type ProjectMediaPanelProps = {
+  readonly project: ProjectShowcaseItem;
+  readonly index: number;
+  readonly onPreview: (project: ProjectShowcaseItem) => void;
+};
+
+function ProjectMediaPanel({
+  project,
+  index,
+  onPreview,
+}: ProjectMediaPanelProps) {
   return (
     <div className="flex h-full flex-col border-b border-gray-200 bg-white lg:border-r lg:border-b-0 dark:border-gray-700 dark:bg-gray-800">
       <ProjectPreviewButton
@@ -265,47 +361,197 @@ function ProjectMediaPanel({ project, index, onPreview }: ProjectCardProps) {
           <h3 className="text-sm font-bold text-gray-950 dark:text-white">
             Project Links
           </h3>
-          <div className="flex flex-wrap gap-3">
-            {project.liveUrl && (
-              <ProjectLink
-                href={project.liveUrl}
-                label="Live site"
-                icon={<ExternalLink className="h-4 w-4" aria-hidden="true" />}
-                tone="dark"
-              />
-            )}
-            {project.sourceUrl && (
-              <ProjectLink
-                href={project.sourceUrl}
-                label="Source"
-                icon={<SiGithub className="h-4 w-4" aria-hidden="true" />}
-                tone="dark"
-              />
-            )}
-            {project.docsUrl && (
-              <ProjectLink
-                href={project.docsUrl}
-                label="Docs"
-                icon={<BookOpen className="h-4 w-4" aria-hidden="true" />}
-                tone="dark"
-              />
-            )}
-            {project.architectureUrl && (
-              <ProjectLink
-                href={project.architectureUrl}
-                label="Architecture"
-                icon={<GitBranch className="h-4 w-4" aria-hidden="true" />}
-                tone="dark"
-              />
-            )}
-          </div>
+          <ProjectLinks project={project} tone="dark" />
         </div>
       </div>
     </div>
   );
 }
 
-function ProjectCard({ project, index, onPreview }: ProjectCardProps) {
+function ProjectIntro({ project }: { readonly project: ProjectShowcaseItem }) {
+  return (
+    <div className="space-y-3">
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-2.5 py-1 text-xs font-semibold text-gray-600 dark:border-gray-700 dark:bg-gray-900/60 dark:text-gray-300">
+          <Layers className="h-3.5 w-3.5" aria-hidden="true" />
+          {project.category}
+        </span>
+      </div>
+
+      <h2 className="text-2xl font-bold text-gray-950 dark:text-white">
+        {project.title}
+      </h2>
+      <p className="text-sm leading-6 text-gray-600 dark:text-gray-300">
+        {project.summary}
+      </p>
+    </div>
+  );
+}
+
+function ProjectDetailSections({
+  project,
+}: {
+  readonly project: ProjectShowcaseItem;
+}) {
+  return (
+    <>
+      <section aria-label={`${project.title} architecture tags`}>
+        <h3 className="mb-3 text-sm font-bold text-gray-900 dark:text-white">
+          Architecture
+        </h3>
+        <div className="flex flex-wrap gap-2">
+          {project.architectureTags.map((tag) => (
+            <span
+              key={tag}
+              className="rounded border border-cyan-100 bg-cyan-50 px-2.5 py-1 text-xs font-semibold text-cyan-800 dark:border-cyan-900/70 dark:bg-cyan-950/40 dark:text-cyan-200"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+      </section>
+
+      <section aria-label={`${project.title} build contributions`}>
+        <h3 className="mb-3 text-sm font-bold text-gray-900 dark:text-white">
+          What I Built
+        </h3>
+        <div className="grid gap-2 sm:grid-cols-2">
+          {project.contributions.map((item) => (
+            <div
+              key={`${project.id}-${item.area}`}
+              className="rounded border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-900/60"
+            >
+              <p className="text-xs font-bold text-gray-900 dark:text-white">
+                {item.area}
+              </p>
+              <p className="mt-1 text-xs leading-5 text-gray-600 dark:text-gray-300">
+                {item.detail}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <div className="grid gap-5">
+        <section
+          aria-label={`${project.title} highlights`}
+          className="rounded border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900/60"
+        >
+          <h3 className="mb-3 flex items-center gap-2 text-sm font-bold text-gray-900 dark:text-white">
+            <PencilLine className="h-4 w-4 text-sky-600" aria-hidden="true" />
+            Showcase notes
+          </h3>
+          <ul className="space-y-2 text-sm leading-6 text-gray-600 dark:text-gray-300">
+            {project.highlights.map((highlight) => (
+              <li key={highlight} className="flex gap-2">
+                <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500" />
+                <span>{highlight}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </div>
+    </>
+  );
+}
+
+function ProjectCompactDetails({
+  project,
+}: {
+  readonly project: ProjectShowcaseItem;
+}) {
+  return (
+    <div className="space-y-5 border-t border-gray-200 pt-4 dark:border-gray-700">
+      <section aria-label={`${project.title} quick project facts`}>
+        <h3 className="text-sm font-bold text-gray-950 dark:text-white">
+          Project At A Glance
+        </h3>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {project.filters.map((filter) => (
+            <span
+              key={filter}
+              className="rounded border border-gray-200 bg-gray-50 px-2.5 py-1 text-xs font-semibold text-gray-700 dark:border-gray-700 dark:bg-gray-900/70 dark:text-gray-200"
+            >
+              {filter}
+            </span>
+          ))}
+        </div>
+      </section>
+
+      <section aria-label={`${project.title} featured stack`}>
+        <h3 className="text-sm font-bold text-gray-950 dark:text-white">
+          Core Stack
+        </h3>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {project.techStack.map((tech) => (
+            <span
+              key={tech}
+              className="rounded border border-gray-200 bg-white px-2.5 py-1 text-xs font-semibold text-gray-700 dark:border-gray-700 dark:bg-gray-900/70 dark:text-gray-200"
+            >
+              {tech}
+            </span>
+          ))}
+        </div>
+      </section>
+
+      <ProjectDetailSections project={project} />
+
+      <div className="space-y-3">
+        <h3 className="text-sm font-bold text-gray-950 dark:text-white">
+          Project Links
+        </h3>
+        <ProjectLinks project={project} tone="dark" />
+      </div>
+    </div>
+  );
+}
+
+function ProjectCard({
+  project,
+  index,
+  onPreview,
+  isCompactLayout,
+  isExpanded,
+  onToggleDetails,
+}: ProjectCardProps) {
+  if (isCompactLayout) {
+    return (
+      <article className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+        <ProjectPreviewButton
+          project={project}
+          index={index}
+          onPreview={onPreview}
+          compact
+        />
+
+        <div className="flex flex-col gap-4 p-4">
+          <ProjectIntro project={project} />
+
+          <button
+            type="button"
+            aria-expanded={isExpanded}
+            aria-controls={`${project.id}-mobile-details`}
+            onClick={() => onToggleDetails(project.id)}
+            className="inline-flex min-h-10 items-center justify-center gap-2 rounded border border-gray-200 bg-gray-50 px-3 py-2 text-sm font-semibold text-gray-800 transition hover:border-sky-300 hover:bg-sky-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-offset-2 dark:border-gray-700 dark:bg-gray-900/70 dark:text-gray-100 dark:hover:border-sky-700 dark:hover:bg-gray-900"
+          >
+            Details
+            {isExpanded ? (
+              <ChevronUp className="h-4 w-4" aria-hidden="true" />
+            ) : (
+              <ChevronDown className="h-4 w-4" aria-hidden="true" />
+            )}
+          </button>
+
+          {isExpanded && (
+            <div id={`${project.id}-mobile-details`}>
+              <ProjectCompactDetails project={project} />
+            </div>
+          )}
+        </div>
+      </article>
+    );
+  }
+
   return (
     <article className="grid overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition hover:border-sky-200 hover:shadow-md lg:grid-cols-[minmax(18rem,500px)_minmax(0,1fr)] dark:border-gray-700 dark:bg-gray-800 dark:hover:border-sky-800">
       <ProjectMediaPanel
@@ -315,78 +561,8 @@ function ProjectCard({ project, index, onPreview }: ProjectCardProps) {
       />
 
       <div className="flex flex-col gap-5 p-5 sm:p-6">
-        <div className="space-y-3">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-2.5 py-1 text-xs font-semibold text-gray-600 dark:border-gray-700 dark:bg-gray-900/60 dark:text-gray-300">
-              <Layers className="h-3.5 w-3.5" aria-hidden="true" />
-              {project.category}
-            </span>
-          </div>
-
-          <h2 className="text-2xl font-bold text-gray-950 dark:text-white">
-            {project.title}
-          </h2>
-          <p className="text-sm leading-6 text-gray-600 dark:text-gray-300">
-            {project.summary}
-          </p>
-        </div>
-
-        <section aria-label={`${project.title} architecture tags`}>
-          <h3 className="mb-3 text-sm font-bold text-gray-900 dark:text-white">
-            Architecture
-          </h3>
-          <div className="flex flex-wrap gap-2">
-            {project.architectureTags.map((tag) => (
-              <span
-                key={tag}
-                className="rounded border border-cyan-100 bg-cyan-50 px-2.5 py-1 text-xs font-semibold text-cyan-800 dark:border-cyan-900/70 dark:bg-cyan-950/40 dark:text-cyan-200"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-        </section>
-
-        <section aria-label={`${project.title} build contributions`}>
-          <h3 className="mb-3 text-sm font-bold text-gray-900 dark:text-white">
-            What I Built
-          </h3>
-          <div className="grid gap-2 sm:grid-cols-2">
-            {project.contributions.map((item) => (
-              <div
-                key={`${project.id}-${item.area}`}
-                className="rounded border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-900/60"
-              >
-                <p className="text-xs font-bold text-gray-900 dark:text-white">
-                  {item.area}
-                </p>
-                <p className="mt-1 text-xs leading-5 text-gray-600 dark:text-gray-300">
-                  {item.detail}
-                </p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <div className="grid gap-5">
-          <section
-            aria-label={`${project.title} highlights`}
-            className="rounded border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900/60"
-          >
-            <h3 className="mb-3 flex items-center gap-2 text-sm font-bold text-gray-900 dark:text-white">
-              <PencilLine className="h-4 w-4 text-sky-600" aria-hidden="true" />
-              Showcase notes
-            </h3>
-            <ul className="space-y-2 text-sm leading-6 text-gray-600 dark:text-gray-300">
-              {project.highlights.map((highlight) => (
-                <li key={highlight} className="flex gap-2">
-                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500" />
-                  <span>{highlight}</span>
-                </li>
-              ))}
-            </ul>
-          </section>
-        </div>
+        <ProjectIntro project={project} />
+        <ProjectDetailSections project={project} />
       </div>
     </article>
   );
@@ -472,14 +648,21 @@ type ProjectCardProps = {
   readonly project: ProjectShowcaseItem;
   readonly index: number;
   readonly onPreview: (project: ProjectShowcaseItem) => void;
+  readonly isCompactLayout: boolean;
+  readonly isExpanded: boolean;
+  readonly onToggleDetails: (projectId: string) => void;
 };
 
 export default function ProjectsPage() {
+  const isCompactLayout = useIsCompactProjectsLayout();
   const [activeFilter, setActiveFilter] = useState<ProjectFilterOption>("All");
   const [activeLanguageFilter, setActiveLanguageFilter] =
     useState<ProjectLanguageFilterOption>("All");
   const [previewProject, setPreviewProject] =
     useState<ProjectShowcaseItem | null>(null);
+  const [expandedProjectIds, setExpandedProjectIds] = useState<
+    ReadonlySet<string>
+  >(() => new Set());
 
   const visibleProjects = useMemo(() => {
     return projectShowcaseItems.filter(
@@ -513,6 +696,20 @@ export default function ProjectsPage() {
     setPreviewProject(null);
   }, []);
 
+  const toggleProjectDetails = useCallback((projectId: string) => {
+    setExpandedProjectIds((currentIds) => {
+      const nextIds = new Set(currentIds);
+
+      if (nextIds.has(projectId)) {
+        nextIds.delete(projectId);
+      } else {
+        nextIds.add(projectId);
+      }
+
+      return nextIds;
+    });
+  }, []);
+
   const globalArchitectureTags = useMemo(
     () =>
       Array.from(
@@ -524,7 +721,7 @@ export default function ProjectsPage() {
   );
 
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-8">
+    <main className="mx-auto flex w-full max-w-6xl flex-col gap-5 px-3 py-5 sm:gap-8 sm:px-4 sm:py-8">
       <header className="space-y-3 text-center sm:text-left">
         <h1 className="bg-gradient-to-r from-indigo-500 via-sky-400 to-cyan-400 bg-clip-text text-4xl leading-tight font-extrabold text-transparent drop-shadow-lg sm:text-5xl">
           Project Showcase
@@ -536,16 +733,16 @@ export default function ProjectsPage() {
         </p>
       </header>
 
-      <section className="grid gap-5 rounded-lg border border-gray-200 bg-white p-5 shadow-sm sm:grid-cols-3 dark:border-gray-700 dark:bg-gray-800">
+      <section className="grid grid-cols-3 gap-2 rounded-lg border border-gray-200 bg-white p-3 shadow-sm sm:gap-5 sm:p-5 dark:border-gray-700 dark:bg-gray-800">
         {showcaseStats.map((stat) => (
           <div key={stat.label} className="min-w-0 space-y-1">
-            <p className="text-2xl leading-tight font-extrabold break-words text-gray-950 sm:text-3xl dark:text-white">
+            <p className="text-base leading-tight font-extrabold break-words text-gray-950 sm:text-3xl dark:text-white">
               {stat.value}
             </p>
-            <p className="text-sm font-bold text-gray-800 dark:text-gray-100">
+            <p className="text-[11px] leading-4 font-bold text-gray-800 sm:text-sm dark:text-gray-100">
               {stat.label}
             </p>
-            <p className="text-xs leading-5 text-gray-600 dark:text-gray-300">
+            <p className="hidden text-xs leading-5 text-gray-600 sm:block dark:text-gray-300">
               {stat.description}
             </p>
           </div>
@@ -619,21 +816,23 @@ export default function ProjectsPage() {
         </p>
       </section>
 
-      <section className="space-y-3" aria-label="Architecture tag overview">
-        <h2 className="text-xl font-bold text-gray-950 dark:text-white">
-          Architecture Tags
-        </h2>
-        <div className="flex flex-wrap gap-2">
-          {globalArchitectureTags.map((tag) => (
-            <span
-              key={tag}
-              className="rounded border border-gray-200 bg-gray-50 px-2.5 py-1 text-xs font-semibold text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-      </section>
+      {!isCompactLayout && (
+        <section className="space-y-3" aria-label="Architecture tag overview">
+          <h2 className="text-xl font-bold text-gray-950 dark:text-white">
+            Architecture Tags
+          </h2>
+          <div className="flex flex-wrap gap-2">
+            {globalArchitectureTags.map((tag) => (
+              <span
+                key={tag}
+                className="rounded border border-gray-200 bg-gray-50 px-2.5 py-1 text-xs font-semibold text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section className="flex flex-col gap-5" aria-label="Project list">
         {visibleProjects.map((project, index) => (
@@ -642,6 +841,9 @@ export default function ProjectsPage() {
             project={project}
             index={index}
             onPreview={setPreviewProject}
+            isCompactLayout={isCompactLayout}
+            isExpanded={expandedProjectIds.has(project.id)}
+            onToggleDetails={toggleProjectDetails}
           />
         ))}
       </section>

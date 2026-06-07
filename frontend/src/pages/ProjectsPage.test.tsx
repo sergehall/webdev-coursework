@@ -1,10 +1,38 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import ProjectsPage from "./ProjectsPage";
 
+const originalMatchMedia = window.matchMedia;
+
+function mockCompactLayout(matches: boolean) {
+  Object.defineProperty(window, "matchMedia", {
+    configurable: true,
+    value: vi.fn().mockImplementation((query: string) => ({
+      matches,
+      media: query,
+      onchange: null,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    })),
+    writable: true,
+  });
+}
+
 describe("<ProjectsPage />", () => {
+  afterEach(() => {
+    Object.defineProperty(window, "matchMedia", {
+      configurable: true,
+      value: originalMatchMedia,
+      writable: true,
+    });
+    vi.restoreAllMocks();
+  });
+
   it("renders the project showcase scaffold", async () => {
     const user = userEvent.setup();
 
@@ -183,5 +211,37 @@ describe("<ProjectsPage />", () => {
     expect(
       screen.queryByRole("dialog", { name: /Hex Gate screenshot preview/i })
     ).not.toBeInTheDocument();
+  });
+
+  it("renders compact project cards with collapsed details on mobile", async () => {
+    mockCompactLayout(true);
+    const user = userEvent.setup();
+
+    render(<ProjectsPage />);
+
+    expect(
+      screen.queryByRole("heading", { name: /Architecture Tags/i })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: /Lens Lounge/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getAllByText(/Content and commerce platform/i).length
+    ).toBeGreaterThan(0);
+    expect(
+      screen.queryByRole("heading", { name: /What I Built/i })
+    ).not.toBeInTheDocument();
+
+    await user.click(screen.getAllByRole("button", { name: "Details" })[0]);
+
+    expect(
+      screen.getByRole("heading", { name: /What I Built/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: /Project At A Glance/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: /Live site/i })
+    ).toBeInTheDocument();
   });
 });
