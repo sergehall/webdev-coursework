@@ -7,6 +7,7 @@ import {
   useState,
   type TouchEvent,
 } from "react";
+import { motion } from "framer-motion";
 
 import { technologies, type CourseName, type Tech } from "@/data/technologies";
 import { gradientForCourse } from "@/ui/course-theme";
@@ -324,12 +325,10 @@ export function HomePageContent({
         {pullMessage}
       </div>
 
-      <div
+      <motion.div
         className="w-full max-w-5xl transition-transform duration-200 motion-reduce:transition-none"
-        style={{
-          transform:
-            pullDistance > 0 ? `translateY(${pullDistance}px)` : undefined,
-        }}
+        animate={{ y: pullDistance > 0 ? pullDistance : 0 }}
+        transition={{ duration: 0.2, ease: "easeOut" }}
       >
         <h1 className="mb-10 bg-gradient-to-r from-indigo-500 via-sky-400 to-cyan-400 bg-clip-text text-4xl leading-tight font-extrabold text-transparent drop-shadow-lg sm:text-5xl">
           Welcome to the Web Developer{" "}
@@ -359,7 +358,7 @@ export function HomePageContent({
             ))}
           </div>
         </section>
-      </div>
+      </motion.div>
     </main>
   );
 }

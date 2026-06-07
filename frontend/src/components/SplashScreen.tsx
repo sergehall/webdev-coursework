@@ -30,61 +30,23 @@ export function SplashScreen({
   return (
     <div
       aria-hidden="true"
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 9999,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "#0f172a",
-        transition: "opacity 600ms cubic-bezier(0.4, 0, 0.2, 1)",
-        opacity: phase === "fading" ? 0 : 1,
-      }}
+      className={`fixed inset-0 z-[9999] flex items-center justify-center bg-slate-900 transition-opacity duration-[600ms] ease-in-out ${
+        phase === "fading" ? "opacity-0" : "opacity-100"
+      }`}
     >
       {/* Radial ambient glow */}
-      <div
-        style={{
-          position: "absolute",
-          width: 480,
-          height: 480,
-          borderRadius: "50%",
-          background:
-            "radial-gradient(circle, rgba(56,189,248,0.08) 0%, rgba(34,197,94,0.06) 40%, transparent 70%)",
-          animation: "splashPulse 3s ease-in-out infinite",
-          pointerEvents: "none",
-        }}
-      />
+      <div className="pointer-events-none absolute h-[480px] w-[480px] animate-splash-pulse rounded-full bg-[radial-gradient(circle,_rgba(56,189,248,0.08)_0%,_rgba(34,197,94,0.06)_40%,_transparent_70%)] motion-reduce:animate-none" />
 
       {/* Wave icon */}
-      <div
-        style={{
-          position: "relative",
-          width: 96,
-          height: 96,
-          animation: "splashFadeIn 500ms ease-out forwards",
-          opacity: 0,
-        }}
-      >
+      <div className="relative h-24 w-24 animate-splash-fade-in opacity-0 motion-reduce:animate-none motion-reduce:opacity-100">
         <img
           src="/animated-wave.svg"
           alt=""
           width={96}
           height={96}
-          style={{ display: "block", width: "100%", height: "100%" }}
+          className="block h-full w-full"
         />
       </div>
-
-      <style>{`
-        @keyframes splashFadeIn {
-          from { opacity: 0; transform: scale(0.88); }
-          to   { opacity: 1; transform: scale(1); }
-        }
-        @keyframes splashPulse {
-          0%, 100% { transform: scale(1);    opacity: 1; }
-          50%       { transform: scale(1.12); opacity: 0.7; }
-        }
-      `}</style>
     </div>
   );
 }

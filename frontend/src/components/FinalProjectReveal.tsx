@@ -6,6 +6,8 @@ import { useEffect, useMemo, useState } from "react";
 import ExitFullscreenButton from "@/components/buttons/ExitFullscreenButton";
 
 const gridSize = 3;
+const puzzleColumnOffsets = ["left-0", "left-[-100%]", "left-[-200%]"];
+const puzzleRowOffsets = ["top-0", "top-[-100%]", "top-[-200%]"];
 
 const FinalProjectReveal = ({
   completedTasks,
@@ -75,14 +77,10 @@ const FinalProjectReveal = ({
 
         {/* Puzzle grid */}
         <motion.div
-          className="grid aspect-[16/9] w-full overflow-hidden rounded-md"
+          className="grid aspect-[16/9] w-full grid-cols-3 grid-rows-3 overflow-hidden rounded-md"
           initial={{ scale: 1.05 }}
           animate={{ scale: 1 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          style={{
-            gridTemplateColumns: `repeat(${gridSize}, 1fr)`,
-            gridTemplateRows: `repeat(${gridSize}, 1fr)`,
-          }}
         >
           {Array.from({ length: totalPieces }).map((_, i) => {
             const row = Math.floor(i / gridSize);
@@ -105,17 +103,14 @@ const FinalProjectReveal = ({
                   duration: 0.6,
                   ease: "easeInOut",
                 }}
-                className="relative h-full w-full"
+                className="relative h-full w-full overflow-hidden"
               >
-                <div
-                  className={`absolute inset-0 bg-cover bg-no-repeat transition duration-300 ${
+                <img
+                  src={imageUrl}
+                  alt=""
+                  className={`absolute h-[300%] w-[300%] max-w-none object-cover transition duration-300 ${
                     isVisible ? "shadow-lg ring-2 ring-white/30" : ""
-                  }`}
-                  style={{
-                    backgroundImage: `url(${imageUrl})`,
-                    backgroundPosition: `${(col / (gridSize - 1)) * 100}% ${(row / (gridSize - 1)) * 100}%`,
-                    backgroundSize: `${gridSize * 100}% ${gridSize * 100}%`,
-                  }}
+                  } ${puzzleColumnOffsets[col]} ${puzzleRowOffsets[row]}`}
                 />
               </motion.div>
             );
