@@ -18,6 +18,7 @@ export const CodePlaygroundPage = lazy(
   () => import("../pages/CodePlaygroundPage")
 );
 export const ResourcesPage = lazy(() => import("../pages/ResourcesPage"));
+export const ProjectsPage = lazy(() => import("../pages/ProjectsPage"));
 
 // Web Developer Path
 export const WebDeveloperPathPage = lazy(

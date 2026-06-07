@@ -1,5 +1,6 @@
 import {
   BookOpen,
+  Briefcase,
   ExternalLink,
   GraduationCap,
   LayoutDashboard,
@@ -50,6 +51,11 @@ export default function SidebarPage({
       label: "code-playground",
     },
     {
+      to: "/projects",
+      icon: <Briefcase className="h-5 w-5 md:h-6 md:w-6" />,
+      label: "Projects",
+    },
+    {
       to: "/resources",
       icon: <ExternalLink className="h-5 w-5 md:h-6 md:w-6" />,
       label: "Reference Hub",
@@ -64,7 +70,7 @@ export default function SidebarPage({
   const HorizontalBar = (
     <ul
       role="list"
-      className="grid h-full w-full grid-cols-5"
+      className="grid h-full w-full grid-cols-6"
       aria-label="Primary navigation (horizontal)"
     >
       {items.map((it) => (

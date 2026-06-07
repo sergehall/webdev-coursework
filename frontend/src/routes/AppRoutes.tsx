@@ -74,6 +74,15 @@ export default function AppRoutes() {
           }
         />
 
+        <Route
+          path="/projects"
+          element={
+            <Suspense fallback={<div>Loading Projects...</div>}>
+              <Screens.ProjectsPage />
+            </Suspense>
+          }
+        />
+
         {/* Not found */}
         <Route
           path="*"
