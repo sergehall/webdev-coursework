@@ -86,15 +86,18 @@ describe("<ProjectsPage />", () => {
       within(languageFilters).getByRole("button", { name: "Go" })
     );
 
-    expect(screen.getByText(/Showing 1 of 6 projects/i)).toBeInTheDocument();
+    expect(screen.getByText(/Showing 3 of 6 projects/i)).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: /Lens Lounge/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: /Hex Gate/i })
+    ).toBeInTheDocument();
     expect(
       screen.getByRole("heading", { name: /Lavoval/i })
     ).toBeInTheDocument();
     expect(
-      screen.queryByRole("heading", { name: /Lens Lounge/i })
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole("heading", { name: /Hex Gate/i })
+      screen.queryByRole("heading", { name: /SERGIOARTG Platform/i })
     ).not.toBeInTheDocument();
 
     await user.click(

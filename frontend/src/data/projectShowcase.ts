@@ -63,7 +63,7 @@ export const projectShowcaseItems = [
     category: "Content and commerce platform",
     status: "published",
     filters: ["Fullstack", "Microservices"],
-    languages: ["TS"],
+    languages: ["TS", "Go"],
     summary:
       "A microservices content and commerce platform built around service boundaries, shared contracts, event-driven communication, and production-oriented deployment workflows.",
     imageUrl: "/screenshots/projects/lens-lounge-microservices.png",
@@ -198,7 +198,7 @@ export const projectShowcaseItems = [
     category: "Defensive engineering workbench",
     status: "published",
     filters: ["Fullstack", "Security"],
-    languages: ["TS"],
+    languages: ["TS", "Go"],
     summary:
       "A secure developer site for defensive engineering content, protected cabinet routes, audit-oriented workflows, and security playbooks.",
     imageUrl: "/screenshots/projects/defensive-engineering-hub.png",
