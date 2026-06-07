@@ -35,10 +35,10 @@ export function SplashScreen({
       }`}
     >
       {/* Radial ambient glow */}
-      <div className="pointer-events-none absolute h-[480px] w-[480px] animate-splash-pulse rounded-full bg-[radial-gradient(circle,_rgba(56,189,248,0.08)_0%,_rgba(34,197,94,0.06)_40%,_transparent_70%)] motion-reduce:animate-none" />
+      <div className="animate-splash-pulse pointer-events-none absolute h-[480px] w-[480px] rounded-full bg-[radial-gradient(circle,_rgba(56,189,248,0.08)_0%,_rgba(34,197,94,0.06)_40%,_transparent_70%)] motion-reduce:animate-none" />
 
       {/* Wave icon */}
-      <div className="relative h-24 w-24 animate-splash-fade-in opacity-0 motion-reduce:animate-none motion-reduce:opacity-100">
+      <div className="animate-splash-fade-in relative h-24 w-24 opacity-0 motion-reduce:animate-none motion-reduce:opacity-100">
         <img
           src="/animated-wave.svg"
           alt=""
