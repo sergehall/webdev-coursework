@@ -97,6 +97,37 @@ const projectTimeline = [
   },
 ] as const;
 
+function projectMatchesType(
+  project: ProjectShowcaseItem,
+  filter: ProjectFilterOption
+) {
+  return (
+    filter === "All" ||
+    project.filters.some((projectFilter) => projectFilter === filter)
+  );
+}
+
+function projectMatchesLanguage(
+  project: ProjectShowcaseItem,
+  filter: ProjectLanguageFilterOption
+) {
+  return (
+    filter === "All" ||
+    project.languages.some((language) => language === filter)
+  );
+}
+
+function hasMatchingProject(
+  typeFilter: ProjectFilterOption,
+  languageFilter: ProjectLanguageFilterOption
+) {
+  return projectShowcaseItems.some(
+    (project) =>
+      projectMatchesType(project, typeFilter) &&
+      projectMatchesLanguage(project, languageFilter)
+  );
+}
+
 function ProjectLink({
   href,
   label,
@@ -453,14 +484,30 @@ export default function ProjectsPage() {
   const visibleProjects = useMemo(() => {
     return projectShowcaseItems.filter(
       (project) =>
-        (activeFilter === "All" ||
-          project.filters.some((filter) => filter === activeFilter)) &&
-        (activeLanguageFilter === "All" ||
-          project.languages.some(
-            (language) => language === activeLanguageFilter
-          ))
+        projectMatchesType(project, activeFilter) &&
+        projectMatchesLanguage(project, activeLanguageFilter)
     );
   }, [activeFilter, activeLanguageFilter]);
+
+  const availableProjectFilters = useMemo(
+    () =>
+      new Set(
+        projectFilters.filter((filter) =>
+          hasMatchingProject(filter, activeLanguageFilter)
+        )
+      ),
+    [activeLanguageFilter]
+  );
+
+  const availableLanguageFilters = useMemo(
+    () =>
+      new Set(
+        projectLanguageFilters.filter((filter) =>
+          hasMatchingProject(activeFilter, filter)
+        )
+      ),
+    [activeFilter]
+  );
 
   const closePreview = useCallback(() => {
     setPreviewProject(null);
@@ -512,15 +559,18 @@ export default function ProjectsPage() {
         <div className="flex flex-wrap gap-2">
           {projectFilters.map((filter) => {
             const isActive = activeFilter === filter;
+            const isDisabled = !availableProjectFilters.has(filter);
 
             return (
               <button
                 key={filter}
                 type="button"
                 aria-pressed={isActive}
+                aria-disabled={isDisabled}
+                disabled={isDisabled}
                 onClick={() => setActiveFilter(filter)}
                 className={cn(
-                  "min-h-10 rounded border px-3 py-2 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-offset-2",
+                  "min-h-10 rounded border px-3 py-2 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-40",
                   isActive
                     ? "border-sky-500 bg-sky-600 text-white shadow-sm dark:border-sky-400 dark:bg-sky-500 dark:text-slate-950"
                     : "border-gray-200 bg-white text-gray-700 hover:border-sky-300 hover:bg-sky-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:border-sky-700 dark:hover:bg-gray-700"
@@ -540,15 +590,18 @@ export default function ProjectsPage() {
         <div className="flex flex-wrap gap-2">
           {projectLanguageFilters.map((filter) => {
             const isActive = activeLanguageFilter === filter;
+            const isDisabled = !availableLanguageFilters.has(filter);
 
             return (
               <button
                 key={filter}
                 type="button"
                 aria-pressed={isActive}
+                aria-disabled={isDisabled}
+                disabled={isDisabled}
                 onClick={() => setActiveLanguageFilter(filter)}
                 className={cn(
-                  "min-h-10 rounded border px-3 py-2 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-offset-2",
+                  "min-h-10 rounded border px-3 py-2 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-40",
                   isActive
                     ? "border-emerald-500 bg-emerald-600 text-white shadow-sm dark:border-emerald-400 dark:bg-emerald-500 dark:text-slate-950"
                     : "border-gray-200 bg-white text-gray-700 hover:border-emerald-300 hover:bg-emerald-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:border-emerald-700 dark:hover:bg-gray-700"

@@ -53,6 +53,18 @@ describe("<ProjectsPage />", () => {
       within(languageFilters).getByRole("button", { name: "Java" })
     ).toBeInTheDocument();
 
+    await user.click(
+      within(projectTypeFilters).getByRole("button", { name: "Fullstack" })
+    );
+
+    expect(screen.getByText(/Showing 6 of 6 projects/i)).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: /Lens Lounge/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: /AWS Learning Portal/i })
+    ).toBeInTheDocument();
+
     await user.click(screen.getByRole("button", { name: "Security" }));
 
     expect(screen.getByText(/Showing 3 of 6 projects/i)).toBeInTheDocument();
@@ -102,6 +114,58 @@ describe("<ProjectsPage />", () => {
 
     await user.click(
       within(languageFilters).getByRole("button", { name: "All" })
+    );
+
+    await user.click(
+      within(languageFilters).getByRole("button", { name: "JS" })
+    );
+
+    expect(screen.getByText(/Showing 1 of 6 projects/i)).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: /AWS Learning Portal/i })
+    ).toBeInTheDocument();
+    expect(
+      within(projectTypeFilters).getByRole("button", { name: "Cloud" })
+    ).toBeEnabled();
+    expect(
+      within(projectTypeFilters).getByRole("button", { name: "Fullstack" })
+    ).toBeEnabled();
+    expect(
+      within(projectTypeFilters).getByRole("button", { name: "Security" })
+    ).toBeEnabled();
+    expect(
+      within(projectTypeFilters).getByRole("button", { name: "Marketplace" })
+    ).toBeDisabled();
+    expect(
+      within(projectTypeFilters).getByRole("button", { name: "Microservices" })
+    ).toBeDisabled();
+
+    await user.click(
+      within(languageFilters).getByRole("button", { name: "All" })
+    );
+    await user.click(
+      within(projectTypeFilters).getByRole("button", { name: "Microservices" })
+    );
+
+    expect(screen.getByText(/Showing 1 of 6 projects/i)).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: /Lens Lounge/i })
+    ).toBeInTheDocument();
+    expect(
+      within(languageFilters).getByRole("button", { name: "TS" })
+    ).toBeEnabled();
+    expect(
+      within(languageFilters).getByRole("button", { name: "Go" })
+    ).toBeEnabled();
+    expect(
+      within(languageFilters).getByRole("button", { name: "JS" })
+    ).toBeDisabled();
+    expect(
+      within(languageFilters).getByRole("button", { name: "Java" })
+    ).toBeDisabled();
+
+    await user.click(
+      within(projectTypeFilters).getByRole("button", { name: "All" })
     );
 
     await user.click(
