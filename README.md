@@ -40,6 +40,7 @@ learning tool and as a long-term portfolio artifact.
 
 The platform currently reflects this active SMC pathway:
 
+- **CS 56** - Advanced Java Programming
 - **CS 60** - Database Concepts & Applications
 - **CS 70** - Network Fundamentals and Architecture
 - **CS 79A** - Introduction to Cloud Computing
