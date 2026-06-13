@@ -4145,6 +4145,14 @@ export const cs79dModuleBlueprints: CS79DModuleBlueprint[] = [
         whyItMattersHeading: "Project Context",
         whyItMatters:
           "This final project showcases the core concepts and skills learned throughout the CS 79 series, especially the security focus from CS 79D. The project does not require completing every course in the series, but it should demonstrate solid cloud fundamentals and a practical understanding of how AWS services work together in a secure production-style stack.",
+        previewFiles: [
+          {
+            fileUrl:
+              "/code-playground/CS79D/mod-8/CS79D_Final_Project_AWS_Review.pdf",
+            filename: "CS79D_Final_Project_AWS_Review.pdf",
+            buttonLabel: "Open Final Project AWS Review PDF",
+          },
+        ],
         resourceSections: [
           {
             title: "Architecture Diagram Tools",
