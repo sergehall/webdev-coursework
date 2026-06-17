@@ -37,6 +37,11 @@ describe("<CourseworkPage />", () => {
       title: "Javascript Programming",
       routeCourseId: "CS81",
     },
+    {
+      courseCode: "CS 85",
+      title: "PHP Programming",
+      routeCourseId: "CS85",
+    },
   ])(
     "opens the available $courseCode block from /coursework",
     async ({ courseCode, title, routeCourseId }) => {
@@ -70,11 +75,6 @@ describe("<CourseworkPage />", () => {
     expect(
       screen.queryByRole("link", {
         name: /CS 56[\s\S]*Advanced Java Programming/i,
-      })
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole("link", {
-        name: /CS 85[\s\S]*PHP Programming/i,
       })
     ).not.toBeInTheDocument();
   });

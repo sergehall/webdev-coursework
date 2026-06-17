@@ -30,6 +30,11 @@ export const COURSE_PROGRESS_CONFIG = {
     maxModules: 12,
     client_id_key: "clientId",
   },
+  CS85: {
+    appId: "PHP-Programming",
+    maxModules: 12,
+    client_id_key: "clientId",
+  },
   CS80: {
     appId: "Internet-Programming",
     maxModules: 6,

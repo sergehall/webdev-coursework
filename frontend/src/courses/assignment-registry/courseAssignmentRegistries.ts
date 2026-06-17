@@ -5,6 +5,7 @@ import assignmentCS79CComponents from "@/courses/assignment-registry/assignmentC
 import assignmentCS79DComponents from "@/courses/assignment-registry/assignmentCS79DComponents";
 import assignmentCS80Components from "@/courses/assignment-registry/assignmentCS80Components";
 import assignmentCS81Components from "@/courses/assignment-registry/assignmentCS81Components";
+import assignmentCS85Components from "@/courses/assignment-registry/assignmentCS85Components";
 import assignmentCS87AComponents from "@/courses/assignment-registry/assignmentCS87AComponents";
 import type { AssignmentRegistry } from "@/courses/assignment-registry/types";
 import type { CourseCode } from "@/data/types/CourseCode";
@@ -19,6 +20,7 @@ export const courseAssignmentRegistries: Partial<
   "CS 79D": assignmentCS79DComponents,
   "CS 80": assignmentCS80Components,
   "CS 81": assignmentCS81Components,
+  "CS 85": assignmentCS85Components,
   "CS 87A": assignmentCS87AComponents,
 };
 

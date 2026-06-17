@@ -6,5 +6,6 @@ export const activeCourseCodes = [
   "CS 79D",
   "CS 80",
   "CS 81",
+  "CS 85",
   "CS 87A",
 ] as const;

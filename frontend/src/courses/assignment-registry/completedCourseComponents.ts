@@ -8,6 +8,7 @@ import CS79C from "@/courses/CS79C/CS79C";
 import CS79D from "@/courses/CS79D/CS79D";
 import CS80 from "@/courses/CS80/CS80";
 import CS81 from "@/courses/CS81/CS81";
+import CS85 from "@/courses/CS85/CS85";
 import CS87A from "@/courses/CS87A/CS87A";
 
 export type CourseComponentMap = Record<
@@ -53,7 +54,7 @@ const completedCourseComponents: CourseComponentMap = {
   },
   "CS 85": {
     title: "PHP Programming",
-    component: null,
+    component: CS85,
   },
   "CS 87A": {
     title: "Python Programming",

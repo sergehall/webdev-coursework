@@ -17,6 +17,7 @@ const courseChunkGroups: Array<[pathSegment: string, chunkName: string]> = [
   ["/courses/CS79D/", "course-cs79d"],
   ["/courses/CS80/", "course-cs80"],
   ["/courses/CS81/", "course-cs81"],
+  ["/courses/CS85/", "course-cs85"],
   ["/courses/CS87A/", "course-cs87a"],
 ];
 
