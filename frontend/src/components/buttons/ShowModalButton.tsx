@@ -1,5 +1,7 @@
 // frontend/src/components/buttons/ShowModalButton.tsx
 
+import { useEffect, useState } from "react";
+
 import { CloseModalButton } from "@/components/buttons";
 
 type File = {
@@ -14,6 +16,71 @@ type Props = {
   className?: string;
 };
 
+function CodeFilePreview({ file }: { file: File }) {
+  const [content, setContent] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadFile = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const response = await fetch(file.fileUrl);
+
+        if (!response.ok) {
+          throw new Error(`Unable to load ${file.filename}`);
+        }
+
+        const text = await response.text();
+
+        if (isMounted) {
+          setContent(text);
+        }
+      } catch (err) {
+        if (isMounted) {
+          setError(err instanceof Error ? err.message : "Unable to load file");
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    void loadFile();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [file.fileUrl, file.filename]);
+
+  if (isLoading) {
+    return (
+      <div className="rounded border bg-gray-100 p-4 text-sm text-gray-700 dark:bg-gray-800 dark:text-gray-200">
+        Loading preview...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="rounded border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/30 dark:text-red-200">
+        {error}
+      </div>
+    );
+  }
+
+  return (
+    <pre className="max-h-[70vh] overflow-auto rounded border bg-slate-950 p-4 text-sm leading-6 text-slate-100">
+      <code>{content}</code>
+    </pre>
+  );
+}
+
 export default function ShowModalButton({
   isOpen,
   onClose,
@@ -22,7 +89,7 @@ export default function ShowModalButton({
 }: Props) {
   if (!isOpen || !files.length) return null;
 
-  const codeExtensions = [".tsx", ".ts", ".jsx", ".js"];
+  const codeExtensions = [".tsx", ".ts", ".jsx", ".js", ".java"];
   const imageExtensions = [".png", ".jpg", ".jpeg", ".webp", ".gif"];
 
   return (
@@ -40,6 +107,13 @@ export default function ShowModalButton({
                 <p className="mb-2 text-sm font-medium text-gray-800 dark:text-gray-200">
                   {file.filename}
                 </p>
+                <a
+                  href={file.fileUrl}
+                  download={file.filename}
+                  className="mb-3 inline-flex text-sm font-semibold text-blue-600 underline dark:text-blue-300"
+                >
+                  Download {file.filename}
+                </a>
 
                 {filename.endsWith(".html") ? (
                   <iframe
@@ -68,11 +142,7 @@ export default function ShowModalButton({
                     className="h-[700px] w-full rounded border bg-white"
                   />
                 ) : codeExtensions.some((ext) => filename.endsWith(ext)) ? (
-                  <iframe
-                    src={file.fileUrl}
-                    title={file.filename}
-                    className="h-[600px] w-full rounded border bg-gray-100 dark:bg-gray-800"
-                  />
+                  <CodeFilePreview file={file} />
                 ) : imageExtensions.some((ext) => filename.endsWith(ext)) ? (
                   <img
                     src={file.fileUrl}

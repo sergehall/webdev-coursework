@@ -1,3 +1,4 @@
+import assignmentCS56Components from "@/courses/assignment-registry/assignmentCS56Components";
 import assignmentCS60Components from "@/courses/assignment-registry/assignmentCS60Components";
 import assignmentCS70Components from "@/courses/assignment-registry/assignmentCS70Components";
 import assignmentCS79AComponents from "@/courses/assignment-registry/assignmentCS79AComponents";
@@ -13,6 +14,7 @@ import type { CourseCode } from "@/data/types/CourseCode";
 export const courseAssignmentRegistries: Partial<
   Record<CourseCode, AssignmentRegistry>
 > = {
+  "CS 56": assignmentCS56Components,
   "CS 60": assignmentCS60Components,
   "CS 70": assignmentCS70Components,
   "CS 79A": assignmentCS79AComponents,

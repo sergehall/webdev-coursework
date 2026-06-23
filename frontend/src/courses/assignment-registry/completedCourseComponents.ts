@@ -1,6 +1,7 @@
 // src/components/completedCourseComponents.tsx
 import type { FC } from "react";
 
+import CS56 from "@/courses/CS56/CS56";
 import CS60 from "@/courses/CS60/CS60";
 import CS70 from "@/courses/CS70/CS70";
 import CS79A from "@/courses/CS79A/CS79A";
@@ -20,6 +21,10 @@ export type CourseComponentMap = Record<
 >;
 
 const completedCourseComponents: CourseComponentMap = {
+  "CS 56": {
+    title: "Advanced Java Programming",
+    component: CS56,
+  },
   "CS 60": {
     title: "Database Concepts and Applications",
     component: CS60,

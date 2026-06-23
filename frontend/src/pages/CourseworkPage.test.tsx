@@ -28,6 +28,11 @@ function renderCourseworkPage() {
 describe("<CourseworkPage />", () => {
   it.each([
     {
+      courseCode: "CS 56",
+      title: "Advanced Java Programming",
+      routeCourseId: "CS56",
+    },
+    {
       courseCode: "CS 79C",
       title: "Compute Engines in Amazon Web Services",
       routeCourseId: "CS79C",
@@ -65,19 +70,6 @@ describe("<CourseworkPage />", () => {
       ).toBeInTheDocument();
     }
   );
-
-  it("keeps unavailable coursework blocks non-clickable", () => {
-    renderCourseworkPage();
-
-    expect(screen.getByText(/Advanced Java Programming/i)).toBeInTheDocument();
-    expect(screen.getByText(/PHP Programming/i)).toBeInTheDocument();
-
-    expect(
-      screen.queryByRole("link", {
-        name: /CS 56[\s\S]*Advanced Java Programming/i,
-      })
-    ).not.toBeInTheDocument();
-  });
 
   it("shows all 10 selected coursework cards without loading more", () => {
     renderCourseworkPage();

@@ -35,7 +35,7 @@ export const courses: Course[] = [
     code: "CS 56",
     title: "Advanced Java Programming",
     units: 3,
-    tags: ["Not Yet Completed"],
+    tags: ["Program Requirement"],
     description:
       "Java is a general-purpose language for writing platform-independent robust, secure programs. This course continues where CS 55 leaves off in developing mastery of the use of Java programming language and its extensive APIs. Topics covered include exceptions, multithreading, multimedia, Input/Output, Java Database Connectivity (JDBC), Servlets, Remote Method Invocation (RMI), and networking.",
     descriptionSummary:
