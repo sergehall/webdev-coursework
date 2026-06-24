@@ -59,6 +59,18 @@ export type CS56ModuleBlueprint = {
           code: string;
         }>;
         expectedOutput?: string[];
+        rubric?: {
+          title: string;
+          rows: Array<{
+            criterion: string;
+            pointsLabel: string;
+            ratings: Array<{
+              label: string;
+              description?: string;
+              pointsLabel: string;
+            }>;
+          }>;
+        };
         previewFiles?: Array<{
           fileUrl: string;
           filename: string;
@@ -398,6 +410,188 @@ export const cs56ModuleBlueprints: CS56ModuleBlueprint[] = [
                 type: "assignment",
                 dueLabel: "Jun 28",
                 pointsLabel: "20 pts",
+                prompt: {
+                  title: "Assignment: Java Review Expense Tracker",
+                  sections: [
+                    {
+                      title: "Overview",
+                      paragraphs: [
+                        "In this assignment, you will develop a Java application that functions as a personal Expense Tracker. The goal is to help users manage their personal finances by tracking their daily expenses. Users should be able to add, remove, and view their expenses, as well as categorize them for better organization. This project will allow you to practice fundamental Object-Oriented Programming (OOP) concepts by creating and manipulating objects, as well as ensuring data encapsulation and handling exceptions.",
+                        "The application should consist of an Expense class with attributes such as description, amount, date, and category. Additionally, an ExpenseManager class will be used to handle a collection of Expense objects, providing functionalities like adding new expenses, and displaying the total expenses within a certain period (e.g., a week, a month, or a custom date range). A simple text-based user interface should be designed to interact with the application, allowing users to input and manage their expenses efficiently.",
+                      ],
+                    },
+                    {
+                      title: "Submission",
+                      paragraphs: [
+                        "Submit only the .java file(s) of your project. You may submit as one or multiple .java files.",
+                      ],
+                    },
+                  ],
+                },
+                rubric: {
+                  title: "Rubric: Java Review",
+                  rows: [
+                    {
+                      criterion: "Expense Class",
+                      pointsLabel: "1 pt",
+                      ratings: [
+                        { label: "Full Marks", pointsLabel: "1 pt" },
+                        { label: "No Marks", pointsLabel: "0 pts" },
+                      ],
+                    },
+                    {
+                      criterion: "Description Field",
+                      pointsLabel: "1 pt",
+                      ratings: [
+                        { label: "Full Marks", pointsLabel: "1 pt" },
+                        {
+                          label: "Incorrect Access Level",
+                          pointsLabel: "0.5 pts",
+                        },
+                        { label: "No Marks", pointsLabel: "0 pts" },
+                      ],
+                    },
+                    {
+                      criterion: "Amount Field",
+                      pointsLabel: "1 pt",
+                      ratings: [
+                        { label: "Full Marks", pointsLabel: "1 pt" },
+                        { label: "No Marks", pointsLabel: "0 pts" },
+                      ],
+                    },
+                    {
+                      criterion: "Date Field",
+                      pointsLabel: "1 pt",
+                      ratings: [
+                        { label: "Full Marks", pointsLabel: "1 pt" },
+                        { label: "No Marks", pointsLabel: "0 pts" },
+                      ],
+                    },
+                    {
+                      criterion: "Category Field",
+                      pointsLabel: "1 pt",
+                      ratings: [
+                        { label: "Full Marks", pointsLabel: "1 pt" },
+                        { label: "No Marks", pointsLabel: "0 pts" },
+                      ],
+                    },
+                    {
+                      criterion: "Getter/Setter Methods",
+                      pointsLabel: "1 pt",
+                      ratings: [
+                        { label: "Full Marks", pointsLabel: "1 pt" },
+                        { label: "No Marks", pointsLabel: "0 pts" },
+                      ],
+                    },
+                    {
+                      criterion: "ExpenseManager Class",
+                      pointsLabel: "1 pt",
+                      ratings: [
+                        { label: "Full Marks", pointsLabel: "1 pt" },
+                        { label: "No Marks", pointsLabel: "0 pts" },
+                      ],
+                    },
+                    {
+                      criterion: "Collection of Expense",
+                      pointsLabel: "1 pt",
+                      ratings: [
+                        { label: "Full Marks", pointsLabel: "1 pt" },
+                        { label: "No Marks", pointsLabel: "0 pts" },
+                      ],
+                    },
+                    {
+                      criterion: "add Method",
+                      pointsLabel: "2 pts",
+                      ratings: [
+                        { label: "Full Marks", pointsLabel: "2 pts" },
+                        {
+                          label: "Incorrect Functionality",
+                          description:
+                            "Add method doesn't properly add method to expense list.",
+                          pointsLabel: "1 pt",
+                        },
+                        {
+                          label: "Incorrect Method",
+                          description:
+                            "The method has incorrect or missing parameters.",
+                          pointsLabel: "1 pt",
+                        },
+                        { label: "No Marks", pointsLabel: "0 pts" },
+                      ],
+                    },
+                    {
+                      criterion: "Display Method",
+                      pointsLabel: "2 pts",
+                      ratings: [
+                        { label: "Full Marks", pointsLabel: "2 pts" },
+                        {
+                          label: "Missing functionality",
+                          description:
+                            "Incorrectly defined or missing functionality.",
+                          pointsLabel: "1 pt",
+                        },
+                        { label: "No Marks", pointsLabel: "0 pts" },
+                      ],
+                    },
+                    {
+                      criterion: "Main Function",
+                      pointsLabel: "5 pts",
+                      ratings: [
+                        { label: "Full Marks", pointsLabel: "5 pts" },
+                        {
+                          label: "Missing add functionality",
+                          description:
+                            "Doesn't properly implement adding an expense using input information.",
+                          pointsLabel: "3 pts",
+                        },
+                        {
+                          label: "Missing output",
+                          description:
+                            "Lacks functionality to list the expenses using input information.",
+                          pointsLabel: "2 pts",
+                        },
+                        {
+                          label: "Lack User Input",
+                          description: "Fails to implement user interaction.",
+                          pointsLabel: "1 pt",
+                        },
+                        { label: "No Marks", pointsLabel: "0 pts" },
+                      ],
+                    },
+                    {
+                      criterion: "Coding Standards",
+                      pointsLabel: "3 pts",
+                      ratings: [
+                        { label: "Full Marks", pointsLabel: "3 pts" },
+                        {
+                          label: "Lacks Minor Formatting",
+                          description:
+                            "Lacks some proper formatting, like variable naming, indentation, etc.",
+                          pointsLabel: "2 pts",
+                        },
+                        {
+                          label: "Indentation",
+                          description:
+                            "Fails to follow proper indentation in multiple classes.",
+                          pointsLabel: "1 pt",
+                        },
+                        {
+                          label: "Lacks Formatting",
+                          description:
+                            "Lacks multiple formatting standards, indentation, naming conventions, etc.",
+                          pointsLabel: "1 pt",
+                        },
+                        {
+                          label: "Missing Single Responsibility",
+                          description:
+                            "Main code is mixed among classes in that each class does not have a single responsibility.",
+                          pointsLabel: "1 pt",
+                        },
+                        { label: "No Marks", pointsLabel: "0 pts" },
+                      ],
+                    },
+                  ],
+                },
                 previewFiles: [
                   {
                     fileUrl:

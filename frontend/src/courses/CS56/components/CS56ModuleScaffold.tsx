@@ -251,6 +251,74 @@ export default function CS56ModuleScaffold({
                                   </div>
                                 </div>
                               ) : null}
+                              {item.rubric ? (
+                                <div className="mt-4 rounded-lg border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-950/30">
+                                  <div className="flex flex-wrap items-center justify-between gap-3">
+                                    <h3 className="text-lg font-bold text-slate-950 dark:text-white">
+                                      {item.rubric.title}
+                                    </h3>
+                                    <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-200">
+                                      {item.rubric.rows.length} criteria
+                                    </span>
+                                  </div>
+                                  <div className="mt-4 overflow-x-auto">
+                                    <table className="min-w-full border-collapse text-left text-sm">
+                                      <thead>
+                                        <tr className="border-b border-slate-200 dark:border-slate-700">
+                                          <th className="py-3 pr-4 font-semibold text-slate-900 dark:text-slate-100">
+                                            Criteria
+                                          </th>
+                                          <th className="py-3 pr-4 font-semibold text-slate-900 dark:text-slate-100">
+                                            Ratings
+                                          </th>
+                                          <th className="py-3 font-semibold text-slate-900 dark:text-slate-100">
+                                            Points
+                                          </th>
+                                        </tr>
+                                      </thead>
+                                      <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
+                                        {item.rubric.rows.map((row) => (
+                                          <tr
+                                            key={row.criterion}
+                                            className="align-top"
+                                          >
+                                            <td className="py-3 pr-4 font-semibold text-slate-800 dark:text-slate-100">
+                                              {row.criterion}
+                                            </td>
+                                            <td className="py-3 pr-4">
+                                              <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-3">
+                                                {row.ratings.map((rating) => (
+                                                  <div
+                                                    key={`${row.criterion}-${rating.label}`}
+                                                    className="rounded-md border border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-900/60"
+                                                  >
+                                                    <div className="flex items-start justify-between gap-2">
+                                                      <p className="font-semibold text-slate-800 dark:text-slate-100">
+                                                        {rating.label}
+                                                      </p>
+                                                      <span className="shrink-0 rounded-full bg-white px-2 py-0.5 text-xs font-semibold text-slate-600 ring-1 ring-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-700">
+                                                        {rating.pointsLabel}
+                                                      </span>
+                                                    </div>
+                                                    {rating.description ? (
+                                                      <p className="mt-2 leading-6 text-slate-600 dark:text-slate-300">
+                                                        {rating.description}
+                                                      </p>
+                                                    ) : null}
+                                                  </div>
+                                                ))}
+                                              </div>
+                                            </td>
+                                            <td className="py-3 font-semibold whitespace-nowrap text-slate-700 dark:text-slate-200">
+                                              {row.pointsLabel}
+                                            </td>
+                                          </tr>
+                                        ))}
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                </div>
+                              ) : null}
                               {item.description ? (
                                 <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
                                   {item.description}
