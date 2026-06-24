@@ -89,7 +89,7 @@ export default function ShowModalButton({
 }: Props) {
   if (!isOpen || !files.length) return null;
 
-  const codeExtensions = [".tsx", ".ts", ".jsx", ".js", ".java"];
+  const codeExtensions = [".tsx", ".ts", ".jsx", ".js", ".java", ".php"];
   const imageExtensions = [".png", ".jpg", ".jpeg", ".webp", ".gif"];
 
   return (
