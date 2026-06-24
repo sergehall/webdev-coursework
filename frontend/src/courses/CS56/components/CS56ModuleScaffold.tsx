@@ -183,12 +183,142 @@ export default function CS56ModuleScaffold({
                                   {item.pointsLabel ? (
                                     <span>{item.pointsLabel}</span>
                                   ) : null}
+                                  {item.scoreLabel ? (
+                                    <span className="rounded-full bg-emerald-50 px-2 py-0.5 font-semibold text-emerald-700 ring-1 ring-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-200 dark:ring-emerald-800">
+                                      {item.scoreLabel}
+                                    </span>
+                                  ) : null}
                                 </p>
+                              ) : null}
+                              {item.scoreLabel &&
+                              !item.dueLabel &&
+                              !item.pointsLabel ? (
+                                <p className="mt-1 text-sm">
+                                  <span className="rounded-full bg-emerald-50 px-2 py-0.5 font-semibold text-emerald-700 ring-1 ring-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-200 dark:ring-emerald-800">
+                                    {item.scoreLabel}
+                                  </span>
+                                </p>
+                              ) : null}
+                              {item.prompt ? (
+                                <div className="mt-4 rounded-lg border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-950/30">
+                                  <h3 className="text-lg font-bold text-slate-950 dark:text-white">
+                                    {item.prompt.title}
+                                  </h3>
+                                  <div className="mt-4 space-y-5">
+                                    {item.prompt.sections.map((section) => (
+                                      <section key={section.title}>
+                                        <h4 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+                                          {section.title}
+                                        </h4>
+                                        {section.paragraphs?.map(
+                                          (paragraph) => (
+                                            <p
+                                              key={paragraph}
+                                              className="mt-2 text-sm leading-7 text-slate-700 dark:text-slate-200"
+                                            >
+                                              {paragraph}
+                                            </p>
+                                          )
+                                        )}
+                                        {section.steps ? (
+                                          <ol className="mt-3 list-decimal space-y-3 pl-5 text-sm leading-7 text-slate-700 dark:text-slate-200">
+                                            {section.steps.map((step) => (
+                                              <li
+                                                key={step.title}
+                                                className="pl-1"
+                                              >
+                                                <span className="font-semibold text-slate-950 dark:text-white">
+                                                  {step.title}
+                                                </span>
+                                                <ul className="mt-1 list-disc space-y-1 pl-5">
+                                                  {step.items.map((line) => (
+                                                    <li key={line}>{line}</li>
+                                                  ))}
+                                                </ul>
+                                              </li>
+                                            ))}
+                                          </ol>
+                                        ) : null}
+                                        {section.output ? (
+                                          <pre className="mt-3 overflow-auto rounded bg-slate-100 p-3 text-sm leading-6 text-slate-800 dark:bg-slate-900 dark:text-slate-100">
+                                            <code>
+                                              {section.output.join("\n")}
+                                            </code>
+                                          </pre>
+                                        ) : null}
+                                      </section>
+                                    ))}
+                                  </div>
+                                </div>
                               ) : null}
                               {item.description ? (
                                 <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
                                   {item.description}
                                 </p>
+                              ) : null}
+                              {item.note ? (
+                                <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm leading-7 text-amber-950 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-100">
+                                  <span className="font-semibold">Note:</span>{" "}
+                                  {item.note}
+                                </div>
+                              ) : null}
+                              {item.details ? (
+                                <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-900/60">
+                                  {item.details.intro ? (
+                                    <p className="text-sm leading-7 text-slate-700 dark:text-slate-200">
+                                      {item.details.intro}
+                                    </p>
+                                  ) : null}
+                                  <ol className="mt-3 list-decimal space-y-3 pl-5 text-sm leading-7 text-slate-700 dark:text-slate-200">
+                                    {item.details.steps.map((step) => (
+                                      <li key={step.label} className="pl-1">
+                                        <span className="font-semibold text-slate-950 dark:text-white">
+                                          {step.label}:
+                                        </span>{" "}
+                                        <span>{step.text}</span>
+                                        {step.pointsLabel ? (
+                                          <span className="ml-2 inline-flex rounded-full bg-white px-2 py-0.5 text-xs font-semibold text-slate-600 ring-1 ring-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-700">
+                                            {step.pointsLabel}
+                                          </span>
+                                        ) : null}
+                                      </li>
+                                    ))}
+                                  </ol>
+                                </div>
+                              ) : null}
+                              {item.codeBlocks?.length ? (
+                                <div className="mt-4 space-y-4">
+                                  {item.codeBlocks.map((block) => (
+                                    <div
+                                      key={block.title}
+                                      className="overflow-hidden rounded-lg border border-slate-800 bg-slate-950"
+                                    >
+                                      <div className="flex items-center justify-between border-b border-slate-800 px-4 py-2">
+                                        <p className="text-sm font-semibold text-slate-100">
+                                          {block.title}
+                                        </p>
+                                        <span className="rounded bg-slate-800 px-2 py-0.5 text-xs font-semibold text-slate-300">
+                                          {block.language}
+                                        </span>
+                                      </div>
+                                      <pre className="max-h-[520px] overflow-auto p-4 text-sm leading-6 text-slate-100">
+                                        <code>{block.code}</code>
+                                      </pre>
+                                    </div>
+                                  ))}
+                                </div>
+                              ) : null}
+                              {item.expectedOutput?.length ? (
+                                <div className="mt-4 rounded-lg border border-emerald-200 bg-emerald-50 p-4 dark:border-emerald-900/50 dark:bg-emerald-950/30">
+                                  <h4 className="text-sm font-semibold text-emerald-950 dark:text-emerald-100">
+                                    Expected Output
+                                  </h4>
+                                  <pre className="mt-3 overflow-auto rounded bg-white p-3 text-sm leading-6 text-emerald-950 dark:bg-slate-950 dark:text-emerald-100">
+                                    <code>
+                                      {item.expectedOutput.join("\n")}
+                                    </code>
+                                  </pre>
+                                </div>
                               ) : null}
                               {item.previewFiles?.length ? (
                                 <div className="mt-3 flex flex-wrap gap-2">

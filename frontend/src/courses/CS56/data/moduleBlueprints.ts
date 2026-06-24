@@ -30,7 +30,35 @@ export type CS56ModuleBlueprint = {
         type: "page" | "quiz" | "discussion" | "assignment";
         dueLabel?: string;
         pointsLabel?: string;
+        scoreLabel?: string;
         description?: string;
+        note?: string;
+        prompt?: {
+          title: string;
+          sections: Array<{
+            title: string;
+            paragraphs?: string[];
+            steps?: Array<{
+              title: string;
+              items: string[];
+            }>;
+            output?: string[];
+          }>;
+        };
+        details?: {
+          intro?: string;
+          steps: Array<{
+            label: string;
+            text: string;
+            pointsLabel?: string;
+          }>;
+        };
+        codeBlocks?: Array<{
+          title: string;
+          language: string;
+          code: string;
+        }>;
+        expectedOutput?: string[];
         previewFiles?: Array<{
           fileUrl: string;
           filename: string;
@@ -428,146 +456,544 @@ export const cs56ModuleBlueprints: CS56ModuleBlueprint[] = [
   },
   {
     id: 2,
-    title: "Exceptions and Robust Program Design",
+    title: "Inheritance",
     weekLabel: "Module 2",
-    dateLabel: "Syllabus date pending",
+    dateLabel: "June 25-28",
     overview:
-      "This module focuses on building Java programs that fail clearly, recover when appropriate, and communicate error states through checked and unchecked exceptions.",
-    topicLine: "Exceptions, validation, and defensive Java programming",
+      "This module moves from Java review into inheritance. It covers superclass/subclass relationships, packages, access levels, constructors with the super keyword, and abstract classes.",
+    topicLine:
+      "Inheritance, packages, access control, constructors, super, and abstract classes",
     focusAreas: [
-      "Checked and unchecked exceptions",
-      "Custom exception classes",
-      "try/catch/finally and try-with-resources",
-      "Input validation and failure handling",
+      "Superclass and subclass design",
+      "Package organization",
+      "Public, private, protected, and package-private access",
+      "Constructors and the super keyword",
+      "Abstract classes",
     ],
     objectivesAligned: [
-      "Apply Java exception handling patterns",
-      "Design custom exceptions for domain-specific failures",
-      "Keep program flow readable while handling errors",
+      "Explain how inheritance reuses and specializes behavior",
+      "Organize Java classes with packages",
+      "Choose appropriate access levels for fields and methods",
+      "Use constructors and super to initialize inherited state",
+      "Design abstract base classes for shared contracts",
     ],
     outcomeAlignment: [
-      "Create more robust command-line and file-processing programs",
-      "Explain when an exception should be caught, propagated, or avoided",
+      "Build object-oriented Java programs with inheritance hierarchies",
+      "Reason about visibility and initialization across related classes",
+      "Prepare for more advanced polymorphism and interface work",
     ],
     syllabusContext: [
-      "Matches the course catalog emphasis on robust Java programs",
-      "Exact assignment text pending syllabus import",
+      "Module: Inheritance includes overview, lecture, reading, quizzes, and a discussion task",
+      "Visible Canvas deadlines: Discussion due Jun 25; inheritance quizzes due Jun 28",
     ],
     starterTasks: [
-      "Refactor a fragile program to handle invalid input",
-      "Create a custom exception class",
-      "Document expected failure cases",
+      "Review Inheritance: Overview",
+      "Complete inheritance lecture pages and quizzes",
+      "Read the Inheritance reading",
+      "Participate in Discussion: Inheritance",
     ],
     artifacts: [
-      "Exception-handling Java source files",
-      "Test run notes for valid and invalid inputs",
+      "Inheritance quiz submissions",
+      "Discussion: Inheritance post",
+      "Reading notes for inheritance concepts",
     ],
-    importantDates: ["Date pending syllabus import"],
-    assessmentContext: ["Points and grading category pending syllabus import"],
-    milestone: "Exception strategy documented and implemented",
+    importantDates: [
+      "Jun 25 - Discussion: Inheritance",
+      "Jun 28 - Quiz - Inheritance",
+      "Jun 28 - Quiz - Packages",
+      "Jun 28 - Quiz - Access Levels",
+      "Jun 28 - Quiz - Inheritance: Constructors & super",
+      "Jun 28 - Quiz - Abstract Classes",
+    ],
+    assessmentContext: [
+      "Discussion: Inheritance - 5 pts",
+      "Quiz - Inheritance - 3 pts",
+      "Quiz - Packages - 3 pts",
+      "Quiz - Access Levels - 3 pts",
+      "Quiz - Inheritance: Constructors & super - 3 pts",
+      "Quiz - Abstract Classes - 3 pts",
+    ],
+    milestone: "Inheritance lecture sequence and discussion completed",
     moduleSummary: [
       {
-        step: "Analyze",
+        step: "Overview",
         description:
-          "Identify where the program can fail or receive invalid data.",
+          "Start with the inheritance overview and connect the module to Java OOP review.",
       },
       {
-        step: "Implement",
-        description: "Use Java exception patterns to make failures explicit.",
+        step: "Lecture",
+        description:
+          "Work through inheritance, packages, access levels, constructors with super, and abstract classes.",
       },
       {
-        step: "Verify",
-        description: "Run both happy-path and failure-path examples.",
+        step: "Tasks",
+        description:
+          "Complete quizzes, read the inheritance material, and submit the discussion.",
       },
     ],
     readingHighlights: [
-      "Oracle Java Tutorials: Exceptions",
-      "Course notes on robust and secure Java programs",
+      "Inheritance: Overview",
+      "Reading: Inheritance",
+      "Lecture pages on inheritance, packages, access levels, constructors, super, and abstract classes",
+    ],
+    canvasSections: [
+      {
+        id: "inheritance",
+        title: "Module: Inheritance",
+        groups: [
+          {
+            items: [
+              {
+                title: "Inheritance: Overview",
+                type: "page",
+              },
+            ],
+          },
+          {
+            title: "Lecture",
+            defaultCollapsed: true,
+            items: [
+              {
+                title: "Lecture: Inheritance",
+                type: "page",
+              },
+              {
+                title: "Quiz - Inheritance",
+                type: "quiz",
+                dueLabel: "Jun 28",
+                pointsLabel: "3 pts",
+              },
+              {
+                title: "Lecture: Packages",
+                type: "page",
+              },
+              {
+                title: "Quiz - Packages",
+                type: "quiz",
+                dueLabel: "Jun 28",
+                pointsLabel: "3 pts",
+              },
+              {
+                title: "Lecture: Access Levels",
+                type: "page",
+              },
+              {
+                title: "Quiz - Access Levels",
+                type: "quiz",
+                dueLabel: "Jun 28",
+                pointsLabel: "3 pts",
+              },
+              {
+                title: "Lecture: Constructors & super Keyword",
+                type: "page",
+              },
+              {
+                title: "Quiz - Inheritance: Constructors & super",
+                type: "quiz",
+                dueLabel: "Jun 28",
+                pointsLabel: "3 pts",
+              },
+              {
+                title: "Lecture: Abstract Classes",
+                type: "page",
+              },
+              {
+                title: "Quiz - Abstract Classes",
+                type: "quiz",
+                dueLabel: "Jun 28",
+                pointsLabel: "3 pts",
+              },
+              {
+                title: "Reading: Inheritance",
+                type: "page",
+              },
+            ],
+          },
+          {
+            title: "Tasks",
+            items: [
+              {
+                title: "Discussion: Inheritance",
+                type: "discussion",
+                dueLabel: "Jun 25",
+                pointsLabel: "5 pts",
+                details: {
+                  intro:
+                    "Let's ensure that everyone of us understands this module's subject well and is confident applying inheritance when needed. Complete the following tasks:",
+                  steps: [
+                    {
+                      label: "By Thursday",
+                      text: "Submit a question on this module's subject.",
+                      pointsLabel: "2 points",
+                    },
+                    {
+                      label: "By Sunday",
+                      text: "Select a question from one of your classmates and provide a thorough response. Ensure your answer is at least two sentences long and includes an example where relevant.",
+                      pointsLabel: "3 points",
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+        ],
+      },
     ],
     textTasks: [
       {
-        id: "module-2-exceptions",
-        title: "Exception Handling Assignment",
+        id: "module-2-inheritance-discussion",
+        title: "Discussion: Inheritance",
         objective:
-          "Turn a fragile Java workflow into a program with clear validation and recoverable error handling.",
+          "Participate in the inheritance discussion after completing the lecture and reading materials.",
         tasks: [
-          "Add exception handling around risky input or file operations",
-          "Create custom exceptions where they improve clarity",
-          "Write a short reflection on the error-handling choices",
+          "Review inheritance, packages, access levels, constructors, super, and abstract classes",
+          "Complete the inheritance quizzes",
+          "Post the inheritance discussion response by Jun 25",
         ],
-        submissionInstructions: commonSubmissionInstructions,
+        submissionInstructions: [
+          "Submit through SMC Canvas discussion",
+          "Due: Jun 25",
+          "5 points",
+        ],
       },
     ],
   },
   {
     id: 3,
-    title: "Generics, Collections, and API Design",
+    title: "Polymorphism, Dynamic Binding & Interfaces",
     weekLabel: "Module 3",
-    dateLabel: "Syllabus date pending",
+    dateLabel: "June 28",
     overview:
-      "This module organizes data with Java collections and strengthens reusable APIs through generics, interfaces, and type-safe design.",
-    topicLine: "Collections framework, generics, and reusable APIs",
+      "This module expands object-oriented Java design with polymorphism, dynamic binding, method overriding, and interfaces. It also introduces anonymous classes and functional interfaces.",
+    topicLine:
+      "Polymorphism, dynamic binding, method overriding, interfaces, anonymous classes, and functional interfaces",
     focusAreas: [
-      "Lists, sets, maps, queues, and iterators",
-      "Generic classes and methods",
-      "Comparable, Comparator, and ordering",
-      "API design for reusable components",
+      "Polymorphic references",
+      "Method overriding",
+      "Dynamic binding",
+      "Interface design and extension",
+      "Anonymous classes",
+      "Functional interfaces",
     ],
     objectivesAligned: [
-      "Choose appropriate collection types",
-      "Use generics to avoid unsafe casts",
-      "Expose clean interfaces for reusable logic",
+      "Explain how polymorphism changes runtime behavior",
+      "Override methods intentionally in inheritance hierarchies",
+      "Use dynamic binding to call subclass behavior through superclass references",
+      "Define and extend Java interfaces",
+      "Recognize anonymous classes and functional interface patterns",
     ],
     outcomeAlignment: [
-      "Build type-safe Java utilities",
-      "Reason about data structure tradeoffs in assignments",
+      "Build Java programs that use polymorphism and interfaces cleanly",
+      "Prepare for event-driven, collection, and callback-oriented Java APIs",
     ],
     syllabusContext: [
-      "Supports later I/O, JDBC, and networking modules",
-      "Exact syllabus mapping pending import",
+      "Module: Polymorphism, Dynamic Binding & Interfaces includes overview, two lecture sections, reading, quizzes, and an assignment task",
+      "Visible Canvas deadlines: all quizzes and Assignment: Polymorphism due Jun 28",
     ],
     starterTasks: [
-      "Model a dataset with multiple collection types",
-      "Add sorting and filtering behavior",
-      "Document why each collection was selected",
+      "Review Polymorphism: Overview",
+      "Complete the polymorphism and dynamic binding lecture sequence",
+      "Complete the interfaces lecture sequence",
+      "Read Polymorphism & Interfaces",
+      "Submit Assignment: Polymorphism",
     ],
     artifacts: [
-      "Collection-based Java utility",
-      "README with API usage examples",
+      "Polymorphism quiz submissions",
+      "Interfaces quiz submissions",
+      "Assignment: Polymorphism",
     ],
-    importantDates: ["Date pending syllabus import"],
-    assessmentContext: ["Points and grading category pending syllabus import"],
-    milestone: "Type-safe Java collection workflow complete",
+    importantDates: [
+      "Jun 28 - Quiz: Polymorphism",
+      "Jun 28 - Quiz: Overriding Methods",
+      "Jun 28 - Quiz: Dynamic Binding",
+      "Jun 28 - Quiz: Interfaces",
+      "Jun 28 - Quiz: More on Interfaces",
+      "Jun 28 - Quiz: Anonymous Classes",
+      "Jun 28 - Quiz: Functional Interfaces",
+      "Jun 28 - Assignment: Polymorphism",
+    ],
+    assessmentContext: [
+      "Quiz: Polymorphism - 3 pts",
+      "Quiz: Overriding Methods - 3 pts",
+      "Quiz: Dynamic Binding - 3 pts",
+      "Quiz: Interfaces - 4 pts",
+      "Quiz: More on Interfaces - 3 pts",
+      "Quiz: Anonymous Classes - 3 pts",
+      "Quiz: Functional Interfaces - 3 pts",
+      "Assignment: Polymorphism - 1 pt",
+    ],
+    milestone: "Polymorphism, dynamic binding, and interface tasks completed",
     moduleSummary: [
       {
-        step: "Model",
-        description: "Represent course data with typed collections.",
+        step: "Overview",
+        description:
+          "Start with the polymorphism overview and connect it to inheritance from the previous module.",
       },
       {
-        step: "Operate",
-        description: "Add search, sort, filter, or grouping behavior.",
+        step: "Polymorphism",
+        description:
+          "Study polymorphism, overriding methods, and dynamic binding.",
       },
       {
-        step: "Explain",
-        description: "Justify collection and generic type choices.",
+        step: "Interfaces",
+        description:
+          "Study interface basics, interface extension, anonymous classes, and functional interfaces.",
+      },
+      {
+        step: "Tasks",
+        description: "Complete quizzes, reading, and Assignment: Polymorphism.",
       },
     ],
     readingHighlights: [
-      "Oracle Java Tutorials: Collections",
-      "Oracle Java Tutorials: Generics",
+      "Polymorphism: Overview",
+      "Reading: Polymorphism & Interfaces",
+      "Lecture pages on polymorphism, dynamic binding, and interfaces",
+    ],
+    canvasSections: [
+      {
+        id: "polymorphism-dynamic-binding-interfaces",
+        title: "Module: Polymorphism, Dynamic Binding & Interfaces",
+        groups: [
+          {
+            items: [
+              {
+                title: "Polymorphism: Overview",
+                type: "page",
+              },
+            ],
+          },
+          {
+            title: "Lecture - Polymorphism & Dynamic Binding",
+            defaultCollapsed: true,
+            items: [
+              {
+                title: "Lecture: Polymorphism",
+                type: "page",
+              },
+              {
+                title: "Quiz: Polymorphism",
+                type: "quiz",
+                dueLabel: "Jun 28",
+                pointsLabel: "3 pts",
+              },
+              {
+                title: "Lecture: Overriding Methods",
+                type: "page",
+              },
+              {
+                title: "Quiz: Overriding Methods",
+                type: "quiz",
+                dueLabel: "Jun 28",
+                pointsLabel: "3 pts",
+              },
+              {
+                title: "Lecture: Dynamic Binding",
+                type: "page",
+              },
+              {
+                title: "Quiz: Dynamic Binding",
+                type: "quiz",
+                dueLabel: "Jun 28",
+                pointsLabel: "3 pts",
+              },
+            ],
+          },
+          {
+            title: "Lecture - Interfaces",
+            defaultCollapsed: true,
+            items: [
+              {
+                title: "Lecture: Intro to Interfaces",
+                type: "page",
+              },
+              {
+                title: "Lecture: Extending an Interface",
+                type: "page",
+              },
+              {
+                title: "Quiz: Interfaces",
+                type: "quiz",
+                dueLabel: "Jun 28",
+                pointsLabel: "4 pts",
+              },
+              {
+                title: "Lecture: More on Interfaces",
+                type: "page",
+              },
+              {
+                title: "Quiz: More on Interfaces",
+                type: "quiz",
+                dueLabel: "Jun 28",
+                pointsLabel: "3 pts",
+              },
+              {
+                title: "Lecture: Anonymous Classes",
+                type: "page",
+              },
+              {
+                title: "Quiz: Anonymous Classes",
+                type: "quiz",
+                dueLabel: "Jun 28",
+                pointsLabel: "3 pts",
+              },
+              {
+                title: "Lecture: Functional Interfaces",
+                type: "page",
+              },
+              {
+                title: "Quiz: Functional Interfaces",
+                type: "quiz",
+                dueLabel: "Jun 28",
+                pointsLabel: "3 pts",
+              },
+              {
+                title: "Reading: Polymorphism & Interfaces",
+                type: "page",
+              },
+            ],
+          },
+          {
+            title: "Tasks",
+            items: [
+              {
+                title: "Assignment: Polymorphism",
+                type: "assignment",
+                dueLabel: "Jun 28",
+                pointsLabel: "1 pts",
+                prompt: {
+                  title: "Implementing Polymorphism with Devices in Java",
+                  sections: [
+                    {
+                      title: "Introduction",
+                      paragraphs: [
+                        "In modern computing, various electronic devices interact seamlessly through software systems. Understanding polymorphism allows you to write flexible and scalable code that treats different devices in a uniform way. In this assignment, you will implement polymorphism using an electronic device hierarchy, demonstrating how method overriding enables dynamic behavior across multiple device types.",
+                      ],
+                    },
+                    {
+                      title: "Instructions",
+                      steps: [
+                        {
+                          title: "Create a Parent Class (Device)",
+                          items: [
+                            'Define a method turnOn() that prints "Turning on the device...".',
+                          ],
+                        },
+                        {
+                          title:
+                            "Create Child Classes (Smartphone, Laptop, Tablet, Smartwatch)",
+                          items: [
+                            "Each class should inherit from Device.",
+                            'Override the turnOn() method with unique behaviors: Smartphone: "Booting up the smartphone..."; Laptop: "Powering on the laptop..."; Tablet: "Starting the tablet..."; Smartwatch: "Waking up the smartwatch...".',
+                          ],
+                        },
+                        {
+                          title: "Implement the Main Method (DeviceTest)",
+                          items: [
+                            "Create an ArrayList of Device objects.",
+                            "Populate the list with instances of Smartphone, Laptop, Tablet, and Smartwatch.",
+                            "Use a loop to call turnOn() on each object and observe polymorphic behavior.",
+                          ],
+                        },
+                      ],
+                    },
+                    {
+                      title: "Expected Output Example",
+                      output: [
+                        "Booting up the smartphone...",
+                        "Powering on the laptop...",
+                        "Starting the tablet...",
+                        "Waking up the smartwatch...",
+                      ],
+                    },
+                  ],
+                },
+                scoreLabel: "Score: 0.81 / 1 pts",
+                description: "Java Code Solution - Polymorphism with Devices",
+                note: "Submission note: my answer lost points because I wrote turnOn without parentheses in the method call. The loop should call device.turnOn();.",
+                codeBlocks: [
+                  {
+                    title: "Corrected DeviceTest.java",
+                    language: "java",
+                    code: `import java.util.ArrayList;
+
+class Device {
+    void turnOn() {
+        System.out.println("Turning on the device...");
+    }
+}
+
+class Smartphone extends Device {
+    @Override
+    void turnOn() {
+        System.out.println("Booting up the smartphone...");
+    }
+}
+
+class Laptop extends Device {
+    @Override
+    void turnOn() {
+        System.out.println("Powering on the laptop...");
+    }
+}
+
+class Tablet extends Device {
+    @Override
+    void turnOn() {
+        System.out.println("Starting the tablet...");
+    }
+}
+
+class Smartwatch extends Device {
+    @Override
+    void turnOn() {
+        System.out.println("Waking up the smartwatch...");
+    }
+}
+
+public class DeviceTest {
+    public static void main(String[] args) {
+        ArrayList<Device> devices = new ArrayList<>();
+
+        devices.add(new Smartphone());
+        devices.add(new Laptop());
+        devices.add(new Tablet());
+        devices.add(new Smartwatch());
+
+        for (Device device : devices) {
+            device.turnOn();
+        }
+    }
+}`,
+                  },
+                ],
+                expectedOutput: [
+                  "Booting up the smartphone...",
+                  "Powering on the laptop...",
+                  "Starting the tablet...",
+                  "Waking up the smartwatch...",
+                ],
+              },
+            ],
+          },
+        ],
+      },
     ],
     textTasks: [
       {
-        id: "module-3-collections",
-        title: "Collections and Generics Assignment",
+        id: "module-3-polymorphism",
+        title: "Assignment: Polymorphism",
         objective:
-          "Create a small typed Java API that uses collections and generics intentionally.",
+          "Complete the polymorphism assignment after reviewing polymorphism, dynamic binding, and interfaces.",
         tasks: [
-          "Implement a generic class or method",
-          "Use at least two collection types",
-          "Include examples that demonstrate type safety",
+          "Review polymorphism, overriding methods, and dynamic binding",
+          "Review interface basics, extension, anonymous classes, and functional interfaces",
+          "Submit Assignment: Polymorphism by Jun 28",
         ],
-        submissionInstructions: commonSubmissionInstructions,
+        submissionInstructions: [
+          "Submit through SMC Canvas",
+          "Due: Jun 28",
+          "1 point",
+        ],
       },
     ],
   },
