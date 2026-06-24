@@ -1,8 +1,16 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import AssignmentMod2 from "./AssignmentMod2";
+
+vi.mock("@/hooks/useCompletedModules", () => ({
+  useCompletedModules: () => ({
+    completedModules: [],
+    markAsCompleted: vi.fn(),
+    unmarkAsCompleted: vi.fn(),
+  }),
+}));
 
 describe("<AssignmentMod2 />", () => {
   it("renders Module 2 with separate collapsed Canvas blocks", () => {
@@ -35,6 +43,9 @@ describe("<AssignmentMod2 />", () => {
       screen.getByRole("button", {
         name: "Quiz: Module 2 - Condition Statements & Loops",
       })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Complete module 2" })
     ).toBeInTheDocument();
 
     expect(

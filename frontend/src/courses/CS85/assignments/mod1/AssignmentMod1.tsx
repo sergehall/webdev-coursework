@@ -9,7 +9,11 @@ import {
 } from "lucide-react";
 
 import AnimatedAccordionItem from "@/components/AnimatedAccordionItem";
-import { ShowModalButton, ToggleModalButton } from "@/components/buttons";
+import {
+  ModuleCompletionButton,
+  ShowModalButton,
+  ToggleModalButton,
+} from "@/components/buttons";
 import QuizGenerator from "@/components/quiz/QuizGenerator";
 import type { CorrectAnswerDto } from "@/components/quiz/types/correct-answers-map.type";
 import type { UIQuestion } from "@/components/quiz/types/UIQuestion.type";
@@ -515,6 +519,8 @@ export default function AssignmentMod1() {
       >
         <ModuleOneQuiz />
       </AnimatedAccordionItem>
+
+      <ModuleCompletionButton moduleId={1} />
     </section>
   );
 }

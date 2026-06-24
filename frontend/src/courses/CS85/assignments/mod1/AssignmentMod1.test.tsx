@@ -1,8 +1,16 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import AssignmentMod1 from "./AssignmentMod1";
+
+vi.mock("@/hooks/useCompletedModules", () => ({
+  useCompletedModules: () => ({
+    completedModules: [],
+    markAsCompleted: vi.fn(),
+    unmarkAsCompleted: vi.fn(),
+  }),
+}));
 
 describe("<AssignmentMod1 />", () => {
   it("renders the CS85 module 1 Canvas blocks collapsed by default", () => {
@@ -34,6 +42,9 @@ describe("<AssignmentMod1 />", () => {
     ).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "Quiz: Module 1 - Intro to PHP" })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Complete module 1" })
     ).toBeInTheDocument();
 
     expect(screen.queryByText("module_1_reading.pdf")).not.toBeInTheDocument();
