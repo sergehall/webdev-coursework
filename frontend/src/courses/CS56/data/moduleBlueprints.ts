@@ -27,10 +27,11 @@ export type CS56ModuleBlueprint = {
       defaultCollapsed?: boolean;
       items: Array<{
         title: string;
-        type: "page" | "quiz" | "discussion" | "assignment";
+        type: "page" | "quiz" | "discussion" | "assignment" | "attachment";
         dueLabel?: string;
         pointsLabel?: string;
         scoreLabel?: string;
+        defaultCollapsed?: boolean;
         description?: string;
         note?: string;
         prompt?: {
@@ -1193,139 +1194,694 @@ public class DeviceTest {
   },
   {
     id: 4,
-    title: "Input, Output, and File Processing",
+    title: "Unified Modeling Language",
     weekLabel: "Module 4",
-    dateLabel: "Syllabus date pending",
+    dateLabel: "July 2-5",
     overview:
-      "This module introduces Java I/O workflows for reading, writing, transforming, and closing file resources safely.",
-    topicLine: "Streams, readers, writers, files, and resource management",
+      "This module introduces Unified Modeling Language as a design and visualization tool for Java programs. It focuses on understanding UML, reading and writing class diagrams, and using sequence diagrams to describe object interactions over time.",
+    topicLine:
+      "UML foundations, diagram types, class diagrams, sequence diagrams, and PlantUML setup",
     focusAreas: [
-      "Byte and character streams",
-      "Buffered I/O",
-      "File and path handling",
-      "try-with-resources",
+      "Purpose and value of UML",
+      "UML diagram categories",
+      "Class diagrams",
+      "Sequence diagrams",
+      "PlantUML workflow in IntelliJ",
     ],
     objectivesAligned: [
-      "Read and write structured data from files",
-      "Use resource-safe Java I/O patterns",
-      "Handle I/O exceptions cleanly",
+      "Explain what UML is and why developers use it",
+      "Identify different UML diagram types",
+      "Create class diagrams that show classes, attributes, methods, and relationships",
+      "Create sequence diagrams that show interactions over time",
+      "Use PlantUML as a practical diagramming tool in a Java workflow",
     ],
     outcomeAlignment: [
-      "Build file-backed assignments and utilities",
-      "Prepare data import/export patterns for later modules",
+      "Plan Java systems before implementation",
+      "Communicate object-oriented design decisions with visual models",
+      "Connect design artifacts to later coding assignments",
     ],
     syllabusContext: [
-      "Matches the course catalog topic: Input/Output",
-      "Exact syllabus readings and due dates pending import",
+      "Module: Unified Modeling Language includes overview, lecture pages, a discussion, and an assignment task",
+      "Visible Canvas deadlines: Discussion: UML due Jul 2; Assignment: UML due Jul 5",
     ],
     starterTasks: [
-      "Read data from a text file",
-      "Transform the data in memory",
-      "Write a formatted output file",
+      "Review UML: Overview",
+      "Complete the UML lecture sequence",
+      "Install or review the PlantUML plugin workflow in IntelliJ",
+      "Post on Discussion: UML",
+      "Submit Assignment: UML",
     ],
-    artifacts: ["Java I/O program", "Sample input and output files"],
-    importantDates: ["Date pending syllabus import"],
-    assessmentContext: ["Points and grading category pending syllabus import"],
-    milestone: "File-processing workflow complete",
+    artifacts: [
+      "Discussion: UML",
+      "Assignment: UML",
+      "Class diagram or PlantUML artifact",
+      "Sequence diagram or PlantUML artifact",
+    ],
+    importantDates: ["Jul 2 - Discussion: UML", "Jul 5 - Assignment: UML"],
+    assessmentContext: ["Discussion: UML - 5 pts", "Assignment: UML - 10 pts"],
+    milestone: "UML discussion and assignment completed",
     moduleSummary: [
       {
-        step: "Read",
-        description: "Load data through Java I/O APIs.",
+        step: "Overview",
+        description:
+          "Learn what UML is and why it helps developers design and communicate complex systems before coding.",
       },
       {
-        step: "Transform",
-        description: "Process data using clear object-oriented logic.",
+        step: "Lecture",
+        description:
+          "Study UML basics, PlantUML setup in IntelliJ, class diagrams, and sequence diagrams.",
       },
       {
-        step: "Write",
-        description: "Persist the result and document output format.",
+        step: "Tasks",
+        description:
+          "Post on the UML discussion and complete the UML assignment in Canvas.",
       },
     ],
     readingHighlights: [
-      "Oracle Java Tutorials: Basic I/O",
-      "Course notes on file submission expectations",
+      "UML: Overview",
+      "Lecture: Intro to UML",
+      "Lecture: UML - Class Diagrams",
+      "Lecture: UML - Sequence Diagrams",
+    ],
+    canvasSections: [
+      {
+        id: "unified-modeling-language",
+        title: "Module: Unified Modeling Language",
+        groups: [
+          {
+            items: [
+              {
+                title: "UML: Overview",
+                type: "page",
+                defaultCollapsed: true,
+                prompt: {
+                  title: "Welcome to Module: Unified Modeling Language",
+                  sections: [
+                    {
+                      title: "Welcome",
+                      paragraphs: [
+                        "Dive headfirst into the captivating world of Java programming with the power of Unified Modeling Language (UML). This module is more than just an introduction to a tool. It is about mastering the art of designing and visualizing complex systems. UML serves as the blueprint for your coding masterpieces, providing a clear and structured way to map out your ideas before bringing them to life.",
+                      ],
+                    },
+                    {
+                      title: "Here's what you'll explore",
+                      steps: [
+                        {
+                          title: "What the UML is",
+                          items: [
+                            "Discover this powerful language and learn why it is a game changer for developers around the world.",
+                          ],
+                        },
+                        {
+                          title: "Different diagram types",
+                          items: [
+                            "Explore the variety of UML diagrams that help you visualize every aspect of your system, from structure to behavior.",
+                          ],
+                        },
+                        {
+                          title: "Use and write class diagrams",
+                          items: [
+                            "Learn how to create detailed class diagrams that illustrate the relationships and interactions between the different classes in your program.",
+                          ],
+                        },
+                        {
+                          title: "Use and write sequence diagrams",
+                          items: [
+                            "Master sequence diagrams to visualize the flow of operations and interactions over time within your system.",
+                          ],
+                        },
+                      ],
+                    },
+                    {
+                      title: "Tasks",
+                      paragraphs: [
+                        "Post on the discussion and complete the assignment.",
+                      ],
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+          {
+            title: "Lecture",
+            items: [
+              {
+                title: "Lecture: Intro to UML",
+                type: "page",
+              },
+              {
+                title: "Lecture: How to install PlantUML Plugin in IntelliJ",
+                type: "page",
+              },
+              {
+                title: "Lecture: UML - Class Diagrams",
+                type: "page",
+              },
+              {
+                title: "Lecture: UML - Sequence Diagrams",
+                type: "page",
+              },
+            ],
+          },
+          {
+            title: "Tasks",
+            items: [
+              {
+                title: "Discussion: UML",
+                type: "discussion",
+                dueLabel: "Jul 2",
+                pointsLabel: "5 pts",
+                defaultCollapsed: true,
+                description:
+                  "Post on the UML discussion after reviewing the overview and lecture materials.",
+                prompt: {
+                  title: "Task 1: Example of a UML Diagram",
+                  sections: [
+                    {
+                      title: "Text Response",
+                      paragraphs: [
+                        "Here is an example of a UML class diagram for a simple Library Management System.",
+                        "This UML class diagram shows a basic library management system. The main classes in the diagram are Library, Book, Member, and Librarian. Each class represents an important part of the system. For example, the Book class stores information about a book, such as its title, author, ISBN number, and whether it is available. The Member class represents a library user who can borrow and return books.",
+                        "The diagram also shows the relationships between the classes. A Library can have many books, while a Member can borrow many books. The Librarian manages the library and can perform actions like managing books and registering members. I think this is a good example of a UML diagram because it shows both the data each class contains and the actions each class can perform. It also makes the structure of the system easier to understand before writing the actual code.",
+                      ],
+                    },
+                  ],
+                },
+              },
+              {
+                title: "Assignment: UML",
+                type: "assignment",
+                dueLabel: "Jul 5",
+                pointsLabel: "10 pts",
+                defaultCollapsed: true,
+                description:
+                  "Complete the UML quiz-style assignment in Canvas. It includes UML concept checks and two PlantUML exercises.",
+                prompt: {
+                  title: "Assignment: UML - Quiz Instructions",
+                  sections: [
+                    {
+                      title: "Question 1 - 1 pt",
+                      paragraphs: [
+                        "UML is a programming language that is used to develop a variety of diagrams.",
+                        "Answer: False. UML is a modeling language, not a programming language.",
+                      ],
+                    },
+                    {
+                      title: "Question 2 - 1 pt",
+                      paragraphs: [
+                        "Which of the following diagrams are part of the UML? Check all that apply.",
+                        "Answer: Class diagram, Sequence diagram, Activity diagram.",
+                      ],
+                    },
+                    {
+                      title: "Question 3 - 1 pt",
+                      paragraphs: [
+                        "Which of the following can be expressed in a UML class diagram? Check all that apply.",
+                        "Answer: Interfaces, Methods, Inheritance relationships, Classes.",
+                      ],
+                    },
+                    {
+                      title: "Question 4 - 4 pts",
+                      paragraphs: [
+                        "PlantUML provides textual commands to define diagrams. Design a class diagram with a package named Math that includes a class Shape with two subclasses named Rectangle and Square.",
+                      ],
+                      steps: [
+                        {
+                          title: "Class diagram requirements",
+                          items: [
+                            "The Shape class has one public method named area() that returns a float.",
+                            "The Square class has one private member variable of type float named side.",
+                            "The Rectangle class has two private member variables of type float named width and height.",
+                          ],
+                        },
+                      ],
+                    },
+                    {
+                      title: "Question 5 - 3 pts",
+                      paragraphs: [
+                        "PlantUML provides textual commands to define diagrams. Design a sequence diagram for this scenario: an actor uses a vending machine to order an item and pays for it with a credit card.",
+                      ],
+                      steps: [
+                        {
+                          title: "Sequence diagram requirements",
+                          items: [
+                            "Create an actor named Customer.",
+                            "The Customer calls order() on a VendingMachine object.",
+                            "The Customer calls pay() on the VendingMachine object.",
+                            "As part of pay(), the VendingMachine calls charge() on a CreditCard object.",
+                            "As part of pay(), the VendingMachine calls output() on itself and returns from pay() to the Customer.",
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                },
+                codeBlocks: [
+                  {
+                    title: "Question 4 PlantUML Class Diagram Solution",
+                    language: "plantuml",
+                    code: `@startuml
+package Math {
+    class Shape {
+        + float area()
+    }
+
+    class Square {
+        - float side
+    }
+
+    class Rectangle {
+        - float width
+        - float height
+    }
+
+    Shape <|-- Square
+    Shape <|-- Rectangle
+}
+@enduml`,
+                  },
+                  {
+                    title: "Question 5 PlantUML Sequence Diagram Solution",
+                    language: "plantuml",
+                    code: `@startuml
+actor Customer
+participant VendingMachine
+participant CreditCard
+
+Customer -> VendingMachine : order()
+Customer -> VendingMachine : pay()
+activate VendingMachine
+VendingMachine -> CreditCard : charge()
+VendingMachine -> VendingMachine : output()
+VendingMachine --> Customer : pay()
+deactivate VendingMachine
+@enduml`,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
     ],
     textTasks: [
       {
-        id: "module-4-io",
-        title: "File Processing Assignment",
+        id: "module-4-uml-discussion",
+        title: "Discussion: UML",
         objective:
-          "Build a Java program that safely reads input data and writes processed output.",
+          "Participate in the UML discussion after reviewing the overview and lecture materials.",
         tasks: [
-          "Use try-with-resources for file handles",
-          "Handle missing or malformed file data",
-          "Include sample files for repeatable grading",
+          "Review what UML is and why developers use it",
+          "Review the class diagram and sequence diagram lecture pages",
+          "Use the text-only Library Management System response as the discussion answer",
+          "Post on Discussion: UML by Jul 2",
         ],
-        submissionInstructions: commonSubmissionInstructions,
+        submissionInstructions: [
+          "Submit through SMC Canvas discussion",
+          "Due: Jul 2",
+          "5 points",
+        ],
+      },
+      {
+        id: "module-4-uml-assignment",
+        title: "Assignment: UML",
+        objective:
+          "Complete the UML assignment after studying UML foundations, class diagrams, sequence diagrams, and PlantUML setup.",
+        tasks: [
+          "Complete the UML overview and lecture sequence",
+          "Use UML notation to model program structure or behavior as required by Canvas",
+          "Submit Assignment: UML by Jul 5",
+        ],
+        submissionInstructions: [
+          "Submit through SMC Canvas",
+          "Due: Jul 5",
+          "10 points",
+        ],
       },
     ],
   },
   {
     id: 5,
-    title: "Serialization and Persistent Objects",
+    title: "Exceptions",
     weekLabel: "Module 5",
-    dateLabel: "Syllabus date pending",
+    dateLabel: "July 5",
     overview:
-      "This module extends I/O into object persistence, data exchange, and versioning considerations for saved Java objects.",
-    topicLine: "Object streams, serialization, and persistence tradeoffs",
+      "This module introduces Java exception handling. It focuses on try-catch blocks, exception classes, finally blocks, AutoCloseable resources, and reading exception-focused code examples.",
+    topicLine:
+      "Exception handling, try-catch, exception classes, finally blocks, and AutoCloseable resources",
     focusAreas: [
-      "Serializable objects",
-      "ObjectInputStream and ObjectOutputStream",
-      "Persistence boundaries",
-      "Data compatibility and version notes",
+      "try-catch control flow",
+      "Exception classes",
+      "finally block behavior",
+      "AutoCloseable and resource cleanup",
+      "Reading and interpreting exception examples",
     ],
     objectivesAligned: [
-      "Persist object state to disk",
-      "Restore object state safely",
-      "Discuss serialization tradeoffs",
+      "Explain how Java handles runtime errors with exceptions",
+      "Use try-catch blocks to recover from expected failure cases",
+      "Identify exception classes and when they apply",
+      "Explain when a finally block executes",
+      "Recognize AutoCloseable patterns for resource cleanup",
     ],
     outcomeAlignment: [
-      "Build file-backed Java applications with object state",
-      "Prepare for database-backed persistence in JDBC",
+      "Write Java programs that fail more predictably and communicate errors clearly",
+      "Prepare for file, database, networking, and resource-management code that must handle exceptions",
     ],
     syllabusContext: [
-      "Extends the course catalog Input/Output topic",
-      "Exact syllabus mapping pending import",
+      "Module: Exceptions includes overview, lecture pages, quizzes, code examples, reading, and an assignment task",
+      "Visible Canvas deadlines: quizzes and Assignment: Exceptions due Jul 5",
     ],
     starterTasks: [
-      "Define a serializable model",
-      "Save and load a collection of objects",
-      "Document compatibility assumptions",
+      "Review Exception: Overview",
+      "Complete lectures on try-catch, exception classes, finally, and AutoCloseable",
+      "Complete the exception quizzes",
+      "Review DivideByZeroException.java and Mathematics.java",
+      "Submit Assignment: Exceptions",
     ],
-    artifacts: ["Serializable Java model", "Persistence demo program"],
-    importantDates: ["Date pending syllabus import"],
-    assessmentContext: ["Points and grading category pending syllabus import"],
-    milestone: "Object persistence demo complete",
+    artifacts: [
+      "Quiz: Try-Catch Block",
+      "Quiz: Exception Classes",
+      "Quiz: finally",
+      "DivideByZeroException.java",
+      "Mathematics.java",
+      "Assignment: Exceptions",
+    ],
+    importantDates: [
+      "Jul 5 - Quiz: Try-Catch Block",
+      "Jul 5 - Quiz: Exception Classes",
+      "Jul 5 - Quiz: finally",
+      "Jul 5 - Assignment: Exceptions",
+    ],
+    assessmentContext: [
+      "Quiz: Try-Catch Block - 3 pts",
+      "Quiz: Exception Classes - 3 pts",
+      "Quiz: finally - 2 pts",
+      "Assignment: Exceptions - 10 pts",
+    ],
+    milestone: "Exceptions quizzes and assignment completed",
     moduleSummary: [
       {
-        step: "Model",
-        description: "Choose which object state should persist.",
+        step: "Overview",
+        description:
+          "Start with the exception overview and connect exception handling to reliable Java program behavior.",
       },
       {
-        step: "Persist",
-        description: "Write object state to disk.",
+        step: "Lecture",
+        description:
+          "Study try-catch blocks, exception classes, finally blocks, AutoCloseable resources, and exception reading materials.",
       },
       {
-        step: "Restore",
-        description: "Reload and verify persisted objects.",
+        step: "Code Example",
+        description:
+          "Review DivideByZeroException.java and Mathematics.java as concrete examples of exception-related Java code.",
+      },
+      {
+        step: "Tasks",
+        description:
+          "Complete the quizzes and submit Assignment: Exceptions by Jul 5.",
       },
     ],
     readingHighlights: [
-      "Oracle Java API docs for object streams",
-      "Course notes on persistence and file formats",
+      "Exception: Overview",
+      "Lecture: The try-catch Block",
+      "Lecture: Exception Classes",
+      "Lecture: The finally Block",
+      "Lecture: Exceptions with AutoClosable",
+      "Exceptions: Reading",
+    ],
+    canvasSections: [
+      {
+        id: "exceptions",
+        title: "Module: Exceptions",
+        groups: [
+          {
+            items: [
+              {
+                title: "Exception: Overview",
+                type: "page",
+                defaultCollapsed: true,
+                prompt: {
+                  title: "Welcome to Module: Exceptions",
+                  sections: [
+                    {
+                      title: "Welcome",
+                      paragraphs: [
+                        "Get ready to tackle one of the most critical aspects of Java programming: handling exceptions. This module is all about empowering you to write robust and resilient code that can gracefully handle the unexpected. Imagine the confidence you will gain knowing your program can stay afloat even when things go awry.",
+                      ],
+                    },
+                    {
+                      title: "Here's what you'll dive into",
+                      steps: [
+                        {
+                          title: "Exception classes",
+                          items: [
+                            "Explore the different types of exceptions in Java and understand how they help identify and manage errors.",
+                          ],
+                        },
+                        {
+                          title: "Declaring methods that may throw exceptions",
+                          items: [
+                            "Learn how to signal potential issues in your methods, making your code more predictable and easier to debug.",
+                          ],
+                        },
+                        {
+                          title: "Throwing exceptions",
+                          items: [
+                            "Master the art of generating exceptions to handle specific error conditions effectively.",
+                          ],
+                        },
+                        {
+                          title: "try-catch blocks",
+                          items: [
+                            "Discover how to encapsulate risky code and handle errors gracefully, ensuring your program continues to run smoothly.",
+                          ],
+                        },
+                        {
+                          title: "try-catch blocks with auto-closable",
+                          items: [
+                            "Automate resource management and prevent resource leaks with the power of auto-closable in your try-catch blocks.",
+                          ],
+                        },
+                      ],
+                    },
+                    {
+                      title: "Tasks",
+                      paragraphs: [
+                        "Watch the lectures, take the quizzes, and complete the assignment.",
+                      ],
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+          {
+            title: "Lecture",
+            items: [
+              {
+                title: "Lecture: The try-catch Block",
+                type: "page",
+              },
+              {
+                title: "Quiz: Try-Catch Block",
+                type: "quiz",
+                dueLabel: "Jul 5",
+                pointsLabel: "3 pts",
+              },
+              {
+                title: "Lecture: Exception Classes",
+                type: "page",
+              },
+              {
+                title: "Quiz: Exception Classes",
+                type: "quiz",
+                dueLabel: "Jul 5",
+                pointsLabel: "3 pts",
+              },
+              {
+                title: "Lecture: The finally Block",
+                type: "page",
+              },
+              {
+                title: "Quiz: finally",
+                type: "quiz",
+                dueLabel: "Jul 5",
+                pointsLabel: "2 pts",
+              },
+              {
+                title: "Lecture: Exceptions with AutoClosable",
+                type: "page",
+              },
+              {
+                title: "Exceptions: Reading",
+                type: "page",
+              },
+            ],
+          },
+          {
+            title: "Code Example",
+            items: [
+              {
+                title: "DivideByZeroException.java",
+                type: "attachment",
+              },
+              {
+                title: "Mathematics.java",
+                type: "attachment",
+              },
+            ],
+          },
+          {
+            title: "Tasks",
+            items: [
+              {
+                title: "Assignment: Exceptions",
+                type: "assignment",
+                dueLabel: "Jul 5",
+                pointsLabel: "10 pts",
+                scoreLabel: "Score: 10 / 10 pts",
+                defaultCollapsed: true,
+                description:
+                  "Implement an application that represents a valet parking system which manages 10 parking spots.",
+                prompt: {
+                  title: "Assignment: Exceptions",
+                  sections: [
+                    {
+                      title: "Question 1 - 10 pts",
+                      paragraphs: [
+                        "Implement an application that represents a valet parking system which manages 10 parking spots. Create the classes Car.java, NoSpaceAvailableException.java, NoCarException.java, and Valet.java.",
+                      ],
+                    },
+                    {
+                      title: "Class Requirements",
+                      steps: [
+                        {
+                          title: "Car.java",
+                          items: [
+                            "Create a class named Car with two instance variables for make and model with appropriate accessibility levels.",
+                            "Add getter and setter methods for each member variable.",
+                            "Override the toString() method of java.lang.Object with an appropriate description of a vehicle.",
+                          ],
+                        },
+                        {
+                          title: "NoSpaceAvailableException.java",
+                          items: [
+                            "Create a new exception class used when no parking spot is available.",
+                          ],
+                        },
+                        {
+                          title: "NoCarException.java",
+                          items: [
+                            "Create a new exception class used when a requested spot is invalid or empty.",
+                          ],
+                        },
+                        {
+                          title: "Valet.java",
+                          items: [
+                            "Represent the 10 valet parking spots with an array. Initially, all 10 spots are available.",
+                            "Implement void park(Car car) throws NoSpaceAvailableException. It parks the car in the next available spot. If no spot is available, throw NoSpaceAvailableException.",
+                            "Implement Car get(int spot) throws NoCarException. It returns the car stored at the specified index. If the index is out of bounds or the spot is empty, throw NoCarException.",
+                            "Implement Car leave(int spot) throws NoCarException. It removes and returns the car at the specified spot. If the index is out of bounds or the spot is empty, throw NoCarException.",
+                          ],
+                        },
+                      ],
+                    },
+                    {
+                      title: "Solution Note",
+                      paragraphs: [
+                        'The code below shows the completed solution. Inline comments marked "inserted answer" identify the parts that were filled into the gray Canvas answer boxes.',
+                      ],
+                    },
+                  ],
+                },
+                codeBlocks: [
+                  {
+                    title: "Completed Valet Parking Exception Solution",
+                    language: "java",
+                    code: `public class Car { // inserted answer: Car
+    private String make;
+    private String model;
+
+    public String getMake() {
+        return make;
+    }
+
+    public void setMake(String make) {
+        this.make = make;
+    }
+
+    public String getModel() {
+        return model;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s %s", make, model);
+    }
+}
+
+class NoSpaceAvailableException extends Exception { // inserted answers: extends, Exception
+}
+
+class NoCarException extends Exception { // inserted answers: extends, Exception
+}
+
+class Valet {
+    private Car[] spots = new Car[10]; // inserted answer: new Car[10]
+
+    public void park(Car car) throws NoSpaceAvailableException { // inserted answers: throws, NoSpaceAvailableException
+        for (int i = 0; i < spots.length; i++) {
+            if (spots[i] == null) {
+                spots[i] = car;
+                return;
+            }
+        }
+        throw new NoSpaceAvailableException(); // inserted answers: throw, NoSpaceAvailableException()
+    }
+
+    public Car get(int spot) throws NoCarException { // inserted answers: throws, NoCarException
+        if (spot < 0 || spot >= spots.length || spots[spot] == null) { // inserted answer: spots[spot]
+            throw new NoCarException(); // inserted answers: throw, NoCarException()
+        }
+        return spots[spot];
+    }
+
+    public Car leave(int spot) throws NoCarException { // inserted answers: throws, NoCarException
+        Car car = get(spot);
+        spots[spot] = null; // inserted answer: null
+        return car;
+    }
+}`,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
     ],
     textTasks: [
       {
-        id: "module-5-serialization",
-        title: "Object Persistence Assignment",
+        id: "module-5-exceptions",
+        title: "Assignment: Exceptions",
         objective:
-          "Persist and restore Java objects while documenting the shape and limits of the stored data.",
+          "Complete the exception-handling module after studying try-catch blocks, exception classes, finally blocks, AutoCloseable resources, and code examples.",
         tasks: [
-          "Create a serializable domain model",
-          "Write and read model instances from disk",
-          "Add notes about versioning or schema assumptions",
+          "Review Exception: Overview",
+          "Complete the exception lecture and quiz sequence",
+          "Review DivideByZeroException.java and Mathematics.java",
+          "Submit Assignment: Exceptions by Jul 5",
         ],
-        submissionInstructions: commonSubmissionInstructions,
+        submissionInstructions: [
+          "Submit through SMC Canvas",
+          "Due: Jul 5",
+          "10 points",
+        ],
       },
     ],
   },
