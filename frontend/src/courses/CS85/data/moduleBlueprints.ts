@@ -323,23 +323,23 @@ export const cs85ModuleBlueprints: CS85ModuleBlueprint[] = [
   ),
   createModule(
     4,
-    "Object Oriented PHP",
+    "Database Fundamentals",
     "Week 2",
     "Mon, Jun 29-Sun, Jul 5, 2026",
     "Sunday, July 5, 2026 at 11:59 PM",
     [
-      "Classes and objects",
-      "Properties and methods",
-      "Constructors",
-      "Encapsulation",
-      "Object-oriented design habits",
+      "Database setup",
+      "Tables and records",
+      "Primary keys",
+      "Basic SQL statements",
+      "Personal inventory data modeling",
     ],
     [
-      "Review object-oriented PHP syntax",
-      "Model a simple domain with classes",
-      "Connect OOP practice to Laravel conventions",
+      "Review Canvas materials for database fundamentals",
+      "Prepare local database setup notes",
+      "Stage implementation space for a personal inventory database",
     ],
-    "Core object-oriented PHP concepts ready for framework work"
+    "Database fundamentals module shell ready for Canvas details"
   ),
   createModule(
     5,
