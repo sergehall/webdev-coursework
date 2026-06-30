@@ -303,23 +303,23 @@ export const cs85ModuleBlueprints: CS85ModuleBlueprint[] = [
   ),
   createModule(
     3,
-    "Functions",
+    "Handling Web Requests",
     "Week 2",
     "Mon, Jun 29-Sun, Jul 5, 2026",
     "Sunday, July 5, 2026 at 11:59 PM",
     [
-      "Function definitions",
-      "Parameters and return values",
-      "Scope",
-      "Reusable PHP helpers",
-      "Readable program decomposition",
+      "HTTP request handling",
+      "Form input processing",
+      "GET and POST data",
+      "Input validation",
+      "Secure contact form flow",
     ],
     [
-      "Review Canvas materials for PHP functions",
-      "Refactor repeated logic into functions",
-      "Save examples for later Laravel and project use",
+      "Review Canvas materials for handling web requests",
+      "Stage notes for the form review assignment",
+      "Prepare implementation space for the secure product contact form",
     ],
-    "Reusable PHP function patterns practiced"
+    "Handling web requests module shell ready for Canvas details"
   ),
   createModule(
     4,
