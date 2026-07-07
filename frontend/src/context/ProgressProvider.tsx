@@ -96,6 +96,12 @@ const ProgressProvider = ({ children }: { children: React.ReactNode }) => {
   const currentConfig = validCourseId
     ? COURSE_PROGRESS_CONFIG[validCourseId]
     : null;
+  const hasLoadedProgressForCourse =
+    validCourseId !== null &&
+    Object.prototype.hasOwnProperty.call(completedModules, validCourseId);
+  const shouldReportLoadingProgress =
+    isLoadingProgress ||
+    (hasValidContext && !hasLoadedProgressForCourse && progressError === null);
 
   const retryProgress = useCallback(() => {
     setProgressError(null);
@@ -276,7 +282,7 @@ const ProgressProvider = ({ children }: { children: React.ReactNode }) => {
       markAsCompleted,
       unmarkAsCompleted,
       maxModules: currentConfig.maxModules,
-      isLoadingProgress,
+      isLoadingProgress: shouldReportLoadingProgress,
       progressError,
       retryProgress,
     };
@@ -287,7 +293,7 @@ const ProgressProvider = ({ children }: { children: React.ReactNode }) => {
     currentConfig,
     validCourseId,
     hasValidContext,
-    isLoadingProgress,
+    shouldReportLoadingProgress,
     progressError,
     retryProgress,
   ]);

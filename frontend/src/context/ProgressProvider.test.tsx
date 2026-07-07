@@ -157,6 +157,27 @@ describe("ProgressProvider state", () => {
     expect(fetchProgressMock).toHaveBeenCalledWith("client-1", "CS81");
   });
 
+  test("reports loading on the first render before course progress has loaded", async () => {
+    const pendingProgress = createDeferred<number[]>();
+    fetchProgressMock.mockReturnValue(pendingProgress.promise);
+
+    renderProgressProvider();
+
+    expect(screen.getByLabelText("loading state")).toHaveTextContent("loading");
+    expect(screen.getByLabelText("completed modules")).toHaveTextContent(
+      "none"
+    );
+
+    await act(async () => {
+      pendingProgress.resolve([1]);
+    });
+
+    await waitFor(() => {
+      expect(screen.getByLabelText("loading state")).toHaveTextContent("idle");
+      expect(screen.getByLabelText("completed modules")).toHaveTextContent("1");
+    });
+  });
+
   test("optimistically marks a module and ignores duplicate marks while the mutation is pending", async () => {
     const user = userEvent.setup();
     const pendingMark = createDeferred<void>();
