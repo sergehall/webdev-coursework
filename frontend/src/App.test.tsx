@@ -22,6 +22,20 @@ describe("<App /> integration", () => {
     expect(await screen.findByText(/Loading Coursework/i)).toBeInTheDocument();
   });
 
+  it("redirects a direct CS56 course URL to its assignment portal", async () => {
+    renderWithProviders(<App />, "/coursework/CS56");
+
+    expect(
+      await screen.findByRole(
+        "heading",
+        {
+          name: /welcome to the CS 56 advanced java programming assignment portal/i,
+        },
+        { timeout: 3000 }
+      )
+    ).toBeInTheDocument();
+  });
+
   it("renders WebDeveloperPath Page", async () => {
     renderWithProviders(<App />, "/web-developer-path");
     expect(

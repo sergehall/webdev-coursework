@@ -1,12 +1,18 @@
 // src/routes/AppRoutes.tsx
 
 import { Suspense } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate, useParams } from "react-router-dom";
 
 import * as Screens from "./LazyScreens";
 
 import Layout from "@/layout/Layout";
 import AutoAssignmentRouter from "@/routes/AutoAssignmentRouter";
+
+function CourseAssignmentRedirect() {
+  const { courseId } = useParams<{ courseId: string }>();
+
+  return <Navigate to={`/coursework/${courseId}/assignment`} replace />;
+}
 
 export default function AppRoutes() {
   return (
@@ -30,6 +36,11 @@ export default function AppRoutes() {
               <Screens.CourseworkPage />
             </Suspense>
           }
+        />
+
+        <Route
+          path="/coursework/:courseId"
+          element={<CourseAssignmentRedirect />}
         />
 
         <Route
