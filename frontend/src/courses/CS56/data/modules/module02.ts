@@ -1,5 +1,8 @@
 import type { CS56ModuleBlueprint } from "../types";
 
+import { cs56Module02CanvasSections } from "./module02CanvasSections";
+import { cs56Module02TextTasks } from "./module02TextTasks";
+
 export const cs56Module02Blueprint = {
   id: 2,
   title: "Inheritance",
@@ -82,125 +85,6 @@ export const cs56Module02Blueprint = {
     "Reading: Inheritance",
     "Lecture pages on inheritance, packages, access levels, constructors, super, and abstract classes",
   ],
-  canvasSections: [
-    {
-      id: "inheritance",
-      title: "Module: Inheritance",
-      groups: [
-        {
-          items: [
-            {
-              title: "Inheritance: Overview",
-              type: "page",
-            },
-          ],
-        },
-        {
-          title: "Lecture",
-          defaultCollapsed: true,
-          items: [
-            {
-              title: "Lecture: Inheritance",
-              type: "page",
-            },
-            {
-              title: "Quiz - Inheritance",
-              type: "quiz",
-              dueLabel: "Jun 28",
-              pointsLabel: "3 pts",
-            },
-            {
-              title: "Lecture: Packages",
-              type: "page",
-            },
-            {
-              title: "Quiz - Packages",
-              type: "quiz",
-              dueLabel: "Jun 28",
-              pointsLabel: "3 pts",
-            },
-            {
-              title: "Lecture: Access Levels",
-              type: "page",
-            },
-            {
-              title: "Quiz - Access Levels",
-              type: "quiz",
-              dueLabel: "Jun 28",
-              pointsLabel: "3 pts",
-            },
-            {
-              title: "Lecture: Constructors & super Keyword",
-              type: "page",
-            },
-            {
-              title: "Quiz - Inheritance: Constructors & super",
-              type: "quiz",
-              dueLabel: "Jun 28",
-              pointsLabel: "3 pts",
-            },
-            {
-              title: "Lecture: Abstract Classes",
-              type: "page",
-            },
-            {
-              title: "Quiz - Abstract Classes",
-              type: "quiz",
-              dueLabel: "Jun 28",
-              pointsLabel: "3 pts",
-            },
-            {
-              title: "Reading: Inheritance",
-              type: "page",
-            },
-          ],
-        },
-        {
-          title: "Tasks",
-          items: [
-            {
-              title: "Discussion: Inheritance",
-              type: "discussion",
-              dueLabel: "Jun 25",
-              pointsLabel: "5 pts",
-              details: {
-                intro:
-                  "Let's ensure that everyone of us understands this module's subject well and is confident applying inheritance when needed. Complete the following tasks:",
-                steps: [
-                  {
-                    label: "By Thursday",
-                    text: "Submit a question on this module's subject.",
-                    pointsLabel: "2 points",
-                  },
-                  {
-                    label: "By Sunday",
-                    text: "Select a question from one of your classmates and provide a thorough response. Ensure your answer is at least two sentences long and includes an example where relevant.",
-                    pointsLabel: "3 points",
-                  },
-                ],
-              },
-            },
-          ],
-        },
-      ],
-    },
-  ],
-  textTasks: [
-    {
-      id: "module-2-inheritance-discussion",
-      title: "Discussion: Inheritance",
-      objective:
-        "Participate in the inheritance discussion after completing the lecture and reading materials.",
-      tasks: [
-        "Review inheritance, packages, access levels, constructors, super, and abstract classes",
-        "Complete the inheritance quizzes",
-        "Post the inheritance discussion response by Jun 25",
-      ],
-      submissionInstructions: [
-        "Submit through SMC Canvas discussion",
-        "Due: Jun 25",
-        "5 points",
-      ],
-    },
-  ],
+  canvasSections: cs56Module02CanvasSections,
+  textTasks: cs56Module02TextTasks,
 } satisfies CS56ModuleBlueprint;

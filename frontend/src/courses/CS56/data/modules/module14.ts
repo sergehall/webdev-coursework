@@ -1,5 +1,8 @@
 import type { CS56ModuleBlueprint } from "../types";
 
+import { cs56Module14CanvasSections } from "./module14CanvasSections";
+import { cs56Module14TextTasks } from "./module14TextTasks";
+
 export const cs56Module14Blueprint = {
   id: 14,
   title: "Database with JDBC",
@@ -80,98 +83,6 @@ export const cs56Module14Blueprint = {
     "Lecture: How to connect to MySQL",
     "Project Setup with MySQL - NetBeans",
   ],
-  canvasSections: [
-    {
-      id: "database-with-jdbc",
-      title: "Database with JDBC",
-      groups: [
-        {
-          items: [
-            {
-              title: "Database: Overview",
-              type: "page",
-            },
-          ],
-        },
-        {
-          title: "Lecture",
-          items: [
-            {
-              title: "Lecture: Intro to relational Databases",
-              type: "page",
-            },
-            {
-              title: "Lecture: How to install MySQL",
-              type: "page",
-            },
-            {
-              title: "Lecture: Structured Query Language (SQL)",
-              type: "page",
-            },
-            {
-              title: "Quiz: Databases",
-              type: "quiz",
-              dueLabel: "Jul 31",
-              pointsLabel: "3 pts",
-            },
-            {
-              title: "Lecture: How to connect to MySQL",
-              type: "page",
-            },
-            {
-              title: "Project Setup with MySQL - NetBeans",
-              type: "page",
-            },
-          ],
-        },
-        {
-          title: "Code Example",
-          items: [
-            {
-              title: "Database.java",
-              type: "attachment",
-            },
-            {
-              title: "Employee.java",
-              type: "attachment",
-            },
-          ],
-        },
-        {
-          title: "Tasks",
-          items: [
-            {
-              title: "Discussion: Database",
-              type: "discussion",
-              dueLabel: "Jul 31",
-              pointsLabel: "3 pts",
-              defaultCollapsed: true,
-              description:
-                "Discussion details will be filled in separately after the module shell matches Canvas.",
-            },
-          ],
-        },
-      ],
-    },
-  ],
-  textTasks: [
-    {
-      id: "module-14-database-discussion",
-      title: "Discussion: Database",
-      objective:
-        "Complete the Database with JDBC module after reviewing relational databases, MySQL, SQL, Java database connection setup, and code examples.",
-      tasks: [
-        "Review Database: Overview",
-        "Complete the database lecture and quiz sequence",
-        "Review Database.java and Employee.java",
-        "Post on Discussion: Database by Jul 31",
-      ],
-      submissionInstructions: [
-        "Submit through SMC Canvas",
-        "Due: Jul 31",
-        "3 points",
-        "Discussion content will be added separately",
-      ],
-    },
-  ],
+  canvasSections: cs56Module14CanvasSections,
+  textTasks: cs56Module14TextTasks,
 } satisfies CS56ModuleBlueprint;

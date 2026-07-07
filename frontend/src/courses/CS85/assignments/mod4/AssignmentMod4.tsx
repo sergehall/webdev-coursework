@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { FileText, Paperclip, Rocket } from "lucide-react";
 
+import { quizAnswers, quizQuestions } from "./quizData";
+import { Assignment4AContent, Assignment4BContent } from "./assignmentContent";
+
 import AnimatedAccordionItem from "@/components/AnimatedAccordionItem";
 import { ModuleCompletionButton } from "@/components/buttons";
 import QuizGenerator from "@/components/quiz/QuizGenerator";
-import { quizAnswers, quizQuestions } from "./quizData";
-import { Assignment4AContent, Assignment4BContent } from "./assignmentContent";
 import {
   ModuleItemBlock,
   type CanvasItem,

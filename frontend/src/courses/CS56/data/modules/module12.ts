@@ -1,5 +1,8 @@
 import type { CS56ModuleBlueprint } from "../types";
 
+import { cs56Module12CanvasSections } from "./module12CanvasSections";
+import { cs56Module12TextTasks } from "./module12TextTasks";
+
 export const cs56Module12Blueprint = {
   id: 12,
   title: "Event Driven Programming with Java FX",
@@ -94,138 +97,6 @@ export const cs56Module12Blueprint = {
     "Reading: JavaFX Event Handling",
     "Lecture: JavaFX Canvas",
   ],
-  canvasSections: [
-    {
-      id: "event-driven-programming-with-java-fx",
-      title: "Module: Event Driven Programming with Java FX",
-      groups: [
-        {
-          items: [
-            {
-              title: "JavaFX Events: Overview",
-              type: "page",
-            },
-          ],
-        },
-        {
-          title: "Lecture",
-          items: [
-            {
-              title: "Lecture: Event Handling in JavaFX",
-              type: "page",
-            },
-            {
-              title: "Quiz: JavaFX Events",
-              type: "quiz",
-              dueLabel: "Jul 26",
-              pointsLabel: "3 pts",
-            },
-            {
-              title: "Lecture: Adding Audio to a JavaFX application",
-              type: "page",
-            },
-            {
-              title: "Quiz: Adding Audio to a JavaFX application",
-              type: "quiz",
-              dueLabel: "Jul 26",
-              pointsLabel: "3 pts",
-            },
-            {
-              title: "Reading: JavaFX Event Handling",
-              type: "page",
-            },
-            {
-              title: "Lecture: JavaFX Canvas",
-              type: "page",
-            },
-          ],
-        },
-        {
-          title: "Code Example",
-          items: [
-            {
-              title: "ClickApp.java",
-              type: "attachment",
-            },
-            {
-              title: "ClickController.java",
-              type: "attachment",
-            },
-            {
-              title: "click.fxml",
-              type: "attachment",
-            },
-            {
-              title: "Project.zip",
-              type: "attachment",
-            },
-            {
-              title: "CanvasApp.java",
-              type: "attachment",
-            },
-          ],
-        },
-        {
-          title: "Tasks",
-          items: [
-            {
-              title: "Assignment: JavaFX",
-              type: "assignment",
-              dueLabel: "Jul 26",
-              pointsLabel: "16 pts",
-              defaultCollapsed: true,
-              description:
-                "Assignment details will be filled in separately after the module shell matches Canvas.",
-            },
-            {
-              title: "Project: JavaFX + Event Handling (Group)",
-              type: "assignment",
-              dueLabel: "Jul 26",
-              pointsLabel: "20 pts",
-              defaultCollapsed: true,
-              description:
-                "Project details will be filled in separately after the module shell matches Canvas.",
-            },
-          ],
-        },
-      ],
-    },
-  ],
-  textTasks: [
-    {
-      id: "module-12-javafx-assignment",
-      title: "Assignment: JavaFX",
-      objective:
-        "Complete the JavaFX event-driven programming assignment after reviewing events, audio, event handling, Canvas, and code examples.",
-      tasks: [
-        "Review JavaFX Events: Overview",
-        "Complete the JavaFX events lecture and quiz sequence",
-        "Review the JavaFX code examples",
-        "Submit Assignment: JavaFX by Jul 26",
-      ],
-      submissionInstructions: [
-        "Submit through SMC Canvas",
-        "Due: Jul 26",
-        "16 points",
-        "Assignment content will be added separately",
-      ],
-    },
-    {
-      id: "module-12-javafx-event-handling-group-project",
-      title: "Project: JavaFX + Event Handling (Group)",
-      objective:
-        "Complete the group project task for JavaFX and event handling.",
-      tasks: [
-        "Review the JavaFX event handling material",
-        "Use the provided code examples as reference",
-        "Submit Project: JavaFX + Event Handling (Group) by Jul 26",
-      ],
-      submissionInstructions: [
-        "Submit through SMC Canvas",
-        "Due: Jul 26",
-        "20 points",
-        "Project content will be added separately",
-      ],
-    },
-  ],
+  canvasSections: cs56Module12CanvasSections,
+  textTasks: cs56Module12TextTasks,
 } satisfies CS56ModuleBlueprint;

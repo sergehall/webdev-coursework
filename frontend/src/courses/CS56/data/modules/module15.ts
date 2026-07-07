@@ -1,5 +1,8 @@
 import type { CS56ModuleBlueprint } from "../types";
 
+import { cs56Module15CanvasSections } from "./module15CanvasSections";
+import { cs56Module15TextTasks } from "./module15TextTasks";
+
 export const cs56Module15Blueprint = {
   id: 15,
   title: "Final Exam",
@@ -37,39 +40,6 @@ export const cs56Module15Blueprint = {
     },
   ],
   readingHighlights: ["Module: Overview"],
-  canvasSections: [
-    {
-      id: "final-exam",
-      title: "Module: Final Exam",
-      groups: [
-        {
-          items: [
-            {
-              title: "Module: Overview",
-              type: "page",
-            },
-            {
-              title: "Final Exam",
-              type: "assignment",
-              dueLabel: "Jul 31",
-              pointsLabel: "98 pts",
-            },
-          ],
-        },
-      ],
-    },
-  ],
-  textTasks: [
-    {
-      id: "module-15-final-exam",
-      title: "Final Exam",
-      objective: "Complete the CS 56 Final Exam assessment.",
-      tasks: ["Review Module: Overview", "Complete Final Exam by Jul 31"],
-      submissionInstructions: [
-        "Submit through SMC Canvas",
-        "Due: Jul 31",
-        "98 points",
-      ],
-    },
-  ],
+  canvasSections: cs56Module15CanvasSections,
+  textTasks: cs56Module15TextTasks,
 } satisfies CS56ModuleBlueprint;

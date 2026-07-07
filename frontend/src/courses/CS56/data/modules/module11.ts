@@ -1,5 +1,8 @@
 import type { CS56ModuleBlueprint } from "../types";
 
+import { cs56Module11CanvasSections } from "./module11CanvasSections";
+import { cs56Module11TextTasks } from "./module11TextTasks";
+
 export const cs56Module11Blueprint = {
   id: 11,
   title: "JavaFX",
@@ -86,97 +89,6 @@ export const cs56Module11Blueprint = {
     "Lecture: Layout using FXML",
     "Reading: Intro to JavaFX",
   ],
-  canvasSections: [
-    {
-      id: "javafx",
-      title: "Module: JavaFX",
-      groups: [
-        {
-          items: [
-            {
-              title: "JavaFX: Overview",
-              type: "page",
-            },
-          ],
-        },
-        {
-          title: "Lecture",
-          items: [
-            {
-              title: "Lecture: How to Create a JavaFX Project",
-              type: "page",
-            },
-            {
-              title: "Lecture: Intro to JavaFX",
-              type: "page",
-            },
-            {
-              title: "Quiz: JavaFX",
-              type: "quiz",
-              dueLabel: "Jul 26",
-              pointsLabel: "4 pts",
-            },
-            {
-              title: "Lecture: Layout and UI Controls using Java Code",
-              type: "page",
-            },
-            {
-              title: "Quiz: JavaFX Layout and UI Controls",
-              type: "quiz",
-              dueLabel: "Jul 26",
-              pointsLabel: "3 pts",
-            },
-            {
-              title: "Lecture: Layout using FXML",
-              type: "page",
-            },
-            {
-              title: "Quiz: Layout using FXML",
-              type: "quiz",
-              dueLabel: "Jul 26",
-              pointsLabel: "3 pts",
-            },
-            {
-              title: "Reading: Intro to JavaFX",
-              type: "page",
-            },
-          ],
-        },
-        {
-          title: "Tasks",
-          items: [
-            {
-              title: "Discussion: JavaFX",
-              type: "discussion",
-              dueLabel: "Jul 23",
-              pointsLabel: "5 pts",
-              defaultCollapsed: true,
-              description:
-                "Discussion details will be filled in separately after the module shell matches Canvas.",
-            },
-          ],
-        },
-      ],
-    },
-  ],
-  textTasks: [
-    {
-      id: "module-11-javafx",
-      title: "Discussion: JavaFX",
-      objective:
-        "Complete the JavaFX module after reviewing project setup, JavaFX basics, layout, UI controls, FXML, and the intro reading.",
-      tasks: [
-        "Review JavaFX: Overview",
-        "Complete the JavaFX lecture and quiz sequence",
-        "Read Reading: Intro to JavaFX",
-        "Post on Discussion: JavaFX by Jul 23",
-      ],
-      submissionInstructions: [
-        "Submit through SMC Canvas",
-        "Due: Jul 23",
-        "5 points",
-        "Discussion content will be added separately",
-      ],
-    },
-  ],
+  canvasSections: cs56Module11CanvasSections,
+  textTasks: cs56Module11TextTasks,
 } satisfies CS56ModuleBlueprint;

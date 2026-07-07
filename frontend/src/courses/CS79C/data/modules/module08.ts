@@ -1,4 +1,5 @@
 import type { CS79CModuleBlueprint } from "../types";
+
 import { cs79cModule08TextTasks } from "./module08TextTasks";
 import { cs79cModule08Quiz } from "./module08Quiz";
 

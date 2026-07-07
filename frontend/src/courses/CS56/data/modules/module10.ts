@@ -1,5 +1,8 @@
 import type { CS56ModuleBlueprint } from "../types";
 
+import { cs56Module10CanvasSections } from "./module10CanvasSections";
+import { cs56Module10TextTasks } from "./module10TextTasks";
+
 export const cs56Module10Blueprint = {
   id: 10,
   title: "Networking",
@@ -81,92 +84,6 @@ export const cs56Module10Blueprint = {
     "ChatClient.java",
     "EchoServer.java",
   ],
-  canvasSections: [
-    {
-      id: "networking",
-      title: "Module: Networking",
-      groups: [
-        {
-          items: [
-            {
-              title: "Networking Overview",
-              type: "page",
-            },
-          ],
-        },
-        {
-          title: "Lecture",
-          items: [
-            {
-              title: "Lecture: Client Server Application",
-              type: "page",
-            },
-            {
-              title: "Quiz: Client-Server Application",
-              type: "quiz",
-              dueLabel: "Jul 19",
-              pointsLabel: "3 pts",
-            },
-            {
-              title: "Lecture: Web Application",
-              type: "page",
-            },
-            {
-              title: "Quiz: Web Application",
-              type: "quiz",
-              dueLabel: "Jul 19",
-              pointsLabel: "4 pts",
-            },
-          ],
-        },
-        {
-          title: "Code Example",
-          items: [
-            {
-              title: "ChatClient.java",
-              type: "attachment",
-            },
-            {
-              title: "EchoServer.java",
-              type: "attachment",
-            },
-          ],
-        },
-        {
-          title: "Tasks",
-          items: [
-            {
-              title: "Discussion: Networking",
-              type: "discussion",
-              dueLabel: "Jul 16",
-              pointsLabel: "5 pts",
-              defaultCollapsed: true,
-              description:
-                "Discussion details will be filled in separately after the module shell matches Canvas.",
-            },
-          ],
-        },
-      ],
-    },
-  ],
-  textTasks: [
-    {
-      id: "module-10-networking",
-      title: "Discussion: Networking",
-      objective:
-        "Complete the Networking module after reviewing client-server applications, web applications, and Java networking code examples.",
-      tasks: [
-        "Review Networking Overview",
-        "Complete the networking lecture and quiz sequence",
-        "Review ChatClient.java and EchoServer.java",
-        "Post on Discussion: Networking by Jul 16",
-      ],
-      submissionInstructions: [
-        "Submit through SMC Canvas",
-        "Due: Jul 16",
-        "5 points",
-        "Discussion content will be added separately",
-      ],
-    },
-  ],
+  canvasSections: cs56Module10CanvasSections,
+  textTasks: cs56Module10TextTasks,
 } satisfies CS56ModuleBlueprint;

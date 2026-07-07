@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { ClipboardPenLine, FileText, Paperclip, Rocket } from "lucide-react";
 
+import { quizAnswers, quizQuestions } from "./quizData";
+
 import AnimatedAccordionItem from "@/components/AnimatedAccordionItem";
 import {
   ModuleCompletionButton,
@@ -8,7 +10,6 @@ import {
   ToggleModalButton,
 } from "@/components/buttons";
 import QuizGenerator from "@/components/quiz/QuizGenerator";
-import { quizAnswers, quizQuestions } from "./quizData";
 import {
   ModuleItemBlock,
   type CanvasItem,

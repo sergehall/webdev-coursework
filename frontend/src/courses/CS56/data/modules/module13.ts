@@ -1,5 +1,8 @@
 import type { CS56ModuleBlueprint } from "../types";
 
+import { cs56Module13CanvasSections } from "./module13CanvasSections";
+import { cs56Module13TextTasks } from "./module13TextTasks";
+
 export const cs56Module13Blueprint = {
   id: 13,
   title: "Multithreading",
@@ -71,78 +74,6 @@ export const cs56Module13Blueprint = {
     "Lecture: Multithreading",
     "Lecture: Synchronization",
   ],
-  canvasSections: [
-    {
-      id: "multithreading",
-      title: "Module: Multithreading",
-      groups: [
-        {
-          items: [
-            {
-              title: "Multithreading: Overview",
-              type: "page",
-            },
-          ],
-        },
-        {
-          title: "Lecture",
-          items: [
-            {
-              title: "Lecture: Multithreading",
-              type: "page",
-            },
-            {
-              title: "Quiz: Multithreading",
-              type: "quiz",
-              dueLabel: "Jul 31",
-              pointsLabel: "4 pts",
-            },
-            {
-              title: "Lecture: Synchronization",
-              type: "page",
-            },
-            {
-              title: "Quiz: Synchronization",
-              type: "quiz",
-              dueLabel: "Jul 31",
-              pointsLabel: "3 pts",
-            },
-          ],
-        },
-        {
-          title: "Tasks",
-          items: [
-            {
-              title: "Assignment: Multithreading",
-              type: "assignment",
-              dueLabel: "Jul 31",
-              pointsLabel: "10 pts",
-              defaultCollapsed: true,
-              description:
-                "Assignment details will be filled in separately after the module shell matches Canvas.",
-            },
-          ],
-        },
-      ],
-    },
-  ],
-  textTasks: [
-    {
-      id: "module-13-multithreading",
-      title: "Assignment: Multithreading",
-      objective:
-        "Complete the Multithreading module after reviewing thread execution and synchronization.",
-      tasks: [
-        "Review Multithreading: Overview",
-        "Complete the multithreading lecture and quiz sequence",
-        "Submit Assignment: Multithreading by Jul 31",
-      ],
-      submissionInstructions: [
-        "Submit through SMC Canvas",
-        "Due: Jul 31",
-        "10 points",
-        "Assignment content will be added separately",
-      ],
-    },
-  ],
+  canvasSections: cs56Module13CanvasSections,
+  textTasks: cs56Module13TextTasks,
 } satisfies CS56ModuleBlueprint;
