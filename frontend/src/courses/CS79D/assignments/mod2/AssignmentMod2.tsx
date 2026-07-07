@@ -1,6 +1,6 @@
 import CS79DModuleScaffold from "@/courses/CS79D/components/CS79DModuleScaffold";
-import { cs79dModuleBlueprints } from "@/courses/CS79D/data/moduleBlueprints";
+import { cs79dModule02Blueprint } from "@/courses/CS79D/data/modules/module02";
 
 export default function AssignmentMod2() {
-  return <CS79DModuleScaffold module={cs79dModuleBlueprints[2 - 1]} />;
+  return <CS79DModuleScaffold module={cs79dModule02Blueprint} />;
 }

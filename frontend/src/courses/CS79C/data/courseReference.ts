@@ -1,0 +1,41 @@
+export const cs79cCourseReference = {
+  courseTitle: "CS 79C – Compute Engines in Amazon Web Services",
+  sessionLabel: "Spring 2026 • First 8-Week Session",
+  instructor: "Vicky Tanya Seno",
+  instructorEmail: "seno_vicky@smc.edu",
+  officeHours: "Tuesdays 10:00 AM – 11:00 AM (Zoom) or by appointment",
+  slackWorkspace: "smccs79cspring2026.slack.com",
+  canvasUrl: "online.smc.edu",
+  requiredReadings: [
+    "AWS Documentation: https://aws.amazon.com/documentation/",
+    "AWS Whitepapers: https://aws.amazon.com/whitepapers/",
+  ],
+  gradingBreakdown: [
+    "Labs & Discussions — 35%",
+    "Quizzes — 35%",
+    "Final Project — 15%",
+    "Final Exam — 15%",
+  ],
+  courseObjectives: [
+    "Describe important design considerations for scalable cloud applications.",
+    "Describe the architectural approach used by AWS.",
+    "Navigate the AWS Management Console.",
+    "Describe the architectural approach used by AWS Elastic Beanstalk.",
+    "Deploy and manage Elastic Beanstalk applications.",
+    "Scale and load-balance cloud applications using AWS tools.",
+    "Deploy EC2 servers and work with various Amazon Machine Images.",
+  ],
+  studentLearningOutcomes: [
+    "Design, create and deploy applications using the AWS Console and Elastic Beanstalk.",
+    "Launch and monitor EC2 instances with the AWS Console.",
+  ],
+  importantSessionDates: [
+    "Session begins: February 17, 2026",
+    "Refund deadline: February 21, 2026",
+    "Class census day: February 28, 2026",
+    'Last day to withdraw without a "W": March 4, 2026',
+    'Guaranteed "W" withdrawal deadline: March 28, 2026',
+    "Finals week: April 6–12, 2026",
+    "Session ends: April 12, 2026",
+  ],
+} as const;
