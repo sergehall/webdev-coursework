@@ -1,11 +1,5 @@
 import { useState } from "react";
-import {
-  ClipboardPenLine,
-  FileText,
-  Paperclip,
-  Rocket,
-  type LucideIcon,
-} from "lucide-react";
+import { ClipboardPenLine, FileText, Paperclip, Rocket } from "lucide-react";
 
 import AnimatedAccordionItem from "@/components/AnimatedAccordionItem";
 import {
@@ -14,8 +8,11 @@ import {
   ToggleModalButton,
 } from "@/components/buttons";
 import QuizGenerator from "@/components/quiz/QuizGenerator";
-import type { CorrectAnswerDto } from "@/components/quiz/types/correct-answers-map.type";
-import type { UIQuestion } from "@/components/quiz/types/UIQuestion.type";
+import { quizAnswers, quizQuestions } from "./quizData";
+import {
+  ModuleItemBlock,
+  type CanvasItem,
+} from "@/courses/CS85/assignments/shared/canvasItems";
 
 type ModuleSectionId =
   | "readme"
@@ -23,13 +20,6 @@ type ModuleSectionId =
   | "assignment-2a"
   | "assignment-2b"
   | "quiz";
-
-type CanvasItem = {
-  icon: LucideIcon;
-  title: string;
-  dueLabel?: string;
-  pointsLabel?: string;
-};
 
 const readmeItem: CanvasItem = {
   icon: FileText,
@@ -70,171 +60,6 @@ const assignment2BFiles = [
     filename: "CosmicCalendarBuilder.php",
   },
 ];
-
-const quizQuestions: UIQuestion[] = [
-  {
-    id: 1,
-    question:
-      "Which of the following is the correct syntax for an if statement?",
-    options: [
-      "if ($aVariable == 1);",
-      "if ($aVariable == 1)()",
-      "if $aVariable == 1",
-      "if ($aVariable == 1)",
-    ],
-  },
-  {
-    id: 2,
-    question:
-      "An if statement can execute multiple lines of PHP code if they are",
-    options: [
-      "are excluded from the PHP code",
-      "are within a command { ... } block",
-      "are within a code segment /* ... */",
-      "are within an always false if statement",
-    ],
-  },
-  {
-    id: 3,
-    question: "Which is the correct PHP syntax for else:",
-    options: [
-      'else { echo "the else statement"; }',
-      'else ; { echo "the else statement"; }',
-      'else - echo "the else statement"',
-      'else \\/ { echo "the else statement"; }',
-    ],
-  },
-  {
-    id: 4,
-    question: "Each time a loop run through the code, it's called a",
-    options: ["looping", "iteration", "recurrence", "deduplication"],
-  },
-  {
-    id: 5,
-    question: "Which while loop syntax is correct?",
-    options: [
-      "while ($i < 100) { }",
-      "while $i < 100 { }",
-      "while $i < 100 ...",
-      "while ($i < 100; i++) { }",
-    ],
-  },
-  {
-    id: 6,
-    question: "The for statement can initialize a counter.",
-    options: ["True", "False"],
-  },
-  {
-    id: 7,
-    question: "The do ... while statement will always execute at least once.",
-    options: ["True", "False"],
-  },
-  {
-    id: 8,
-    question:
-      "The while statement will execute a series of statements as long as a given conditional expression evaluates to FALSE.",
-    options: ["True", "False"],
-  },
-  {
-    id: 9,
-    question:
-      "A if . . . else statement allows a program to make decisions about what statements to execute.",
-    options: ["True", "False"],
-  },
-  {
-    id: 10,
-    question:
-      "The if/else statement will contain at least one condition statement to make the decision to run one block of code and skip over another block of code.",
-    options: ["True", "False"],
-  },
-];
-
-const quizAnswers: CorrectAnswerDto[] = [
-  {
-    quizId: "CS85Module2ConditionStatementsLoopsQuiz",
-    questionId: 1,
-    correctAnswer: [3],
-  },
-  {
-    quizId: "CS85Module2ConditionStatementsLoopsQuiz",
-    questionId: 2,
-    correctAnswer: [1],
-  },
-  {
-    quizId: "CS85Module2ConditionStatementsLoopsQuiz",
-    questionId: 3,
-    correctAnswer: [0],
-  },
-  {
-    quizId: "CS85Module2ConditionStatementsLoopsQuiz",
-    questionId: 4,
-    correctAnswer: [1],
-  },
-  {
-    quizId: "CS85Module2ConditionStatementsLoopsQuiz",
-    questionId: 5,
-    correctAnswer: [0],
-  },
-  {
-    quizId: "CS85Module2ConditionStatementsLoopsQuiz",
-    questionId: 6,
-    correctAnswer: [0],
-  },
-  {
-    quizId: "CS85Module2ConditionStatementsLoopsQuiz",
-    questionId: 7,
-    correctAnswer: [0],
-  },
-  {
-    quizId: "CS85Module2ConditionStatementsLoopsQuiz",
-    questionId: 8,
-    correctAnswer: [1],
-  },
-  {
-    quizId: "CS85Module2ConditionStatementsLoopsQuiz",
-    questionId: 9,
-    correctAnswer: [0],
-  },
-  {
-    quizId: "CS85Module2ConditionStatementsLoopsQuiz",
-    questionId: 10,
-    correctAnswer: [0],
-  },
-];
-
-function CanvasRow({ item }: { item: CanvasItem }) {
-  const Icon = item.icon;
-
-  return (
-    <li className="flex gap-4 px-4 py-3 transition hover:bg-sky-50/70 dark:hover:bg-sky-950/20">
-      <div className="flex w-10 shrink-0 justify-center pt-1">
-        <Icon
-          aria-hidden="true"
-          className="h-5 w-5 text-slate-700 dark:text-slate-200"
-        />
-      </div>
-      <div className="min-w-0 flex-1">
-        <p className="text-sm leading-7 font-medium break-words text-slate-700 dark:text-slate-200">
-          {item.title}
-        </p>
-        {item.dueLabel || item.pointsLabel ? (
-          <p className="flex flex-wrap gap-x-4 gap-y-1 text-sm leading-7 text-slate-700 dark:text-slate-200">
-            {item.dueLabel ? <span>{item.dueLabel}</span> : null}
-            {item.pointsLabel ? <span>{item.pointsLabel}</span> : null}
-          </p>
-        ) : null}
-      </div>
-    </li>
-  );
-}
-
-function ModuleItemBlock({ item }: { item: CanvasItem }) {
-  return (
-    <ul className="overflow-hidden rounded-xl border border-slate-200 bg-white/70 dark:border-slate-700 dark:bg-slate-950/30">
-      <CanvasRow item={item} />
-    </ul>
-  );
-}
 
 function Assignment2AContent() {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
