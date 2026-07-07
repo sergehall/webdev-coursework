@@ -1,18 +1,12 @@
 import { useState } from "react";
 
 import AnimatedAccordionItem from "@/components/AnimatedAccordionItem";
-import {
-  ModuleCompletionButton,
-  ShowModalButton,
-  ToggleModalButton,
-} from "@/components/buttons";
-import ScreenshotGallery from "@/components/ScreenshotGallery";
+import { ModuleCompletionButton } from "@/components/buttons";
 import { useFinalModuleRedirect } from "@/hooks/useFinalModuleRedirect";
-import CS79CStaticQuiz from "@/courses/CS79C/components/CS79CStaticQuiz";
-import {
-  cs79cCourseReference,
-  type CS79CModuleBlueprint,
-} from "@/courses/CS79C/data/moduleBlueprints";
+import ModuleOverview from "@/courses/CS79C/components/module-scaffold/ModuleOverview";
+import QuizAccordion from "@/courses/CS79C/components/module-scaffold/QuizAccordion";
+import TextTaskAccordions from "@/courses/CS79C/components/module-scaffold/TextTaskAccordions";
+import type { CS79CModuleBlueprint } from "@/courses/CS79C/data/moduleBlueprints";
 
 type CS79CModuleScaffoldProps = {
   module: CS79CModuleBlueprint;
@@ -42,6 +36,13 @@ export default function CS79CModuleScaffold({
     setOpenTaskPreviews((prev) => ({
       ...prev,
       [taskId]: prev[taskId] === fileUrl ? null : fileUrl,
+    }));
+  };
+
+  const closeTaskPreview = (taskId: string) => {
+    setOpenTaskPreviews((prev) => ({
+      ...prev,
+      [taskId]: null,
     }));
   };
 
@@ -75,358 +76,24 @@ export default function CS79CModuleScaffold({
         isOpen={isOverviewOpen}
         onToggle={() => setIsOverviewOpen((prev) => !prev)}
       >
-        <div className="space-y-6">
-          <div className="grid gap-4 lg:grid-cols-3">
-            <article className="rounded-xl border border-sky-200 bg-sky-50 p-4 dark:border-sky-900/50 dark:bg-sky-950/40">
-              <h3 className="text-sm font-semibold tracking-wide text-sky-800 uppercase dark:text-sky-200">
-                Focus Areas
-              </h3>
-              <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-700 dark:text-slate-200">
-                {module.focusAreas.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </article>
-
-            <article className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 dark:border-emerald-900/50 dark:bg-emerald-950/40">
-              <h3 className="text-sm font-semibold tracking-wide text-emerald-800 uppercase dark:text-emerald-200">
-                Starter Tasks
-              </h3>
-              <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-700 dark:text-slate-200">
-                {module.starterTasks.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </article>
-
-            <article className="rounded-xl border border-violet-200 bg-violet-50 p-4 dark:border-violet-900/50 dark:bg-violet-950/40">
-              <h3 className="text-sm font-semibold tracking-wide text-violet-800 uppercase dark:text-violet-200">
-                Artifact Targets
-              </h3>
-              <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-700 dark:text-slate-200">
-                {module.artifacts.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </article>
-          </div>
-
-          <div className="grid gap-4 lg:grid-cols-2">
-            <article className="rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/50">
-              <h3 className="text-sm font-semibold tracking-wide text-gray-900 uppercase dark:text-white">
-                Objectives Aligned
-              </h3>
-              <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-gray-700 dark:text-gray-300">
-                {module.objectivesAligned.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </article>
-
-            <article className="rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/50">
-              <h3 className="text-sm font-semibold tracking-wide text-gray-900 uppercase dark:text-white">
-                Outcome Alignment
-              </h3>
-              <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-gray-700 dark:text-gray-300">
-                {module.outcomeAlignment.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </article>
-          </div>
-
-          {module.moduleSummary && module.moduleSummary.length > 0 ? (
-            <article className="rounded-xl border border-cyan-200 bg-cyan-50 p-4 dark:border-cyan-900/50 dark:bg-cyan-950/30">
-              <h3 className="text-sm font-semibold tracking-wide text-cyan-900 uppercase dark:text-cyan-100">
-                Module Summary
-              </h3>
-              <div className="mt-3 overflow-x-auto">
-                <table className="min-w-full text-left text-sm text-cyan-950 dark:text-cyan-50">
-                  <thead>
-                    <tr className="border-b border-cyan-200 dark:border-cyan-800">
-                      <th className="py-2 pr-4 font-semibold">Step</th>
-                      <th className="py-2 font-semibold">Description</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {module.moduleSummary.map((item) => (
-                      <tr
-                        key={`${module.id}-${item.step}`}
-                        className="border-b border-cyan-100 align-top dark:border-cyan-900/40"
-                      >
-                        <td className="py-2 pr-4 font-medium">{item.step}</td>
-                        <td className="py-2">{item.description}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </article>
-          ) : null}
-
-          {module.readingHighlights && module.readingHighlights.length > 0 ? (
-            <article className="rounded-xl border border-lime-200 bg-lime-50 p-4 dark:border-lime-900/50 dark:bg-lime-950/30">
-              <h3 className="text-sm font-semibold tracking-wide text-lime-900 uppercase dark:text-lime-100">
-                Required Reading and Lecture Notes
-              </h3>
-              <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-lime-950/90 dark:text-lime-100/90">
-                {module.readingHighlights.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </article>
-          ) : null}
-
-          {module.serviceHighlights && module.serviceHighlights.length > 0 ? (
-            <article className="rounded-xl border border-teal-200 bg-teal-50 p-4 dark:border-teal-900/50 dark:bg-teal-950/30">
-              <h3 className="text-sm font-semibold tracking-wide text-teal-900 uppercase dark:text-teal-100">
-                AWS Services Highlighted in This Module
-              </h3>
-              <div className="mt-3 overflow-x-auto">
-                <table className="min-w-full text-left text-sm text-teal-950 dark:text-teal-50">
-                  <thead>
-                    <tr className="border-b border-teal-200 dark:border-teal-800">
-                      <th className="py-2 pr-4 font-semibold">Service</th>
-                      <th className="py-2 pr-4 font-semibold">Page(s)</th>
-                      <th className="py-2 font-semibold">Notes</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {module.serviceHighlights.map((item) => (
-                      <tr
-                        key={`${module.id}-${item.service}`}
-                        className="border-b border-teal-100 align-top dark:border-teal-900/40"
-                      >
-                        <td className="py-2 pr-4 font-medium">
-                          {item.service}
-                        </td>
-                        <td className="py-2 pr-4">{item.pages}</td>
-                        <td className="py-2">{item.notes}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </article>
-          ) : null}
-
-          {module.overviewScreenshots &&
-          module.overviewScreenshots.length > 0 ? (
-            <article className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-900/40">
-              <h3 className="text-sm font-semibold tracking-wide text-slate-900 uppercase dark:text-slate-100">
-                Overview Snapshot
-              </h3>
-              <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">
-                Reference screenshot captured for this module&apos;s supporting
-                materials and study layout.
-              </p>
-              <ScreenshotGallery screenshots={module.overviewScreenshots} />
-            </article>
-          ) : null}
-
-          <div className="grid gap-4 lg:grid-cols-3">
-            <article className="rounded-xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-900/50 dark:bg-amber-950/30">
-              <h3 className="text-sm font-semibold tracking-wide text-amber-900 uppercase dark:text-amber-100">
-                Syllabus Context
-              </h3>
-              <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-amber-900/80 dark:text-amber-100/90">
-                {module.syllabusContext.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </article>
-
-            <article className="rounded-xl border border-rose-200 bg-rose-50 p-4 dark:border-rose-900/50 dark:bg-rose-950/30">
-              <h3 className="text-sm font-semibold tracking-wide text-rose-900 uppercase dark:text-rose-100">
-                Important Dates
-              </h3>
-              <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-rose-900/80 dark:text-rose-100/90">
-                {module.importantDates.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </article>
-
-            <article className="rounded-xl border border-indigo-200 bg-indigo-50 p-4 dark:border-indigo-900/50 dark:bg-indigo-950/30">
-              <h3 className="text-sm font-semibold tracking-wide text-indigo-900 uppercase dark:text-indigo-100">
-                Assessment Context
-              </h3>
-              <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-indigo-900/80 dark:text-indigo-100/90">
-                {module.assessmentContext.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </article>
-          </div>
-
-          <div className="grid gap-4 lg:grid-cols-2">
-            <article className="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-900/40">
-              <h3 className="text-sm font-semibold tracking-wide text-gray-900 uppercase dark:text-white">
-                Course Resources From Syllabus
-              </h3>
-              <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-gray-700 dark:text-gray-300">
-                <li>Canvas: {cs79cCourseReference.canvasUrl}</li>
-                <li>Slack: {cs79cCourseReference.slackWorkspace}</li>
-                <li>Office hours: {cs79cCourseReference.officeHours}</li>
-                {cs79cCourseReference.requiredReadings.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </article>
-
-            <article className="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-900/40">
-              <h3 className="text-sm font-semibold tracking-wide text-gray-900 uppercase dark:text-white">
-                Course-Wide Reference
-              </h3>
-              <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-gray-700 dark:text-gray-300">
-                {cs79cCourseReference.gradingBreakdown.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-              <div className="mt-4 border-t border-gray-200 pt-4 dark:border-gray-700">
-                <p className="text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400">
-                  Session checkpoints
-                </p>
-                <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-gray-700 dark:text-gray-300">
-                  {cs79cCourseReference.importantSessionDates.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              </div>
-            </article>
-          </div>
-        </div>
+        <ModuleOverview module={module} />
       </AnimatedAccordionItem>
 
-      {module.textTasks?.map((task) => (
-        <AnimatedAccordionItem
-          key={`${module.id}-${task.id}`}
-          title={task.title}
-          isOpen={!!openTextTasks[task.id]}
-          onToggle={() => toggleTextTask(task.id)}
-        >
-          <div className="space-y-4 rounded-xl border border-cyan-200 bg-cyan-50 p-5 dark:border-cyan-900/50 dark:bg-cyan-950/30">
-            {task.objective ? (
-              <div className="rounded-xl border border-cyan-200 bg-white/70 p-4 dark:border-cyan-800 dark:bg-slate-950/30">
-                <h4 className="text-sm font-semibold tracking-wide text-cyan-900 uppercase dark:text-cyan-100">
-                  Objective
-                </h4>
-                <p className="mt-2 text-sm leading-7 text-slate-700 dark:text-slate-200">
-                  {task.objective}
-                </p>
-              </div>
-            ) : null}
+      <TextTaskAccordions
+        moduleId={module.id}
+        tasks={module.textTasks}
+        openTextTasks={openTextTasks}
+        openTaskPreviews={openTaskPreviews}
+        onToggleTextTask={toggleTextTask}
+        onToggleTaskPreview={toggleTaskPreview}
+        onCloseTaskPreview={closeTaskPreview}
+      />
 
-            <div className="grid gap-4 lg:grid-cols-2">
-              {task.tasks && task.tasks.length > 0 ? (
-                <article className="rounded-xl border border-cyan-200 bg-white/70 p-4 dark:border-cyan-800 dark:bg-slate-950/30">
-                  <h4 className="text-sm font-semibold tracking-wide text-cyan-900 uppercase dark:text-cyan-100">
-                    Task
-                  </h4>
-                  <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-700 dark:text-slate-200">
-                    {task.tasks.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                </article>
-              ) : null}
-
-              {task.submissionInstructions &&
-              task.submissionInstructions.length > 0 ? (
-                <article className="rounded-xl border border-cyan-200 bg-white/70 p-4 dark:border-cyan-800 dark:bg-slate-950/30">
-                  <h4 className="text-sm font-semibold tracking-wide text-cyan-900 uppercase dark:text-cyan-100">
-                    Submission Instructions
-                  </h4>
-                  <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-700 dark:text-slate-200">
-                    {task.submissionInstructions.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                </article>
-              ) : null}
-            </div>
-
-            {task.whyItMatters ? (
-              <div className="rounded-xl border border-cyan-200 bg-white/70 p-4 dark:border-cyan-800 dark:bg-slate-950/30">
-                <h4 className="text-sm font-semibold tracking-wide text-cyan-900 uppercase dark:text-cyan-100">
-                  {task.whyItMattersHeading ?? "Why It Matters"}
-                </h4>
-                <p className="mt-2 text-sm leading-7 text-slate-700 dark:text-slate-200">
-                  {task.whyItMatters}
-                </p>
-              </div>
-            ) : null}
-
-            {task.previewFiles?.length ? (
-              <div className="mt-1 flex flex-wrap gap-3">
-                {task.previewFiles.map((file) => {
-                  const isOpen = openTaskPreviews[task.id] === file.fileUrl;
-                  const buttonLabel = file.buttonLabel ?? file.filename;
-
-                  return (
-                    <ToggleModalButton
-                      key={file.fileUrl}
-                      isOpen={isOpen}
-                      label={isOpen ? `Close ${buttonLabel}` : buttonLabel}
-                      toggle={() => toggleTaskPreview(task.id, file.fileUrl)}
-                    />
-                  );
-                })}
-              </div>
-            ) : null}
-
-            {task.resourceSections?.length ? (
-              <div className="grid gap-4 lg:grid-cols-2">
-                {task.resourceSections.map((section) => (
-                  <article
-                    key={`${task.id}-${section.title}`}
-                    className="rounded-xl border border-cyan-200 bg-white/70 p-4 dark:border-cyan-800 dark:bg-slate-950/30"
-                  >
-                    <h4 className="text-sm font-semibold tracking-wide text-cyan-900 uppercase dark:text-cyan-100">
-                      {section.title}
-                    </h4>
-                    <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-700 dark:text-slate-200">
-                      {section.items.map((item) => (
-                        <li key={item}>{item}</li>
-                      ))}
-                    </ul>
-                  </article>
-                ))}
-              </div>
-            ) : null}
-
-            {task.previewFiles?.length ? (
-              <ShowModalButton
-                isOpen={!!openTaskPreviews[task.id]}
-                onClose={() =>
-                  setOpenTaskPreviews((prev) => ({
-                    ...prev,
-                    [task.id]: null,
-                  }))
-                }
-                files={task.previewFiles.filter(
-                  (file) => file.fileUrl === openTaskPreviews[task.id]
-                )}
-              />
-            ) : null}
-          </div>
-        </AnimatedAccordionItem>
-      ))}
-
-      {module.quiz ? (
-        <AnimatedAccordionItem
-          title={`Quiz: ${module.quiz.title}`}
-          isOpen={isQuizOpen}
-          onToggle={() => setIsQuizOpen((prev) => !prev)}
-        >
-          <CS79CStaticQuiz
-            title={module.quiz.title}
-            dueLabel={module.quiz.dueLabel}
-            questions={module.quiz.questions}
-            answers={module.quiz.answers}
-          />
-        </AnimatedAccordionItem>
-      ) : null}
+      <QuizAccordion
+        quiz={module.quiz}
+        isOpen={isQuizOpen}
+        onToggle={() => setIsQuizOpen((prev) => !prev)}
+      />
 
       <div className="rounded-xl border border-dashed border-gray-300 bg-gray-50 p-5 dark:border-gray-700 dark:bg-gray-800/50">
         <h3 className="text-base font-semibold text-gray-900 dark:text-white">
