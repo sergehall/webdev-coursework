@@ -2266,70 +2266,319 @@ public final class Truck<T extends Load> {
   },
   {
     id: 7,
-    title: "Multithreading Fundamentals",
+    title: "Design Patterns",
     weekLabel: "Module 7",
-    dateLabel: "Syllabus date pending",
+    dateLabel: "July 12",
     overview:
-      "This module introduces threads, runnable tasks, and the core lifecycle concepts behind concurrent Java programs.",
-    topicLine: "Threads, Runnable, task lifecycle, and scheduling basics",
+      "This module introduces design patterns as reusable solutions to common software design problems. It focuses on the Singleton, Template Method, and Iterator patterns before the Design Patterns assignment.",
+    topicLine:
+      "Design pattern foundations, Singleton, Template Method, and Iterator",
     focusAreas: [
-      "Thread creation",
-      "Runnable tasks",
-      "Thread lifecycle",
-      "Concurrency risks",
+      "Purpose and value of design patterns",
+      "Singleton pattern",
+      "Template Method pattern",
+      "Iterator pattern",
+      "Pattern selection and implementation tradeoffs",
     ],
     objectivesAligned: [
-      "Create and run concurrent Java tasks",
-      "Explain thread lifecycle states",
-      "Identify shared-state hazards",
+      "Explain why developers use design patterns",
+      "Identify the structure and purpose of the Singleton pattern",
+      "Identify the structure and purpose of the Template Method pattern",
+      "Identify the structure and purpose of the Iterator pattern",
+      "Apply design-pattern thinking to Java class design",
     ],
     outcomeAlignment: [
-      "Prepare for synchronized and coordinated concurrent programs",
-      "Build small programs that perform work in parallel",
+      "Recognize common reusable design structures in Java programs",
+      "Improve object-oriented design vocabulary and implementation choices",
+      "Prepare for larger Java programs that use established design patterns",
     ],
     syllabusContext: [
-      "Matches the course catalog topic: multithreading",
-      "Exact assignment details pending syllabus import",
+      "Module: Design Patterns includes overview, lecture pages, quizzes, and an assignment task",
+      "Visible Canvas deadlines: quizzes and Assignment Design Patterns due Jul 12",
     ],
     starterTasks: [
-      "Create multiple threads",
-      "Log thread activity clearly",
-      "Observe nondeterministic ordering",
+      "Review Design Patterns: Overview",
+      "Complete the lecture sequence on design patterns",
+      "Complete the Singleton, Template Method, and Iterator quizzes",
+      "Submit Assignment Design Patterns",
     ],
-    artifacts: ["Threading demo program", "Run output notes"],
-    importantDates: ["Date pending syllabus import"],
-    assessmentContext: ["Points and grading category pending syllabus import"],
-    milestone: "Basic concurrent Java workflow complete",
+    artifacts: [
+      "Quiz: The Singleton Design Pattern",
+      "Quiz: The Template Method Design Pattern",
+      "Quiz: The Iterator Design Pattern",
+      "Assignment Design Patterns",
+    ],
+    importantDates: [
+      "Jul 12 - Quiz: The Singleton Design Pattern",
+      "Jul 12 - Quiz: The Template Method Design Pattern",
+      "Jul 12 - Quiz: The Iterator Design Pattern",
+      "Jul 12 - Assignment Design Patterns",
+    ],
+    assessmentContext: [
+      "Quiz: The Singleton Design Pattern - 3 pts",
+      "Quiz: The Template Method Design Pattern - 3 pts",
+      "Quiz: The Iterator Design Pattern - 3 pts",
+      "Assignment Design Patterns - 10 pts",
+    ],
+    milestone: "Design patterns quizzes and assignment completed",
     moduleSummary: [
       {
-        step: "Create",
-        description: "Define tasks with Runnable or Thread.",
+        step: "Overview",
+        description:
+          "Start with the design patterns overview and connect patterns to reusable Java design solutions.",
       },
       {
-        step: "Run",
-        description: "Start and observe multiple threads.",
+        step: "Lecture",
+        description:
+          "Study the introduction to design patterns, Singleton, Template Method, and Iterator patterns.",
       },
       {
-        step: "Reflect",
-        description: "Explain ordering and shared-state behavior.",
+        step: "Tasks",
+        description:
+          "Complete the quizzes and submit Assignment Design Patterns by Jul 12.",
       },
     ],
     readingHighlights: [
-      "Oracle Java Tutorials: Concurrency",
-      "Instructor notes on threading assignments",
+      "Design Patterns: Overview",
+      "Lecture: Intro to Design Patterns",
+      "Lecture: The Singleton Design Pattern",
+      "Lecture: The Template Method Design Pattern",
+      "Lecture: The Iterator Design Pattern",
+    ],
+    canvasSections: [
+      {
+        id: "design-patterns",
+        title: "Module: Design Patterns",
+        groups: [
+          {
+            items: [
+              {
+                title: "Design Patterns: Overview",
+                type: "page",
+                defaultCollapsed: true,
+                prompt: {
+                  title: "Welcome to the Design Patterns Module",
+                  sections: [
+                    {
+                      title: "Welcome",
+                      paragraphs: [
+                        "In this module we will cover design patterns. Get ready to dive into the world of design patterns, where you'll discover the secret recipes to solve common programming challenges with elegance and efficiency! This module isn't just about learning solutions; it's about becoming a part of a tradition of excellence shared by seasoned developers around the globe. By mastering design patterns, you'll unlock the ability to write cleaner, more maintainable code, and speak the language of experienced programmers.",
+                        "Module link: https://online.smc.edu/courses/83001/modules/619512",
+                      ],
+                    },
+                    {
+                      title:
+                        "Here's what you'll uncover in this exhilarating journey",
+                      steps: [
+                        {
+                          title: "The three categories of design patterns",
+                          items: [
+                            "Unveil the different families of design patterns and understand how they address various aspects of software design.",
+                          ],
+                        },
+                        {
+                          title: "Overview of 21 design patterns",
+                          items: [
+                            "Get a whirlwind tour of the most influential design patterns that have stood the test of time, each one a proven solution to a specific problem.",
+                          ],
+                        },
+                        {
+                          title: "In-depth study of three key design patterns",
+                          items: [
+                            "Singleton: Learn how to ensure a class has only one instance and provides a global point of access to it.",
+                            "Template Method Pattern: Discover how to define the skeleton of an algorithm in a method, deferring some steps to subclasses.",
+                            "Iterator: Master the art of sequentially accessing elements of a collection without exposing its underlying representation.",
+                          ],
+                        },
+                      ],
+                    },
+                    {
+                      title: "Module Goal",
+                      paragraphs: [
+                        "This module will ignite your passion for design patterns, empowering you to create more robust and elegant software solutions. Get ready to elevate your coding skills and join the ranks of developers who craft code with finesse and precision!",
+                      ],
+                    },
+                    {
+                      title: "Tasks",
+                      steps: [
+                        {
+                          title: "Watch the lectures",
+                          items: [
+                            "Complete the Design Patterns lecture sequence.",
+                          ],
+                        },
+                        {
+                          title: "Take the quizzes",
+                          items: ["Complete the module quizzes."],
+                        },
+                        {
+                          title: "Complete the assignment",
+                          items: ["Submit Assignment Design Patterns."],
+                        },
+                      ],
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+          {
+            title: "Lecture",
+            items: [
+              {
+                title: "Lecture: Intro to Design Patterns",
+                type: "page",
+              },
+              {
+                title: "Lecture: The Singleton Design Pattern",
+                type: "page",
+              },
+              {
+                title: "Quiz: The Singleton Design Pattern",
+                type: "quiz",
+                dueLabel: "Jul 12",
+                pointsLabel: "3 pts",
+              },
+              {
+                title: "Lecture: The Template Method Design Pattern",
+                type: "page",
+              },
+              {
+                title: "Quiz: The Template Method Design Pattern",
+                type: "quiz",
+                dueLabel: "Jul 12",
+                pointsLabel: "3 pts",
+              },
+              {
+                title: "Lecture: The Iterator Design Pattern",
+                type: "page",
+              },
+              {
+                title: "Quiz: The Iterator Design Pattern",
+                type: "quiz",
+                dueLabel: "Jul 12",
+                pointsLabel: "3 pts",
+              },
+            ],
+          },
+          {
+            title: "Tasks",
+            items: [
+              {
+                title: "Assignment Design Patterns",
+                type: "assignment",
+                dueLabel: "Jul 12",
+                pointsLabel: "10 pts",
+                scoreLabel: "Score: 10 / 10 pts",
+                defaultCollapsed: true,
+                description:
+                  "Complete the Design Patterns assignment covering pattern categories and the Iterator design pattern.",
+                prompt: {
+                  title: "Assignment Design Patterns Instructions",
+                  sections: [
+                    {
+                      title: "Attempt Notice",
+                      paragraphs: [
+                        "You only have a single attempt to submit. Please be very careful not to submit by accident and make sure to have all questions answered to your satisfaction.",
+                        "You have unlimited time and you may move away from the quiz and come back another time as long as you don't submit.",
+                        "Score for this quiz: 10 out of 10.",
+                      ],
+                    },
+                    {
+                      title: "Question 1 - 1 / 1 pts",
+                      paragraphs: [
+                        "Design Patterns provide solutions to common problems. They are organized into which categories? Check all that apply.",
+                      ],
+                      steps: [
+                        {
+                          title: "Correct selections",
+                          items: ["Creational", "Behavioral", "Structural"],
+                        },
+                        {
+                          title: "Not selected",
+                          items: [
+                            "Programmable",
+                            "Relational",
+                            "Destructional",
+                          ],
+                        },
+                      ],
+                    },
+                    {
+                      title: "Question 2 - 4.5 / 4.5 pts",
+                      paragraphs: [
+                        "Please fill in the blanks in the code below that follows the Iterator design pattern. The code below defines two interfaces for creating an iterator and iterating over a string collection. It then implements two classes that implement the interfaces. Note that the code does not use the interfaces provided by the java.util package.",
+                        "WARNING: Watch out for correct spelling and proper syntax! Any incorrect syntax would be a compile error and will be flagged as incorrect.",
+                      ],
+                    },
+                    {
+                      title: "Solution Note",
+                      paragraphs: [
+                        "The completed solution below fills the Canvas blanks shown in the partial solution: hasNext(), next(), Iterator, Iterator, Iterable, createIterator(), and MyListIterator().",
+                        "The MyListIterator body is filled in so this example is self-contained and compiles while preserving the Iterator design pattern from the prompt.",
+                      ],
+                    },
+                  ],
+                },
+                codeBlocks: [
+                  {
+                    title: "Completed Iterator Design Pattern Solution",
+                    language: "java",
+                    code: `interface Iterator {
+    boolean hasNext();
+
+    String next();
+}
+
+interface Iterable {
+    Iterator createIterator();
+}
+
+class MyListIterator implements Iterator {
+    private final String[] items = {"Singleton", "Template Method", "Iterator"};
+    private int currentIndex = 0;
+
+    @Override
+    public boolean hasNext() {
+        return currentIndex < items.length;
+    }
+
+    @Override
+    public String next() {
+        return items[currentIndex++];
+    }
+}
+
+class MyList implements Iterable {
+    public Iterator createIterator() {
+        return new MyListIterator();
+    }
+}`,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
     ],
     textTasks: [
       {
-        id: "module-7-threading",
-        title: "Multithreading Assignment",
+        id: "module-7-design-patterns",
+        title: "Assignment Design Patterns",
         objective:
-          "Build a Java program that runs multiple tasks concurrently and explains the observed behavior.",
+          "Complete the Design Patterns module after reviewing the introduction, Singleton, Template Method, and Iterator pattern materials.",
         tasks: [
-          "Implement at least two concurrent tasks",
-          "Log task progress and completion",
-          "Explain any nondeterministic output ordering",
+          "Review Design Patterns: Overview",
+          "Complete the design patterns lecture and quiz sequence",
+          "Submit Assignment Design Patterns by Jul 12",
         ],
-        submissionInstructions: commonSubmissionInstructions,
+        submissionInstructions: [
+          "Submit through SMC Canvas",
+          "Due: Jul 12",
+          "10 points",
+          "Assignment content will be added separately",
+        ],
       },
     ],
   },
