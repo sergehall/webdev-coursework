@@ -117,12 +117,6 @@ export const cs56CourseReference = {
   ],
 } as const;
 
-const commonSubmissionInstructions = [
-  "Submit through SMC Canvas unless the syllabus says otherwise",
-  "Attach source files, project notes, and screenshots where applicable",
-  "Replace this placeholder with the exact due date and point value from the syllabus",
-];
-
 export const cs56ModuleBlueprints: CS56ModuleBlueprint[] = [
   {
     id: 1,
@@ -2584,557 +2578,1345 @@ class MyList implements Iterable {
   },
   {
     id: 8,
-    title: "Synchronization and Concurrency Control",
+    title: "Midterm",
     weekLabel: "Module 8",
-    dateLabel: "Syllabus date pending",
+    dateLabel: "July 13",
     overview:
-      "This module strengthens multithreaded programs with synchronized access, coordination, and safer shared-state patterns.",
-    topicLine: "Synchronization, locks, coordination, and thread safety",
-    focusAreas: [
-      "Synchronized methods or blocks",
-      "Locks and coordination",
-      "Race conditions",
-      "Thread-safe design",
-    ],
+      "This module is the midterm checkpoint for CS 56. It includes a module overview and the Midterm assessment.",
+    topicLine: "Midterm overview and assessment",
+    focusAreas: ["Midterm preparation", "Midterm assessment"],
     objectivesAligned: [
-      "Protect shared state in a concurrent program",
-      "Explain race conditions and thread safety",
-      "Use coordination patterns intentionally",
+      "Review the course topics covered before the midterm",
+      "Complete the Midterm assessment in Canvas",
     ],
     outcomeAlignment: [
-      "Build safer multithreaded Java assignments",
-      "Reason about correctness under concurrent access",
+      "Demonstrate understanding of the first half of CS 56",
+      "Use the midterm as a checkpoint before continuing to later modules",
     ],
     syllabusContext: [
-      "Extends the course catalog multithreading topic",
-      "Exact syllabus checkpoint pending import",
+      "Module: Midterm includes a module overview and the Midterm assessment",
+      "Visible Canvas deadline: Midterm due Jul 13",
     ],
-    starterTasks: [
-      "Create a shared-state concurrency example",
-      "Demonstrate the bug or risk",
-      "Fix the issue with synchronization",
-    ],
-    artifacts: ["Thread-safe Java program", "Before-and-after run notes"],
-    importantDates: ["Date pending syllabus import"],
-    assessmentContext: ["Points and grading category pending syllabus import"],
-    milestone: "Thread-safe shared-state workflow complete",
+    starterTasks: ["Review Module Overview", "Complete the Midterm"],
+    artifacts: ["Midterm"],
+    importantDates: ["Jul 13 - Midterm"],
+    assessmentContext: ["Midterm - 100 pts"],
+    milestone: "Midterm completed",
     moduleSummary: [
       {
-        step: "Expose",
-        description: "Create or inspect a race condition.",
+        step: "Overview",
+        description:
+          "Review the midterm module overview and prepare for the assessment.",
       },
       {
-        step: "Protect",
-        description: "Apply synchronization or locking.",
-      },
-      {
-        step: "Validate",
-        description: "Show that output is stable or explain remaining risks.",
+        step: "Assessment",
+        description: "Complete the Midterm assessment by Jul 13.",
       },
     ],
-    readingHighlights: [
-      "Oracle Java Tutorials: Synchronization",
-      "Course notes on shared-state concurrency",
+    readingHighlights: ["Module Overview"],
+    canvasSections: [
+      {
+        id: "midterm",
+        title: "Module: Midterm",
+        groups: [
+          {
+            items: [
+              {
+                title: "Module Overview",
+                type: "page",
+                defaultCollapsed: true,
+                prompt: {
+                  title: "Welcome to the Module: Midterm",
+                  sections: [
+                    {
+                      title: "Welcome",
+                      paragraphs: [
+                        "Welcome to the Module: Midterm.",
+                        "Module link: https://online.smc.edu/courses/83001/modules/619513",
+                        "This week will be the midterm. Here's more info:",
+                        "Midterm link: https://online.smc.edu/courses/83001/quizzes/512238",
+                      ],
+                    },
+                    {
+                      title: "What?",
+                      paragraphs: [
+                        "The midterm will consist of 33 questions. It will cover all modules so far. The multiple choice part will be similar to the quizzes you have completed in the modules. The programming questions will be similar to the assignments you have completed in the modules.",
+                        "You should also know what design patterns are and the three categories. In particular you should know the design patterns discussed: Singleton, Template Method, Iterator.",
+                      ],
+                    },
+                    {
+                      title: "How?",
+                      paragraphs: [
+                        "You need to answer all questions on Canvas without any other program open. Please be sure to close all notifications on your desktop. Leave the Canvas exam tab open at all times.",
+                        "You may use notes or the book while taking the exam but be sure to not close the exam tab on your computer. Also, be mindful of the time available. Answer easier questions first and those that may result in a higher score.",
+                      ],
+                    },
+                    {
+                      title: "When?",
+                      paragraphs: [
+                        "Please reserve an uninterrupted block of 60 minutes to complete the midterm. You may take it at any time during the dates specified.",
+                      ],
+                    },
+                    {
+                      title: "Anything else?",
+                      paragraphs: [
+                        "No, the main focus for you will be to review topics and study for the midterm. There won't be any new material covered and no other tasks to be completed in this module.",
+                        "Happy programming!",
+                      ],
+                    },
+                  ],
+                },
+              },
+              {
+                title: "Midterm",
+                type: "assignment",
+                dueLabel: "Jul 13",
+                pointsLabel: "100 pts",
+              },
+            ],
+          },
+        ],
+      },
     ],
     textTasks: [
       {
-        id: "module-8-synchronization",
-        title: "Thread Safety Assignment",
+        id: "module-8-midterm",
+        title: "Midterm",
         objective:
-          "Improve a concurrent Java program so shared state is accessed safely.",
-        tasks: [
-          "Identify shared mutable state",
-          "Apply an appropriate synchronization strategy",
-          "Explain why the corrected program is safer",
+          "Complete the midterm checkpoint after reviewing the module overview.",
+        tasks: ["Review Module Overview", "Complete the Midterm by Jul 13"],
+        submissionInstructions: [
+          "Submit through SMC Canvas",
+          "Due: Jul 13",
+          "100 points",
         ],
-        submissionInstructions: commonSubmissionInstructions,
       },
     ],
   },
   {
     id: 9,
-    title: "Networking with Java Sockets",
+    title: "Collections (Data Structures)",
     weekLabel: "Module 9",
-    dateLabel: "Syllabus date pending",
+    dateLabel: "July 19",
     overview:
-      "This module introduces Java networking APIs for client/server communication and socket-based programs.",
-    topicLine: "Networking APIs, sockets, clients, and servers",
+      "This module introduces Java collections and data structures. It covers ArrayList, LinkedList, hashing, equals, hashCode, Set, HashSet, Map, HashMap, examples, reading, and the Collections assignment.",
+    topicLine:
+      "Collections, ArrayList, LinkedList, hashing, equals, hashCode, Set, HashSet, Map, and HashMap",
     focusAreas: [
-      "Socket and ServerSocket",
-      "Client/server protocols",
-      "Network I/O",
-      "Error handling in distributed programs",
+      "ArrayList and LinkedList",
+      "Hashing",
+      "equals and hashCode",
+      "Set and HashSet",
+      "Map and HashMap",
+      "Collection examples and reading",
     ],
     objectivesAligned: [
-      "Build a simple Java client and server",
-      "Exchange data over a network connection",
-      "Handle connection failures clearly",
+      "Use Java list implementations for ordered collections",
+      "Explain how hashing supports efficient lookup",
+      "Implement or reason about equals and hashCode behavior",
+      "Use Set and Map collections appropriately",
+      "Read and adapt Java collection examples",
     ],
     outcomeAlignment: [
-      "Apply Java networking APIs to distributed programs",
-      "Prepare for RMI and server-side Java modules",
+      "Build Java programs that choose appropriate data structures",
+      "Prepare for later modules that rely on collections and lookup structures",
     ],
     syllabusContext: [
-      "Matches the course catalog topic: networking",
-      "Exact syllabus assignment pending import",
+      "Module: Collections (Data Structures) includes overview, lecture pages, quizzes, examples, reading, and an assignment task",
+      "Visible Canvas deadlines: collection quizzes and Assignment: Collections due Jul 19",
     ],
     starterTasks: [
-      "Create a simple socket server",
-      "Create a matching client",
-      "Log request and response flow",
+      "Review Collections: Overview",
+      "Complete the collections lecture sequence",
+      "Complete the ArrayList, LinkedList, Equals, HashCode, and Set & Map quizzes",
+      "Review the Java example files",
+      "Read Reading: Collections",
+      "Submit Assignment: Collections",
     ],
-    artifacts: ["Socket client/server source files", "Run instructions"],
-    importantDates: ["Date pending syllabus import"],
-    assessmentContext: ["Points and grading category pending syllabus import"],
-    milestone: "Socket-based Java communication working locally",
+    artifacts: [
+      "Quiz: ArrayList",
+      "Quiz: LinkedList",
+      "Quiz: Equals",
+      "Quiz: HashCode",
+      "Quiz: Set & Map",
+      "Employee.java",
+      "ListExample.java",
+      "SetExample.java",
+      "MapExample.java",
+      "Assignment: Collections",
+    ],
+    importantDates: [
+      "Jul 19 - Quiz: ArrayList",
+      "Jul 19 - Quiz: LinkedList",
+      "Jul 19 - Quiz: Equals",
+      "Jul 19 - Quiz: HashCode",
+      "Jul 19 - Quiz: Set & Map",
+      "Jul 19 - Assignment: Collections",
+    ],
+    assessmentContext: [
+      "Quiz: ArrayList - 4 pts",
+      "Quiz: LinkedList - 3 pts",
+      "Quiz: Equals - 3 pts",
+      "Quiz: HashCode - 3 pts",
+      "Quiz: Set & Map - 4 pts",
+      "Assignment: Collections - 10 pts",
+    ],
+    milestone:
+      "Collections quizzes, examples, reading, and assignment completed",
     moduleSummary: [
       {
-        step: "Server",
-        description: "Listen for client requests.",
+        step: "Overview",
+        description:
+          "Start with the collections overview and connect the module to Java data structure choices.",
       },
       {
-        step: "Client",
-        description: "Connect and send data.",
+        step: "Lecture",
+        description:
+          "Study ArrayList, LinkedList, hashing, equals, hashCode, Set, HashSet, Map, and HashMap.",
       },
       {
-        step: "Protocol",
-        description: "Document the message format and expected behavior.",
+        step: "Examples",
+        description:
+          "Review Employee.java, ListExample.java, SetExample.java, and MapExample.java.",
+      },
+      {
+        step: "Tasks",
+        description:
+          "Complete the quizzes, reading, and Assignment: Collections by Jul 19.",
       },
     ],
     readingHighlights: [
-      "Oracle Java Tutorials: Custom Networking",
-      "Course notes on network programming",
+      "Collections: Overview",
+      "Lecture: The ArrayList Class",
+      "Lecture: The LinkedList Class",
+      "Lecture: Hashing",
+      "Lecture: The equals Methods",
+      "Lecture: The hashCode Method",
+      "Lecture: Set and HashSet",
+      "Lecture: Map and HashMap",
+      "Reading: Collections",
+    ],
+    canvasSections: [
+      {
+        id: "collections-data-structures",
+        title: "Module: Collections (Data Structures)",
+        groups: [
+          {
+            items: [
+              {
+                title: "Collections: Overview",
+                type: "page",
+              },
+            ],
+          },
+          {
+            title: "Lecture",
+            items: [
+              {
+                title: "Lecture: The ArrayList Class",
+                type: "page",
+              },
+              {
+                title: "Quiz: ArrayList",
+                type: "quiz",
+                dueLabel: "Jul 19",
+                pointsLabel: "4 pts",
+              },
+              {
+                title: "Lecture: The LinkedList Class",
+                type: "page",
+              },
+              {
+                title: "Quiz: LinkedList",
+                type: "quiz",
+                dueLabel: "Jul 19",
+                pointsLabel: "3 pts",
+              },
+              {
+                title: "Lecture: ArrayList & LinkedList Example",
+                type: "page",
+              },
+              {
+                title: "Lecture: Hashing",
+                type: "page",
+              },
+              {
+                title: "Lecture: The equals Methods",
+                type: "page",
+              },
+              {
+                title: "Quiz: Equals",
+                type: "quiz",
+                dueLabel: "Jul 19",
+                pointsLabel: "3 pts",
+              },
+              {
+                title: "Lecture: The hashCode Method",
+                type: "page",
+              },
+              {
+                title: "Quiz: HashCode",
+                type: "quiz",
+                dueLabel: "Jul 19",
+                pointsLabel: "3 pts",
+              },
+              {
+                title: "Lecture: Set and HashSet",
+                type: "page",
+              },
+              {
+                title: "Lecture: Map and HashMap",
+                type: "page",
+              },
+              {
+                title: "Quiz: Set & Map",
+                type: "quiz",
+                dueLabel: "Jul 19",
+                pointsLabel: "4 pts",
+              },
+              {
+                title: "Lecture: HashCode & Equals Example",
+                type: "page",
+              },
+              {
+                title: "Reading: Collections",
+                type: "page",
+              },
+            ],
+          },
+          {
+            title: "Examples",
+            items: [
+              {
+                title: "Employee.java",
+                type: "attachment",
+              },
+              {
+                title: "ListExample.java",
+                type: "attachment",
+              },
+              {
+                title: "SetExample.java",
+                type: "attachment",
+              },
+              {
+                title: "MapExample.java",
+                type: "attachment",
+              },
+            ],
+          },
+          {
+            title: "Tasks",
+            items: [
+              {
+                title: "Assignment: Collections",
+                type: "assignment",
+                dueLabel: "Jul 19",
+                pointsLabel: "10 pts",
+                defaultCollapsed: true,
+                description:
+                  "Assignment details will be filled in separately after the module shell matches Canvas.",
+              },
+            ],
+          },
+        ],
+      },
     ],
     textTasks: [
       {
-        id: "module-9-networking",
-        title: "Socket Networking Assignment",
+        id: "module-9-collections",
+        title: "Assignment: Collections",
         objective:
-          "Build a small Java client/server program that exchanges data over sockets.",
+          "Complete the Collections module after reviewing lists, hashing, equals, hashCode, sets, maps, examples, and reading.",
         tasks: [
-          "Implement both client and server entry points",
-          "Handle connection errors gracefully",
-          "Document the protocol and run sequence",
+          "Review Collections: Overview",
+          "Complete the collections lecture and quiz sequence",
+          "Review the Java example files",
+          "Read Reading: Collections",
+          "Submit Assignment: Collections by Jul 19",
         ],
-        submissionInstructions: commonSubmissionInstructions,
+        submissionInstructions: [
+          "Submit through SMC Canvas",
+          "Due: Jul 19",
+          "10 points",
+          "Assignment content will be added separately",
+        ],
       },
     ],
   },
   {
     id: 10,
-    title: "Java Database Connectivity",
+    title: "Networking",
     weekLabel: "Module 10",
-    dateLabel: "Syllabus date pending",
+    dateLabel: "July 19",
     overview:
-      "This module connects Java applications to relational databases using JDBC, SQL statements, and result-set processing.",
-    topicLine: "JDBC connections, statements, queries, and result sets",
+      "This module introduces networking concepts for Java applications. It covers client-server applications, web applications, networking code examples, and a discussion task.",
+    topicLine: "Networking, client-server applications, and web applications",
     focusAreas: [
-      "JDBC driver setup",
-      "Database connections",
-      "Prepared statements",
-      "ResultSet processing",
+      "Client-server applications",
+      "Web applications",
+      "Java networking code examples",
+      "Networking discussion",
     ],
     objectivesAligned: [
-      "Connect Java code to a database",
-      "Run parameterized SQL queries safely",
-      "Map database rows to Java objects",
+      "Explain the structure of client-server applications",
+      "Describe how web applications fit into networking concepts",
+      "Review Java networking examples",
+      "Participate in the networking discussion",
     ],
     outcomeAlignment: [
-      "Build data-backed Java applications",
-      "Use JDBC as the bridge between Java logic and persistent storage",
+      "Prepare for network-aware Java programs",
+      "Connect Java application structure to client-server and web communication",
     ],
     syllabusContext: [
-      "Matches the course catalog topic: Java Database Connectivity (JDBC)",
-      "Exact database platform and assignment details pending syllabus import",
+      "Module: Networking includes overview, lecture pages, quizzes, code examples, and a discussion task",
+      "Visible Canvas deadlines: networking quizzes due Jul 19 and Discussion: Networking due Jul 16",
     ],
     starterTasks: [
-      "Create or connect to a sample database",
-      "Run a select query from Java",
-      "Print or render mapped results",
+      "Review Networking Overview",
+      "Complete the client-server and web application lecture sequence",
+      "Complete the Client-Server Application and Web Application quizzes",
+      "Review ChatClient.java and EchoServer.java",
+      "Post on Discussion: Networking",
     ],
-    artifacts: ["JDBC Java source files", "SQL setup notes or schema"],
-    importantDates: ["Date pending syllabus import"],
-    assessmentContext: ["Points and grading category pending syllabus import"],
-    milestone: "Java application can query database data",
+    artifacts: [
+      "Quiz: Client-Server Application",
+      "Quiz: Web Application",
+      "ChatClient.java",
+      "EchoServer.java",
+      "Discussion: Networking",
+    ],
+    importantDates: [
+      "Jul 16 - Discussion: Networking",
+      "Jul 19 - Quiz: Client-Server Application",
+      "Jul 19 - Quiz: Web Application",
+    ],
+    assessmentContext: [
+      "Quiz: Client-Server Application - 3 pts",
+      "Quiz: Web Application - 4 pts",
+      "Discussion: Networking - 5 pts",
+    ],
+    milestone:
+      "Networking lectures, quizzes, code examples, and discussion completed",
     moduleSummary: [
       {
-        step: "Connect",
-        description: "Configure the JDBC driver and database URL.",
+        step: "Overview",
+        description:
+          "Start with the networking overview and connect the module to Java communication patterns.",
       },
       {
-        step: "Query",
-        description: "Use prepared statements for SQL operations.",
+        step: "Lecture",
+        description: "Study client-server applications and web applications.",
       },
       {
-        step: "Map",
-        description: "Convert query results into Java objects or output.",
+        step: "Examples",
+        description: "Review ChatClient.java and EchoServer.java.",
+      },
+      {
+        step: "Tasks",
+        description:
+          "Complete the quizzes and Discussion: Networking by the Canvas due dates.",
       },
     ],
     readingHighlights: [
-      "Oracle Java Tutorials: JDBC Basics",
-      "Instructor database setup notes",
+      "Networking Overview",
+      "Lecture: Client Server Application",
+      "Lecture: Web Application",
+      "ChatClient.java",
+      "EchoServer.java",
+    ],
+    canvasSections: [
+      {
+        id: "networking",
+        title: "Module: Networking",
+        groups: [
+          {
+            items: [
+              {
+                title: "Networking Overview",
+                type: "page",
+              },
+            ],
+          },
+          {
+            title: "Lecture",
+            items: [
+              {
+                title: "Lecture: Client Server Application",
+                type: "page",
+              },
+              {
+                title: "Quiz: Client-Server Application",
+                type: "quiz",
+                dueLabel: "Jul 19",
+                pointsLabel: "3 pts",
+              },
+              {
+                title: "Lecture: Web Application",
+                type: "page",
+              },
+              {
+                title: "Quiz: Web Application",
+                type: "quiz",
+                dueLabel: "Jul 19",
+                pointsLabel: "4 pts",
+              },
+            ],
+          },
+          {
+            title: "Code Example",
+            items: [
+              {
+                title: "ChatClient.java",
+                type: "attachment",
+              },
+              {
+                title: "EchoServer.java",
+                type: "attachment",
+              },
+            ],
+          },
+          {
+            title: "Tasks",
+            items: [
+              {
+                title: "Discussion: Networking",
+                type: "discussion",
+                dueLabel: "Jul 16",
+                pointsLabel: "5 pts",
+                defaultCollapsed: true,
+                description:
+                  "Discussion details will be filled in separately after the module shell matches Canvas.",
+              },
+            ],
+          },
+        ],
+      },
     ],
     textTasks: [
       {
-        id: "module-10-jdbc",
-        title: "JDBC Assignment",
+        id: "module-10-networking",
+        title: "Discussion: Networking",
         objective:
-          "Create a Java program that connects to a relational database and performs safe query operations.",
+          "Complete the Networking module after reviewing client-server applications, web applications, and Java networking code examples.",
         tasks: [
-          "Configure the JDBC dependency or driver",
-          "Use prepared statements for database access",
-          "Include setup and run instructions",
+          "Review Networking Overview",
+          "Complete the networking lecture and quiz sequence",
+          "Review ChatClient.java and EchoServer.java",
+          "Post on Discussion: Networking by Jul 16",
         ],
-        submissionInstructions: commonSubmissionInstructions,
+        submissionInstructions: [
+          "Submit through SMC Canvas",
+          "Due: Jul 16",
+          "5 points",
+          "Discussion content will be added separately",
+        ],
       },
     ],
   },
   {
     id: 11,
-    title: "JDBC Updates and Transaction Patterns",
+    title: "JavaFX",
     weekLabel: "Module 11",
-    dateLabel: "Syllabus date pending",
+    dateLabel: "July 26",
     overview:
-      "This module extends JDBC work into inserts, updates, deletes, transaction boundaries, and database-backed application behavior.",
-    topicLine: "Data updates, transactions, and DAO-style organization",
+      "This module introduces JavaFX for building Java desktop applications. It covers creating JavaFX projects, JavaFX basics, layout and UI controls in Java code, layout using FXML, reading, quizzes, and a discussion task.",
+    topicLine: "JavaFX projects, UI controls, layouts, and FXML",
     focusAreas: [
-      "Insert, update, and delete statements",
-      "Transaction commit and rollback",
-      "DAO or repository organization",
-      "Database error handling",
+      "Creating JavaFX projects",
+      "Intro to JavaFX",
+      "Layout and UI controls using Java code",
+      "Layout using FXML",
+      "JavaFX reading and discussion",
     ],
     objectivesAligned: [
-      "Modify database data from Java",
-      "Use transaction control where operations must succeed together",
-      "Organize database code for maintainability",
+      "Create or understand the structure of a JavaFX project",
+      "Explain basic JavaFX application concepts",
+      "Use Java code to arrange layout and UI controls",
+      "Recognize how FXML separates layout from Java logic",
+      "Participate in the JavaFX discussion",
     ],
     outcomeAlignment: [
-      "Build more complete data-backed Java applications",
-      "Prepare for server-side Java workflows",
+      "Build toward Java desktop GUI applications",
+      "Connect Java programming concepts to user interface development",
     ],
     syllabusContext: [
-      "Extends the course catalog JDBC topic",
-      "Exact syllabus assignment pending import",
+      "Module: JavaFX includes overview, lecture pages, quizzes, reading, and a discussion task",
+      "Visible Canvas deadlines: JavaFX quizzes due Jul 26 and Discussion: JavaFX due Jul 23",
     ],
     starterTasks: [
-      "Add create/update/delete database operations",
-      "Wrap related changes in a transaction",
-      "Document database state before and after",
+      "Review JavaFX: Overview",
+      "Complete the JavaFX lecture sequence",
+      "Complete the JavaFX, JavaFX Layout and UI Controls, and Layout using FXML quizzes",
+      "Read Reading: Intro to JavaFX",
+      "Post on Discussion: JavaFX",
     ],
-    artifacts: ["JDBC CRUD program", "Database setup and verification notes"],
-    importantDates: ["Date pending syllabus import"],
-    assessmentContext: ["Points and grading category pending syllabus import"],
-    milestone: "Transaction-aware JDBC workflow complete",
+    artifacts: [
+      "Quiz: JavaFX",
+      "Quiz: JavaFX Layout and UI Controls",
+      "Quiz: Layout using FXML",
+      "Reading: Intro to JavaFX",
+      "Discussion: JavaFX",
+    ],
+    importantDates: [
+      "Jul 23 - Discussion: JavaFX",
+      "Jul 26 - Quiz: JavaFX",
+      "Jul 26 - Quiz: JavaFX Layout and UI Controls",
+      "Jul 26 - Quiz: Layout using FXML",
+    ],
+    assessmentContext: [
+      "Quiz: JavaFX - 4 pts",
+      "Quiz: JavaFX Layout and UI Controls - 3 pts",
+      "Quiz: Layout using FXML - 3 pts",
+      "Discussion: JavaFX - 5 pts",
+    ],
+    milestone: "JavaFX lectures, quizzes, reading, and discussion completed",
     moduleSummary: [
       {
-        step: "Modify",
-        description: "Add write operations to the database layer.",
+        step: "Overview",
+        description:
+          "Start with the JavaFX overview and connect the module to desktop GUI development.",
       },
       {
-        step: "Control",
-        description: "Use transaction boundaries for related operations.",
+        step: "Lecture",
+        description:
+          "Study JavaFX project setup, JavaFX basics, UI controls, layouts, and FXML.",
       },
       {
-        step: "Verify",
-        description: "Show before-and-after database behavior.",
+        step: "Reading",
+        description: "Review Reading: Intro to JavaFX.",
+      },
+      {
+        step: "Tasks",
+        description:
+          "Complete the quizzes and Discussion: JavaFX by the Canvas due dates.",
       },
     ],
     readingHighlights: [
-      "Oracle Java Tutorials: JDBC Transactions",
-      "Course notes on database-backed Java apps",
+      "JavaFX: Overview",
+      "Lecture: How to Create a JavaFX Project",
+      "Lecture: Intro to JavaFX",
+      "Lecture: Layout and UI Controls using Java Code",
+      "Lecture: Layout using FXML",
+      "Reading: Intro to JavaFX",
+    ],
+    canvasSections: [
+      {
+        id: "javafx",
+        title: "Module: JavaFX",
+        groups: [
+          {
+            items: [
+              {
+                title: "JavaFX: Overview",
+                type: "page",
+              },
+            ],
+          },
+          {
+            title: "Lecture",
+            items: [
+              {
+                title: "Lecture: How to Create a JavaFX Project",
+                type: "page",
+              },
+              {
+                title: "Lecture: Intro to JavaFX",
+                type: "page",
+              },
+              {
+                title: "Quiz: JavaFX",
+                type: "quiz",
+                dueLabel: "Jul 26",
+                pointsLabel: "4 pts",
+              },
+              {
+                title: "Lecture: Layout and UI Controls using Java Code",
+                type: "page",
+              },
+              {
+                title: "Quiz: JavaFX Layout and UI Controls",
+                type: "quiz",
+                dueLabel: "Jul 26",
+                pointsLabel: "3 pts",
+              },
+              {
+                title: "Lecture: Layout using FXML",
+                type: "page",
+              },
+              {
+                title: "Quiz: Layout using FXML",
+                type: "quiz",
+                dueLabel: "Jul 26",
+                pointsLabel: "3 pts",
+              },
+              {
+                title: "Reading: Intro to JavaFX",
+                type: "page",
+              },
+            ],
+          },
+          {
+            title: "Tasks",
+            items: [
+              {
+                title: "Discussion: JavaFX",
+                type: "discussion",
+                dueLabel: "Jul 23",
+                pointsLabel: "5 pts",
+                defaultCollapsed: true,
+                description:
+                  "Discussion details will be filled in separately after the module shell matches Canvas.",
+              },
+            ],
+          },
+        ],
+      },
     ],
     textTasks: [
       {
-        id: "module-11-jdbc-transactions",
-        title: "JDBC CRUD and Transactions Assignment",
+        id: "module-11-javafx",
+        title: "Discussion: JavaFX",
         objective:
-          "Extend a JDBC program with safe write operations and transaction handling.",
+          "Complete the JavaFX module after reviewing project setup, JavaFX basics, layout, UI controls, FXML, and the intro reading.",
         tasks: [
-          "Implement insert, update, or delete operations",
-          "Use rollback when a multi-step operation fails",
-          "Keep database access code organized",
+          "Review JavaFX: Overview",
+          "Complete the JavaFX lecture and quiz sequence",
+          "Read Reading: Intro to JavaFX",
+          "Post on Discussion: JavaFX by Jul 23",
         ],
-        submissionInstructions: commonSubmissionInstructions,
+        submissionInstructions: [
+          "Submit through SMC Canvas",
+          "Due: Jul 23",
+          "5 points",
+          "Discussion content will be added separately",
+        ],
       },
     ],
   },
   {
     id: 12,
-    title: "Servlets and HTTP Request Handling",
+    title: "Event Driven Programming with Java FX",
     weekLabel: "Module 12",
-    dateLabel: "Syllabus date pending",
+    dateLabel: "July 26",
     overview:
-      "This module introduces server-side Java with servlets, request/response handling, and web application deployment concepts.",
-    topicLine: "Servlet lifecycle, HTTP requests, responses, and deployment",
+      "This module continues JavaFX with event-driven programming. It covers JavaFX event handling, adding audio to a JavaFX application, JavaFX Canvas, code examples, an assignment, and a group project.",
+    topicLine:
+      "JavaFX events, event handling, audio, Canvas, and JavaFX project work",
     focusAreas: [
-      "Servlet lifecycle",
-      "HTTP methods",
-      "Request parameters",
-      "Response generation",
+      "JavaFX event handling",
+      "Adding audio to JavaFX applications",
+      "JavaFX Canvas",
+      "FXML controller examples",
+      "JavaFX assignment and group project",
     ],
     objectivesAligned: [
-      "Create a basic Java servlet",
-      "Handle HTTP request data",
-      "Generate a response from server-side Java code",
+      "Explain event-driven programming in JavaFX",
+      "Handle JavaFX events in application code",
+      "Review adding audio to a JavaFX application",
+      "Use or understand JavaFX Canvas examples",
+      "Complete the JavaFX assignment and group project tasks",
     ],
     outcomeAlignment: [
-      "Connect Java programming to web application workflows",
-      "Prepare for integrating server logic with persistent data",
+      "Build interactive JavaFX applications",
+      "Connect UI events to Java application behavior",
     ],
     syllabusContext: [
-      "Matches the course catalog topic: Servlets",
-      "Exact servlet container and setup instructions pending syllabus import",
+      "Module: Event Driven Programming with Java FX includes overview, lecture pages, quizzes, reading, code examples, an assignment, and a group project",
+      "Visible Canvas deadlines: JavaFX events quizzes, Assignment: JavaFX, and Project: JavaFX + Event Handling (Group) due Jul 26",
     ],
     starterTasks: [
-      "Create a servlet entry point",
-      "Handle a GET or POST request",
-      "Return a simple HTML or text response",
+      "Review JavaFX Events: Overview",
+      "Complete the event handling and audio lecture sequence",
+      "Complete the JavaFX Events and Adding Audio quizzes",
+      "Read Reading: JavaFX Event Handling",
+      "Review JavaFX Canvas and the code examples",
+      "Submit Assignment: JavaFX and Project: JavaFX + Event Handling (Group)",
     ],
-    artifacts: ["Servlet project source", "Deployment/run notes"],
-    importantDates: ["Date pending syllabus import"],
-    assessmentContext: ["Points and grading category pending syllabus import"],
-    milestone: "Basic servlet request/response flow working",
+    artifacts: [
+      "Quiz: JavaFX Events",
+      "Quiz: Adding Audio to a JavaFX application",
+      "Reading: JavaFX Event Handling",
+      "ClickApp.java",
+      "ClickController.java",
+      "click.fxml",
+      "Project.zip",
+      "CanvasApp.java",
+      "Assignment: JavaFX",
+      "Project: JavaFX + Event Handling (Group)",
+    ],
+    importantDates: [
+      "Jul 26 - Quiz: JavaFX Events",
+      "Jul 26 - Quiz: Adding Audio to a JavaFX application",
+      "Jul 26 - Assignment: JavaFX",
+      "Jul 26 - Project: JavaFX + Event Handling (Group)",
+    ],
+    assessmentContext: [
+      "Quiz: JavaFX Events - 3 pts",
+      "Quiz: Adding Audio to a JavaFX application - 3 pts",
+      "Assignment: JavaFX - 16 pts",
+      "Project: JavaFX + Event Handling (Group) - 20 pts",
+    ],
+    milestone:
+      "JavaFX event handling quizzes, code examples, assignment, and group project completed",
     moduleSummary: [
       {
-        step: "Configure",
-        description: "Set up the servlet project and container.",
+        step: "Overview",
+        description:
+          "Start with the JavaFX Events overview and connect the module to event-driven UI behavior.",
       },
       {
-        step: "Handle",
-        description: "Read request data in Java.",
+        step: "Lecture",
+        description:
+          "Study JavaFX event handling, adding audio, event handling reading, and JavaFX Canvas.",
       },
       {
-        step: "Respond",
-        description: "Send a generated response to the browser or client.",
+        step: "Examples",
+        description:
+          "Review ClickApp.java, ClickController.java, click.fxml, Project.zip, and CanvasApp.java.",
+      },
+      {
+        step: "Tasks",
+        description:
+          "Complete Assignment: JavaFX and Project: JavaFX + Event Handling (Group) by Jul 26.",
       },
     ],
     readingHighlights: [
-      "Jakarta Servlet specification or instructor-selected servlet docs",
-      "Course notes on server-side Java",
+      "JavaFX Events: Overview",
+      "Lecture: Event Handling in JavaFX",
+      "Lecture: Adding Audio to a JavaFX application",
+      "Reading: JavaFX Event Handling",
+      "Lecture: JavaFX Canvas",
+    ],
+    canvasSections: [
+      {
+        id: "event-driven-programming-with-java-fx",
+        title: "Module: Event Driven Programming with Java FX",
+        groups: [
+          {
+            items: [
+              {
+                title: "JavaFX Events: Overview",
+                type: "page",
+              },
+            ],
+          },
+          {
+            title: "Lecture",
+            items: [
+              {
+                title: "Lecture: Event Handling in JavaFX",
+                type: "page",
+              },
+              {
+                title: "Quiz: JavaFX Events",
+                type: "quiz",
+                dueLabel: "Jul 26",
+                pointsLabel: "3 pts",
+              },
+              {
+                title: "Lecture: Adding Audio to a JavaFX application",
+                type: "page",
+              },
+              {
+                title: "Quiz: Adding Audio to a JavaFX application",
+                type: "quiz",
+                dueLabel: "Jul 26",
+                pointsLabel: "3 pts",
+              },
+              {
+                title: "Reading: JavaFX Event Handling",
+                type: "page",
+              },
+              {
+                title: "Lecture: JavaFX Canvas",
+                type: "page",
+              },
+            ],
+          },
+          {
+            title: "Code Example",
+            items: [
+              {
+                title: "ClickApp.java",
+                type: "attachment",
+              },
+              {
+                title: "ClickController.java",
+                type: "attachment",
+              },
+              {
+                title: "click.fxml",
+                type: "attachment",
+              },
+              {
+                title: "Project.zip",
+                type: "attachment",
+              },
+              {
+                title: "CanvasApp.java",
+                type: "attachment",
+              },
+            ],
+          },
+          {
+            title: "Tasks",
+            items: [
+              {
+                title: "Assignment: JavaFX",
+                type: "assignment",
+                dueLabel: "Jul 26",
+                pointsLabel: "16 pts",
+                defaultCollapsed: true,
+                description:
+                  "Assignment details will be filled in separately after the module shell matches Canvas.",
+              },
+              {
+                title: "Project: JavaFX + Event Handling (Group)",
+                type: "assignment",
+                dueLabel: "Jul 26",
+                pointsLabel: "20 pts",
+                defaultCollapsed: true,
+                description:
+                  "Project details will be filled in separately after the module shell matches Canvas.",
+              },
+            ],
+          },
+        ],
+      },
     ],
     textTasks: [
       {
-        id: "module-12-servlets",
-        title: "Servlet Request Handling Assignment",
+        id: "module-12-javafx-assignment",
+        title: "Assignment: JavaFX",
         objective:
-          "Build a simple servlet-based Java web workflow that handles request data and returns a response.",
+          "Complete the JavaFX event-driven programming assignment after reviewing events, audio, event handling, Canvas, and code examples.",
         tasks: [
-          "Implement at least one servlet route",
-          "Handle request parameters safely",
-          "Document how to run the servlet project",
+          "Review JavaFX Events: Overview",
+          "Complete the JavaFX events lecture and quiz sequence",
+          "Review the JavaFX code examples",
+          "Submit Assignment: JavaFX by Jul 26",
         ],
-        submissionInstructions: commonSubmissionInstructions,
+        submissionInstructions: [
+          "Submit through SMC Canvas",
+          "Due: Jul 26",
+          "16 points",
+          "Assignment content will be added separately",
+        ],
+      },
+      {
+        id: "module-12-javafx-event-handling-group-project",
+        title: "Project: JavaFX + Event Handling (Group)",
+        objective:
+          "Complete the group project task for JavaFX and event handling.",
+        tasks: [
+          "Review the JavaFX event handling material",
+          "Use the provided code examples as reference",
+          "Submit Project: JavaFX + Event Handling (Group) by Jul 26",
+        ],
+        submissionInstructions: [
+          "Submit through SMC Canvas",
+          "Due: Jul 26",
+          "20 points",
+          "Project content will be added separately",
+        ],
       },
     ],
   },
   {
     id: 13,
-    title: "Servlets with Persistence",
+    title: "Multithreading",
     weekLabel: "Module 13",
-    dateLabel: "Syllabus date pending",
+    dateLabel: "July 31",
     overview:
-      "This module combines server-side Java with persistence, preparing a servlet workflow that reads from or writes to a data layer.",
-    topicLine: "Servlets, forms, validation, and database-backed behavior",
+      "This module introduces multithreading and synchronization in Java. It covers thread-based execution, synchronization, quizzes, and the Multithreading assignment.",
+    topicLine: "Multithreading, synchronization, and thread-safe Java code",
     focusAreas: [
-      "Form handling",
-      "Server-side validation",
-      "Servlet-to-database integration",
-      "User-facing error messages",
+      "Multithreading",
+      "Thread execution",
+      "Synchronization",
+      "Thread-safe behavior",
     ],
     objectivesAligned: [
-      "Process submitted form data",
-      "Validate user input before persistence",
-      "Integrate servlet logic with a Java data layer",
+      "Explain basic Java multithreading concepts",
+      "Recognize when synchronization is needed",
+      "Complete the multithreading and synchronization quizzes",
+      "Submit the Multithreading assignment",
     ],
     outcomeAlignment: [
-      "Build a more complete server-side Java application",
-      "Practice full request-to-persistence workflow design",
+      "Build Java programs that can reason about concurrent execution",
+      "Prepare for safer shared-state programming",
     ],
     syllabusContext: [
-      "Extends the course catalog topics: Servlets and JDBC",
-      "Exact syllabus assignment pending import",
+      "Module: Multithreading includes overview, lecture pages, quizzes, and an assignment task",
+      "Visible Canvas deadlines: multithreading quizzes and Assignment: Multithreading due Jul 31",
     ],
     starterTasks: [
-      "Create a form-backed servlet workflow",
-      "Validate input before database writes",
-      "Show success and failure responses",
+      "Review Multithreading: Overview",
+      "Complete the Multithreading and Synchronization lectures",
+      "Complete the Multithreading and Synchronization quizzes",
+      "Submit Assignment: Multithreading",
     ],
-    artifacts: ["Servlet persistence project", "Screenshots or run notes"],
-    importantDates: ["Date pending syllabus import"],
-    assessmentContext: ["Points and grading category pending syllabus import"],
-    milestone: "Server-side Java workflow connected to persistence",
+    artifacts: [
+      "Quiz: Multithreading",
+      "Quiz: Synchronization",
+      "Assignment: Multithreading",
+    ],
+    importantDates: [
+      "Jul 31 - Quiz: Multithreading",
+      "Jul 31 - Quiz: Synchronization",
+      "Jul 31 - Assignment: Multithreading",
+    ],
+    assessmentContext: [
+      "Quiz: Multithreading - 4 pts",
+      "Quiz: Synchronization - 3 pts",
+      "Assignment: Multithreading - 10 pts",
+    ],
+    milestone: "Multithreading lectures, quizzes, and assignment completed",
     moduleSummary: [
       {
-        step: "Input",
-        description: "Receive and validate form or request data.",
+        step: "Overview",
+        description:
+          "Start with the multithreading overview and connect the module to concurrent Java execution.",
       },
       {
-        step: "Persist",
-        description: "Use a Java data layer to query or update storage.",
+        step: "Lecture",
+        description: "Study multithreading and synchronization.",
       },
       {
-        step: "Render",
-        description: "Return useful success or error feedback.",
+        step: "Tasks",
+        description:
+          "Complete the quizzes and Assignment: Multithreading by Jul 31.",
       },
     ],
     readingHighlights: [
-      "Servlet docs selected by instructor",
-      "JDBC reference material from earlier modules",
+      "Multithreading: Overview",
+      "Lecture: Multithreading",
+      "Lecture: Synchronization",
+    ],
+    canvasSections: [
+      {
+        id: "multithreading",
+        title: "Module: Multithreading",
+        groups: [
+          {
+            items: [
+              {
+                title: "Multithreading: Overview",
+                type: "page",
+              },
+            ],
+          },
+          {
+            title: "Lecture",
+            items: [
+              {
+                title: "Lecture: Multithreading",
+                type: "page",
+              },
+              {
+                title: "Quiz: Multithreading",
+                type: "quiz",
+                dueLabel: "Jul 31",
+                pointsLabel: "4 pts",
+              },
+              {
+                title: "Lecture: Synchronization",
+                type: "page",
+              },
+              {
+                title: "Quiz: Synchronization",
+                type: "quiz",
+                dueLabel: "Jul 31",
+                pointsLabel: "3 pts",
+              },
+            ],
+          },
+          {
+            title: "Tasks",
+            items: [
+              {
+                title: "Assignment: Multithreading",
+                type: "assignment",
+                dueLabel: "Jul 31",
+                pointsLabel: "10 pts",
+                defaultCollapsed: true,
+                description:
+                  "Assignment details will be filled in separately after the module shell matches Canvas.",
+              },
+            ],
+          },
+        ],
+      },
     ],
     textTasks: [
       {
-        id: "module-13-servlet-persistence",
-        title: "Servlet Persistence Assignment",
+        id: "module-13-multithreading",
+        title: "Assignment: Multithreading",
         objective:
-          "Connect a servlet workflow to persistent data with validation and user-facing feedback.",
+          "Complete the Multithreading module after reviewing thread execution and synchronization.",
         tasks: [
-          "Process request or form input",
-          "Use JDBC or the instructor-approved persistence approach",
-          "Document setup, database state, and expected behavior",
+          "Review Multithreading: Overview",
+          "Complete the multithreading lecture and quiz sequence",
+          "Submit Assignment: Multithreading by Jul 31",
         ],
-        submissionInstructions: commonSubmissionInstructions,
+        submissionInstructions: [
+          "Submit through SMC Canvas",
+          "Due: Jul 31",
+          "10 points",
+          "Assignment content will be added separately",
+        ],
       },
     ],
   },
   {
     id: 14,
-    title: "Remote Method Invocation",
+    title: "Database with JDBC",
     weekLabel: "Module 14",
-    dateLabel: "Syllabus date pending",
+    dateLabel: "July 31",
     overview:
-      "This module introduces Java RMI as a distributed-programming model where clients invoke methods on remote Java objects.",
-    topicLine: "RMI interfaces, remote objects, registry, clients, and servers",
+      "This module introduces relational databases, MySQL, SQL, and Java database connectivity. It covers database setup, SQL basics, connecting to MySQL, example Java files, and a database discussion.",
+    topicLine: "Relational databases, MySQL, SQL, and JDBC connections",
     focusAreas: [
-      "Remote interfaces",
-      "RMI registry",
-      "Server object binding",
-      "Client lookup and invocation",
+      "Relational databases",
+      "MySQL installation",
+      "Structured Query Language (SQL)",
+      "Connecting Java to MySQL",
+      "NetBeans project setup with MySQL",
+      "Database code examples",
     ],
     objectivesAligned: [
-      "Define a remote Java interface",
-      "Expose an implementation through RMI",
-      "Create a client that calls remote methods",
+      "Explain the role of relational databases",
+      "Review MySQL installation and connection workflows",
+      "Understand introductory SQL concepts",
+      "Connect Java project setup to MySQL database usage",
+      "Participate in the database discussion",
     ],
     outcomeAlignment: [
-      "Apply Java distributed programming concepts",
-      "Compare RMI with socket-level networking",
+      "Prepare Java applications to work with persistent relational data",
+      "Connect database concepts to Java application code",
     ],
     syllabusContext: [
-      "Matches the course catalog topic: Remote Method Invocation (RMI)",
-      "Exact assignment details pending syllabus import",
+      "Database with JDBC includes overview, lecture pages, a quiz, code examples, and a discussion task",
+      "Visible Canvas deadlines: Quiz: Databases and Discussion: Database due Jul 31",
     ],
     starterTasks: [
-      "Create a remote interface",
-      "Bind a server implementation",
-      "Call the remote method from a client",
+      "Review Database: Overview",
+      "Complete the database and MySQL lecture sequence",
+      "Complete Quiz: Databases",
+      "Review Database.java and Employee.java",
+      "Post on Discussion: Database",
     ],
-    artifacts: ["RMI client/server source files", "Run sequence notes"],
-    importantDates: ["Date pending syllabus import"],
-    assessmentContext: ["Points and grading category pending syllabus import"],
-    milestone: "RMI client/server workflow complete",
+    artifacts: [
+      "Quiz: Databases",
+      "Database.java",
+      "Employee.java",
+      "Discussion: Database",
+    ],
+    importantDates: [
+      "Jul 31 - Quiz: Databases",
+      "Jul 31 - Discussion: Database",
+    ],
+    assessmentContext: [
+      "Quiz: Databases - 3 pts",
+      "Discussion: Database - 3 pts",
+    ],
+    milestone:
+      "Database with JDBC lectures, quiz, examples, and discussion completed",
     moduleSummary: [
       {
-        step: "Define",
-        description: "Create the remote interface contract.",
+        step: "Overview",
+        description:
+          "Start with the database overview and connect the module to relational data.",
       },
       {
-        step: "Serve",
-        description: "Bind an implementation to the registry.",
+        step: "Lecture",
+        description:
+          "Study relational databases, MySQL installation, SQL, MySQL connections, and NetBeans setup.",
       },
       {
-        step: "Invoke",
-        description: "Call remote behavior from the client.",
+        step: "Examples",
+        description: "Review Database.java and Employee.java.",
+      },
+      {
+        step: "Tasks",
+        description:
+          "Complete Quiz: Databases and Discussion: Database by Jul 31.",
       },
     ],
     readingHighlights: [
-      "Oracle Java Tutorials: RMI",
-      "Instructor notes on distributed Java programs",
+      "Database: Overview",
+      "Lecture: Intro to relational Databases",
+      "Lecture: How to install MySQL",
+      "Lecture: Structured Query Language (SQL)",
+      "Lecture: How to connect to MySQL",
+      "Project Setup with MySQL - NetBeans",
+    ],
+    canvasSections: [
+      {
+        id: "database-with-jdbc",
+        title: "Database with JDBC",
+        groups: [
+          {
+            items: [
+              {
+                title: "Database: Overview",
+                type: "page",
+              },
+            ],
+          },
+          {
+            title: "Lecture",
+            items: [
+              {
+                title: "Lecture: Intro to relational Databases",
+                type: "page",
+              },
+              {
+                title: "Lecture: How to install MySQL",
+                type: "page",
+              },
+              {
+                title: "Lecture: Structured Query Language (SQL)",
+                type: "page",
+              },
+              {
+                title: "Quiz: Databases",
+                type: "quiz",
+                dueLabel: "Jul 31",
+                pointsLabel: "3 pts",
+              },
+              {
+                title: "Lecture: How to connect to MySQL",
+                type: "page",
+              },
+              {
+                title: "Project Setup with MySQL - NetBeans",
+                type: "page",
+              },
+            ],
+          },
+          {
+            title: "Code Example",
+            items: [
+              {
+                title: "Database.java",
+                type: "attachment",
+              },
+              {
+                title: "Employee.java",
+                type: "attachment",
+              },
+            ],
+          },
+          {
+            title: "Tasks",
+            items: [
+              {
+                title: "Discussion: Database",
+                type: "discussion",
+                dueLabel: "Jul 31",
+                pointsLabel: "3 pts",
+                defaultCollapsed: true,
+                description:
+                  "Discussion details will be filled in separately after the module shell matches Canvas.",
+              },
+            ],
+          },
+        ],
+      },
     ],
     textTasks: [
       {
-        id: "module-14-rmi",
-        title: "RMI Assignment",
+        id: "module-14-database-discussion",
+        title: "Discussion: Database",
         objective:
-          "Build a minimal Java RMI application with a remote interface, server implementation, and client invocation.",
+          "Complete the Database with JDBC module after reviewing relational databases, MySQL, SQL, Java database connection setup, and code examples.",
         tasks: [
-          "Define the remote interface and implementation",
-          "Start and document the registry/server flow",
-          "Run a client that invokes remote behavior",
+          "Review Database: Overview",
+          "Complete the database lecture and quiz sequence",
+          "Review Database.java and Employee.java",
+          "Post on Discussion: Database by Jul 31",
         ],
-        submissionInstructions: commonSubmissionInstructions,
+        submissionInstructions: [
+          "Submit through SMC Canvas",
+          "Due: Jul 31",
+          "3 points",
+          "Discussion content will be added separately",
+        ],
       },
     ],
   },
   {
     id: 15,
-    title: "Integration Project and Course Wrap-Up",
+    title: "Final Exam",
     weekLabel: "Module 15",
-    dateLabel: "Syllabus date pending",
+    dateLabel: "July 31",
     overview:
-      "The final module is reserved for integrating advanced Java skills into a complete artifact, review package, or final assessment as specified by the CS 56 syllabus.",
-    topicLine: "Advanced Java integration, review, and final deliverable",
-    focusAreas: [
-      "Final project packaging",
-      "Code review and cleanup",
-      "Documentation",
-      "Course reflection",
-    ],
+      "The final module contains the course overview page and the Final Exam assessment.",
+    topicLine: "Final Exam overview and assessment",
+    focusAreas: ["Final Exam", "Course completion"],
     objectivesAligned: [
-      "Integrate multiple advanced Java topics",
-      "Package a project for review",
-      "Document design choices and lessons learned",
+      "Review the final module overview",
+      "Complete the Final Exam assessment",
     ],
     outcomeAlignment: [
-      "Demonstrate readiness to use advanced Java APIs in larger applications",
-      "Create a portfolio-ready final artifact",
+      "Demonstrate understanding of CS 56 course topics",
+      "Complete the final assessment checkpoint",
     ],
     syllabusContext: [
-      "Module 15 of 15 in the CS 56 assignment skeleton",
-      "Final project or exam requirements pending syllabus import",
+      "Module: Final Exam includes the overview page and Final Exam assessment",
+      "Visible Canvas deadline: Final Exam due Jul 31",
     ],
-    starterTasks: [
-      "Choose or confirm the final deliverable scope",
-      "Clean up source organization",
-      "Prepare final documentation and screenshots",
-    ],
-    artifacts: [
-      "Final Java project or review package",
-      "README and run instructions",
-      "Reflection or final notes",
-    ],
-    importantDates: ["Final date pending syllabus import"],
-    assessmentContext: ["Final assessment details pending syllabus import"],
-    milestone: "CS 56 final artifact ready for submission",
+    starterTasks: ["Review Module: Overview", "Complete the Final Exam"],
+    artifacts: ["Final Exam"],
+    importantDates: ["Jul 31 - Final Exam"],
+    assessmentContext: ["Final Exam - 98 pts"],
+    milestone: "Final Exam completed",
     moduleSummary: [
       {
-        step: "Integrate",
-        description: "Combine selected advanced Java course topics.",
+        step: "Overview",
+        description: "Review the final module overview before the exam.",
       },
       {
-        step: "Polish",
-        description: "Clean up code, docs, and repeatable run steps.",
-      },
-      {
-        step: "Submit",
-        description: "Package final materials according to syllabus rules.",
+        step: "Assessment",
+        description: "Complete the Final Exam by Jul 31.",
       },
     ],
-    readingHighlights: [
-      "Final project instructions from syllabus",
-      "Course review notes and instructor-provided resources",
+    readingHighlights: ["Module: Overview"],
+    canvasSections: [
+      {
+        id: "final-exam",
+        title: "Module: Final Exam",
+        groups: [
+          {
+            items: [
+              {
+                title: "Module: Overview",
+                type: "page",
+              },
+              {
+                title: "Final Exam",
+                type: "assignment",
+                dueLabel: "Jul 31",
+                pointsLabel: "98 pts",
+              },
+            ],
+          },
+        ],
+      },
     ],
     textTasks: [
       {
-        id: "module-15-final",
-        title: "Final Integration Assignment",
-        objective:
-          "Prepare the final CS 56 artifact once the syllabus provides the exact project or exam requirements.",
-        tasks: [
-          "Integrate at least two advanced Java concepts",
-          "Document how to build, run, and verify the artifact",
-          "Add final reflection or submission notes required by the syllabus",
+        id: "module-15-final-exam",
+        title: "Final Exam",
+        objective: "Complete the CS 56 Final Exam assessment.",
+        tasks: ["Review Module: Overview", "Complete Final Exam by Jul 31"],
+        submissionInstructions: [
+          "Submit through SMC Canvas",
+          "Due: Jul 31",
+          "98 points",
         ],
-        submissionInstructions: commonSubmissionInstructions,
       },
     ],
   },
