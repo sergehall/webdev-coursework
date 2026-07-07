@@ -61,7 +61,10 @@ describe("AutoAssignmentRouter", () => {
   beforeEach(() => {
     assignmentComponentsMock.mockReset();
     useCompletedModulesMock.mockReset();
-    useCompletedModulesMock.mockReturnValue({ completedModules: [] });
+    useCompletedModulesMock.mockReturnValue({
+      completedModules: [],
+      isLoadingProgress: false,
+    });
     mockAssignmentEntry();
   });
 
@@ -78,6 +81,23 @@ describe("AutoAssignmentRouter", () => {
     expect(
       await screen.findByText(/placeholder assignment content/i)
     ).toBeVisible();
+  });
+
+  it("shows a neutral loading state instead of the locked placeholder while progress loads", async () => {
+    useCompletedModulesMock.mockReturnValue({
+      completedModules: [],
+      isLoadingProgress: true,
+    });
+
+    renderRouter("/coursework/CS81/assignment/2");
+
+    expect(await screen.findByText(/loading module/i)).toBeInTheDocument();
+    expect(
+      screen.queryByText(/placeholder assignment content/i)
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/main assignment content/i)
+    ).not.toBeInTheDocument();
   });
 
   it("renders an error state when the course id is invalid", async () => {
@@ -98,6 +118,7 @@ describe("AutoAssignmentRouter", () => {
   it("redirects to the completed page when all modules are finished", async () => {
     useCompletedModulesMock.mockReturnValue({
       completedModules: Array.from({ length: 12 }, (_, index) => index + 1),
+      isLoadingProgress: false,
     });
 
     renderRouter("/coursework/CS81/assignment/12");

@@ -7,6 +7,23 @@ import { COURSE_PROGRESS_CONFIG } from "@/api/config/course-progress";
 import type { CourseId } from "@/api/config/course-progress";
 import { normalizeCourseIdToCode } from "@/utils/normalizeCourseIdToCode";
 
+function ModuleLoadingState() {
+  return (
+    <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-gray-900">
+      <div className="animate-pulse space-y-4">
+        <div className="h-4 w-32 rounded bg-slate-200 dark:bg-slate-700" />
+        <div className="h-8 w-full max-w-xl rounded bg-slate-200 dark:bg-slate-700" />
+        <div className="space-y-3">
+          <div className="h-20 rounded-xl bg-slate-100 dark:bg-slate-800" />
+          <div className="h-20 rounded-xl bg-slate-100 dark:bg-slate-800" />
+          <div className="h-20 rounded-xl bg-slate-100 dark:bg-slate-800" />
+        </div>
+      </div>
+      <p className="sr-only">Loading module...</p>
+    </section>
+  );
+}
+
 export default function AutoAssignmentRouter() {
   const { id, courseId: courseIdParam } = useParams<{
     id?: string;
@@ -14,7 +31,7 @@ export default function AutoAssignmentRouter() {
   }>();
   const navigate = useNavigate();
   const location = useLocation();
-  const { completedModules } = useCompletedModules();
+  const { completedModules, isLoadingProgress } = useCompletedModules();
 
   const normalizedCode = useMemo(() => {
     if (!courseIdParam) return null;
@@ -92,12 +109,16 @@ export default function AutoAssignmentRouter() {
     return <div className="p-6 text-red-600">Failed to load module</div>;
   }
 
+  if (isLoadingProgress) {
+    return <ModuleLoadingState />;
+  }
+
   const AssignmentComponent = isUnlocked
     ? components.main
     : components.placeholder;
 
   return (
-    <Suspense fallback={<div className="p-6">Loading module...</div>}>
+    <Suspense fallback={<ModuleLoadingState />}>
       <AssignmentComponent />
     </Suspense>
   );
