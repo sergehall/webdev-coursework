@@ -1,6 +1,9 @@
-import CS56ModuleScaffold from "@/courses/CS56/components/CS56ModuleScaffold";
-import { cs56Module08Blueprint } from "@/courses/CS56/data/modules/module08";
+import MidtermQuiz from "./MidtermQuiz";
 
 export default function AssignmentMod8() {
-  return <CS56ModuleScaffold module={cs56Module08Blueprint} />;
+  return (
+    <section className="space-y-6 rounded-xl bg-white p-4 shadow-md sm:p-6 dark:bg-gray-900">
+      <MidtermQuiz />
+    </section>
+  );
 }
