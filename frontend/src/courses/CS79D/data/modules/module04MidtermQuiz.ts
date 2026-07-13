@@ -47,7 +47,7 @@ export const cs79dCloudPractitionerMidtermDefinition = {
   accessCode: "cppe2026",
   accessHint: "Access code: cppe2026",
   durationSeconds: 2 * 60 * 60,
-  storageKey: "assessment:cs79d-cloud-practitioner-midterm:v1",
+  storageKey: "assessment:cs79d-cloud-practitioner-midterm:v2",
   questions: cs79dCloudPractitionerMidtermQuestions,
 } satisfies AssessmentDefinition;
 

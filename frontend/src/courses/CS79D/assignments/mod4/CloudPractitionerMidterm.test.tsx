@@ -17,7 +17,7 @@ import {
 import { cs79dModule04MidtermQuizQuestions } from "@/courses/CS79D/data/modules/module04MidtermQuizQuestions";
 import { getAssessmentTotalPoints } from "@/features/assessment";
 
-const storageKey = "assessment:cs79d-cloud-practitioner-midterm:v1";
+const storageKey = "assessment:cs79d-cloud-practitioner-midterm:v2";
 
 describe("CS79D Module 4 Cloud Practitioner midterm", () => {
   beforeEach(() => {
@@ -35,6 +35,7 @@ describe("CS79D Module 4 Cloud Practitioner midterm", () => {
     expect(cs79dCloudPractitionerMidtermDefinition.durationSeconds).toBe(
       2 * 60 * 60
     );
+    expect(cs79dCloudPractitionerMidtermDefinition.storageKey).toBe(storageKey);
     expect(cs79dCloudPractitionerMidtermQuestions.map(({ id }) => id)).toEqual(
       Array.from({ length: 67 }, (_, index) => index + 1)
     );
@@ -61,6 +62,7 @@ describe("CS79D Module 4 Cloud Practitioner midterm", () => {
   });
 
   test("requires the source access code and keeps details collapsed", () => {
+    vi.spyOn(Date, "now").mockReturnValue(1_000_000);
     render(<CloudPractitionerMidterm />);
 
     expect(
@@ -95,6 +97,7 @@ describe("CS79D Module 4 Cloud Practitioner midterm", () => {
       "aria-valuenow",
       "0"
     );
+    expect(screen.getByRole("timer")).toHaveAccessibleName("120:00 remaining");
   });
 
   test("uses native single-answer and multiple-answer controls", () => {
