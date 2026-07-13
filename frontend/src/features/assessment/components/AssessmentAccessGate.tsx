@@ -64,9 +64,7 @@ export default function AssessmentAccessGate({
           <ExamFact label="Points" value={String(totalPoints)} />
           <ExamFact
             label="Time limit"
-            value={
-              String(Math.ceil(definition.durationSeconds / 60)) + " minutes"
-            }
+            value={formatTimeLimit(definition.durationSeconds)}
           />
         </dl>
 
@@ -139,6 +137,17 @@ export default function AssessmentAccessGate({
       </div>
     </section>
   );
+}
+
+function formatTimeLimit(durationSeconds: number): string {
+  const totalMinutes = Math.ceil(durationSeconds / 60);
+
+  if (totalMinutes >= 120 && totalMinutes % 60 === 0) {
+    const hours = totalMinutes / 60;
+    return `${hours} ${hours === 1 ? "hour" : "hours"}`;
+  }
+
+  return `${totalMinutes} minutes`;
 }
 
 function ExamFact({ label, value }: { label: string; value: string }) {

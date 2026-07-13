@@ -1,6 +1,4 @@
-import type { CS79DModuleBlueprint } from "../types";
-
-type Quiz = NonNullable<CS79DModuleBlueprint["midtermQuiz"]>;
+import type { UIQuestion } from "@/components/quiz/types/UIQuestion.type";
 
 export const cs79dModule04MidtermQuizQuestions = [
   {
@@ -669,4 +667,4 @@ export const cs79dModule04MidtermQuizQuestions = [
     ],
     multiple: true,
   },
-] satisfies Quiz["questions"];
+] satisfies readonly UIQuestion[];

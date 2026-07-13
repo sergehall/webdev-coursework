@@ -1,7 +1,6 @@
 import type { CS79DModuleBlueprint } from "../types";
 
 import { cs79dModule04Quiz } from "./module04Quiz";
-import { cs79dModule04MidtermQuiz } from "./module04MidtermQuiz";
 import { cs79dModule04TextTasks } from "./module04TextTasks";
 
 export const cs79dModule04Blueprint = {
@@ -64,6 +63,5 @@ export const cs79dModule04Blueprint = {
   milestone:
     "CloudWatch billing alarm active, CloudTrail enabled, midterm submitted",
   textTasks: cs79dModule04TextTasks,
-  midtermQuiz: cs79dModule04MidtermQuiz,
   quiz: cs79dModule04Quiz,
 } satisfies CS79DModuleBlueprint;

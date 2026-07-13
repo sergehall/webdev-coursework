@@ -1,6 +1,4 @@
-import type { CS79DModuleBlueprint } from "../types";
-
-type Quiz = NonNullable<CS79DModuleBlueprint["midtermQuiz"]>;
+import type { CorrectAnswerDto } from "@/components/quiz/types/correct-answers-map.type";
 
 export const cs79dModule04MidtermQuizAnswers = [
   {
@@ -338,4 +336,4 @@ export const cs79dModule04MidtermQuizAnswers = [
     questionId: 67,
     correctAnswer: [0, 2, 5],
   },
-] satisfies Quiz["answers"];
+] satisfies readonly CorrectAnswerDto[];

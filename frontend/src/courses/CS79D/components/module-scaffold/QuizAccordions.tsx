@@ -4,20 +4,14 @@ import type { CS79DQuiz } from "@/courses/CS79D/components/module-scaffold/types
 
 type QuizAccordionsProps = {
   quiz?: CS79DQuiz;
-  midtermQuiz?: CS79DQuiz;
   isQuizOpen: boolean;
-  isMidtermOpen: boolean;
   onToggleQuiz: () => void;
-  onToggleMidterm: () => void;
 };
 
 export default function QuizAccordions({
   quiz,
-  midtermQuiz,
   isQuizOpen,
-  isMidtermOpen,
   onToggleQuiz,
-  onToggleMidterm,
 }: QuizAccordionsProps) {
   return (
     <>
@@ -29,20 +23,12 @@ export default function QuizAccordions({
           onToggle={onToggleQuiz}
         />
       ) : null}
-      {midtermQuiz ? (
-        <QuizAccordion
-          titlePrefix="Midterm"
-          quiz={midtermQuiz}
-          isOpen={isMidtermOpen}
-          onToggle={onToggleMidterm}
-        />
-      ) : null}
     </>
   );
 }
 
 type QuizAccordionProps = {
-  titlePrefix: "Quiz" | "Midterm";
+  titlePrefix: "Quiz";
   quiz: CS79DQuiz;
   isOpen: boolean;
   onToggle: () => void;

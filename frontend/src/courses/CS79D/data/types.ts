@@ -56,10 +56,4 @@ export type CS79DModuleBlueprint = {
     questions: UIQuestion[];
     answers: CorrectAnswerDto[];
   };
-  midtermQuiz?: {
-    title: string;
-    dueLabel?: string;
-    questions: UIQuestion[];
-    answers: CorrectAnswerDto[];
-  };
 };

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { ReactNode } from "react";
 
 import AnimatedAccordionItem from "@/components/AnimatedAccordionItem";
 import { ModuleCompletionButton } from "@/components/buttons";
@@ -10,15 +11,16 @@ import type { CS79DModuleBlueprint } from "@/courses/CS79D/data/moduleBlueprints
 
 type CS79DModuleScaffoldProps = {
   module: CS79DModuleBlueprint;
+  assessment?: ReactNode;
 };
 
 export default function CS79DModuleScaffold({
   module,
+  assessment,
 }: CS79DModuleScaffoldProps) {
   useFinalModuleRedirect(8);
   const [isOverviewOpen, setIsOverviewOpen] = useState(false);
   const [isQuizOpen, setIsQuizOpen] = useState(false);
-  const [isMidtermOpen, setIsMidtermOpen] = useState(false);
   const [openTextTasks, setOpenTextTasks] = useState<Record<string, boolean>>(
     {}
   );
@@ -48,7 +50,7 @@ export default function CS79DModuleScaffold({
   };
 
   return (
-    <section className="space-y-6 rounded-xl bg-white p-6 shadow-md dark:bg-gray-900">
+    <section className="space-y-6 rounded-xl bg-white px-0 py-4 shadow-md sm:p-6 dark:bg-gray-900">
       <header className="space-y-3">
         <div className="flex flex-wrap items-center gap-3">
           <span className="rounded-full bg-rose-100 px-3 py-1 text-xs font-semibold tracking-[0.2em] text-rose-700 uppercase dark:bg-rose-900/40 dark:text-rose-200">
@@ -92,12 +94,11 @@ export default function CS79DModuleScaffold({
 
       <QuizAccordions
         quiz={module.quiz}
-        midtermQuiz={module.midtermQuiz}
         isQuizOpen={isQuizOpen}
-        isMidtermOpen={isMidtermOpen}
         onToggleQuiz={() => setIsQuizOpen((prev) => !prev)}
-        onToggleMidterm={() => setIsMidtermOpen((prev) => !prev)}
       />
+
+      {assessment}
 
       <ModuleCompletionButton moduleId={module.id} />
     </section>
