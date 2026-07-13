@@ -8,6 +8,7 @@ export default function AssignmentMod4() {
     <CS79DModuleScaffold
       module={cs79dModule04Blueprint}
       assessment={<CloudPractitionerMidterm />}
+      assessmentTitle="Midterm: Cloud Practitioner Practice Exam"
     />
   );
 }

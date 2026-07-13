@@ -12,15 +12,18 @@ import type { CS79DModuleBlueprint } from "@/courses/CS79D/data/moduleBlueprints
 type CS79DModuleScaffoldProps = {
   module: CS79DModuleBlueprint;
   assessment?: ReactNode;
+  assessmentTitle?: string;
 };
 
 export default function CS79DModuleScaffold({
   module,
   assessment,
+  assessmentTitle,
 }: CS79DModuleScaffoldProps) {
   useFinalModuleRedirect(8);
   const [isOverviewOpen, setIsOverviewOpen] = useState(false);
   const [isQuizOpen, setIsQuizOpen] = useState(false);
+  const [isAssessmentOpen, setIsAssessmentOpen] = useState(false);
   const [openTextTasks, setOpenTextTasks] = useState<Record<string, boolean>>(
     {}
   );
@@ -98,7 +101,17 @@ export default function CS79DModuleScaffold({
         onToggleQuiz={() => setIsQuizOpen((prev) => !prev)}
       />
 
-      {assessment}
+      {assessment && assessmentTitle ? (
+        <AnimatedAccordionItem
+          title={assessmentTitle}
+          isOpen={isAssessmentOpen}
+          onToggle={() => setIsAssessmentOpen((prev) => !prev)}
+        >
+          {assessment}
+        </AnimatedAccordionItem>
+      ) : (
+        assessment
+      )}
 
       <ModuleCompletionButton moduleId={module.id} />
     </section>

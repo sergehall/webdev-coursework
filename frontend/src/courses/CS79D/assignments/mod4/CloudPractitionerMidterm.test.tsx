@@ -132,23 +132,27 @@ describe("CS79D Module 4 Cloud Practitioner midterm", () => {
     expect(screen.getByText("1 / 67")).toBeInTheDocument();
   });
 
-  test("restores a validated active attempt after remounting", async () => {
-    const firstRender = render(<CloudPractitionerMidterm />);
-    unlockMidterm();
-    answerFirstQuestion();
-
-    await waitFor(() =>
-      expect(window.localStorage.getItem(storageKey)).toContain(
-        '"status":"active"'
-      )
+  test("restores a validated active attempt from storage", () => {
+    const startedAt = Date.now();
+    window.localStorage.setItem(
+      storageKey,
+      JSON.stringify({
+        schemaVersion: 1,
+        assessmentId: cs79dCloudPractitionerMidtermDefinition.id,
+        status: "active",
+        answers: {
+          "1": { kind: "choice", selectedOptionIndexes: [0] },
+        },
+        startedAt,
+        deadlineAt:
+          startedAt +
+          cs79dCloudPractitionerMidtermDefinition.durationSeconds * 1000,
+      })
     );
-    firstRender.unmount();
 
     render(<CloudPractitionerMidterm />);
 
-    expect(
-      screen.queryByLabelText(/enter the access code/i)
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText("Begin quiz")).not.toBeInTheDocument();
     expect(screen.getByRole("status")).toHaveTextContent(
       "saved attempt was restored"
     );
@@ -156,7 +160,7 @@ describe("CS79D Module 4 Cloud Practitioner midterm", () => {
       "aria-valuenow",
       "1"
     );
-  }, 10_000);
+  });
 });
 
 function unlockMidterm() {

@@ -18,6 +18,7 @@ export default function AnimatedAccordionItem({
       <button
         type="button"
         onClick={onToggle}
+        aria-expanded={isOpen}
         className="flex w-full items-center justify-between bg-white px-4 py-3 text-left transition hover:bg-gray-50 dark:bg-gray-900 dark:hover:bg-gray-800"
       >
         <span className="text-base font-medium text-gray-800 dark:text-gray-100">
