@@ -1,51 +1,11 @@
-export type ChoiceQuestion = {
-  id: number;
-  kind: "single" | "multiple";
-  points: number;
-  prompt: string;
-  instruction?: string;
-  code?: string;
-  options: string[];
-  answer: number[];
-};
-
-export type TextQuestion = {
-  id: number;
-  kind: "text";
-  points: number;
-  prompt: string;
-  instruction: string;
-  code?: string;
-  answers: string[];
-};
-
-export type CompletionBlank = {
-  id: string;
-  options: string[];
-  answer: string;
-};
-
-export type CompletionSegment =
-  | { text: string; blank?: never }
-  | { text?: never; blank: CompletionBlank };
-
-export type CompletionQuestion = {
-  id: number;
-  kind: "completion";
-  points: number;
-  prompt: string;
-  instruction: string;
-  lines: CompletionSegment[][];
-};
-
-export type MidtermQuestion =
-  | ChoiceQuestion
-  | TextQuestion
-  | CompletionQuestion;
+import {
+  getAssessmentTotalPoints,
+  type AssessmentQuestion,
+} from "@/features/assessment";
 
 const trueFalse = ["True", "False"];
 
-export const midtermQuestions: MidtermQuestion[] = [
+export const midtermQuestions: readonly AssessmentQuestion[] = [
   {
     id: 1,
     kind: "single",
@@ -729,7 +689,4 @@ export const midtermQuestions: MidtermQuestion[] = [
   },
 ];
 
-export const midtermTotalPoints = midtermQuestions.reduce(
-  (total, question) => total + question.points,
-  0
-);
+export const midtermTotalPoints = getAssessmentTotalPoints(midtermQuestions);
