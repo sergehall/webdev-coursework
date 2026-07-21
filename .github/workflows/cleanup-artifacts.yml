@@ -2,10 +2,6 @@ name: cleanup-artifacts
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "0 3 * * *"   # daily at 03:00 UTC
-  pull_request:
-    types: [ closed ]     # clean PR artifacts on close
 
 permissions:
   actions: write
@@ -44,36 +40,3 @@ jobs:
               page++;
             }
             core.info(`Checked ${total} artifacts; deleted ${deleted} (> ${days} days).`);
-
-  purge-pr:
-    if: github.event_name == 'pull_request' && github.event.action == 'closed'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Delete artifacts for this PR
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const pr = context.payload.pull_request.number;
-            const target = `pr-${pr}`;
-            let page = 1, deleted = 0;
-            while (true) {
-              const { data } = await github.rest.actions.listArtifactsForRepo({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                per_page: 100,
-                page
-              });
-              if (!data.artifacts.length) break;
-              for (const a of data.artifacts) {
-                if (!a.expired && a.name === target) {
-                  await github.rest.actions.deleteArtifact({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    artifact_id: a.id
-                  });
-                  deleted++;
-                }
-              }
-              page++;
-            }
-            core.info(`Deleted ${deleted} artifacts named ${target}.`);

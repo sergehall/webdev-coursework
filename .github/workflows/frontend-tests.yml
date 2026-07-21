@@ -12,6 +12,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: frontend-ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test-only:
     permissions:
@@ -19,9 +23,9 @@ jobs:
     uses: ./.github/workflows/frontend-common.yml
     with:
       environment: production
-      run_lint: false
+      run_lint: true
       run_tests: true
-      run_build: false
+      run_build: true
     secrets:
       VITE_API_URL: ${{ secrets.VITE_API_URL }}
       VITE_QUIZ_SECRET: ${{ secrets.VITE_QUIZ_SECRET }}

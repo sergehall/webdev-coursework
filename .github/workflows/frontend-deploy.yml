@@ -1,20 +1,16 @@
 # .github/workflows/frontend-deploy.yml
-name: Frontend Deploy
+name: Frontend Production Build
 
 on:
-  push:
-    branches: [ main ]
   workflow_dispatch:
 
 permissions:
   contents: read
-  actions: write
 
 jobs:
   build:
     permissions:
       contents: read
-      actions: write
     uses: ./.github/workflows/frontend-common.yml
     with:
       environment: production
@@ -26,23 +22,3 @@ jobs:
       VITE_QUIZ_SECRET: ${{ secrets.VITE_QUIZ_SECRET }}
       VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
       ACTIONS_CHECKOUT_TOKEN: ${{ secrets.ACTIONS_CHECKOUT_TOKEN }}
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: frontend-dist         # stable name from common workflow
-          path: ./artifacts
-
-      - name: Unpack to ./frontend/dist
-        run: |
-          mkdir -p ./frontend/dist
-          tar -xzf ./artifacts/dist.tgz -C ./frontend/dist
-          rm -f ./artifacts/dist.tgz
-
-      # add your deploy step here
-      # - name: Deploy to <provider>
-      #   run: echo "Deploying ./frontend/dist ..."
