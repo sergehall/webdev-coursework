@@ -1,5 +1,8 @@
 import { useState } from "react";
-import { FileText, Paperclip } from "lucide-react";
+import { Paperclip } from "lucide-react";
+
+import Assignment10AContent from "./Assignment10AContent";
+import ModuleTenQuiz from "./ModuleTenQuiz";
 
 import AnimatedAccordionItem from "@/components/AnimatedAccordionItem";
 import { ModuleCompletionButton } from "@/components/buttons";
@@ -14,20 +17,59 @@ type ModuleSectionId =
   | "assignment-10a"
   | "quiz";
 
-const readmeItem: CanvasItem = {
-  icon: FileText,
-  title: "ReadMe Module 10: User Authentication",
-};
-
 const requiredReadingItem: CanvasItem = {
   icon: Paperclip,
   title: "module10-authentication.pdf",
 };
 
-function PlaceholderContent({ label }: { label: string }) {
+function ModuleTenReadMe() {
   return (
-    <section className="rounded-xl border border-sky-200 bg-sky-50 p-4 text-sm leading-7 text-sky-950 dark:border-sky-900/50 dark:bg-sky-950/30 dark:text-sky-100">
-      {label} content will be filled in later.
+    <section className="space-y-4 rounded-xl border border-slate-200 bg-white/70 p-4 dark:border-slate-700 dark:bg-slate-950/30">
+      <article className="rounded-xl border border-sky-200 bg-sky-50 p-4 dark:border-sky-900/50 dark:bg-sky-950/30">
+        <h4 className="text-sm font-semibold tracking-wide text-sky-900 uppercase dark:text-sky-100">
+          User Authentication
+        </h4>
+        <div className="mt-3 space-y-4 text-sm leading-7 text-sky-950 dark:text-sky-100">
+          <p>
+            Today, you&apos;re going to learn skills that appear in virtually
+            every job posting for web developers: building secure user
+            authentication systems and modeling real-world data relationships.
+          </p>
+          <p>
+            Think about every app you use daily—Instagram, your banking app,
+            Netflix, even our college portal. They all share two fundamental
+            features: they know who you are, and they show you content that
+            belongs specifically to you. By the end of this module, you&apos;ll
+            understand exactly how to build these systems yourself.
+          </p>
+          <p>
+            We&apos;ll be implementing a complete user registration and login
+            system using Laravel Breeze, protecting routes with middleware, and
+            connecting users to their content through Eloquent relationships.
+            These aren&apos;t just academic exercises—these are the exact
+            patterns used by companies like Airbnb, Shopify, and GitHub to serve
+            millions of users. Let&apos;s build something that belongs in your
+            professional portfolio!
+          </p>
+        </div>
+      </article>
+
+      <article className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 dark:border-emerald-900/50 dark:bg-emerald-950/30">
+        <h4 className="text-sm font-semibold tracking-wide text-emerald-900 uppercase dark:text-emerald-100">
+          Module 10 Task List
+        </h4>
+        <ul className="mt-3 ml-5 list-disc space-y-2 text-sm leading-7 text-emerald-950 dark:text-emerald-100">
+          <li>Complete all required reading materials for this module.</li>
+          <li>Watch Recommended Videos.</li>
+          <li>
+            Turn in Module 10 Assignments:
+            <ul className="mt-2 ml-5 list-disc space-y-2">
+              <li>Assignment Module 10A: Laravel Breeze</li>
+            </ul>
+          </li>
+          <li>Complete the Module Quiz.</li>
+        </ul>
+      </article>
     </section>
   );
 }
@@ -84,7 +126,7 @@ export default function AssignmentMod10() {
         isOpen={openSections.readme}
         onToggle={() => toggleSection("readme")}
       >
-        <ModuleItemBlock item={readmeItem} />
+        <ModuleTenReadMe />
       </AnimatedAccordionItem>
 
       <AnimatedAccordionItem
@@ -100,7 +142,7 @@ export default function AssignmentMod10() {
         isOpen={openSections["assignment-10a"]}
         onToggle={() => toggleSection("assignment-10a")}
       >
-        <PlaceholderContent label="Assignment 10A - Jul 26 - 20 pts" />
+        <Assignment10AContent />
       </AnimatedAccordionItem>
 
       <AnimatedAccordionItem
@@ -108,7 +150,7 @@ export default function AssignmentMod10() {
         isOpen={openSections.quiz}
         onToggle={() => toggleSection("quiz")}
       >
-        <PlaceholderContent label="Quiz - 14 pts" />
+        <ModuleTenQuiz />
       </AnimatedAccordionItem>
 
       <ModuleCompletionButton moduleId={10} />

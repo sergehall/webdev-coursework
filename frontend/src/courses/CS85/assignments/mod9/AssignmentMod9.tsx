@@ -1,5 +1,8 @@
 import { useState } from "react";
-import { FileText, Paperclip } from "lucide-react";
+import { Paperclip } from "lucide-react";
+
+import Assignment9AContent from "./Assignment9AContent";
+import ModuleNineQuiz from "./ModuleNineQuiz";
 
 import AnimatedAccordionItem from "@/components/AnimatedAccordionItem";
 import { ModuleCompletionButton } from "@/components/buttons";
@@ -10,20 +13,41 @@ import {
 
 type ModuleSectionId = "readme" | "required-reading" | "assignment-9a" | "quiz";
 
-const readmeItem: CanvasItem = {
-  icon: FileText,
-  title: "ReadMe Module 9: Full CRUD & Validation",
-};
-
 const requiredReadingItem: CanvasItem = {
   icon: Paperclip,
   title: "module9-CRUD.pdf",
 };
 
-function PlaceholderContent({ label }: { label: string }) {
+function ModuleNineReadMe() {
   return (
-    <section className="rounded-xl border border-sky-200 bg-sky-50 p-4 text-sm leading-7 text-sky-950 dark:border-sky-900/50 dark:bg-sky-950/30 dark:text-sky-100">
-      {label} content will be filled in later.
+    <section className="rounded-xl border border-slate-200 bg-white/70 p-4 dark:border-slate-700 dark:bg-slate-950/30">
+      <article className="rounded-xl border border-sky-200 bg-sky-50 p-4 dark:border-sky-900/50 dark:bg-sky-950/30">
+        <h4 className="text-sm font-semibold tracking-wide text-sky-900 uppercase dark:text-sky-100">
+          Full CRUD &amp; Validation
+        </h4>
+        <div className="mt-3 space-y-4 text-sm leading-7 text-sky-950 dark:text-sky-100">
+          <p>
+            Welcome to Module 9. Over the next few weeks, you&apos;ll transform
+            into a developer who can build complete, secure web applications
+            that rival what you see in the professional world.
+          </p>
+          <p>
+            Every successful web application you use daily—Instagram, Amazon,
+            LinkedIn—relies on the exact patterns we&apos;ll master together.
+            You&apos;ll learn to build forms that users love, implement
+            bulletproof security measures, and create the smooth, error-free
+            experiences that separate amateur projects from professional
+            applications.
+          </p>
+          <p>
+            By the end of this module, you&apos;ll have portfolio worthy
+            projects that demonstrate skills employers actively seek. More
+            importantly, you&apos;ll understand the universal patterns that will
+            serve you whether you end up working with Laravel, Django, Rails, or
+            any future framework.
+          </p>
+        </div>
+      </article>
     </section>
   );
 }
@@ -79,7 +103,7 @@ export default function AssignmentMod9() {
         isOpen={openSections.readme}
         onToggle={() => toggleSection("readme")}
       >
-        <ModuleItemBlock item={readmeItem} />
+        <ModuleNineReadMe />
       </AnimatedAccordionItem>
 
       <AnimatedAccordionItem
@@ -95,7 +119,7 @@ export default function AssignmentMod9() {
         isOpen={openSections["assignment-9a"]}
         onToggle={() => toggleSection("assignment-9a")}
       >
-        <PlaceholderContent label="Assignment 9A - Jul 26 - 20 pts" />
+        <Assignment9AContent />
       </AnimatedAccordionItem>
 
       <AnimatedAccordionItem
@@ -103,7 +127,7 @@ export default function AssignmentMod9() {
         isOpen={openSections.quiz}
         onToggle={() => toggleSection("quiz")}
       >
-        <PlaceholderContent label="Quiz - 13 pts" />
+        <ModuleNineQuiz />
       </AnimatedAccordionItem>
 
       <ModuleCompletionButton moduleId={9} />
