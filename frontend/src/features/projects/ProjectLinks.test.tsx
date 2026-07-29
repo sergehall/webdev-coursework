@@ -11,6 +11,9 @@ const hexGateProject = projectShowcaseItems.find(
 const lavovalProject = projectShowcaseItems.find(
   (project) => project.id === "lavoval"
 );
+const javaStartProject = projectShowcaseItems.find(
+  (project) => project.id === "java-start"
+);
 
 describe("<ProjectLinks /> project resources", () => {
   it("keeps Hex Gate source private and presents safe modal summaries", async () => {
@@ -118,6 +121,43 @@ describe("<ProjectLinks /> project resources", () => {
     expect(
       lavovalProject.highlights.some((highlight) =>
         /external LLM providers stay on the roadmap/i.test(highlight)
+      )
+    ).toBe(true);
+  });
+
+  it("keeps Java Start local while linking its public project resources", () => {
+    if (!javaStartProject) {
+      throw new Error("Java Start project data was not found");
+    }
+
+    render(<ProjectLinks project={javaStartProject} />);
+
+    expect(
+      screen.queryByRole("link", { name: /Live site/i })
+    ).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Source/i })).toHaveAttribute(
+      "href",
+      "https://github.com/sergehall/java-start"
+    );
+    expect(screen.getByRole("link", { name: /Docs/i })).toHaveAttribute(
+      "href",
+      "https://github.com/sergehall/java-start/blob/main/README.md"
+    );
+    expect(screen.getByRole("link", { name: /Architecture/i })).toHaveAttribute(
+      "href",
+      "https://github.com/sergehall/java-start/blob/main/README.md#learning-map"
+    );
+
+    expect(javaStartProject.status).toBe("local");
+    expect(javaStartProject.category).toBe(
+      "CS56 coursework and full-stack Java learning platform"
+    );
+    expect(javaStartProject.architectureTags).toContain(
+      "Catalog-driven learning"
+    );
+    expect(
+      javaStartProject.highlights.some((highlight) =>
+        /deployment remains intentionally local/i.test(highlight)
       )
     ).toBe(true);
   });
