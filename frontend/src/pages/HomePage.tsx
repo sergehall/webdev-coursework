@@ -5,7 +5,6 @@ import type { CourseName } from "@/data/technologies";
 import CourseExplorer from "@/features/home/CourseExplorer";
 import FeaturedProjects from "@/features/home/FeaturedProjects";
 import HomeHero from "@/features/home/HomeHero";
-import HomeHighlights from "@/features/home/HomeHighlights";
 import { cn } from "@/utils/cn";
 
 const PULL_THRESHOLD = 96;
@@ -153,7 +152,7 @@ export function HomePageContent({
     <div
       ref={pageRef}
       data-testid="home-page"
-      className="relative min-h-full overflow-x-hidden px-4 py-6 sm:px-6 sm:py-8 lg:px-8"
+      className="relative min-h-full overflow-x-hidden px-2 pt-1 pb-3 sm:pt-2 sm:pb-4"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
@@ -175,12 +174,11 @@ export function HomePageContent({
       </div>
 
       <motion.div
-        className="mx-auto flex w-full max-w-6xl flex-col gap-16 transition-transform duration-200 motion-reduce:transition-none"
+        className="mx-auto flex w-full max-w-[90rem] flex-col gap-8 transition-transform duration-200 motion-reduce:transition-none"
         animate={{ y: pullDistance > 0 ? pullDistance : 0 }}
         transition={{ duration: 0.2, ease: "easeOut" }}
       >
         <HomeHero />
-        <HomeHighlights />
         <CourseExplorer openCourse={openCourse} onToggle={handleToggle} />
         <FeaturedProjects />
       </motion.div>

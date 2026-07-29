@@ -9,12 +9,17 @@ describe("portfolio shell identity", () => {
   it("uses a linked brand without creating a competing page heading", () => {
     renderWithProviders(<Header />);
 
-    expect(
-      screen.getByRole("link", {
-        name: /Serge Hall Web Development Portfolio home/i,
-      })
-    ).toHaveAttribute("href", "/");
+    const brandLink = screen.getByRole("link", {
+      name: /SMC Web Development Portfolio home/i,
+    });
+
+    expect(brandLink).toHaveAttribute("href", "/");
+    expect(brandLink.querySelector("img")).toHaveAttribute(
+      "src",
+      "/animated-wave.svg"
+    );
     expect(screen.queryByRole("heading", { level: 1 })).not.toBeInTheDocument();
+    expect(screen.queryByText("Serge Hall")).not.toBeInTheDocument();
     expect(
       screen.getByText("SMC Web Development Portfolio")
     ).toBeInTheDocument();

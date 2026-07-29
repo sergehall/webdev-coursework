@@ -26,14 +26,6 @@ export type HomeCourse = HomeCoursePresentation & {
   readonly assignmentPath: string;
 };
 
-export type HomeHighlightKind = "academic" | "engineering" | "artifacts";
-
-export type HomeHighlight = {
-  readonly kind: HomeHighlightKind;
-  readonly title: string;
-  readonly description: string;
-};
-
 const coursePresentationByName = {
   "CS 56 - Advanced Java Programming": {
     code: "CS 56",
@@ -170,27 +162,6 @@ export const homeStats = [
     description: "Academic work applied in working systems.",
   },
 ] as const;
-
-export const homeHighlights = [
-  {
-    kind: "academic",
-    title: "Academic journey",
-    description:
-      "A structured record of Santa Monica College coursework, module progression, and learning outcomes.",
-  },
-  {
-    kind: "engineering",
-    title: "Applied engineering",
-    description:
-      "Course concepts extended into full-stack architecture, databases, cloud infrastructure, security, and AI.",
-  },
-  {
-    kind: "artifacts",
-    title: "Working artifacts",
-    description:
-      "Assignments, source code, technical reports, demos, and portfolio-ready projects remain available for review.",
-  },
-] as const satisfies readonly HomeHighlight[];
 
 const featuredProjectIds = [
   "aws-learning-portal",

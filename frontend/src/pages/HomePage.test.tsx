@@ -21,7 +21,7 @@ describe("<HomePage />", () => {
     ).toBeInTheDocument();
     expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
     expect(
-      screen.getByText(/I.m Serge Hall.*Web Development coursework/i)
+      screen.getByText(/I.m Serge.*Web Development coursework/i)
     ).toBeInTheDocument();
 
     expect(
@@ -40,17 +40,8 @@ describe("<HomePage />", () => {
     }
   });
 
-  it("shows the platform purpose and featured applied projects", () => {
+  it("shows the featured applied projects", () => {
     renderWithProviders(<HomePage />);
-
-    expect(
-      screen.getByRole("heading", {
-        name: /What this platform demonstrates/i,
-      })
-    ).toBeInTheDocument();
-    expect(screen.getByText("Academic journey")).toBeInTheDocument();
-    expect(screen.getByText("Applied engineering")).toBeInTheDocument();
-    expect(screen.getByText("Working artifacts")).toBeInTheDocument();
 
     for (const project of [
       "AWS Learning Portal",
