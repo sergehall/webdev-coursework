@@ -14,6 +14,9 @@ const lavovalProject = projectShowcaseItems.find(
 const javaStartProject = projectShowcaseItems.find(
   (project) => project.id === "java-start"
 );
+const awsLearningPortalProject = projectShowcaseItems.find(
+  (project) => project.id === "aws-learning-portal"
+);
 
 describe("<ProjectLinks /> project resources", () => {
   it("keeps Hex Gate source private and presents safe modal summaries", async () => {
@@ -158,6 +161,48 @@ describe("<ProjectLinks /> project resources", () => {
     expect(
       javaStartProject.highlights.some((highlight) =>
         /deployment remains intentionally local/i.test(highlight)
+      )
+    ).toBe(true);
+  });
+
+  it("links the AWS Learning Portal inventory and hosted video demo", () => {
+    if (!awsLearningPortalProject) {
+      throw new Error("AWS Learning Portal project data was not found");
+    }
+
+    render(<ProjectLinks project={awsLearningPortalProject} />);
+
+    expect(screen.getByRole("link", { name: /Live site/i })).toHaveAttribute(
+      "href",
+      "https://awsawesome.com"
+    );
+    expect(screen.getByRole("link", { name: /Source/i })).toHaveAttribute(
+      "href",
+      "https://github.com/sergehall/final-project-CS79D"
+    );
+    expect(screen.getByRole("link", { name: /Docs/i })).toHaveAttribute(
+      "href",
+      "https://sergehall.github.io/final-project-CS79D/"
+    );
+    expect(screen.getByRole("link", { name: /Architecture/i })).toHaveAttribute(
+      "href",
+      "https://github.com/sergehall/final-project-CS79D/blob/main/docs/architecture.md"
+    );
+    expect(screen.getByRole("link", { name: /Video demo/i })).toHaveAttribute(
+      "href",
+      "https://sergehall.github.io/final-project-CS79D/video.html"
+    );
+
+    expect(awsLearningPortalProject.architectureTags).toContain(
+      "Serverless activity pipeline"
+    );
+    expect(awsLearningPortalProject.status).toBe("paused");
+    expect(awsLearningPortalProject.summary).toMatch(
+      /EC2 runtime is currently paused/i
+    );
+    expect(
+      awsLearningPortalProject.highlights.some((highlight) =>
+        /account data resets after a backend restart/i.test(highlight)
       )
     ).toBe(true);
   });

@@ -1,4 +1,9 @@
-export type ProjectStatus = "featured" | "published" | "draft" | "local";
+export type ProjectStatus =
+  | "featured"
+  | "published"
+  | "paused"
+  | "draft"
+  | "local";
 export type ProjectFilter =
   | "Fullstack"
   | "Cloud"
@@ -35,6 +40,7 @@ export type ProjectShowcaseItem = {
   readonly highlights: readonly string[];
   readonly techStack: readonly string[];
   readonly liveUrl?: string;
+  readonly videoUrl?: string;
   readonly sourceUrl?: string;
   readonly docsUrl?: string;
   readonly architectureUrl?: string;
@@ -418,69 +424,73 @@ export const projectShowcaseItems = [
   {
     id: "aws-learning-portal",
     title: "AWS Learning Portal",
-    category: "Cloud security learning portal",
-    status: "published",
+    category: "AWS cloud security, serverless, and operations portal",
+    status: "paused",
     filters: ["Fullstack", "Cloud", "Security"],
     languages: ["JS", "TS"],
     summary:
-      "A full-stack educational portal that demonstrates AWS security and cloud services through interactive modules, live demo actions, uploads, logging, and architecture documentation.",
+      "A previously deployed CS79D full-stack learning portal that connects eight cloud security modules to AWS workflows, validated uploads, activity evidence, account security, and a Bedrock-backed assessment advisor. Its EC2 runtime is currently paused.",
     imageUrl: "/screenshots/projects/final-project-CS79D.png",
-    previewLabel: "AWS learning portal",
+    previewLabel: "AWS security learning portal",
     previewDescription:
-      "A cloud security portal showing live AWS integrations, architecture documentation, uploads, logs, and assessment modules.",
+      "Explore course modules, invoke the Lambda logging path, upload validated files to S3, inspect DynamoDB activity, and review cloud security evidence.",
     architectureTags: [
-      "AWS",
-      "EC2",
-      "S3 uploads",
-      "Lambda",
-      "API Gateway",
-      "DynamoDB",
-      "CloudWatch",
-      "Bedrock",
+      "Single-host deployment path",
+      "Role-based AWS access",
+      "Serverless activity pipeline",
+      "AWS-managed evidence stores",
+      "Layered account security",
+      "Observable demo workflows",
+      "IaC scaling path",
+      "AI fallback boundary",
     ],
     contributions: [
       {
         area: "Frontend",
         detail:
-          "Built the portal, module pages, uploads UI, API demo, dashboard, and final assessment flow.",
+          "Built the Next.js portal across eight course modules, live AWS dashboards, S3 uploads, activity logs, API demos, architecture evidence, final assessment, and an authenticated account cabinet.",
       },
       {
         area: "Backend",
         detail:
-          "Implemented NestJS APIs for modules, auth, uploads, logs, AWS demos, and AI security advice.",
+          "Implemented NestJS APIs for modules, S3, DynamoDB logs, Lambda invocation, profiles, JWT auth, TOTP MFA, GitHub OAuth, and a Bedrock advisor with deterministic fallback.",
       },
       {
         area: "Infrastructure",
         detail:
-          "Deployed EC2/Nginx, S3, Lambda, API Gateway, DynamoDB, CloudWatch, and Elastic IP routing.",
+          "Deployed Next.js and NestJS with PM2, Nginx, HTTPS, and an Elastic IP on EC2; wired IAM, S3, API Gateway, Lambda, DynamoDB, and CloudWatch, then authored an ALB/Auto Scaling CloudFormation path.",
       },
       {
         area: "Security",
         detail:
-          "Added JWT auth, request throttling, Cloudflare Turnstile, IAM roles, and WAF/CloudFront lab assets.",
+          "Added nonce-based CSP and security headers, bcrypt, protected JWT routes, TOTP MFA, state-validated GitHub OAuth, Turnstile, throttling, IAM roles, and allowlisted 2 MB uploads.",
       },
     ],
     highlights: [
-      "Deploys a Next.js frontend and NestJS backend behind Nginx on an EC2 host with a custom domain and Elastic IP.",
-      "Demonstrates S3 uploads, Lambda actions, API Gateway routing, DynamoDB activity logs, CloudWatch monitoring, and Bedrock-powered security advice.",
-      "Includes JWT auth, request throttling, Cloudflare Turnstile, course modules, final assessment flows, screenshots, and a walkthrough asset.",
+      "Uses a documented Nginx and PM2 deployment path on one EC2 host. The instance is currently stopped to control AWS costs; ALB/Auto Scaling and the CloudFront/WAF lab remain explicit infrastructure and review paths.",
+      "Routes validated uploads to S3 and demo events through API Gateway or the AWS SDK to Lambda and DynamoDB, with shared and account-scoped activity views.",
+      "Invokes Amazon Nova Micro through Bedrock when configured and returns a structured deterministic review when the model is unavailable.",
+      "Maps eight CS79D modules into an evidence-driven portal while intentionally keeping demo user accounts in memory, so account data resets after a backend restart.",
     ],
     techStack: [
-      "Next.js 16",
-      "React 19",
-      "TypeScript",
-      "Tailwind CSS",
-      "NestJS 11",
+      "Next.js 16.2.7",
+      "React 19.2.7",
+      "TypeScript 5.7",
+      "Tailwind CSS 4.2",
+      "NestJS 11.1",
+      "Node.js 24 / PM2",
       "AWS SDK v3",
-      "EC2",
+      "EC2 / Nginx",
+      "IAM",
       "S3",
-      "Lambda",
-      "API Gateway",
+      "Lambda / API Gateway",
       "DynamoDB",
       "CloudWatch",
-      "Amazon Bedrock",
+      "Bedrock / Nova Micro",
+      "CloudFormation",
     ],
     liveUrl: "https://awsawesome.com",
+    videoUrl: "https://sergehall.github.io/final-project-CS79D/video.html",
     sourceUrl: "https://github.com/sergehall/final-project-CS79D",
     docsUrl: "https://sergehall.github.io/final-project-CS79D/",
     architectureUrl:

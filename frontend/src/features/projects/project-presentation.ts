@@ -11,6 +11,7 @@ import {
 export const projectStatusLabels = {
   featured: "Featured",
   published: "Published",
+  paused: "Paused",
   draft: "Ready to fill",
   local: "Local",
 } satisfies Record<ProjectStatus, string>;
@@ -18,6 +19,7 @@ export const projectStatusLabels = {
 export const projectStatusStyles = {
   featured: "border-emerald-300/40 bg-emerald-400/15 text-emerald-100",
   published: "border-sky-300/40 bg-sky-400/15 text-sky-100",
+  paused: "border-slate-300/40 bg-slate-400/15 text-slate-100",
   draft: "border-amber-300/40 bg-amber-400/15 text-amber-100",
   local: "border-violet-300/40 bg-violet-400/15 text-violet-100",
 } satisfies Record<ProjectStatus, string>;

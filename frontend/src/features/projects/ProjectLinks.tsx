@@ -1,5 +1,11 @@
 import { useCallback, useState, type ReactNode } from "react";
-import { ArrowUpRight, BookOpen, ExternalLink, GitBranch } from "lucide-react";
+import {
+  ArrowUpRight,
+  BookOpen,
+  CirclePlay,
+  ExternalLink,
+  GitBranch,
+} from "lucide-react";
 import { SiGithub } from "react-icons/si";
 
 import type { ProjectShowcaseItem } from "@/data/projectShowcase";
@@ -110,6 +116,13 @@ export default function ProjectLinks({
               icon={<GitBranch className="h-4 w-4" aria-hidden="true" />}
             />
           )
+        )}
+        {project.videoUrl && (
+          <ProjectLink
+            href={project.videoUrl}
+            label="Video demo"
+            icon={<CirclePlay className="h-4 w-4" aria-hidden="true" />}
+          />
         )}
       </div>
       {(publicDocumentation || publicArchitecture) && (
