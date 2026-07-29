@@ -1,0 +1,37 @@
+import { screen } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
+
+import Footer from "@/components/Footer";
+import Header from "@/components/Header";
+import { renderWithProviders } from "@/test/renderWithProviders";
+
+describe("portfolio shell identity", () => {
+  it("uses a linked brand without creating a competing page heading", () => {
+    renderWithProviders(<Header />);
+
+    expect(
+      screen.getByRole("link", {
+        name: /Serge Hall Web Development Portfolio home/i,
+      })
+    ).toHaveAttribute("href", "/");
+    expect(screen.queryByRole("heading", { level: 1 })).not.toBeInTheDocument();
+    expect(
+      screen.getByText("SMC Web Development Portfolio")
+    ).toBeInTheDocument();
+  });
+
+  it("identifies the site as an independent academic portfolio", () => {
+    renderWithProviders(<Footer />);
+
+    expect(
+      screen.getByText(/Independent academic portfolio/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/not an official SMC website/i)
+    ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "GitHub" })).toHaveAttribute(
+      "href",
+      "https://github.com/SergeHall"
+    );
+  });
+});

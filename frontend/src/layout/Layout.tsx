@@ -12,7 +12,7 @@ export default function Layout() {
       {/* Content layout with sidebar */}
       <div className="flex flex-1 flex-col md:flex-row">
         <Sidebar />
-        <main className="relative flex-1 overflow-hidden bg-[radial-gradient(circle_at_center,_#fbfefb,_#f0fbf0)] bg-fixed p-1 dark:bg-[radial-gradient(circle_at_center,_#1f2937,_#0f172a)]">
+        <main className="relative flex-1 overflow-x-hidden bg-[radial-gradient(circle_at_center,_#fbfefb,_#f0fbf0)] bg-fixed p-1 dark:bg-[radial-gradient(circle_at_center,_#1f2937,_#0f172a)]">
           <Outlet />
         </main>
       </div>

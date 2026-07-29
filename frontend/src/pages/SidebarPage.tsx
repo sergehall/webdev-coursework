@@ -48,7 +48,7 @@ export default function SidebarPage({
     {
       to: "/code-playground",
       icon: <TerminalSquare className="h-5 w-5 md:h-6 md:w-6" />,
-      label: "code-playground",
+      label: "Code Playground",
     },
     {
       to: "/projects",
