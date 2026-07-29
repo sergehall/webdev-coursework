@@ -40,16 +40,16 @@ const ExpandedCourseCard: React.FC<Props> = ({
 
   return (
     <section
-      className={`space-y-6 rounded-xl bg-white ${padding} shadow-md dark:bg-gray-800 dark:text-white`}
+      className={`space-y-5 rounded-xl border border-slate-200 bg-white/80 ${padding} shadow-sm dark:border-slate-700 dark:bg-slate-900/80 dark:text-white`}
     >
       {/* Course title */}
       <div className="flex items-center gap-3">
         <BookOpen
           className={`${compact ? "h-5 w-5" : "h-6 w-6"} text-indigo-500 dark:text-indigo-400`}
         />
-        <h1 className={`font-bold ${titleSize}`}>
+        <h3 className={`font-bold ${titleSize}`}>
           {display.title} ({display.code})
-        </h1>
+        </h3>
       </div>
 
       {/* Description */}

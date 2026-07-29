@@ -1,27 +1,38 @@
 // src/components/TagLegend.tsx
 
+import { Tags } from "lucide-react";
+
 import { tagIcons } from "./TagIcons";
 
 export const TagLegend = () => {
   return (
-    <section className="w-full rounded-xl border bg-gradient-to-t from-gray-100 via-gray-200 to-gray-300 px-4 py-2 shadow-md sm:px-5 sm:py-2 dark:border-gray-700 dark:from-gray-800 dark:via-gray-800 dark:to-gray-900">
-      <h2 className="mb-2 text-lg font-normal text-gray-900 dark:text-gray-100">
-        Icon Key
-      </h2>
+    <section
+      aria-labelledby="course-notation-title"
+      className="w-full rounded-2xl border border-slate-200/80 bg-white/60 px-4 py-3 shadow-sm sm:px-5 dark:border-slate-700/80 dark:bg-slate-900/45"
+    >
+      <div className="flex items-center gap-2">
+        <Tags className="h-4 w-4 text-violet-500" aria-hidden="true" />
+        <h2
+          id="course-notation-title"
+          className="text-sm font-black tracking-[0.12em] text-slate-700 uppercase dark:text-slate-200"
+        >
+          Course notation
+        </h2>
+      </div>
 
-      <div className="overflow-x-auto py-1">
-        <div className="flex min-w-max items-center gap-3">
+      <div className="mt-3 overflow-x-auto pb-1">
+        <div className="flex min-w-max items-center gap-2">
           {tagIcons.map((item) => (
             <div
               key={item.label}
-              className="flex shrink-0 items-center gap-2 rounded-md px-2 py-1"
+              className="flex shrink-0 items-center gap-2 rounded-full border border-slate-200 bg-white/75 py-1 pr-3 pl-1 shadow-sm dark:border-slate-700 dark:bg-slate-950/55"
             >
               <div
-                className={`flex h-7 w-7 items-center justify-center rounded-full ${item.bg}`}
+                className={`flex h-7 w-7 items-center justify-center rounded-full text-white ${item.bg}`}
               >
                 {item.icon}
               </div>
-              <span className="text-sm font-normal text-gray-800 dark:text-gray-200">
+              <span className="text-xs font-bold text-slate-700 dark:text-slate-200">
                 {item.label}
               </span>
             </div>
