@@ -38,5 +38,7 @@ describe("portfolio shell identity", () => {
       "href",
       "https://github.com/SergeHall"
     );
+    expect(screen.getByText(/© \d{4} · Serge ·/)).toBeInTheDocument();
+    expect(screen.queryByText(/Serge Hall/)).not.toBeInTheDocument();
   });
 });

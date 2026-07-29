@@ -4,7 +4,7 @@ export default function Footer() {
   return (
     <footer className="border-t border-slate-200 bg-white px-4 py-5 text-center text-xs leading-5 text-slate-600 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-400">
       <p>
-        © {currentYear} Serge Hall ·{" "}
+        © {currentYear} · Serge ·{" "}
         <a
           href="https://github.com/SergeHall"
           target="_blank"
