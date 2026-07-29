@@ -13,6 +13,11 @@ export type BuildContribution = {
   readonly detail: string;
 };
 
+export type ProjectGalleryImage = {
+  readonly src: string;
+  readonly caption: string;
+};
+
 export type ProjectShowcaseItem = {
   readonly id: string;
   readonly title: string;
@@ -22,6 +27,7 @@ export type ProjectShowcaseItem = {
   readonly languages: readonly ProjectLanguage[];
   readonly summary: string;
   readonly imageUrl: string;
+  readonly galleryImages?: readonly ProjectGalleryImage[];
   readonly previewLabel: string;
   readonly previewDescription: string;
   readonly architectureTags: readonly string[];
@@ -127,70 +133,79 @@ export const projectShowcaseItems = [
   {
     id: "sergioartg",
     title: "SERGIOARTG Platform",
-    category: "Portfolio and booking platform",
+    category: "Creative services marketplace and booking platform",
     status: "published",
-    filters: ["Fullstack"],
+    filters: ["Fullstack", "Marketplace"],
     languages: ["TS"],
     summary:
-      "A production portfolio platform with a public site and private application surface for auth, booking, messaging, content, media, and payments.",
+      "A production full-stack platform combining a photography portfolio with a two-sided services marketplace, authenticated workspaces, booking, Stripe payments, secure messaging, and admin operations.",
     imageUrl: "/screenshots/projects/sergioartg-site.png",
-    previewLabel: "Creative business platform",
+    galleryImages: [
+      {
+        src: "/screenshots/projects/sergioartg-services-marketplace.webp",
+        caption: "Professional services marketplace",
+      },
+      {
+        src: "/screenshots/projects/sergioartg-service-categories.webp",
+        caption: "Service category taxonomy",
+      },
+    ],
+    previewLabel: "Professional services marketplace",
     previewDescription:
-      "A public portfolio and private booking system built for real client workflows, payments, messaging, and media operations.",
+      "Professionals publish service offers while clients filter by profession, category, location, price, format, and provider availability.",
     architectureTags: [
-      "Booking workflow",
-      "Payments",
-      "Messaging",
-      "Admin security",
-      "Media storage",
-      "Release gates",
+      "TypeScript monorepo",
+      "Domain-driven modules",
+      "Contract-first APIs",
+      "PostgreSQL source of truth",
+      "Durable job processing",
+      "Realtime + E2EE",
+      "Storage abstraction",
+      "Security governance",
+      "CI quality gates",
     ],
     contributions: [
       {
         area: "Frontend",
         detail:
-          "Built the public portfolio, booking UX, protected app surfaces, and media-facing flows.",
+          "Built the Next.js 16 public portfolio, marketplace discovery and provider publishing flows, plus authenticated booking, payments, messages, account security, and admin workspaces.",
       },
       {
         area: "Backend",
         detail:
-          "Implemented NestJS modules for auth, booking, messages, content, media, and payments.",
+          "Designed NestJS bounded contexts for identity, catalog, booking, payments, realtime messaging, media, analytics, and privileged administration behind explicit ports and OpenAPI contracts.",
       },
       {
         area: "Infrastructure",
         detail:
-          "Wired Vercel, Heroku, PostgreSQL, Redis/BullMQ, Cloudflare media, and release gates.",
+          "Deployed Vercel and Heroku with PostgreSQL as source of truth, Redis/BullMQ workers, Socket.IO fanout, Cloudflare Images/Stream/R2, and GitHub Actions release gates.",
       },
       {
         area: "Security",
         detail:
-          "Added admin security governance, account flows, payment boundaries, and operational runbooks.",
+          "Implemented passkeys and MFA, device-aware sessions, RBAC/permissions, privileged audit trails, true E2EE messaging, Turnstile protection, and security regression gates.",
       },
     ],
     highlights: [
-      "Separates a Next.js App Router frontend from a NestJS API for business and operational workflows.",
-      "Includes booking, messages, content, media, payments, admin security, and release governance documentation.",
-      "Runs with production deployment targets across Vercel, Heroku, and Cloudflare media/storage services.",
+      "Unifies a photography-first public experience, two-sided services marketplace, and private workspaces for clients, providers, studio staff, and administrators.",
+      "Connects moderated service listings to availability, booking, quotes, orders, Stripe payments and provider payouts, realtime messaging, and media delivery.",
+      "Protects critical workflows with shared contracts, architecture boundary tests, PostgreSQL-backed durable intake, idempotent jobs, SLOs, and staged release governance.",
     ],
     techStack: [
-      "Next.js",
+      "Next.js 16",
       "React 19",
       "TypeScript",
-      "NestJS",
+      "TanStack Query",
+      "NestJS 11",
       "TypeORM",
       "PostgreSQL",
-      "Redis",
-      "BullMQ",
-      "Stripe",
-      "Cloudflare R2",
-      "Vercel",
-      "Heroku",
+      "Redis/BullMQ",
+      "Socket.IO",
+      "Stripe/Connect",
+      "Cloudflare Media/R2",
+      "Vercel/Heroku",
     ],
     liveUrl: "https://sergioartg.com",
-    sourceUrl: "https://github.com/sergehall/sergioartg-site",
-    docsUrl: "https://github.com/sergehall/sergioartg-site/tree/main/docs",
-    architectureUrl:
-      "https://github.com/sergehall/sergioartg-site/blob/main/docs/architecture-hotspots-professional-audit-2026-03-01.md",
   },
   {
     id: "hex-gate",

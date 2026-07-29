@@ -59,10 +59,122 @@ describe("<ProjectsPage />", () => {
     expect(
       screen.getByRole("heading", { name: /AWS Learning Portal/i })
     ).toBeInTheDocument();
+
+    const previewButtons = screen.getAllByRole("button", {
+      name: /Preview .* screenshot/i,
+    });
+
+    expect(previewButtons[0]).toHaveAccessibleName(
+      "Preview SERGIOARTG Platform screenshot"
+    );
+    expect(
+      screen.getByText(/Professionals publish service offers/i)
+    ).toBeInTheDocument();
+
+    await user.click(previewButtons[0]);
+
+    const sergioartgDialog = screen.getByRole("dialog", {
+      name: /SERGIOARTG Platform screenshot preview/i,
+    });
+
+    expect(
+      within(sergioartgDialog).getByAltText(
+        /SERGIOARTG Platform additional website preview 2/i
+      )
+    ).toHaveAttribute(
+      "src",
+      "/screenshots/projects/sergioartg-services-marketplace.webp"
+    );
+    expect(
+      within(sergioartgDialog).getByAltText(
+        /SERGIOARTG Platform additional website preview 3/i
+      )
+    ).toHaveAttribute(
+      "src",
+      "/screenshots/projects/sergioartg-service-categories.webp"
+    );
+
+    await user.click(
+      within(sergioartgDialog).getByRole("button", {
+        name: /Close screenshot preview/i,
+      })
+    );
+
+    const sergioartgCard = screen
+      .getByRole("heading", { name: /SERGIOARTG Platform/i })
+      .closest("article");
+
+    expect(sergioartgCard).not.toBeNull();
+
+    if (!sergioartgCard) {
+      throw new Error("SERGIOARTG project card was not rendered");
+    }
+
+    expect(
+      within(sergioartgCard).queryByRole("link", { name: /Source/i })
+    ).not.toBeInTheDocument();
+
+    await user.click(
+      within(sergioartgCard).getByRole("button", { name: /Docs/i })
+    );
+
+    const documentationDialog = screen.getByRole("dialog", {
+      name: /SERGIOARTG Platform documentation/i,
+    });
+
+    expect(
+      within(documentationDialog).getByRole("heading", {
+        name: /Product and marketplace/i,
+      })
+    ).toBeInTheDocument();
+    expect(
+      within(documentationDialog).getByText(
+        /repository and operational runbooks remain private/i
+      )
+    ).toBeInTheDocument();
+
+    await user.click(
+      within(documentationDialog).getByRole("button", {
+        name: /Close documentation overview/i,
+      })
+    );
+
+    expect(
+      within(sergioartgCard).queryByRole("link", { name: /Architecture/i })
+    ).not.toBeInTheDocument();
+
+    await user.click(
+      within(sergioartgCard).getByRole("button", { name: /Architecture/i })
+    );
+
+    const architectureDialog = screen.getByRole("dialog", {
+      name: /SERGIOARTG Platform architecture/i,
+    });
+
+    expect(
+      within(architectureDialog).getByRole("heading", {
+        name: /Measured improvements/i,
+      })
+    ).toBeInTheDocument();
+    expect(
+      within(architectureDialog).getByText(
+        /Critical hotspots decreased from 3 to 0/i
+      )
+    ).toBeInTheDocument();
+
+    await user.click(
+      within(architectureDialog).getByRole("button", {
+        name: /Close architecture overview/i,
+      })
+    );
+
     expect(screen.getAllByRole("link", { name: /Live site/i })).toHaveLength(5);
     expect(
-      screen.getByRole("heading", { name: /Architecture Tags/i })
+      screen.getByRole("heading", { name: /Architecture footprint/i })
     ).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: /Explore my GitHub/i })
+    ).toHaveAttribute("href", "https://github.com/SergeHall");
     expect(
       screen.getByText(/Designed, implemented, tested, and deployed/i)
     ).toBeInTheDocument();
@@ -115,13 +227,16 @@ describe("<ProjectsPage />", () => {
       screen.queryByRole("heading", { name: /Hex Gate/i })
     ).not.toBeInTheDocument();
 
-    await user.click(
-      within(languageFilters).getByRole("button", { name: "All" })
-    );
+    await user.click(screen.getByRole("button", { name: "Reset" }));
 
-    await user.click(
+    expect(screen.getByText(/Showing 6 of 6 projects/i)).toBeInTheDocument();
+    expect(
       within(projectTypeFilters).getByRole("button", { name: "All" })
-    );
+    ).toHaveAttribute("aria-pressed", "true");
+    expect(
+      within(languageFilters).getByRole("button", { name: "All" })
+    ).toHaveAttribute("aria-pressed", "true");
+
     await user.click(
       within(languageFilters).getByRole("button", { name: "Go" })
     );
@@ -220,8 +335,8 @@ describe("<ProjectsPage />", () => {
     render(<ProjectsPage />);
 
     expect(
-      screen.queryByRole("heading", { name: /Architecture Tags/i })
-    ).not.toBeInTheDocument();
+      screen.getByRole("heading", { name: /Architecture footprint/i })
+    ).toBeInTheDocument();
     expect(
       screen.getByRole("heading", { name: /Lens Lounge/i })
     ).toBeInTheDocument();
