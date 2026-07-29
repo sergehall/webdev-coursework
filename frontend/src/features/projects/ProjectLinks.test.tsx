@@ -8,8 +8,11 @@ import ProjectLinks from "@/features/projects/ProjectLinks";
 const hexGateProject = projectShowcaseItems.find(
   (project) => project.id === "hex-gate"
 );
+const lavovalProject = projectShowcaseItems.find(
+  (project) => project.id === "lavoval"
+);
 
-describe("<ProjectLinks /> private project resources", () => {
+describe("<ProjectLinks /> project resources", () => {
   it("keeps Hex Gate source private and presents safe modal summaries", async () => {
     if (!hexGateProject) {
       throw new Error("Hex Gate project data was not found");
@@ -80,5 +83,42 @@ describe("<ProjectLinks /> private project resources", () => {
     await user.keyboard("{Escape}");
     expect(architectureDialog).not.toBeInTheDocument();
     expect(architectureButton).toHaveFocus();
+  });
+
+  it("keeps the public Lavoval resources as direct external links", () => {
+    if (!lavovalProject) {
+      throw new Error("Lavoval project data was not found");
+    }
+
+    render(<ProjectLinks project={lavovalProject} />);
+
+    expect(screen.getByRole("link", { name: /Live site/i })).toHaveAttribute(
+      "href",
+      "https://lavoval.com"
+    );
+    expect(screen.getByRole("link", { name: /Source/i })).toHaveAttribute(
+      "href",
+      "https://github.com/sergehall/lavoval"
+    );
+    expect(screen.getByRole("link", { name: /Docs/i })).toHaveAttribute(
+      "href",
+      "https://github.com/sergehall/lavoval/tree/main/docs"
+    );
+    expect(screen.getByRole("link", { name: /Architecture/i })).toHaveAttribute(
+      "href",
+      "https://github.com/sergehall/lavoval/blob/main/docs/architecture.md"
+    );
+
+    expect(lavovalProject.category).toBe(
+      "Executable skill marketplace and creator platform"
+    );
+    expect(lavovalProject.architectureTags).toContain(
+      "Versioned skill definitions"
+    );
+    expect(
+      lavovalProject.highlights.some((highlight) =>
+        /external LLM providers stay on the roadmap/i.test(highlight)
+      )
+    ).toBe(true);
   });
 });
