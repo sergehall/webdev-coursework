@@ -1,5 +1,8 @@
 import { useState } from "react";
-import { FileText, Paperclip } from "lucide-react";
+import { Paperclip } from "lucide-react";
+
+import Assignment11AContent from "./Assignment11AContent";
+import ModuleElevenQuiz from "./ModuleElevenQuiz";
 
 import AnimatedAccordionItem from "@/components/AnimatedAccordionItem";
 import { ModuleCompletionButton } from "@/components/buttons";
@@ -14,20 +17,42 @@ type ModuleSectionId =
   | "assignment-11a"
   | "quiz";
 
-const readmeItem: CanvasItem = {
-  icon: FileText,
-  title: "ReadMe Module 11: Clean Architecture",
-};
-
 const requiredReadingItem: CanvasItem = {
   icon: Paperclip,
   title: "module11-architecture.pdf",
 };
 
-function PlaceholderContent({ label }: { label: string }) {
+function ModuleElevenReadMe() {
   return (
-    <section className="rounded-xl border border-sky-200 bg-sky-50 p-4 text-sm leading-7 text-sky-950 dark:border-sky-900/50 dark:bg-sky-950/30 dark:text-sky-100">
-      {label} content will be filled in later.
+    <section className="rounded-xl border border-sky-200 bg-sky-50 p-4 dark:border-sky-900/50 dark:bg-sky-950/30">
+      <h4 className="text-sm font-semibold tracking-wide text-sky-900 uppercase dark:text-sky-100">
+        API &amp; Architecture
+      </h4>
+      <div className="mt-3 space-y-4 text-sm leading-7 text-sky-950 dark:text-sky-100">
+        <p>
+          Welcome to Module 11. You&apos;re about to learn skills that working
+          developers use every single day: API integration and clean
+          architecture patterns that power virtually every modern web
+          application.
+        </p>
+        <p>
+          Think about the apps you use daily: when you log in with Google, pay
+          with Stripe, or get AI-generated suggestions, you&apos;re experiencing
+          API integrations in action. By the end of this module, you&apos;ll
+          understand how these systems work and be able to build them yourself.
+        </p>
+        <p>
+          You&apos;ll create a sophisticated AI-powered blog application using
+          OpenAI&apos;s API, implement security best practices that protect real
+          applications, and learn architectural patterns that make code
+          maintainable and testable. These aren&apos;t just learning
+          objectives—they&apos;re job requirements for modern web developers.
+          The service class pattern and API integration skills you&apos;ll
+          master here will appear in your daily work regardless of which company
+          you join. You&apos;re about to become the kind of developer that
+          employers actively seek. Let&apos;s build something impressive!
+        </p>
+      </div>
     </section>
   );
 }
@@ -80,11 +105,11 @@ export default function AssignmentMod11() {
       </header>
 
       <AnimatedAccordionItem
-        title="ReadMe Module 11: Clean Architecture"
+        title="ReadMe Module 11: API & Architecture"
         isOpen={openSections.readme}
         onToggle={() => toggleSection("readme")}
       >
-        <ModuleItemBlock item={readmeItem} />
+        <ModuleElevenReadMe />
       </AnimatedAccordionItem>
 
       <AnimatedAccordionItem
@@ -100,7 +125,7 @@ export default function AssignmentMod11() {
         isOpen={openSections["assignment-11a"]}
         onToggle={() => toggleSection("assignment-11a")}
       >
-        <PlaceholderContent label="Assignment 11A - Aug 2 - 20 pts" />
+        <Assignment11AContent />
       </AnimatedAccordionItem>
 
       <AnimatedAccordionItem
@@ -108,7 +133,7 @@ export default function AssignmentMod11() {
         isOpen={openSections.quiz}
         onToggle={() => toggleSection("quiz")}
       >
-        <PlaceholderContent label="Quiz - Aug 2 - 19 pts" />
+        <ModuleElevenQuiz />
       </AnimatedAccordionItem>
 
       <ModuleCompletionButton moduleId={11} />
