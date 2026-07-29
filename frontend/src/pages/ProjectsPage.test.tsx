@@ -139,6 +139,12 @@ describe("<ProjectsPage />", () => {
     expect(
       screen.getByRole("heading", { name: /AWS Learning Portal/i })
     ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: /JavaFX Event Handling/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: /PHP Programming/i })
+    ).toBeInTheDocument();
 
     const previewButtons = screen.getAllByRole("button", {
       name: /Preview .* screenshot/i,
@@ -279,12 +285,18 @@ describe("<ProjectsPage />", () => {
     expect(
       within(languageFilters).getByRole("button", { name: "Java" })
     ).toBeInTheDocument();
+    expect(
+      within(projectTypeFilters).getByRole("button", { name: "AI" })
+    ).toBeInTheDocument();
+    expect(
+      within(languageFilters).getByRole("button", { name: "PHP" })
+    ).toBeInTheDocument();
 
     await user.click(
       within(projectTypeFilters).getByRole("button", { name: "Fullstack" })
     );
 
-    expect(screen.getByText(/Showing 6 of 6 projects/i)).toBeInTheDocument();
+    expect(screen.getByText(/Showing 8 of 8 projects/i)).toBeInTheDocument();
     expect(
       screen.getByRole("heading", { name: /Lens Lounge/i })
     ).toBeInTheDocument();
@@ -294,7 +306,7 @@ describe("<ProjectsPage />", () => {
 
     await user.click(screen.getByRole("button", { name: "Security" }));
 
-    expect(screen.getByText(/Showing 3 of 6 projects/i)).toBeInTheDocument();
+    expect(screen.getByText(/Showing 3 of 8 projects/i)).toBeInTheDocument();
     expect(
       screen.getByRole("heading", { name: /Hex Gate/i })
     ).toBeInTheDocument();
@@ -306,7 +318,7 @@ describe("<ProjectsPage />", () => {
       within(languageFilters).getByRole("button", { name: "Java" })
     );
 
-    expect(screen.getByText(/Showing 1 of 6 projects/i)).toBeInTheDocument();
+    expect(screen.getByText(/Showing 1 of 8 projects/i)).toBeInTheDocument();
     expect(
       screen.getByRole("heading", { name: /Java Start/i })
     ).toBeInTheDocument();
@@ -316,7 +328,7 @@ describe("<ProjectsPage />", () => {
 
     await user.click(screen.getByRole("button", { name: "Reset" }));
 
-    expect(screen.getByText(/Showing 6 of 6 projects/i)).toBeInTheDocument();
+    expect(screen.getByText(/Showing 8 of 8 projects/i)).toBeInTheDocument();
     expect(
       within(projectTypeFilters).getByRole("button", { name: "All" })
     ).toHaveAttribute("aria-pressed", "true");
@@ -325,10 +337,24 @@ describe("<ProjectsPage />", () => {
     ).toHaveAttribute("aria-pressed", "true");
 
     await user.click(
+      within(projectTypeFilters).getByRole("button", { name: "AI" })
+    );
+
+    expect(screen.getByText(/Showing 1 of 8 projects/i)).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: /PHP Programming/i })
+    ).toBeInTheDocument();
+    expect(
+      within(languageFilters).getByRole("button", { name: "PHP" })
+    ).toBeEnabled();
+
+    await user.click(screen.getByRole("button", { name: "Reset" }));
+
+    await user.click(
       within(languageFilters).getByRole("button", { name: "Go" })
     );
 
-    expect(screen.getByText(/Showing 3 of 6 projects/i)).toBeInTheDocument();
+    expect(screen.getByText(/Showing 3 of 8 projects/i)).toBeInTheDocument();
     expect(
       screen.getByRole("heading", { name: /Lens Lounge/i })
     ).toBeInTheDocument();
@@ -339,7 +365,7 @@ describe("<ProjectsPage />", () => {
       screen.getByRole("heading", { name: /Lavoval/i })
     ).toBeInTheDocument();
     expect(
-      screen.queryByRole("heading", { name: /SERGIOARTG Platform/i })
+      screen.queryByRole("heading", { name: /PHP Programming/i })
     ).not.toBeInTheDocument();
 
     await user.click(
@@ -350,7 +376,7 @@ describe("<ProjectsPage />", () => {
       within(languageFilters).getByRole("button", { name: "JS" })
     );
 
-    expect(screen.getByText(/Showing 1 of 6 projects/i)).toBeInTheDocument();
+    expect(screen.getByText(/Showing 1 of 8 projects/i)).toBeInTheDocument();
     expect(
       screen.getByRole("heading", { name: /AWS Learning Portal/i })
     ).toBeInTheDocument();
@@ -363,6 +389,9 @@ describe("<ProjectsPage />", () => {
     expect(
       within(projectTypeFilters).getByRole("button", { name: "Security" })
     ).toBeEnabled();
+    expect(
+      within(projectTypeFilters).getByRole("button", { name: "AI" })
+    ).toBeDisabled();
     expect(
       within(projectTypeFilters).getByRole("button", { name: "Marketplace" })
     ).toBeDisabled();
@@ -377,7 +406,7 @@ describe("<ProjectsPage />", () => {
       within(projectTypeFilters).getByRole("button", { name: "Microservices" })
     );
 
-    expect(screen.getByText(/Showing 1 of 6 projects/i)).toBeInTheDocument();
+    expect(screen.getByText(/Showing 1 of 8 projects/i)).toBeInTheDocument();
     expect(
       screen.getByRole("heading", { name: /Lens Lounge/i })
     ).toBeInTheDocument();

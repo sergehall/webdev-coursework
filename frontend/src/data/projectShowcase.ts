@@ -1,54 +1,20 @@
-export type ProjectStatus =
-  | "featured"
-  | "published"
-  | "paused"
-  | "draft"
-  | "local";
-export type ProjectFilter =
-  | "Fullstack"
-  | "Cloud"
-  | "Security"
-  | "Marketplace"
-  | "Microservices";
+import { cs85PhpProgrammingProject } from "@/data/projects/cs85PhpProgrammingProject";
+import { javaFxEventHandlingProject } from "@/data/projects/javaFxEventHandlingProject";
+import type { ProjectShowcaseItem } from "@/data/projectShowcase.types";
 
-export type ProjectLanguage = "JS" | "TS" | "Java" | "Go";
-
-export type BuildContribution = {
-  readonly area: "Frontend" | "Backend" | "Infrastructure" | "Security";
-  readonly detail: string;
-};
-
-export type ProjectGalleryImage = {
-  readonly src: string;
-  readonly caption: string;
-};
-
-export type ProjectShowcaseItem = {
-  readonly id: string;
-  readonly title: string;
-  readonly category: string;
-  readonly status: ProjectStatus;
-  readonly filters: readonly ProjectFilter[];
-  readonly languages: readonly ProjectLanguage[];
-  readonly summary: string;
-  readonly imageUrl: string;
-  readonly galleryImages?: readonly ProjectGalleryImage[];
-  readonly previewLabel: string;
-  readonly previewDescription: string;
-  readonly architectureTags: readonly string[];
-  readonly contributions: readonly BuildContribution[];
-  readonly highlights: readonly string[];
-  readonly techStack: readonly string[];
-  readonly liveUrl?: string;
-  readonly videoUrl?: string;
-  readonly sourceUrl?: string;
-  readonly docsUrl?: string;
-  readonly architectureUrl?: string;
-};
+export type {
+  BuildContribution,
+  ProjectFilter,
+  ProjectGalleryImage,
+  ProjectLanguage,
+  ProjectShowcaseItem,
+  ProjectStatus,
+} from "@/data/projectShowcase.types";
 
 export const projectFilters = [
   "All",
   "Fullstack",
+  "AI",
   "Cloud",
   "Security",
   "Marketplace",
@@ -61,6 +27,7 @@ export const projectLanguageFilters = [
   "All",
   "JS",
   "TS",
+  "PHP",
   "Java",
   "Go",
 ] as const;
@@ -496,4 +463,6 @@ export const projectShowcaseItems = [
     architectureUrl:
       "https://github.com/sergehall/final-project-CS79D/blob/main/docs/architecture.md",
   },
+  javaFxEventHandlingProject,
+  cs85PhpProgrammingProject,
 ] satisfies readonly ProjectShowcaseItem[];

@@ -35,7 +35,7 @@ describe("<HomePage />", () => {
       name: /Academic portfolio snapshot/i,
     });
 
-    for (const value of ["10", "103", "128", "6"]) {
+    for (const value of ["10", "103", "128", "8"]) {
       expect(within(snapshot).getByText(value)).toBeInTheDocument();
     }
   });

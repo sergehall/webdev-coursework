@@ -17,6 +17,12 @@ const javaStartProject = projectShowcaseItems.find(
 const awsLearningPortalProject = projectShowcaseItems.find(
   (project) => project.id === "aws-learning-portal"
 );
+const javaFxEventHandlingProject = projectShowcaseItems.find(
+  (project) => project.id === "javafx-event-handling"
+);
+const cs85PhpProgrammingProject = projectShowcaseItems.find(
+  (project) => project.id === "cs85-php-programming"
+);
 
 describe("<ProjectLinks /> project resources", () => {
   it("keeps Hex Gate source private and presents safe modal summaries", async () => {
@@ -205,5 +211,68 @@ describe("<ProjectLinks /> project resources", () => {
         /account data resets after a backend restart/i.test(highlight)
       )
     ).toBe(true);
+  });
+
+  it("links the JavaFX project source, documentation, architecture, and demo", () => {
+    if (!javaFxEventHandlingProject) {
+      throw new Error("JavaFX Event Handling project data was not found");
+    }
+
+    render(<ProjectLinks project={javaFxEventHandlingProject} />);
+
+    expect(
+      screen.queryByRole("link", { name: /Live site/i })
+    ).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Source/i })).toHaveAttribute(
+      "href",
+      "https://github.com/sergehall/javafx-event-handling-group-project"
+    );
+    expect(screen.getByRole("link", { name: /Docs/i })).toHaveAttribute(
+      "href",
+      "https://github.com/sergehall/javafx-event-handling-group-project/tree/main/docs"
+    );
+    expect(screen.getByRole("link", { name: /Architecture/i })).toHaveAttribute(
+      "href",
+      "https://github.com/sergehall/javafx-event-handling-group-project?tab=readme-ov-file#architecture-boundaries"
+    );
+    expect(screen.getByRole("link", { name: /Video demo/i })).toHaveAttribute(
+      "href",
+      "https://sergehall.github.io/javafx-event-handling-group-project/"
+    );
+
+    expect(javaFxEventHandlingProject.languages).toEqual(["Java", "TS"]);
+    expect(javaFxEventHandlingProject.status).toBe("local");
+  });
+
+  it("links the PHP project source, documentation, architecture, and AI demo", () => {
+    if (!cs85PhpProgrammingProject) {
+      throw new Error("CS85 PHP Programming project data was not found");
+    }
+
+    render(<ProjectLinks project={cs85PhpProgrammingProject} />);
+
+    expect(
+      screen.queryByRole("link", { name: /Live site/i })
+    ).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Source/i })).toHaveAttribute(
+      "href",
+      "https://github.com/sergehall/cs85-php-programming"
+    );
+    expect(screen.getByRole("link", { name: /Docs/i })).toHaveAttribute(
+      "href",
+      "https://github.com/sergehall/cs85-php-programming/tree/main/docs"
+    );
+    expect(screen.getByRole("link", { name: /Architecture/i })).toHaveAttribute(
+      "href",
+      "https://github.com/sergehall/cs85-php-programming/blob/main/docs/architecture/ai-architecture.md"
+    );
+    expect(screen.getByRole("link", { name: /Video demo/i })).toHaveAttribute(
+      "href",
+      "https://sergehall.github.io/cs85-php-programming/"
+    );
+
+    expect(cs85PhpProgrammingProject.filters).toContain("AI");
+    expect(cs85PhpProgrammingProject.languages).toEqual(["PHP"]);
+    expect(cs85PhpProgrammingProject.status).toBe("local");
   });
 });
