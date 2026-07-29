@@ -31,4 +31,17 @@ describe("validateJavaScript", () => {
     });
     expect(result.valid).toBe(true);
   });
+
+  it("blocks constructor-based sandbox escapes", () => {
+    const direct = validateJavaScript(
+      "console.log.constructor('return globalThis')()"
+    );
+    const computed = validateJavaScript(
+      "console.log['constructor']('return globalThis')()"
+    );
+
+    expect(direct.valid).toBe(false);
+    expect(direct.reason).toMatch(/constructor/i);
+    expect(computed.valid).toBe(false);
+  });
 });

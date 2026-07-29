@@ -1,6 +1,7 @@
 // src/hooks/usePostMessageLogs.ts
 import { useEffect } from "react";
 
+import { PLAYGROUND_MAX_LOG_LENGTH } from "@/features/playground/playground-security";
 import { SANDBOX_IFRAME_ID } from "@/utils/sandboxIframe";
 
 type SandboxLogMessage = {
@@ -24,7 +25,7 @@ export function usePostMessageLogs(onLog: (msg: string) => void): void {
       if (!text) return;
 
       // Normalize: drop a single trailing newline, if any
-      text = text.replace(/\r?\n$/u, "");
+      text = text.replace(/\r?\n$/u, "").slice(0, PLAYGROUND_MAX_LOG_LENGTH);
       if (text) onLog(text);
     };
 

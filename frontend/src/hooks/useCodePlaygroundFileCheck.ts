@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 
 import {
+  PLAYGROUND_FETCH_TIMEOUT_MS,
+  PLAYGROUND_MAX_ASSET_SIZE,
+  isSupportedPlaygroundFile,
+} from "@/features/playground/playground-security";
+import {
   normalizePlaygroundRelativePath,
   toCodePlaygroundUrl,
 } from "@/utils/playgroundPath";
@@ -15,11 +20,16 @@ export function useCodePlaygroundFileCheck(file: string | null) {
     }
 
     const safeFile = normalizePlaygroundRelativePath(file);
-    if (!safeFile) {
+    if (!safeFile || !isSupportedPlaygroundFile(safeFile)) {
       setFileExists(false);
       return;
     }
 
+    const controller = new AbortController();
+    const timeout = window.setTimeout(
+      () => controller.abort(),
+      PLAYGROUND_FETCH_TIMEOUT_MS
+    );
     const path = toCodePlaygroundUrl(safeFile);
     const lower = safeFile.toLowerCase();
     const isJS = lower.endsWith(".js") || lower.endsWith(".mjs");
@@ -29,8 +39,19 @@ export function useCodePlaygroundFileCheck(file: string | null) {
 
     const checkFile = async () => {
       try {
-        const res = await fetch(path, { method: "GET", cache: "no-store" });
+        const res = await fetch(path, {
+          method: "GET",
+          cache: "no-store",
+          credentials: "same-origin",
+          redirect: "error",
+          signal: controller.signal,
+        });
         const contentType = res.headers.get("Content-Type") || "";
+        const declaredSize = Number(res.headers.get("content-length") ?? 0);
+        if (declaredSize > PLAYGROUND_MAX_ASSET_SIZE) {
+          setFileExists(false);
+          return;
+        }
         if (res.ok) {
           if (isJS && contentType.includes("javascript")) {
             setFileExists(true);
@@ -78,10 +99,16 @@ export function useCodePlaygroundFileCheck(file: string | null) {
       } catch (err) {
         console.warn(`❌ Error checking file at ${path}`, err);
         setFileExists(false);
+      } finally {
+        window.clearTimeout(timeout);
       }
     };
 
     void checkFile();
+    return () => {
+      window.clearTimeout(timeout);
+      controller.abort();
+    };
   }, [file]);
 
   return { fileExists };

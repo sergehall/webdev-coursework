@@ -12,7 +12,7 @@ export type JavaScriptValidationResult = {
 
 export const JS_MAX_FILE_SIZE = 50_000; // 50KB
 export const JS_MAX_LINE_COUNT = 1000;
-export const JS_MAX_CODE_LENGTH = 10_000;
+export const JS_MAX_CODE_LENGTH = 50_000;
 
 export function validateJavaScript(
   code: string,
@@ -76,6 +76,18 @@ export function validateJavaScript(
           node.left.property.type === "Identifier" &&
           ["innerHTML", "outerHTML"].includes(node.left.property.name);
 
+        const isConstructorEscape =
+          node.type === "MemberExpression" &&
+          ((node.property.type === "Identifier" &&
+            ["constructor", "__proto__", "prototype"].includes(
+              node.property.name
+            )) ||
+            (node.property.type === "Literal" &&
+              typeof node.property.value === "string" &&
+              ["constructor", "__proto__", "prototype"].includes(
+                node.property.value
+              )));
+
         if (isCall("eval")) {
           reason = "eval() is not allowed.";
           return;
@@ -94,6 +106,10 @@ export function validateJavaScript(
         }
         if (isDangerousHtmlAssignment) {
           reason = "Direct HTML injection APIs are not allowed.";
+          return;
+        }
+        if (isConstructorEscape) {
+          reason = "Prototype and constructor access is not allowed.";
           return;
         }
         if (

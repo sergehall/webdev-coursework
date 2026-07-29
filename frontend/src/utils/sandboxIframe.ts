@@ -8,6 +8,11 @@ export const HTML_PREVIEW_IFRAME_ID = "html-preview-iframe";
 const escapeScriptCloseTag = (jsonString: string): string =>
   jsonString.replace(/</g, "\\u003c");
 
+function restrictIframeCapabilities(iframe: HTMLIFrameElement) {
+  iframe.allow =
+    "camera 'none'; microphone 'none'; geolocation 'none'; payment 'none'; usb 'none'; serial 'none'; bluetooth 'none'; clipboard-read 'none'; clipboard-write 'none'";
+}
+
 export function runInSandboxedIframe(code: string) {
   // Keep only one sandbox iframe at a time.
   const existing = document.getElementById(SANDBOX_IFRAME_ID);
@@ -17,6 +22,7 @@ export function runInSandboxedIframe(code: string) {
   iframe.id = SANDBOX_IFRAME_ID;
   iframe.sandbox.add("allow-scripts"); // script-only sandbox
   iframe.referrerPolicy = "no-referrer";
+  restrictIframeCapabilities(iframe);
   iframe.style.display = "none";
 
   const serializedCode = escapeScriptCloseTag(JSON.stringify(code));
@@ -50,7 +56,7 @@ export function runInSandboxedIframe(code: string) {
           // Produce a single safe line
           const toLine = (...args) => {
             const cleaned = args.map(toStr).filter(s => s !== "");
-            return cleaned.join(" ");
+            return cleaned.join(" ").slice(0, 10000);
           };
 
           // Override console.log to forward sanitized messages
@@ -121,26 +127,30 @@ export function runHtmlInSandboxedIframe(
   iframe.id = HTML_PREVIEW_IFRAME_ID;
   iframe.sandbox.add("allow-scripts");
   iframe.referrerPolicy = "no-referrer";
+  restrictIframeCapabilities(iframe);
   iframe.style.width = "100%";
   iframe.style.height = "100%";
   iframe.style.border = "none";
   iframe.style.background = "#fff";
   iframe.style.display = "block";
 
-  // Inject CSP as the very first tag to block external resources
-  const csp =
-    "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; form-action 'none'; base-uri 'none';";
+  const csp = [
+    "default-src 'none'",
+    "script-src 'unsafe-inline'",
+    "style-src 'unsafe-inline'",
+    "img-src data:",
+    "connect-src 'none'",
+    "font-src 'none'",
+    "media-src 'none'",
+    "object-src 'none'",
+    "frame-src 'none'",
+    "worker-src 'none'",
+    "form-action 'none'",
+    "base-uri 'none'",
+  ].join("; ");
 
-  // Prepend meta CSP so it applies even if the HTML has its own <head>
-  const safeHtml = html.replace(
-    /(<head[^>]*>)/i,
-    `$1<meta http-equiv="Content-Security-Policy" content="${csp}">`
-  );
-  // If no <head> tag exists, prepend the meta before everything
-  const finalHtml = safeHtml.includes("<head")
-    ? safeHtml
-    : `<meta http-equiv="Content-Security-Policy" content="${csp}">${safeHtml}`;
-
-  iframe.srcdoc = finalHtml;
+  // The policy is parsed before any untrusted markup, preventing an uploaded
+  // document from placing a resource request ahead of the CSP.
+  iframe.srcdoc = `<meta http-equiv="Content-Security-Policy" content="${csp}">${html}`;
   container.appendChild(iframe);
 }

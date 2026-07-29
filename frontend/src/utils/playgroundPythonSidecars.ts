@@ -1,3 +1,4 @@
+import { isSafeSidecarName } from "@/features/playground/playground-security";
 import { toCodePlaygroundUrl } from "@/utils/playgroundPath";
 
 export type SidecarFile = { name: string; content: string };
@@ -107,6 +108,11 @@ export async function fetchSidecars(
 ): Promise<SidecarFile[]> {
   const out: SidecarFile[] = [];
   for (const name of names) {
+    if (!isSafeSidecarName(name)) {
+      log?.(`[host] blocked unsafe sidecar name: ${name}`);
+      continue;
+    }
+
     try {
       const rel = joinRelativePath(baseDir, name);
       const url = toCodePlaygroundUrl(rel);
@@ -121,16 +127,4 @@ export async function fetchSidecars(
     }
   }
   return out;
-}
-
-export async function resolveSidecarByName(
-  name: string
-): Promise<string | null> {
-  try {
-    const res = await fetch(`${toCodePlaygroundUrl(name)}?t=${Date.now()}`);
-    if (!res.ok) return null;
-    return await res.text();
-  } catch {
-    return null;
-  }
 }

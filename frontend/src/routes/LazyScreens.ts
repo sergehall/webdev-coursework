@@ -15,7 +15,7 @@ export const AllDonePage = lazy(() => import("../pages/AllDonePage"));
 
 // Tools / Playground
 export const CodePlaygroundPage = lazy(
-  () => import("../pages/CodePlaygroundPage")
+  () => import("../pages/CodePlaygroundLabPage")
 );
 export const ResourcesPage = lazy(() => import("../pages/ResourcesPage"));
 export const ProjectsPage = lazy(() => import("../pages/ProjectsPage"));

@@ -22,6 +22,13 @@ describe("playgroundPath utilities", () => {
     expect(normalizePlaygroundRelativePath("../secret.js")).toBeNull();
     expect(normalizePlaygroundRelativePath("CS81/../secret.js")).toBeNull();
     expect(normalizePlaygroundRelativePath("/CS81/mod-1/a.js")).toBeNull();
+    expect(
+      normalizePlaygroundRelativePath("%252e%252e%2Fsecret.js")
+    ).toBeNull();
+    expect(
+      normalizePlaygroundRelativePath("https://example.com/demo.js")
+    ).toBeNull();
+    expect(normalizePlaygroundRelativePath("CS81//demo.js")).toBeNull();
   });
 
   it("builds encoded code-playground URLs", () => {

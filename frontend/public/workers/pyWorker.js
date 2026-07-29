@@ -292,9 +292,17 @@ self.onmessage = async (e) => {
         const written = [];
         for (const f of files) {
           if (!f || !f.name) continue;
-          const path = "/project/" + String(f.name);
+          const safeName = String(f.name);
+          if (!/^[A-Za-z_][A-Za-z0-9_]*\.(?:py|tab)$/.test(safeName)) {
+            postMessage({
+              type: "log",
+              text: `[worker] blocked unsafe sidecar name: ${safeName}`,
+            });
+            continue;
+          }
+          const path = "/project/" + safeName;
           FS.writeFile(path, String(f.content ?? ""), { encoding: "utf8" });
-          written.push(f.name);
+          written.push(safeName);
         }
 
         postMessage({
