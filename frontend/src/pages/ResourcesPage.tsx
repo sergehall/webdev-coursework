@@ -66,44 +66,6 @@ const resourceSections: ResourceSection[] = [
     ],
   },
   {
-    title: "CS 56 - Advanced Java Programming",
-    description:
-      "Java language, APIs, concurrency, JDBC, servlets, RMI, and networking references.",
-    resources: [
-      {
-        title: "Oracle Java Tutorials",
-        href: "https://docs.oracle.com/javase/tutorial/",
-        icon: <Code2 className={iconClassName} />,
-        description:
-          "Official Java lessons for language features and core APIs.",
-        course: "CS 56",
-      },
-      {
-        title: "Java API Documentation",
-        href: "https://docs.oracle.com/en/java/javase/",
-        icon: <Braces className={iconClassName} />,
-        description: "Official Java SE API documentation and platform guides.",
-        course: "CS 56",
-      },
-      {
-        title: "JDBC Tutorial",
-        href: "https://docs.oracle.com/javase/tutorial/jdbc/",
-        icon: <Database className={iconClassName} />,
-        description:
-          "Oracle guide for connecting Java applications to databases.",
-        course: "CS 56",
-      },
-      {
-        title: "Jakarta Servlet",
-        href: "https://jakarta.ee/specifications/servlet/",
-        icon: <Server className={iconClassName} />,
-        description:
-          "Servlet specifications for server-side Java web programming.",
-        course: "CS 56",
-      },
-    ],
-  },
-  {
     title: "Database, Internet, JavaScript, PHP, and Python",
     description:
       "Reference material for CS 60, CS 80, CS 81, CS 85, and CS 87A programming work.",
@@ -209,6 +171,44 @@ const resourceSections: ResourceSection[] = [
         description:
           "Identity, access management, policies, users, groups, and roles.",
         course: "CS 79D",
+      },
+    ],
+  },
+  {
+    title: "CS 56 - Advanced Java Programming",
+    description:
+      "Java language, APIs, concurrency, JDBC, servlets, RMI, and networking references.",
+    resources: [
+      {
+        title: "Oracle Java Tutorials",
+        href: "https://docs.oracle.com/javase/tutorial/",
+        icon: <Code2 className={iconClassName} />,
+        description:
+          "Official Java lessons for language features and core APIs.",
+        course: "CS 56",
+      },
+      {
+        title: "Java API Documentation",
+        href: "https://docs.oracle.com/en/java/javase/",
+        icon: <Braces className={iconClassName} />,
+        description: "Official Java SE API documentation and platform guides.",
+        course: "CS 56",
+      },
+      {
+        title: "JDBC Tutorial",
+        href: "https://docs.oracle.com/javase/tutorial/jdbc/",
+        icon: <Database className={iconClassName} />,
+        description:
+          "Oracle guide for connecting Java applications to databases.",
+        course: "CS 56",
+      },
+      {
+        title: "Jakarta Servlet",
+        href: "https://jakarta.ee/specifications/servlet/",
+        icon: <Server className={iconClassName} />,
+        description:
+          "Servlet specifications for server-side Java web programming.",
+        course: "CS 56",
       },
     ],
   },

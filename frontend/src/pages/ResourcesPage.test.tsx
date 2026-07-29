@@ -4,6 +4,21 @@ import { describe, expect, it } from "vitest";
 import ResourcesPage from "./ResourcesPage";
 
 describe("<ResourcesPage />", () => {
+  it("renders resource sections in the requested learning order", () => {
+    render(<ResourcesPage />);
+
+    expect(
+      screen
+        .getAllByRole("heading", { level: 2 })
+        .map((heading) => heading.textContent)
+    ).toEqual([
+      "Project, AI, and Daily Workflow",
+      "Database, Internet, JavaScript, PHP, and Python",
+      "Networking, Cloud, and AWS",
+      "CS 56 - Advanced Java Programming",
+    ]);
+  });
+
   it("shows OpenAI Codex resources and course-specific references", () => {
     render(<ResourcesPage />);
 

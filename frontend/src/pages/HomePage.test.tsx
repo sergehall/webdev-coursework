@@ -6,28 +6,192 @@ import * as HomePageModule from "./HomePage";
 
 const HomePage = HomePageModule.default;
 
+const remainingCourseStacks = [
+  {
+    course: "CS 70 - Network Fundamentals and Architecture",
+    technologies: [
+      "Network Topologies & Architectures",
+      "Cabling, Media & Physical Installations",
+      "Ethernet Interfaces, Switching & Cisco IOS",
+      "IPv4/IPv6 Addressing, Subnetting & ARP",
+      "Routing, NAT, VLANs & Advanced Switching",
+      "TCP/UDP, DHCP, DNS, APIPA & SLAAC",
+      "Web, File, Email, VoIP & Database Services",
+      "High Availability, NIC Teaming & Disaster Recovery",
+      "SNMP, Logging, QoS, pfSense & Wireshark",
+      "DoS, Spoofing, Rogue Systems & Social Engineering",
+      "Authentication, Hardening, Firewalls & Secure Protocols",
+      "DMZ, IDS/IPS, IoT & Physical Security Design",
+      "Wireless Standards, Security & Troubleshooting",
+      "VPN, RADIUS, Remote Desktop & PowerShell Remoting",
+      "Data Centers, iSCSI, Cloud Networking & Virtualization",
+      "Cisco Packet Tracer & CompTIA Network+ CertMaster Labs",
+    ],
+    removedTechnologies: [
+      "Socket Programming & Client–Server Model",
+      "Hands-on Network Labs & Certification Simulations (TestOut / CompTIA)",
+    ],
+  },
+  {
+    course: "CS 79A - Introduction to Cloud Computing",
+    technologies: [
+      "Cloud Computing Models & AWS Global Infrastructure",
+      "AWS Academy, AWS Educate & Learner Lab",
+      "AWS Management Console & Hands-On Labs",
+      "EC2 Instances, AMIs, Pricing & Key Pairs",
+      "Windows Server on EC2 & Remote Desktop",
+      "Ubuntu Linux on EC2, SSH & PuTTY",
+      "S3 Buckets, Static Websites & Access Logging",
+      "FTP Servers & Bootstrap Site Deployment",
+      "IAM Users, Roles, Policies & Least Privilege",
+      "VPC Networking & Security Configuration",
+      "WordPress Deployment on EC2",
+      "OpenVPN Secure Remote Access",
+    ],
+    removedTechnologies: [
+      "Monitoring, Budgets, Alarms & Cost Management",
+      "High Availability, Backup & Disaster Recovery",
+    ],
+  },
+  {
+    course: "CS 80 - Internet Programming",
+    technologies: [
+      "HTML5 Structure, Semantics & Forms",
+      "CSS3 Selectors, Layout & Visual Styling",
+      "JavaScript Variables, Control Flow & Loops",
+      "Client-Side vs. Server-Side Web Programming",
+      "DOM Trees, Traversal, Manipulation & Events",
+      "HTML Form Handling & Input Validation",
+      "jQuery Selectors, Events & DOM Manipulation",
+      "XML Data Modeling, Parsing & Validation",
+      "JSON Structured Data & Parsing",
+      "AJAX with jQuery & the Fetch API",
+    ],
+    removedTechnologies: ["CGI", "ASP.NET", "VB.NET"],
+  },
+  {
+    course: "CS 81 - JavaScript Programming",
+    technologies: [
+      "JavaScript Values, Types & Operators",
+      "Conditions, Loops & Program Structure",
+      "Functions, Scope & Reusable Logic",
+      "Objects, Arrays & Structured Data",
+      "Higher-Order Functions & Functional Array Methods",
+      "Browser JavaScript, DOM & Event Handling",
+      "Asynchronous JavaScript, Timers & the Event Loop",
+      "Interactive Browser State & DOM Applications",
+      "React Components, JSX & Props",
+      "React State, Search & Dynamic UI",
+      "React Forms, Validation & Controlled Inputs",
+      "Fetch API, useEffect & Public APIs",
+      "Vite, Tailwind CSS & React Router",
+      "Git, GitHub & Portfolio Documentation",
+    ],
+    removedTechnologies: ["TypeScript", "Framer Motion", "Heroku"],
+  },
+  {
+    course: "CS 85 - PHP Programming",
+    technologies: [
+      "PHP Runtime, Laravel Herd & IDE Setup",
+      "PHP Control Structures, Arrays & Functions",
+      "HTTP Forms, GET/POST & Request Validation",
+      "SQL, Tables, Records & Primary Keys",
+      "PHP OOP, Classes, Objects & Encapsulation",
+      "Composer Autoloading & MVC Architecture",
+      "Laravel Project Structure, Routes & Controllers",
+      "Blade Templates & Server-Side Rendering",
+      "Eloquent ORM, Migrations & MySQL",
+      "Full CRUD, Resource Controllers & Validation",
+      "Authentication, Sessions & Protected Routes",
+      "JSON Decoding, Laravel Storage & Blade Data Tables",
+      "Service Layer, Clean Architecture & API Integration",
+      "OpenAI API, Prompt Engineering & Secure API Keys",
+      "Error Handling, Logging & Secure Configuration",
+      "GitHub, README & Portfolio-Ready Deployment",
+    ],
+    removedTechnologies: [
+      "Embedding PHP in HTML Templates",
+      "Building Dynamic Pages with Server-Side Logic",
+    ],
+  },
+  {
+    course: "CS 79D - Security in Amazon Web Services",
+    technologies: [
+      "AWS Shared Responsibility Model in Real Deployments",
+      "IAM Users, Groups, Roles, Policies & MFA",
+      "AWS CLI, EC2 & Nginx Application Security",
+      "TLS, Let's Encrypt & HTTP Security Headers",
+      "CloudWatch Metrics, Alarms & CloudTrail Auditing",
+      "OS Hardening, Pi-hole VPN & Network Filtering",
+      "Amazon Inspector Vulnerability Assessment & Trusted Advisor",
+      "VPC, Subnets, Routes, Security Groups, NACLs & Peering",
+      "Route 53 DNS Routing & Hosted Zones",
+      "S3 Static Hosting, CloudFront CDN & Edge Caching",
+      "AWS WAF, IP/Geo/Regex Filtering & Shield",
+      "Auto Scaling, Load Balancing & Secure Architecture",
+      "Encryption, Certificates, Monitoring & Cost Controls",
+      "AI Integration & AWS Architecture Diagrams",
+    ],
+    removedTechnologies: [
+      "Threat Detection with GuardDuty and Monitoring Signals",
+      "Incident Response and Security Operations Workflow",
+    ],
+  },
+  {
+    course: "CS 79C - Compute Engines in Amazon Web Services",
+    technologies: [
+      "AWS Compute Services & Scalable Architecture",
+      "S3, EBS & EFS Storage Workflows",
+      "AWS CLI Operations for Storage & EC2",
+      "EC2 Instances, AMIs, Key Pairs & Security Groups",
+      "Auto Scaling Groups & Elastic Load Balancing",
+      "Containers, Kubernetes & Amazon EKS",
+      "Distributed Systems, SQS, SNS & API Gateway",
+      "AWS Lambda, Event Triggers & DynamoDB",
+      "Elastic Beanstalk & Node.js Application Deployment",
+      "CloudFormation Infrastructure as Code, Stacks & Templates",
+      "AWS Portfolio Architecture & Technical Documentation",
+    ],
+    removedTechnologies: [
+      "VPC Networking for Compute Workloads",
+      "Compute Cost, Performance and Right-Sizing Skills",
+    ],
+  },
+  {
+    course: "CS 87A - Python Programming",
+    technologies: [
+      "Python 3, IDLE & Script Execution",
+      "Variables, Types, Input & Output",
+      "Conditionals, Loops & Input Validation",
+      "Functions, Parameters & Modular Program Design",
+      "Lists, 2D Matrices & Non-Mutating Algorithms",
+      "Random Module, Game Loops & Tic-Tac-Toe Logic",
+      "Dictionaries, Tuple Keys & Data Aggregation",
+      "File I/O & Tab-Separated Election Datasets",
+      "Classes, Objects & Encapsulation",
+      "Tkinter Canvas, Events & Data Visualization",
+    ],
+    removedTechnologies: [
+      "Regular Expressions (re)",
+      "OS module (os)",
+      "Custom Python Modules",
+    ],
+  },
+] as const;
+
 describe("<HomePage />", () => {
-  it("shows new course accordions for CS 56, CS 85, CS 79D, and CS 79C", () => {
+  it("shows an accordion for every supported course", () => {
     render(<HomePage />);
 
-    expect(
-      screen.getByRole("button", {
-        name: /CS 56 - Advanced Java Programming/i,
-      })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: /CS 85 - PHP Programming/i })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", {
-        name: /CS 79D - Security in Amazon Web Services/i,
-      })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", {
-        name: /CS 79C - Compute Engines in Amazon Web Services/i,
-      })
-    ).toBeInTheDocument();
+    const courses = [
+      "CS 56 - Advanced Java Programming",
+      "CS 60 - Database Concepts & Applications",
+      ...remainingCourseStacks.map(({ course }) => course),
+    ];
+
+    for (const course of courses) {
+      expect(screen.getByRole("button", { name: course })).toBeInTheDocument();
+    }
   });
 
   it("expands and switches accordion content on selection", async () => {
@@ -39,7 +203,7 @@ describe("<HomePage />", () => {
       screen.getByRole("button", { name: /CS 85 - PHP Programming/i })
     );
     expect(
-      screen.getByText(/PHP Syntax, Control Flow & Reusable Functions/i)
+      screen.getByText(/PHP Runtime, Laravel Herd & IDE Setup/i)
     ).toBeInTheDocument();
 
     await user.click(
@@ -51,7 +215,7 @@ describe("<HomePage />", () => {
       screen.getByText(/AWS Shared Responsibility Model in Real Deployments/i)
     ).toBeInTheDocument();
     expect(
-      screen.queryByText(/PHP Syntax, Control Flow & Reusable Functions/i)
+      screen.queryByText(/PHP Runtime, Laravel Herd & IDE Setup/i)
     ).not.toBeInTheDocument();
   });
 
@@ -66,18 +230,99 @@ describe("<HomePage />", () => {
       })
     );
 
+    const expectedStack = [
+      "Java, JDK & Maven Project Setup",
+      "Object-Oriented Design: Inheritance, Polymorphism & Interfaces",
+      "UML Modeling with PlantUML",
+      "Exception Handling & AutoCloseable Resources",
+      "Generics & Type-Safe APIs",
+      "Design Patterns: Singleton, Template Method & Iterator",
+      "Java Collections: Lists, Sets, Maps & Hashing",
+      "Client-Server Networking & Web Applications",
+      "JavaFX Desktop UI & FXML",
+      "Event-Driven JavaFX, Canvas & Audio",
+      "Multithreading & Synchronization",
+      "Relational Databases, SQL, MySQL & JDBC",
+    ];
+
+    for (const technology of expectedStack) {
+      expect(screen.getByText(technology)).toBeInTheDocument();
+    }
+
     expect(
-      screen.getByText(/Exception Handling and Robust Program Design/i)
-    ).toBeInTheDocument();
+      screen.queryByText("Servlets and Server-Side Java Foundations")
+    ).not.toBeInTheDocument();
     expect(
-      screen.getByText(/Java Database Connectivity \(JDBC\)/i)
-    ).toBeInTheDocument();
+      screen.queryByText("Remote Method Invocation (RMI)")
+    ).not.toBeInTheDocument();
     expect(
-      screen.getByText(/Remote Method Invocation \(RMI\)/i)
-    ).toBeInTheDocument();
+      screen.queryByText("Input/Output Streams and File Processing")
+    ).not.toBeInTheDocument();
   });
 
-  it("shows the expanded CS 79C AWS stack from the 10 modules", async () => {
+  it("shows the expanded CS 60 database stack from the 10 chapters", async () => {
+    const user = userEvent.setup();
+
+    render(<HomePage />);
+
+    await user.click(
+      screen.getByRole("button", {
+        name: /CS 60 - Database Concepts & Applications/i,
+      })
+    );
+
+    const expectedStack = [
+      "Database Systems & Architectures",
+      "Data Models & the Relational Model",
+      "ER Modeling, Cardinality & Lucidchart",
+      "Advanced Data Modeling & Specialization Hierarchies",
+      "Keys, Integrity Constraints & Referential Integrity",
+      "Normalization, Functional Dependencies & BCNF",
+      "Oracle Database, SQL Developer & Azure VCL",
+      "SQL DDL: Data Types, CREATE & ALTER Tables",
+      "SQL DML: INSERT, UPDATE & DELETE",
+      "SQL Queries: SELECT, Joins, Groups & Set Operations",
+      "Views, Sequences & Relational Schema Design",
+      "Database Design Lifecycle: Conceptual, Logical & Physical",
+      "Transaction Management & Concurrency Control",
+    ];
+
+    for (const technology of expectedStack) {
+      expect(screen.getByText(technology)).toBeInTheDocument();
+    }
+
+    expect(
+      screen.queryByText("Stored Procedures & Programs")
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText("DBMS & Cloud Databases (Oracle / Azure)")
+    ).not.toBeInTheDocument();
+  });
+
+  it.each(remainingCourseStacks)(
+    "shows the verified technology stack for $course",
+    async ({ course, technologies, removedTechnologies }) => {
+      const user = userEvent.setup();
+
+      render(<HomePage />);
+
+      await user.click(
+        screen.getByRole("button", {
+          name: course,
+        })
+      );
+
+      for (const technology of technologies) {
+        expect(screen.getByText(technology)).toBeInTheDocument();
+      }
+
+      for (const removedTechnology of removedTechnologies) {
+        expect(screen.queryByText(removedTechnology)).not.toBeInTheDocument();
+      }
+    }
+  );
+
+  it("renders only the selected course technology stack", async () => {
     const user = userEvent.setup();
 
     render(<HomePage />);
@@ -89,22 +334,21 @@ describe("<HomePage />", () => {
     );
 
     expect(
-      screen.getByText(/AWS Storage Volumes with S3, EBS and EFS/i)
+      screen.getByText(/AWS Compute Services & Scalable Architecture/i)
+    ).toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole("button", {
+        name: /CS 87A - Python Programming/i,
+      })
+    );
+
+    expect(
+      screen.getByText(/Python 3, IDLE & Script Execution/i)
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/Containers, Kubernetes and Amazon EKS/i)
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        /Messaging and API Workflows with SNS, SQS and API Gateway/i
-      )
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(/Serverless Functions with AWS Lambda and DynamoDB/i)
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(/Infrastructure as Code with AWS CloudFormation/i)
-    ).toBeInTheDocument();
+      screen.queryByText(/AWS Compute Services & Scalable Architecture/i)
+    ).not.toBeInTheDocument();
   });
 
   it("refreshes the home page after a strong downward pull", () => {
