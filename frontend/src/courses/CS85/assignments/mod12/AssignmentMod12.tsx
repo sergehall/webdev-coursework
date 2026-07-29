@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { ClipboardPenLine, FileText } from "lucide-react";
+
+import Assignment12AContent from "./Assignment12AContent";
+import FinalProjectContent from "./FinalProjectContent";
+import ModuleTwelveReadingContent from "./ModuleTwelveReadingContent";
+import ModuleTwelveQuiz from "./ModuleTwelveQuiz";
 
 import AnimatedAccordionItem from "@/components/AnimatedAccordionItem";
 import { ModuleCompletionButton } from "@/components/buttons";
-import {
-  ModuleItemBlock,
-  type CanvasItem,
-} from "@/courses/CS85/assignments/shared/canvasItems";
 
 type ModuleSectionId =
   | "readme"
@@ -15,22 +15,42 @@ type ModuleSectionId =
   | "quiz"
   | "final-project";
 
-const readmeItem: CanvasItem = {
-  icon: FileText,
-  title: "ReadMe Module 12: Career Tips and Sample Project",
-};
-
-const finalProjectItem: CanvasItem = {
-  icon: ClipboardPenLine,
-  title: "Final Project: AI Powered Web Application",
-  dueLabel: "Aug 2",
-  pointsLabel: "100 pts",
-};
-
-function PlaceholderContent({ label }: { label: string }) {
+function ModuleTwelveReadMe() {
   return (
-    <section className="rounded-xl border border-sky-200 bg-sky-50 p-4 text-sm leading-7 text-sky-950 dark:border-sky-900/50 dark:bg-sky-950/30 dark:text-sky-100">
-      {label} content will be filled in later.
+    <section className="rounded-xl border border-sky-200 bg-sky-50 p-4 dark:border-sky-900/50 dark:bg-sky-950/30">
+      <h4 className="text-sm font-semibold tracking-wide text-sky-900 uppercase dark:text-sky-100">
+        AI Integration and Career Tips
+      </h4>
+      <div className="mt-3 space-y-4 text-sm leading-7 text-sky-950 dark:text-sky-100">
+        <p>
+          Congratulations! You&apos;ve reached the culmination of your PHP
+          journey. Over the past eleven modules, you&apos;ve transformed from a
+          beginner into a developer who can build secure, database-driven web
+          applications with professional architecture.
+        </p>
+        <p>
+          What makes this module special is that you&apos;re positioning
+          yourself at the forefront of modern technology. While many developers
+          are still figuring out AI integration, you&apos;re about to build an
+          AI-powered blog post generator using the same patterns that companies
+          like GitHub and Shopify use in production.
+        </p>
+        <p>
+          This isn&apos;t just another tutorial—you&apos;ll learn prompt
+          engineering, service layer architecture, and external API integration
+          while creating portfolio materials that make hiring managers take
+          notice. The timing couldn&apos;t be better: the 2025 job market is
+          hungry for developers who combine solid web fundamentals with AI
+          capabilities.
+        </p>
+        <p>
+          By this module&apos;s end, you&apos;ll have an application showcasing
+          problem-solving skills, technical depth, and a forward-thinking
+          approach that employers actively seek. You&apos;re not just completing
+          coursework—you&apos;re building the foundation for a successful
+          development career.
+        </p>
+      </div>
     </section>
   );
 }
@@ -84,11 +104,11 @@ export default function AssignmentMod12() {
       </header>
 
       <AnimatedAccordionItem
-        title="ReadMe Module 12: Career Tips and Sample Project"
+        title="ReadMe Module 12: AI Integration and Career Tips"
         isOpen={openSections.readme}
         onToggle={() => toggleSection("readme")}
       >
-        <ModuleItemBlock item={readmeItem} />
+        <ModuleTwelveReadMe />
       </AnimatedAccordionItem>
 
       <AnimatedAccordionItem
@@ -96,7 +116,7 @@ export default function AssignmentMod12() {
         isOpen={openSections["required-reading"]}
         onToggle={() => toggleSection("required-reading")}
       >
-        <PlaceholderContent label="Required Reading" />
+        <ModuleTwelveReadingContent />
       </AnimatedAccordionItem>
 
       <AnimatedAccordionItem
@@ -104,7 +124,7 @@ export default function AssignmentMod12() {
         isOpen={openSections["assignment-12a"]}
         onToggle={() => toggleSection("assignment-12a")}
       >
-        <PlaceholderContent label="Assignment 12A - Aug 2 - 20 pts" />
+        <Assignment12AContent />
       </AnimatedAccordionItem>
 
       <AnimatedAccordionItem
@@ -112,7 +132,7 @@ export default function AssignmentMod12() {
         isOpen={openSections.quiz}
         onToggle={() => toggleSection("quiz")}
       >
-        <PlaceholderContent label="Quiz - Aug 2 - 20 pts" />
+        <ModuleTwelveQuiz />
       </AnimatedAccordionItem>
 
       <AnimatedAccordionItem
@@ -120,7 +140,7 @@ export default function AssignmentMod12() {
         isOpen={openSections["final-project"]}
         onToggle={() => toggleSection("final-project")}
       >
-        <ModuleItemBlock item={finalProjectItem} />
+        <FinalProjectContent />
       </AnimatedAccordionItem>
 
       <ModuleCompletionButton moduleId={12} />
