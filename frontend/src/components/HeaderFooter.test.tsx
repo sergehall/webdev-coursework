@@ -10,7 +10,7 @@ describe("portfolio shell identity", () => {
     renderWithProviders(<Header />);
 
     const brandLink = screen.getByRole("link", {
-      name: /SMC Web Development Portfolio home/i,
+      name: /Web Engineering Portfolio home/i,
     });
 
     expect(brandLink).toHaveAttribute("href", "/");
@@ -21,7 +21,7 @@ describe("portfolio shell identity", () => {
     expect(screen.queryByRole("heading", { level: 1 })).not.toBeInTheDocument();
     expect(screen.queryByText("Serge Hall")).not.toBeInTheDocument();
     expect(
-      screen.getByText("SMC Web Development Portfolio")
+      screen.getByText("Web Engineering Portfolio")
     ).toBeInTheDocument();
   });
 
