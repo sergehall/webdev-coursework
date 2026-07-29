@@ -18,9 +18,11 @@ if (!window.matchMedia) {
   });
 }
 
-if (!window.scrollTo) {
-  window.scrollTo = vi.fn();
-}
+Object.defineProperty(window, "scrollTo", {
+  configurable: true,
+  writable: true,
+  value: vi.fn(),
+});
 
 vi.mock("canvas-confetti", () => ({
   default: () => {},

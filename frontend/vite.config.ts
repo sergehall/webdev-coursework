@@ -192,6 +192,14 @@ export default defineConfig(({ mode }) => {
       globals: true,
       environment: "jsdom",
       setupFiles: "./setupTests.ts",
+      coverage: {
+        thresholds: {
+          statements: 65,
+          branches: 55,
+          functions: 60,
+          lines: 65,
+        },
+      },
     },
   };
 });

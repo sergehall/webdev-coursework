@@ -1,11 +1,9 @@
 import type { INestApplication } from "@nestjs/common";
 import { BadRequestException, ValidationPipe } from "@nestjs/common";
 import { useContainer } from "class-validator";
-import { AppModule } from "../app.module";
 
 export function configureValidation(app: INestApplication): void {
-  // DI support in validators
-  useContainer(app.select(AppModule), { fallbackOnErrors: true });
+  useContainer(app, { fallbackOnErrors: true });
 
   app.useGlobalPipes(
     new ValidationPipe({

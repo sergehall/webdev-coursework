@@ -1,6 +1,6 @@
 // frontend/src/components/buttons/ShowModalButton.tsx
 
-import { useEffect, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 
 import { CloseModalButton } from "@/components/buttons";
 
@@ -87,6 +87,34 @@ export default function ShowModalButton({
   files,
   className = "",
 }: Props) {
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const previouslyFocusedElementRef = useRef<HTMLElement | null>(null);
+  const dialogTitleId = useId();
+
+  useEffect(() => {
+    if (!isOpen || files.length === 0) return;
+
+    previouslyFocusedElementRef.current =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        onClose();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    dialogRef.current?.focus();
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      previouslyFocusedElementRef.current?.focus();
+    };
+  }, [files.length, isOpen, onClose]);
+
   if (!isOpen || !files.length) return null;
 
   const codeExtensions = [".tsx", ".ts", ".jsx", ".js", ".java", ".php"];
@@ -95,8 +123,16 @@ export default function ShowModalButton({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={dialogTitleId}
+        tabIndex={-1}
         className={`relative max-h-[100vh] w-[97%] max-w-7xl overflow-y-auto rounded-lg bg-white p-6 shadow-lg dark:bg-gray-700 ${className}`}
       >
+        <h2 id={dialogTitleId} className="sr-only">
+          File preview
+        </h2>
         <CloseModalButton onClick={onClose} />
         <div className="mt-4 space-y-6">
           {files.map((file) => {
