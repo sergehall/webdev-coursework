@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import { useRef } from "react";
 import { X } from "lucide-react";
 
 import type { ProjectShowcaseItem } from "@/data/projectShowcase";
+import { useProjectDialogFocus } from "@/features/projects/useProjectDialogFocus";
 
 type ProjectScreenshotDialogProps = {
   readonly project: ProjectShowcaseItem | null;
@@ -12,25 +13,15 @@ export default function ProjectScreenshotDialog({
   project,
   onClose,
 }: ProjectScreenshotDialogProps) {
-  useEffect(() => {
-    if (!project) {
-      return;
-    }
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        onClose();
-      }
-    };
-
-    document.body.style.overflow = "hidden";
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.body.style.overflow = "";
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [onClose, project]);
+  useProjectDialogFocus({
+    isOpen: project !== null,
+    onClose,
+    dialogRef,
+    initialFocusRef: closeButtonRef,
+  });
 
   if (!project) {
     return null;
@@ -46,6 +37,7 @@ export default function ProjectScreenshotDialog({
 
   return (
     <div
+      ref={dialogRef}
       role="dialog"
       aria-modal="true"
       aria-label={`${project.title} screenshot preview`}
@@ -67,6 +59,7 @@ export default function ProjectScreenshotDialog({
             </p>
           </div>
           <button
+            ref={closeButtonRef}
             type="button"
             onClick={onClose}
             aria-label="Close screenshot preview"

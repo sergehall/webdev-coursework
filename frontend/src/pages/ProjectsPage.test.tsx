@@ -44,6 +44,86 @@ describe("<ProjectsPage />", () => {
     expect(
       screen.getByRole("heading", { name: /Lens Lounge/i })
     ).toBeInTheDocument();
+    const lensLoungeCard = screen
+      .getByRole("heading", { name: /Lens Lounge/i })
+      .closest("article");
+
+    expect(lensLoungeCard).not.toBeNull();
+
+    if (!lensLoungeCard) {
+      throw new Error("Lens Lounge project card was not rendered");
+    }
+
+    expect(
+      within(lensLoungeCard).getByText(/creator and editor workflows/i)
+    ).toBeInTheDocument();
+    expect(
+      within(lensLoungeCard).getByText(/Browser-facing API gateway/i)
+    ).toBeInTheDocument();
+    expect(
+      within(lensLoungeCard).getByText(/intentionally gating generic purchase/i)
+    ).toBeInTheDocument();
+    expect(
+      within(lensLoungeCard).queryByRole("link", { name: /Source/i })
+    ).not.toBeInTheDocument();
+    expect(
+      within(lensLoungeCard).queryByRole("link", { name: /Docs/i })
+    ).not.toBeInTheDocument();
+    expect(
+      within(lensLoungeCard).queryByRole("link", { name: /Architecture/i })
+    ).not.toBeInTheDocument();
+
+    const lensDocsButton = within(lensLoungeCard).getByRole("button", {
+      name: /Docs/i,
+    });
+    await user.click(lensDocsButton);
+
+    const lensDocsDialog = screen.getByRole("dialog", {
+      name: /Lens Lounge documentation/i,
+    });
+
+    expect(
+      within(lensDocsDialog).getByRole("heading", {
+        name: /Specialized services/i,
+      })
+    ).toBeInTheDocument();
+    expect(
+      within(lensDocsDialog).getByText(/Generic purchase activation remains/i)
+    ).toBeInTheDocument();
+    expect(
+      within(lensDocsDialog).getByText(
+        /excludes source code, credentials, infrastructure identifiers/i
+      )
+    ).toBeInTheDocument();
+
+    await user.keyboard("{Escape}");
+    expect(lensDocsDialog).not.toBeInTheDocument();
+    expect(lensDocsButton).toHaveFocus();
+
+    const lensArchitectureButton = within(lensLoungeCard).getByRole("button", {
+      name: /Architecture/i,
+    });
+    await user.click(lensArchitectureButton);
+
+    const lensArchitectureDialog = screen.getByRole("dialog", {
+      name: /Lens Lounge architecture/i,
+    });
+
+    expect(
+      within(lensArchitectureDialog).getByRole("heading", {
+        name: /Browser-facing gateway/i,
+      })
+    ).toBeInTheDocument();
+    expect(
+      within(lensArchitectureDialog).getByText(
+        /Presigned uploads move media directly/i
+      )
+    ).toBeInTheDocument();
+
+    await user.keyboard("{Escape}");
+    expect(lensArchitectureDialog).not.toBeInTheDocument();
+    expect(lensArchitectureButton).toHaveFocus();
+
     expect(
       screen.getByRole("heading", { name: /SERGIOARTG Platform/i })
     ).toBeInTheDocument();
@@ -76,6 +156,9 @@ describe("<ProjectsPage />", () => {
     const sergioartgDialog = screen.getByRole("dialog", {
       name: /SERGIOARTG Platform screenshot preview/i,
     });
+    const closeScreenshotButton = within(sergioartgDialog).getByRole("button", {
+      name: /Close screenshot preview/i,
+    });
 
     expect(
       within(sergioartgDialog).getByAltText(
@@ -93,12 +176,10 @@ describe("<ProjectsPage />", () => {
       "src",
       "/screenshots/projects/sergioartg-service-categories.webp"
     );
+    expect(closeScreenshotButton).toHaveFocus();
 
-    await user.click(
-      within(sergioartgDialog).getByRole("button", {
-        name: /Close screenshot preview/i,
-      })
-    );
+    await user.click(closeScreenshotButton);
+    expect(previewButtons[0]).toHaveFocus();
 
     const sergioartgCard = screen
       .getByRole("heading", { name: /SERGIOARTG Platform/i })
@@ -121,6 +202,12 @@ describe("<ProjectsPage />", () => {
     const documentationDialog = screen.getByRole("dialog", {
       name: /SERGIOARTG Platform documentation/i,
     });
+    const closeDocumentationButton = within(documentationDialog).getByRole(
+      "button",
+      {
+        name: /Close documentation overview/i,
+      }
+    );
 
     expect(
       within(documentationDialog).getByRole("heading", {
@@ -132,12 +219,12 @@ describe("<ProjectsPage />", () => {
         /repository and operational runbooks remain private/i
       )
     ).toBeInTheDocument();
+    expect(closeDocumentationButton).toHaveFocus();
 
-    await user.click(
-      within(documentationDialog).getByRole("button", {
-        name: /Close documentation overview/i,
-      })
-    );
+    await user.click(closeDocumentationButton);
+    expect(
+      within(sergioartgCard).getByRole("button", { name: /Docs/i })
+    ).toHaveFocus();
 
     expect(
       within(sergioartgCard).queryByRole("link", { name: /Architecture/i })
@@ -341,7 +428,8 @@ describe("<ProjectsPage />", () => {
       screen.getByRole("heading", { name: /Lens Lounge/i })
     ).toBeInTheDocument();
     expect(
-      screen.getAllByText(/Content and commerce platform/i).length
+      screen.getAllByText(/Publishing, collaboration, and commerce platform/i)
+        .length
     ).toBeGreaterThan(0);
     expect(
       screen.queryByRole("heading", { name: /What I Built/i })

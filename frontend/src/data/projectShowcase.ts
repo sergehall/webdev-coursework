@@ -66,69 +66,69 @@ export const projectShowcaseItems = [
   {
     id: "lens-lounge",
     title: "Lens Lounge",
-    category: "Content and commerce platform",
+    category: "Publishing, collaboration, and commerce platform",
     status: "published",
     filters: ["Fullstack", "Microservices"],
     languages: ["TS", "Go"],
     summary:
-      "A microservices content and commerce platform built around service boundaries, shared contracts, event-driven communication, and production-oriented deployment workflows.",
+      "A production-oriented learning platform combining public publishing, creator and editor workflows, realtime collaboration, governed administration, and independently deployable payment and file services.",
     imageUrl: "/screenshots/projects/lens-lounge-microservices.png",
-    previewLabel: "Microservices platform",
+    previewLabel: "Microservices publishing platform",
     previewDescription:
-      "A production-style content platform preview with commerce flows, realtime features, and service-oriented architecture.",
+      "Public discovery, creator publishing, moderated engagement, realtime chat, and service-backed media workflows in one Next.js experience.",
     architectureTags: [
-      "Microservices",
-      "Event-driven",
-      "Payments",
-      "Realtime",
-      "File service",
+      "Browser-facing API gateway",
+      "Service-owned data",
+      "Contract-first integration",
+      "Event-driven delivery",
+      "Presigned media flow",
+      "Realtime collaboration",
+      "Governed access control",
       "Local Kubernetes",
     ],
     contributions: [
       {
         area: "Frontend",
         detail:
-          "Built a Next.js app surface for content, account, chat, and commerce workflows.",
+          "Built public discovery and story experiences, a creator cabinet and editor, realtime chat, account security, and governed admin workspaces with Next.js, Mantine, and RTK Query.",
       },
       {
         area: "Backend",
         detail:
-          "Separated the main API, payment service, shared contracts, and Go file service boundaries.",
+          "Designed the main NestJS API as the browser-facing gateway for identity, publishing, engagement, messaging, governance, and adapters to dedicated payment and file services.",
       },
       {
         area: "Infrastructure",
         detail:
-          "Configured Docker, Kafka, PostgreSQL, MinIO, and local Kubernetes development modes.",
+          "Created a Yarn workspace with PostgreSQL, Kafka, MinIO/S3, background workers, Docker/Colima, local Kubernetes, and container deployment workflows for Vercel, Heroku, and Render targets.",
       },
       {
         area: "Security",
         detail:
-          "Implemented authentication, moderation paths, payment webhooks, and file lifecycle controls.",
+          "Implemented MFA step-up, OAuth linking, device-aware sessions, CSRF and security headers, audited root-owner governance, role capabilities, throttling, and moderation controls.",
       },
     ],
     highlights: [
-      "Combines a Next.js frontend, main NestJS API, dedicated payment service, and Go file service in one workspace.",
-      "Supports authentication, blog/content flows, moderation, realtime chat, payments, and file lifecycle events.",
-      "Uses Kafka, PostgreSQL, MinIO/S3, Docker, and local Kubernetes tooling for realistic platform engineering practice.",
+      "Keeps browser integrations behind one NestJS API while dedicated services own payment state and file metadata.",
+      "Moves media directly through presigned object-storage URLs while the Go service governs metadata and lifecycle events.",
+      "Runs publishing, news-dispatch, and payment-event workers with shared contracts plus unit, integration, contract, smoke, and architecture checks.",
+      "Implements Stripe checkout, webhook, catalog, outbox, and entitlement foundations while intentionally gating generic purchase activation during migration.",
     ],
     techStack: [
-      "Next.js 16",
-      "React 19",
-      "NestJS 11",
-      "Go",
+      "Next.js 16.2",
+      "React 19.2",
+      "TypeScript 5.9",
+      "Mantine 9.2",
+      "Redux Toolkit 2.12",
+      "NestJS 11.1",
+      "Go 1.26",
       "PostgreSQL",
       "Kafka",
-      "Stripe",
+      "Socket.IO 4.8",
+      "Stripe 14",
       "MinIO/S3",
-      "Docker",
-      "Kubernetes",
     ],
     liveUrl: "https://lens-lounge.com",
-    sourceUrl: "https://github.com/sergehall/lens-lounge-microservices",
-    docsUrl:
-      "https://github.com/sergehall/lens-lounge-microservices/tree/main/docs",
-    architectureUrl:
-      "https://github.com/sergehall/lens-lounge-microservices/blob/main/docs/monorepo-migration-plan.md",
   },
   {
     id: "sergioartg",

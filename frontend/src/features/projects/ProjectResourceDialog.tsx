@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef } from "react";
+import { useId, useRef } from "react";
 import { createPortal } from "react-dom";
 import {
   BookOpen,
@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 
 import type { PublicProjectResource } from "@/features/projects/project-public-resources";
+import { useProjectDialogFocus } from "@/features/projects/useProjectDialogFocus";
 
 type ProjectResourceDialogProps = {
   readonly resource: PublicProjectResource | null;
@@ -20,29 +21,15 @@ export default function ProjectResourceDialog({
   onClose,
 }: ProjectResourceDialogProps) {
   const titleId = useId();
+  const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
-  useEffect(() => {
-    if (!resource) {
-      return;
-    }
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        onClose();
-      }
-    };
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    window.addEventListener("keydown", handleKeyDown);
-    closeButtonRef.current?.focus();
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [onClose, resource]);
+  useProjectDialogFocus({
+    isOpen: resource !== null,
+    onClose,
+    dialogRef,
+    initialFocusRef: closeButtonRef,
+  });
 
   if (!resource) {
     return null;
@@ -52,6 +39,7 @@ export default function ProjectResourceDialog({
 
   return createPortal(
     <div
+      ref={dialogRef}
       role="dialog"
       aria-modal="true"
       aria-labelledby={titleId}
