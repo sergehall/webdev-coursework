@@ -36,11 +36,15 @@ export const TagBadge = ({ label }: { label: TagIconLabel }) => {
   }, [refs.reference, refs.floating, update]);
 
   return (
-    <div
+    <span
       // Set reference element for positioning (the icon container)
       ref={refs.setReference}
       onMouseEnter={() => setOpen(true)} // Show tooltip on hover
       onMouseLeave={() => setOpen(false)} // Hide tooltip when not hovered
+      onFocus={() => setOpen(true)}
+      onBlur={() => setOpen(false)}
+      tabIndex={0}
+      aria-label={label}
       className="inline-block"
     >
       {/* Icon with background color */}
@@ -52,14 +56,15 @@ export const TagBadge = ({ label }: { label: TagIconLabel }) => {
 
       {/* Tooltip */}
       {open && (
-        <div
+        <span
           ref={refs.setFloating} // Tooltip element
           style={floatingStyles} // Inline styles calculated by Floating UI
+          role="tooltip"
           className="z-50 rounded-md bg-white px-3 py-1.5 text-sm font-medium whitespace-nowrap text-gray-800 shadow-lg dark:bg-gray-200 dark:text-gray-900"
         >
           {label}
-        </div>
+        </span>
       )}
-    </div>
+    </span>
   );
 };
