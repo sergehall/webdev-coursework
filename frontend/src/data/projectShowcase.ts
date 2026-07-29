@@ -210,68 +210,68 @@ export const projectShowcaseItems = [
   {
     id: "hex-gate",
     title: "Hex Gate",
-    category: "Defensive engineering workbench",
+    category: "Defensive security knowledge and validation platform",
     status: "published",
     filters: ["Fullstack", "Security"],
     languages: ["TS", "Go"],
     summary:
-      "A secure developer site for defensive engineering content, protected cabinet routes, audit-oriented workflows, and security playbooks.",
+      "A local-first security engineering platform combining a searchable knowledge workbench, protected operator cabinet, persisted identity controls, and bounded scanner validation workflows.",
     imageUrl: "/screenshots/projects/defensive-engineering-hub.png",
-    previewLabel: "Security workbench",
+    previewLabel: "Defensive security workbench",
     previewDescription:
-      "A terminal-inspired defensive engineering hub with protected cabinet routes, audit surfaces, and Markdown-based playbooks.",
+      "Searchable security standards and playbooks, protected operations, audit evidence, and controlled Kali lab validation in one operator-focused experience.",
     architectureTags: [
-      "Auth/RBAC",
-      "Audit trail",
-      "MFA-ready",
-      "Markdown CMS",
-      "Protected routes",
-      "Security policy",
+      "Local-first trust boundary",
+      "Content as code",
+      "Next.js / Go split",
+      "Contract-first security",
+      "PostgreSQL identity state",
+      "Fail-closed scanner controls",
+      "Append-only audit evidence",
+      "Approval-gated execution",
     ],
     contributions: [
       {
         area: "Frontend",
         detail:
-          "Built the terminal-style login, role-aware dashboard, docs workbench, and security panels.",
+          "Built the Next.js knowledge catalog and Markdown reader, terminal-style identity flows, role-aware cabinet, account security, material-access review, audit, and Kali status surfaces.",
       },
       {
         area: "Backend",
         detail:
-          "Created Go API foundations for auth, audit, documents, security settings, and storage.",
+          "Implemented a Go API for document delivery, PostgreSQL-backed accounts and sessions, TOTP, passkeys, GitHub OAuth, email workflows, audit verification, and bounded scanner state.",
       },
       {
         area: "Infrastructure",
         detail:
-          "Designed local/prod runtime modes, schema validation, and content import/index tooling.",
+          "Structured a pnpm monorepo with local and production runtime modes, PostgreSQL migrations, cached and embedded content fallbacks, Render deployment, observability, and layered quality gates.",
       },
       {
         area: "Security",
         detail:
-          "Modeled roles, immutable audit verification, protected-route policy, and logging controls.",
+          "Enforced role and material-clearance boundaries, secure session controls, rate limits, idempotency, hash-linked audit evidence, signed scanner jobs, allowlists, replay checks, and default-deny modes.",
       },
     ],
     highlights: [
-      "Publishes Markdown playbooks, lab notes, request maps, audits, and security checklists from a docs content source.",
-      "Provides a terminal-inspired login gate, role-aware dashboard, security controls, logging policy, and immutable audit viewer.",
-      "Models auth, session, MFA, role, audit, and API-error contracts across a Next.js frontend and Go API.",
+      "Turns versioned Markdown standards, playbooks, request maps, audits, and checklists into a searchable defensive-engineering workbench with cached and embedded delivery fallbacks.",
+      "Connects a Next.js cabinet to persisted Go identity, session, MFA, passkey, OAuth, mail, material-access, and audit boundaries through shared contracts.",
+      "Constrains Kali validation to approved profiles, signed jobs, allowlisted targets, redacted evidence, and replay-resistant state instead of accepting arbitrary remote commands.",
+      "Keeps staging approvals and production scanner transport deliberately fail-closed while their contracts, tests, and activation gates are reviewed separately.",
     ],
     techStack: [
-      "Next.js App Router",
-      "TypeScript",
-      "Go",
+      "Next.js 16.2",
+      "React 19.2",
+      "TypeScript 5.9",
+      "Go 1.26",
       "PostgreSQL",
-      "Markdown",
-      "pnpm",
-      "Shared contracts",
-      "Audit logs",
-      "Role-based access",
+      "pgx 5.9",
+      "WebAuthn",
+      "OpenTelemetry",
+      "Markdown / GFM",
+      "Tailwind CSS 4.3",
+      "pnpm 10.33",
     ],
     liveUrl: "https://6b616c69.com",
-    sourceUrl: "https://github.com/sergehall/defensive-engineering-hub",
-    docsUrl:
-      "https://github.com/sergehall/defensive-engineering-hub/tree/main/content/docs",
-    architectureUrl:
-      "https://github.com/sergehall/defensive-engineering-hub/blob/main/README.md#auth-and-security-foundation",
   },
   {
     id: "lavoval",

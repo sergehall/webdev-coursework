@@ -15,6 +15,65 @@ export type PublicProjectResource = {
 export const publicProjectDocsById: Readonly<
   Partial<Record<string, PublicProjectResource>>
 > = {
+  "hex-gate": {
+    kind: "documentation",
+    title: "Hex Gate documentation",
+    eyebrow: "Public technical overview",
+    introduction:
+      "A portfolio-safe summary of the implemented knowledge, identity, audit, and validation workflows. Source code, sensitive configuration, and operational procedures remain private.",
+    sections: [
+      {
+        title: "Knowledge workbench",
+        summary:
+          "Hex Gate presents versioned defensive-engineering material through a focused reading and discovery experience.",
+        highlights: [
+          "The catalog covers standards, playbooks, lab notes, request maps, architecture records, audits, and checklists.",
+          "Markdown and GFM content is indexed for browsing, filtering, search, and dedicated document views.",
+          "The Go content layer supports refreshed remote content, bounded caching, and an embedded fallback for resilient delivery.",
+        ],
+      },
+      {
+        title: "Identity and cabinet",
+        summary:
+          "Protected workspaces connect persisted identity state to explicit role and material-clearance boundaries.",
+        highlights: [
+          "Account flows include registration, verification, password recovery, sessions, TOTP, passkeys, and optional GitHub sign-in.",
+          "Role-aware dashboard, security, audit, user-administration, and material-review surfaces separate operator responsibilities.",
+          "Sensitive workbench material is guarded by server-side session and clearance checks rather than client-only navigation state.",
+        ],
+      },
+      {
+        title: "Controlled validation",
+        summary:
+          "Kali tooling is designed as a bounded lab validation workflow instead of a general remote-command surface.",
+        highlights: [
+          "Scanner jobs use versioned schemas, approved profiles, signed requests, allowlisted targets, and replay checks.",
+          "Reports carry structured, redacted evidence and auditable lifecycle events instead of raw interactive shell output.",
+          "Local scanner state and PostgreSQL-backed job storage support testable control-plane behavior.",
+        ],
+      },
+      {
+        title: "Quality and delivery",
+        summary:
+          "The monorepo combines frontend, backend, integration, concurrency, fuzz, and security verification.",
+        highlights: [
+          "Frontend CI runs type checking and tests; workspace CI also validates shared contracts and lint rules.",
+          "Go checks cover unit, race, integration, fuzz-smoke, static analysis, vulnerability, and security scanning paths.",
+          "Specialized verifier scripts protect scanner schemas, signatures, transitions, audit chains, disabled modes, and UI contracts.",
+        ],
+      },
+      {
+        title: "Current delivery boundary",
+        summary:
+          "Implemented local and production-facing foundations are kept separate from activation work that remains intentionally disabled.",
+        highlights: [
+          "The public workbench, protected identity flows, material access, audit surfaces, and bounded scanner state are implemented.",
+          "Local authenticated scanner validation has dedicated contracts, fixtures, and verification gates.",
+          "Staging approval persistence and production scanner transport remain fail-closed and are not presented as active capabilities.",
+        ],
+      },
+    ],
+  },
   "lens-lounge": {
     kind: "documentation",
     title: "Lens Lounge documentation",
@@ -138,6 +197,65 @@ export const publicProjectDocsById: Readonly<
 export const publicProjectArchitectureById: Readonly<
   Partial<Record<string, PublicProjectResource>>
 > = {
+  "hex-gate": {
+    kind: "architecture",
+    title: "Hex Gate architecture",
+    eyebrow: "Public architecture overview",
+    introduction:
+      "A concise view of the implemented trust boundaries and safety principles without exposing private routes, infrastructure identifiers, secrets, or scanner operating procedures.",
+    sections: [
+      {
+        title: "Local-first trust model",
+        summary:
+          "The platform separates public knowledge delivery, authenticated operator workspaces, and isolated validation tooling.",
+        highlights: [
+          "The browser never becomes a general command channel to the Kali workstation.",
+          "Protected cabinet and material access decisions are enforced at server boundaries.",
+          "Local, development, and production modes use explicit configuration with fail-closed defaults.",
+        ],
+      },
+      {
+        title: "Content delivery boundary",
+        summary:
+          "Markdown remains the content source of truth while the Go API owns safe indexing and delivery.",
+        highlights: [
+          "Configured source boundaries and slug validation prevent arbitrary filesystem access.",
+          "Refreshable remote content is wrapped by cache controls and an embedded repository fallback.",
+          "The Next.js workbench consumes document contracts without owning content persistence.",
+        ],
+      },
+      {
+        title: "Identity and evidence",
+        summary:
+          "Authentication, authorization, and security evidence are persisted behind focused Go storage boundaries.",
+        highlights: [
+          "PostgreSQL stores account, verification, session, passkey, OAuth, mail, scanner, rate-limit, and idempotency state.",
+          "Role and clearance policy separates ordinary members from administrative and security operations.",
+          "Hash-linked audit events and verification flows make privileged activity reviewable.",
+        ],
+      },
+      {
+        title: "Scanner control plane",
+        summary:
+          "Validation jobs cross the security boundary through constrained data contracts rather than arbitrary commands.",
+        highlights: [
+          "Approved profiles define permitted behavior while signatures, expiry, allowlists, and replay protection validate each job.",
+          "Structured reports and redacted events preserve evidence without exposing secrets or unrestricted output.",
+          "Local and persisted state adapters keep lifecycle transitions deterministic and testable.",
+        ],
+      },
+      {
+        title: "Activation and release governance",
+        summary:
+          "Higher-risk capabilities require separate evidence and approval before a runtime route is enabled.",
+        highlights: [
+          "Contract, route-free, no-network, no-mutation, and disabled-mode checks document the expected safety boundary.",
+          "Frontend and backend quality gates cover types, linting, tests, race detection, fuzzing, static analysis, and dependency security.",
+          "Staging and production scanner transport remain deliberately inactive until their independent release conditions are satisfied.",
+        ],
+      },
+    ],
+  },
   "lens-lounge": {
     kind: "architecture",
     title: "Lens Lounge architecture",
