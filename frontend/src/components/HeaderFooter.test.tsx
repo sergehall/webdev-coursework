@@ -20,9 +20,7 @@ describe("portfolio shell identity", () => {
     );
     expect(screen.queryByRole("heading", { level: 1 })).not.toBeInTheDocument();
     expect(screen.queryByText("Serge Hall")).not.toBeInTheDocument();
-    expect(
-      screen.getByText("Web Engineering Portfolio")
-    ).toBeInTheDocument();
+    expect(screen.getByText("Web Engineering Portfolio")).toBeInTheDocument();
   });
 
   it("identifies the site as an independent academic portfolio", () => {
