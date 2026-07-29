@@ -108,7 +108,7 @@ export const projectShowcaseItems = [
     title: "SERGIOARTG Platform",
     category: "Creative services marketplace and booking platform",
     status: "published",
-    filters: ["Fullstack", "Marketplace"],
+    filters: ["Fullstack", "AI", "Marketplace"],
     languages: ["TS"],
     summary:
       "A production full-stack platform combining a photography portfolio with a two-sided services marketplace, authenticated workspaces, booking, Stripe payments, secure messaging, and admin operations.",

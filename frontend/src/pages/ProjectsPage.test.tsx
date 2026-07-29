@@ -340,10 +340,16 @@ describe("<ProjectsPage />", () => {
       within(projectTypeFilters).getByRole("button", { name: "AI" })
     );
 
-    expect(screen.getByText(/Showing 1 of 8 projects/i)).toBeInTheDocument();
+    expect(screen.getByText(/Showing 2 of 8 projects/i)).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: /SERGIOARTG Platform/i })
+    ).toBeInTheDocument();
     expect(
       screen.getByRole("heading", { name: /PHP Programming/i })
     ).toBeInTheDocument();
+    expect(
+      within(languageFilters).getByRole("button", { name: "TS" })
+    ).toBeEnabled();
     expect(
       within(languageFilters).getByRole("button", { name: "PHP" })
     ).toBeEnabled();
