@@ -22,31 +22,25 @@ export class QuizProgressRepository extends Repository<QuizProgress> {
     courseId: string,
     moduleNumber: number
   ): Promise<void> {
-    const existing = await this.findByClientAppAndCourse(
-      clientId,
-      appId,
-      courseId
+    await this.query(
+      `
+        INSERT INTO "webdev_quiz_progress"
+          ("clientId", "appId", "courseId", "completedModules", "createdAt")
+        VALUES ($1, $2, $3, ARRAY[$4]::integer[], $5)
+        ON CONFLICT ("clientId", "appId", "courseId")
+        DO UPDATE SET "completedModules" = (
+          SELECT ARRAY(
+            SELECT DISTINCT completed_module
+            FROM unnest(
+              "webdev_quiz_progress"."completedModules"
+              || EXCLUDED."completedModules"
+            ) AS completed_module
+            ORDER BY completed_module
+          )
+        )
+      `,
+      [clientId, appId, courseId, moduleNumber, new Date().toISOString()]
     );
-    const current = existing?.completedModules ?? [];
-
-    if (current.includes(moduleNumber)) return;
-
-    const updated = [...new Set([...current, moduleNumber])].sort(
-      (a, b) => a - b
-    );
-
-    if (existing) {
-      existing.completedModules = updated;
-      await this.save(existing);
-    } else {
-      await this.save({
-        clientId,
-        appId,
-        courseId,
-        completedModules: [moduleNumber],
-        createdAt: new Date().toISOString(),
-      });
-    }
   }
 
   async unmarkCompleted(
@@ -55,17 +49,17 @@ export class QuizProgressRepository extends Repository<QuizProgress> {
     courseId: string,
     moduleNumber: number
   ): Promise<void> {
-    const existing = await this.findByClientAppAndCourse(
-      clientId,
-      appId,
-      courseId
+    await this.query(
+      `
+        UPDATE "webdev_quiz_progress"
+        SET "completedModules" = array_remove("completedModules", $4)
+        WHERE "clientId" = $1
+          AND "appId" = $2
+          AND "courseId" = $3
+          AND $4 = ANY("completedModules")
+      `,
+      [clientId, appId, courseId, moduleNumber]
     );
-    if (!existing) return;
-
-    existing.completedModules = existing.completedModules.filter(
-      (m) => m !== moduleNumber
-    );
-    await this.save(existing);
   }
 
   async resetProgress(
