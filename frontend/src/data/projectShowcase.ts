@@ -5,6 +5,7 @@ import type { ProjectShowcaseItem } from "@/data/projectShowcase.types";
 export type {
   BuildContribution,
   ProjectFilter,
+  ProjectFramework,
   ProjectGalleryImage,
   ProjectLanguage,
   ProjectShowcaseItem,
@@ -35,6 +36,19 @@ export const projectLanguageFilters = [
 export type ProjectLanguageFilterOption =
   (typeof projectLanguageFilters)[number];
 
+export const projectFrameworkFilters = [
+  "All",
+  "Vite",
+  "Next.js",
+  "NestJS",
+  "AWS",
+  "Spring Boot",
+  "Laravel",
+] as const;
+
+export type ProjectFrameworkFilterOption =
+  (typeof projectFrameworkFilters)[number];
+
 export const projectShowcaseItems = [
   {
     id: "lens-lounge",
@@ -43,6 +57,7 @@ export const projectShowcaseItems = [
     status: "published",
     filters: ["Fullstack", "Microservices"],
     languages: ["TS", "Go"],
+    frameworks: ["Next.js", "NestJS"],
     summary:
       "A production-oriented learning platform combining public publishing, creator and editor workflows, realtime collaboration, governed administration, and independently deployable payment and file services.",
     imageUrl: "/screenshots/projects/lens-lounge-microservices.png",
@@ -110,6 +125,7 @@ export const projectShowcaseItems = [
     status: "published",
     filters: ["Fullstack", "AI", "Marketplace"],
     languages: ["TS"],
+    frameworks: ["Next.js", "NestJS"],
     summary:
       "A production full-stack platform combining a photography portfolio with a two-sided services marketplace, authenticated workspaces, booking, Stripe payments, secure messaging, and admin operations.",
     imageUrl: "/screenshots/projects/sergioartg-site.png",
@@ -187,6 +203,7 @@ export const projectShowcaseItems = [
     status: "published",
     filters: ["Fullstack", "Security"],
     languages: ["TS", "Go"],
+    frameworks: ["Next.js"],
     summary:
       "A local-first security engineering platform combining a searchable knowledge workbench, protected operator cabinet, persisted identity controls, and bounded scanner validation workflows.",
     imageUrl: "/screenshots/projects/defensive-engineering-hub.png",
@@ -253,6 +270,7 @@ export const projectShowcaseItems = [
     status: "published",
     filters: ["Fullstack", "Marketplace"],
     languages: ["TS", "Go"],
+    frameworks: ["Next.js"],
     summary:
       "A production full-stack marketplace where creators publish versioned skill products, users discover and run supported tools, and operators govern identity, catalog, delivery, and platform health.",
     imageUrl: "/screenshots/projects/lavoval.png",
@@ -323,6 +341,7 @@ export const projectShowcaseItems = [
     status: "local",
     filters: ["Fullstack", "Security"],
     languages: ["TS", "Java"],
+    frameworks: ["Next.js", "Spring Boot"],
     summary:
       "A local-first CS56 learning platform that connects structured Java coursework, checked assignment submissions, progress tracking, and a standalone JavaFX lab to a secure Next.js and Spring Boot application.",
     imageUrl: "/screenshots/projects/java-start.png",
@@ -395,6 +414,7 @@ export const projectShowcaseItems = [
     status: "paused",
     filters: ["Fullstack", "Cloud", "Security"],
     languages: ["JS", "TS"],
+    frameworks: ["Next.js", "NestJS", "AWS"],
     summary:
       "A previously deployed CS79D full-stack learning portal that connects eight cloud security modules to AWS workflows, validated uploads, activity evidence, account security, and a Bedrock-backed assessment advisor. Its EC2 runtime is currently paused.",
     imageUrl: "/screenshots/projects/final-project-CS79D.png",

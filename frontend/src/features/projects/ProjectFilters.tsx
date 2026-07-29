@@ -1,9 +1,11 @@
-import { Code2, RotateCcw, SlidersHorizontal } from "lucide-react";
+import { Boxes, Code2, RotateCcw, SlidersHorizontal } from "lucide-react";
 
 import {
   projectFilters,
+  projectFrameworkFilters,
   projectLanguageFilters,
   type ProjectFilterOption,
+  type ProjectFrameworkFilterOption,
   type ProjectLanguageFilterOption,
 } from "@/data/projectShowcase";
 import { cn } from "@/utils/cn";
@@ -11,12 +13,15 @@ import { cn } from "@/utils/cn";
 type ProjectFiltersProps = {
   readonly activeType: ProjectFilterOption;
   readonly activeLanguage: ProjectLanguageFilterOption;
+  readonly activeFramework: ProjectFrameworkFilterOption;
   readonly availableTypes: ReadonlySet<ProjectFilterOption>;
   readonly availableLanguages: ReadonlySet<ProjectLanguageFilterOption>;
+  readonly availableFrameworks: ReadonlySet<ProjectFrameworkFilterOption>;
   readonly visibleCount: number;
   readonly totalCount: number;
   readonly onTypeChange: (filter: ProjectFilterOption) => void;
   readonly onLanguageChange: (filter: ProjectLanguageFilterOption) => void;
+  readonly onFrameworkChange: (filter: ProjectFrameworkFilterOption) => void;
   readonly onReset: () => void;
 };
 
@@ -24,7 +29,7 @@ type FilterButtonProps<TFilter extends string> = {
   readonly filter: TFilter;
   readonly active: boolean;
   readonly disabled: boolean;
-  readonly tone: "sky" | "emerald";
+  readonly tone: "sky" | "emerald" | "violet";
   readonly onSelect: (filter: TFilter) => void;
 };
 
@@ -48,7 +53,9 @@ function FilterButton<TFilter extends string>({
           ? "border-sky-500 bg-sky-600 text-white shadow-md shadow-sky-900/15 dark:border-sky-400 dark:bg-sky-500 dark:text-slate-950"
           : active && tone === "emerald"
             ? "border-emerald-500 bg-emerald-600 text-white shadow-md shadow-emerald-900/15 dark:border-emerald-400 dark:bg-emerald-500 dark:text-slate-950"
-            : "border-slate-200 bg-white/80 text-slate-700 hover:border-sky-300 hover:bg-sky-50 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-200 dark:hover:border-sky-700 dark:hover:bg-slate-800"
+            : active && tone === "violet"
+              ? "border-violet-500 bg-violet-600 text-white shadow-md shadow-violet-900/15 dark:border-violet-400 dark:bg-violet-500 dark:text-slate-950"
+              : "border-slate-200 bg-white/80 text-slate-700 hover:border-sky-300 hover:bg-sky-50 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-200 dark:hover:border-sky-700 dark:hover:bg-slate-800"
       )}
     >
       {filter}
@@ -59,15 +66,21 @@ function FilterButton<TFilter extends string>({
 export default function ProjectFilters({
   activeType,
   activeLanguage,
+  activeFramework,
   availableTypes,
   availableLanguages,
+  availableFrameworks,
   visibleCount,
   totalCount,
   onTypeChange,
   onLanguageChange,
+  onFrameworkChange,
   onReset,
 }: ProjectFiltersProps) {
-  const hasActiveFilters = activeType !== "All" || activeLanguage !== "All";
+  const hasActiveFilters =
+    activeType !== "All" ||
+    activeLanguage !== "All" ||
+    activeFramework !== "All";
 
   return (
     <section className="rounded-2xl border border-slate-200 bg-white/80 p-4 shadow-sm sm:p-5 dark:border-slate-700 dark:bg-slate-900/70">
@@ -102,7 +115,7 @@ export default function ProjectFilters({
         </div>
       </div>
 
-      <div className="mt-5 grid gap-5 xl:grid-cols-2">
+      <div className="mt-5 grid gap-5 xl:grid-cols-3">
         <section className="space-y-3" aria-label="Project filters">
           <h3 className="text-sm font-black text-slate-900 dark:text-white">
             Project type
@@ -138,6 +151,28 @@ export default function ProjectFilters({
                 disabled={!availableLanguages.has(filter)}
                 tone="emerald"
                 onSelect={onLanguageChange}
+              />
+            ))}
+          </div>
+        </section>
+
+        <section
+          className="space-y-3 xl:border-l xl:border-slate-200 xl:pl-5 dark:xl:border-slate-800"
+          aria-label="Framework and platform filters"
+        >
+          <h3 className="flex items-center gap-2 text-sm font-black text-slate-900 dark:text-white">
+            <Boxes className="h-4 w-4 text-violet-600" aria-hidden="true" />
+            Framework / platform
+          </h3>
+          <div className="flex flex-wrap gap-2">
+            {projectFrameworkFilters.map((filter) => (
+              <FilterButton
+                key={filter}
+                filter={filter}
+                active={activeFramework === filter}
+                disabled={!availableFrameworks.has(filter)}
+                tone="violet"
+                onSelect={onFrameworkChange}
               />
             ))}
           </div>

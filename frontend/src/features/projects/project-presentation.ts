@@ -1,8 +1,10 @@
 import {
   projectFilters,
+  projectFrameworkFilters,
   projectLanguageFilters,
   projectShowcaseItems,
   type ProjectFilterOption,
+  type ProjectFrameworkFilterOption,
   type ProjectLanguageFilterOption,
   type ProjectShowcaseItem,
   type ProjectStatus,
@@ -106,31 +108,58 @@ export function projectMatchesLanguage(
   );
 }
 
+export function projectMatchesFramework(
+  project: ProjectShowcaseItem,
+  filter: ProjectFrameworkFilterOption
+) {
+  return (
+    filter === "All" ||
+    project.frameworks.some((framework) => framework === filter)
+  );
+}
+
 export function hasMatchingProject(
   typeFilter: ProjectFilterOption,
-  languageFilter: ProjectLanguageFilterOption
+  languageFilter: ProjectLanguageFilterOption,
+  frameworkFilter: ProjectFrameworkFilterOption
 ) {
   return projectShowcaseItems.some(
     (project) =>
       projectMatchesType(project, typeFilter) &&
-      projectMatchesLanguage(project, languageFilter)
+      projectMatchesLanguage(project, languageFilter) &&
+      projectMatchesFramework(project, frameworkFilter)
   );
 }
 
 export function getAvailableProjectFilters(
-  languageFilter: ProjectLanguageFilterOption
+  languageFilter: ProjectLanguageFilterOption,
+  frameworkFilter: ProjectFrameworkFilterOption
 ) {
   return new Set(
     projectFilters.filter((filter) =>
-      hasMatchingProject(filter, languageFilter)
+      hasMatchingProject(filter, languageFilter, frameworkFilter)
     )
   );
 }
 
-export function getAvailableLanguageFilters(typeFilter: ProjectFilterOption) {
+export function getAvailableLanguageFilters(
+  typeFilter: ProjectFilterOption,
+  frameworkFilter: ProjectFrameworkFilterOption
+) {
   return new Set(
     projectLanguageFilters.filter((filter) =>
-      hasMatchingProject(typeFilter, filter)
+      hasMatchingProject(typeFilter, filter, frameworkFilter)
+    )
+  );
+}
+
+export function getAvailableFrameworkFilters(
+  typeFilter: ProjectFilterOption,
+  languageFilter: ProjectLanguageFilterOption
+) {
+  return new Set(
+    projectFrameworkFilters.filter((filter) =>
+      hasMatchingProject(typeFilter, languageFilter, filter)
     )
   );
 }

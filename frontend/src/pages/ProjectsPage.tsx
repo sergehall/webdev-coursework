@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from "react";
 
 import {
   type ProjectFilterOption,
+  type ProjectFrameworkFilterOption,
   type ProjectLanguageFilterOption,
   type ProjectShowcaseItem,
 } from "@/data/projectShowcase";
@@ -13,7 +14,9 @@ import ProjectsHero from "@/features/projects/ProjectsHero";
 import {
   getAvailableLanguageFilters,
   getAvailableProjectFilters,
+  getAvailableFrameworkFilters,
   orderedProjectShowcaseItems,
+  projectMatchesFramework,
   projectMatchesLanguage,
   projectMatchesType,
 } from "@/features/projects/project-presentation";
@@ -24,6 +27,8 @@ export default function ProjectsPage() {
   const [activeType, setActiveType] = useState<ProjectFilterOption>("All");
   const [activeLanguage, setActiveLanguage] =
     useState<ProjectLanguageFilterOption>("All");
+  const [activeFramework, setActiveFramework] =
+    useState<ProjectFrameworkFilterOption>("All");
   const [previewProject, setPreviewProject] =
     useState<ProjectShowcaseItem | null>(null);
   const [expandedProjectIds, setExpandedProjectIds] = useState<
@@ -35,19 +40,25 @@ export default function ProjectsPage() {
       orderedProjectShowcaseItems.filter(
         (project) =>
           projectMatchesType(project, activeType) &&
-          projectMatchesLanguage(project, activeLanguage)
+          projectMatchesLanguage(project, activeLanguage) &&
+          projectMatchesFramework(project, activeFramework)
       ),
-    [activeLanguage, activeType]
+    [activeFramework, activeLanguage, activeType]
   );
 
   const availableTypes = useMemo(
-    () => getAvailableProjectFilters(activeLanguage),
-    [activeLanguage]
+    () => getAvailableProjectFilters(activeLanguage, activeFramework),
+    [activeFramework, activeLanguage]
   );
 
   const availableLanguages = useMemo(
-    () => getAvailableLanguageFilters(activeType),
-    [activeType]
+    () => getAvailableLanguageFilters(activeType, activeFramework),
+    [activeFramework, activeType]
+  );
+
+  const availableFrameworks = useMemo(
+    () => getAvailableFrameworkFilters(activeType, activeLanguage),
+    [activeLanguage, activeType]
   );
 
   const closePreview = useCallback(() => {
@@ -57,6 +68,7 @@ export default function ProjectsPage() {
   const resetFilters = useCallback(() => {
     setActiveType("All");
     setActiveLanguage("All");
+    setActiveFramework("All");
   }, []);
 
   const toggleProjectDetails = useCallback((projectId: string) => {
@@ -81,12 +93,15 @@ export default function ProjectsPage() {
         <ProjectFilters
           activeType={activeType}
           activeLanguage={activeLanguage}
+          activeFramework={activeFramework}
           availableTypes={availableTypes}
           availableLanguages={availableLanguages}
+          availableFrameworks={availableFrameworks}
           visibleCount={visibleProjects.length}
           totalCount={orderedProjectShowcaseItems.length}
           onTypeChange={setActiveType}
           onLanguageChange={setActiveLanguage}
+          onFrameworkChange={setActiveFramework}
           onReset={resetFilters}
         />
 

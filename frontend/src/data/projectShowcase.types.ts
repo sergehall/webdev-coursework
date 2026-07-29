@@ -15,6 +15,14 @@ export type ProjectFilter =
 
 export type ProjectLanguage = "JS" | "TS" | "PHP" | "Java" | "Go";
 
+export type ProjectFramework =
+  | "Vite"
+  | "Next.js"
+  | "NestJS"
+  | "AWS"
+  | "Spring Boot"
+  | "Laravel";
+
 export type BuildContribution = {
   readonly area: "Frontend" | "Backend" | "Infrastructure" | "Security";
   readonly detail: string;
@@ -32,6 +40,7 @@ export type ProjectShowcaseItem = {
   readonly status: ProjectStatus;
   readonly filters: readonly ProjectFilter[];
   readonly languages: readonly ProjectLanguage[];
+  readonly frameworks: readonly ProjectFramework[];
   readonly summary: string;
   readonly imageUrl: string;
   readonly galleryImages?: readonly ProjectGalleryImage[];

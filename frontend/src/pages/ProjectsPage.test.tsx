@@ -278,6 +278,9 @@ describe("<ProjectsPage />", () => {
     const languageFilters = screen.getByRole("region", {
       name: /Programming language filters/i,
     });
+    const frameworkFilters = screen.getByRole("region", {
+      name: /Framework and platform filters/i,
+    });
 
     expect(
       within(projectTypeFilters).queryByRole("button", { name: "Java" })
@@ -290,6 +293,9 @@ describe("<ProjectsPage />", () => {
     ).toBeInTheDocument();
     expect(
       within(languageFilters).getByRole("button", { name: "PHP" })
+    ).toBeInTheDocument();
+    expect(
+      within(frameworkFilters).getByRole("button", { name: "Next.js" })
     ).toBeInTheDocument();
 
     await user.click(
@@ -353,6 +359,13 @@ describe("<ProjectsPage />", () => {
     expect(
       within(languageFilters).getByRole("button", { name: "PHP" })
     ).toBeEnabled();
+    await user.click(
+      within(frameworkFilters).getByRole("button", { name: "Laravel" })
+    );
+    expect(screen.getByText(/Showing 1 of 8 projects/i)).toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { name: /SERGIOARTG Platform/i })
+    ).not.toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "Reset" }));
 

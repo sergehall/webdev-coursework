@@ -7,6 +7,7 @@ export const javaFxEventHandlingProject = {
   status: "local",
   filters: ["Fullstack"],
   languages: ["Java", "TS"],
+  frameworks: ["Next.js", "Spring Boot"],
   summary:
     "A desktop-first JavaFX assignment expanded into a local multi-application system where JavaFX and Next.js share one validated Spring Boot and PostgreSQL task workflow.",
   imageUrl: "/screenshots/projects/javafx-event-handling.webp",

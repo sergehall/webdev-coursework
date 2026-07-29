@@ -7,6 +7,7 @@ export const cs85PhpProgrammingProject = {
   status: "local",
   filters: ["Fullstack", "AI"],
   languages: ["PHP"],
+  frameworks: ["Vite", "Laravel"],
   summary:
     "A completed twelve-module CS85 Laravel portfolio that progresses from PHP fundamentals through databases, authentication, and APIs into a secure hybrid AI learning workspace.",
   imageUrl: "/screenshots/projects/cs85-php-programming.webp",
