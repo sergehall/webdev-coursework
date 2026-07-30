@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import {
   ArrowRight,
   Check,
@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { SiGithub } from "react-icons/si";
 
+import FinalExam from "./FinalExam";
 import {
   assignment15Links,
   assignmentRequirements,
@@ -27,6 +28,7 @@ import {
   type ProjectShowcase,
 } from "./assignment15Data";
 
+import AnimatedAccordionItem from "@/components/AnimatedAccordionItem";
 import { ModuleCompletionButton } from "@/components/buttons";
 import { useFinalModuleRedirect } from "@/hooks/useFinalModuleRedirect";
 
@@ -564,8 +566,18 @@ function AssignmentBrief() {
 }
 
 export function AssignmentMod15View() {
+  const [isFinalExamOpen, setIsFinalExamOpen] = useState(false);
+
   return (
     <section className="mx-auto w-full max-w-7xl space-y-10 pb-4">
+      <AnimatedAccordionItem
+        title="Final Exam"
+        isOpen={isFinalExamOpen}
+        onToggle={() => setIsFinalExamOpen((isOpen) => !isOpen)}
+      >
+        <FinalExam />
+      </AnimatedAccordionItem>
+
       <Hero />
 
       <section aria-labelledby="projects-title">

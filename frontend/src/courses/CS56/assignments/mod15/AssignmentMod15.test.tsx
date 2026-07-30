@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { AssignmentMod15View } from "./AssignmentMod15";
@@ -44,6 +44,32 @@ describe("<AssignmentMod15View />", () => {
     const source = container.querySelector("video source");
     expect(video).toHaveAttribute("poster", assignment15Links.demoPoster);
     expect(source).toHaveAttribute("src", assignment15Links.demoVideo);
+  });
+
+  it("places the Final Exam in a collapsed section above the completed work", () => {
+    render(<AssignmentMod15View />);
+
+    const finalExamToggle = screen.getByRole("button", { name: "Final Exam" });
+    const completedWorkHeading = screen.getByRole("heading", {
+      name: "Two Java projects, shown with clear roles.",
+    });
+
+    expect(finalExamToggle).toHaveAttribute("aria-expanded", "false");
+    expect(
+      screen.queryByLabelText(/enter the access code/i)
+    ).not.toBeInTheDocument();
+    expect(
+      finalExamToggle.compareDocumentPosition(completedWorkHeading) &
+        Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy();
+
+    fireEvent.click(finalExamToggle);
+
+    expect(finalExamToggle).toHaveAttribute("aria-expanded", "true");
+    expect(
+      screen.getByRole("heading", { name: "Final Exam" })
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText(/enter the access code/i)).toBeInTheDocument();
   });
 
   it("maps the complete 20-point rubric to implementation evidence", () => {
