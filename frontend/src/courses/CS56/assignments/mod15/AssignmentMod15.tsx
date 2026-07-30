@@ -569,7 +569,7 @@ export function AssignmentMod15View() {
   const [isFinalExamOpen, setIsFinalExamOpen] = useState(false);
 
   return (
-    <section className="mx-auto w-full max-w-7xl space-y-10 pb-4">
+    <section className="mx-auto w-full max-w-7xl space-y-10 pt-6 pb-4 sm:pt-8">
       <AnimatedAccordionItem
         title="Final Exam"
         isOpen={isFinalExamOpen}
