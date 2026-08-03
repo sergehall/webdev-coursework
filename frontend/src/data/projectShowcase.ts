@@ -1,5 +1,6 @@
 import { cs85PhpProgrammingProject } from "@/data/projects/cs85PhpProgrammingProject";
 import { javaFxEventHandlingProject } from "@/data/projects/javaFxEventHandlingProject";
+import { opCosmetologyProject } from "@/data/projects/opCosmetologyProject";
 import type { ProjectShowcaseItem } from "@/data/projectShowcase.types";
 
 export type {
@@ -196,6 +197,7 @@ export const projectShowcaseItems = [
     ],
     liveUrl: "https://sergioartg.com",
   },
+  opCosmetologyProject,
   {
     id: "hex-gate",
     title: "Hex Gate",
