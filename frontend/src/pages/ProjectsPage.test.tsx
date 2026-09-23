@@ -153,7 +153,7 @@ describe("<ProjectsPage />", () => {
       "Preview SERGIOARTG Platform screenshot"
     );
     expect(
-      screen.getByText(/Professionals publish service offers/i)
+      screen.getByText(/Explore Sergio's photography/i)
     ).toBeInTheDocument();
 
     await user.click(previewButtons[0]);
@@ -167,20 +167,10 @@ describe("<ProjectsPage />", () => {
 
     expect(
       within(sergioartgDialog).getByAltText(
-        /SERGIOARTG Platform additional website preview 2/i
+        /SERGIOARTG Platform enlarged website preview/i
       )
-    ).toHaveAttribute(
-      "src",
-      "/screenshots/projects/sergioartg-services-marketplace.webp"
-    );
-    expect(
-      within(sergioartgDialog).getByAltText(
-        /SERGIOARTG Platform additional website preview 3/i
-      )
-    ).toHaveAttribute(
-      "src",
-      "/screenshots/projects/sergioartg-service-categories.webp"
-    );
+    ).toHaveAttribute("src", "/screenshots/projects/sergioartg-homepage.webp");
+    expect(within(sergioartgDialog).getAllByRole("img")).toHaveLength(1);
     expect(closeScreenshotButton).toHaveFocus();
 
     await user.click(closeScreenshotButton);

@@ -129,20 +129,10 @@ export const projectShowcaseItems = [
     frameworks: ["Next.js", "NestJS"],
     summary:
       "A production full-stack platform combining a photography portfolio with a two-sided services marketplace, authenticated workspaces, booking, Stripe payments, secure messaging, and admin operations.",
-    imageUrl: "/screenshots/projects/sergioartg-site.png",
-    galleryImages: [
-      {
-        src: "/screenshots/projects/sergioartg-services-marketplace.webp",
-        caption: "Professional services marketplace",
-      },
-      {
-        src: "/screenshots/projects/sergioartg-service-categories.webp",
-        caption: "Service category taxonomy",
-      },
-    ],
-    previewLabel: "Professional services marketplace",
+    imageUrl: "/screenshots/projects/sergioartg-homepage.webp",
+    previewLabel: "Photography and creative services",
     previewDescription:
-      "Professionals publish service offers while clients filter by profession, category, location, price, format, and provider availability.",
+      "Explore Sergio's photography and discover creative professionals, services, and tools for managing bookings.",
     architectureTags: [
       "TypeScript monorepo",
       "Domain-driven modules",
