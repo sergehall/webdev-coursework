@@ -129,7 +129,7 @@ export const projectShowcaseItems = [
     frameworks: ["Next.js", "NestJS"],
     summary:
       "A production full-stack platform combining a photography portfolio with a two-sided services marketplace, authenticated workspaces, booking, Stripe payments, secure messaging, and admin operations.",
-    imageUrl: "/screenshots/projects/sergioartg-homepage.webp",
+    imageUrl: "/screenshots/projects/sergioartg-homepage-portrait.webp",
     previewLabel: "Photography and creative services",
     previewDescription:
       "Explore Sergio's photography and discover creative professionals, services, and tools for managing bookings.",

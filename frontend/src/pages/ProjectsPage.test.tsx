@@ -169,7 +169,10 @@ describe("<ProjectsPage />", () => {
       within(sergioartgDialog).getByAltText(
         /SERGIOARTG Platform enlarged website preview/i
       )
-    ).toHaveAttribute("src", "/screenshots/projects/sergioartg-homepage.webp");
+    ).toHaveAttribute(
+      "src",
+      "/screenshots/projects/sergioartg-homepage-portrait.webp"
+    );
     expect(within(sergioartgDialog).getAllByRole("img")).toHaveLength(1);
     expect(closeScreenshotButton).toHaveFocus();
 
