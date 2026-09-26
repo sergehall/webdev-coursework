@@ -11,7 +11,7 @@ type LabItem = {
 export default function AWSLearnerLabWeek1() {
   const files = [
     {
-      fileUrl: "/code-playground/CS79A/AWS-Learner-Lab-Setup.pdf",
+      fileUrl: "/course-materials/CS79A/AWS-Learner-Lab-Setup.pdf",
       filename: "AWS-Learner-Lab-Setup.pdf",
     },
   ];

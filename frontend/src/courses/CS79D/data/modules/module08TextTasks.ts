@@ -34,7 +34,7 @@ export const cs79dModule08TextTasks = [
     previewFiles: [
       {
         fileUrl:
-          "/code-playground/CS79D/mod-8/CS79D_Final_Project_AWS_Review.pdf",
+          "/course-materials/CS79D/mod-8/CS79D_Final_Project_AWS_Review.pdf",
         filename: "CS79D_Final_Project_AWS_Review.pdf",
         buttonLabel: "Open Final Project AWS Review PDF",
       },

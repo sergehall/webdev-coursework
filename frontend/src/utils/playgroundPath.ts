@@ -37,5 +37,5 @@ export function toCodePlaygroundUrl(relativePath: string): string {
   }
 
   const encoded = safePath.split("/").map(encodeURIComponent).join("/");
-  return `/code-playground/${encoded}`;
+  return `/course-materials/${encoded}`;
 }

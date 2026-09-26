@@ -19,22 +19,22 @@ export default function Week2Deliverables() {
 
   const files = [
     {
-      fileUrl: "/code-playground/CS79A/mod-2/EC2_Windows_Instance.png",
+      fileUrl: "/course-materials/CS79A/mod-2/EC2_Windows_Instance.png",
       filename: "EC2_Windows_Instance.png",
     },
     {
-      fileUrl: "/code-playground/CS79A/mod-2/Task0_Launch_Success.png",
+      fileUrl: "/course-materials/CS79A/mod-2/Task0_Launch_Success.png",
       filename: "Task0_Launch_Success.png",
     },
   ];
 
   const screenshots = [
     {
-      src: "/code-playground/CS79A/mod-2/EC2_Windows_Instance.png",
+      src: "/course-materials/CS79A/mod-2/EC2_Windows_Instance.png",
       label: "EC2 Windows Instance screenshot (example output)",
     },
     {
-      src: "/code-playground/CS79A/mod-2/Task0_Launch_Success.png",
+      src: "/course-materials/CS79A/mod-2/Task0_Launch_Success.png",
       label: "Learner Lab Task 0 – Launch success screenshot (example output)",
     },
   ];

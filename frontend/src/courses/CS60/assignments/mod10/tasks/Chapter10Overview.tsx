@@ -4,7 +4,7 @@ import { DownloadAssignmentBundleButton } from "@/components/buttons";
 export default function Chapter10Overview() {
   const finalExamFiles = [
     {
-      fileUrl: "/code-playground/CS60/final-exam/CS60_Final_Exam-F25.pdf",
+      fileUrl: "/course-materials/CS60/final-exam/CS60_Final_Exam-F25.pdf",
       filename: "CS60_Final_Exam-F25.pdf",
     },
   ];

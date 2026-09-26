@@ -110,7 +110,7 @@ webdev-coursework/
 ├── .github/workflows/         # CI and deployment automation
 ├── docs/                      # Retrospectives and project notes
 ├── frontend/                  # React + Vite learning platform
-│   ├── public/                # Static assets, icons, code-playground files
+│   ├── public/                # Static assets, icons, course materials
 │   ├── assets/                # Local design/source assets
 │   ├── src/
 │   │   ├── api/               # Frontend API clients and config

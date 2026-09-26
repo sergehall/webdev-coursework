@@ -134,7 +134,7 @@ export const cs79dModule05TextTasks = [
     previewFiles: [
       {
         fileUrl:
-          "/code-playground/CS79D/mod-5/pihole-vpn-admin-login-verification.png",
+          "/course-materials/CS79D/mod-5/pihole-vpn-admin-login-verification.png",
         filename: "pihole-vpn-admin-login-verification.png",
         buttonLabel: "PiHole VPN Admin Verification",
       },
@@ -201,19 +201,19 @@ export const cs79dModule05TextTasks = [
     previewFiles: [
       {
         fileUrl:
-          "/code-playground/CS79D/mod-5/inspector-account-resource-coverage.png",
+          "/course-materials/CS79D/mod-5/inspector-account-resource-coverage.png",
         filename: "inspector-account-resource-coverage.png",
         buttonLabel: "Inspector Coverage",
       },
       {
         fileUrl:
-          "/code-playground/CS79D/mod-5/inspector-network-reachability-findings.png",
+          "/course-materials/CS79D/mod-5/inspector-network-reachability-findings.png",
         filename: "inspector-network-reachability-findings.png",
         buttonLabel: "Inspector Findings",
       },
       {
         fileUrl:
-          "/code-playground/CS79D/mod-5/inspector-port-22-remediation-detail.png",
+          "/course-materials/CS79D/mod-5/inspector-port-22-remediation-detail.png",
         filename: "inspector-port-22-remediation-detail.png",
         buttonLabel: "Inspector Remediation",
       },

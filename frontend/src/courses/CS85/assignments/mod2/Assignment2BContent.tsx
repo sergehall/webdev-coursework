@@ -16,11 +16,11 @@ const assignment2BItem: CanvasItem = {
 
 const assignment2BFiles = [
   {
-    fileUrl: "/code-playground/CS85/mod-2/module2_assignment_2b.pdf",
+    fileUrl: "/course-materials/CS85/mod-2/module2_assignment_2b.pdf",
     filename: "module2_assignment_2b.pdf",
   },
   {
-    fileUrl: "/code-playground/CS85/mod-2/CosmicCalendarBuilder.php",
+    fileUrl: "/course-materials/CS85/mod-2/CosmicCalendarBuilder.php",
     filename: "CosmicCalendarBuilder.php",
   },
 ];

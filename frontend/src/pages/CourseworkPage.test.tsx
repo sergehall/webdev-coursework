@@ -20,6 +20,7 @@ function renderCourseworkPage() {
           path="/coursework/:courseId/assignment"
           element={<AssignmentRouteProbe />}
         />
+        <Route path="/coursework/ESL10G" element={<div>Opened ESL 10G</div>} />
       </Routes>
     </MemoryRouter>
   );
@@ -81,5 +82,20 @@ describe("<CourseworkPage />", () => {
     expect(
       screen.queryByRole("button", { name: /load more/i })
     ).not.toBeInTheDocument();
+  });
+
+  it("opens the ESL 10G course details at the bottom of coursework", async () => {
+    const user = userEvent.setup();
+    renderCourseworkPage();
+
+    await user.click(
+      screen.getByText(/ESL 10G · Listening, Speaking & Grammar/i)
+    );
+    const link = screen.getByRole("link", {
+      name: /Explore ESL 10G weeks and presentation/i,
+    });
+    expect(link).toHaveAttribute("href", "/coursework/ESL10G");
+    await user.click(link);
+    expect(screen.getByText("Opened ESL 10G")).toBeInTheDocument();
   });
 });

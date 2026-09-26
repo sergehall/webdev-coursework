@@ -380,18 +380,19 @@ export const cs56Module01CanvasSections = [
             previewFiles: [
               {
                 fileUrl:
-                  "/code-playground/CS56/mod-1/java-review/ExpenseTrackerApp.java",
+                  "/course-materials/CS56/mod-1/java-review/ExpenseTrackerApp.java",
                 filename: "ExpenseTrackerApp.java",
                 buttonLabel: "ExpenseTrackerApp.java",
               },
               {
                 fileUrl:
-                  "/code-playground/CS56/mod-1/java-review/ExpenseManager.java",
+                  "/course-materials/CS56/mod-1/java-review/ExpenseManager.java",
                 filename: "ExpenseManager.java",
                 buttonLabel: "ExpenseManager.java",
               },
               {
-                fileUrl: "/code-playground/CS56/mod-1/java-review/Expense.java",
+                fileUrl:
+                  "/course-materials/CS56/mod-1/java-review/Expense.java",
                 filename: "Expense.java",
                 buttonLabel: "Expense.java",
               },

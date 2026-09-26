@@ -18,21 +18,21 @@ const Assignment10B = () => {
   const screenshots = [
     {
       label: "Dynamic Profile Component",
-      src: "/code-playground/CS81/mod-10/B/profile.png",
+      src: "/course-materials/CS81/mod-10/B/profile.png",
     },
   ];
 
   const files = [
     {
-      fileUrl: "/code-playground/CS81/mod-10/B/README.md",
+      fileUrl: "/course-materials/CS81/mod-10/B/README.md",
       filename: "README.md",
     },
     {
-      fileUrl: "/code-playground/CS81/mod-10/B/profile.png",
+      fileUrl: "/course-materials/CS81/mod-10/B/profile.png",
       filename: "profile.png",
     },
     {
-      fileUrl: "/code-playground/CS81/mod-10/B/module10a-profile.zip",
+      fileUrl: "/course-materials/CS81/mod-10/B/module10a-profile.zip",
       filename: "module10a-profile.zip",
     },
   ];

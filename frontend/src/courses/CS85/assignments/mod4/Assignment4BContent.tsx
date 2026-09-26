@@ -4,11 +4,11 @@ import { ShowModalButton, ToggleModalButton } from "@/components/buttons";
 
 const assignment4BFiles = [
   {
-    fileUrl: "/code-playground/CS85/mod-4/Module4_Assignment_4B.pdf",
+    fileUrl: "/course-materials/CS85/mod-4/Module4_Assignment_4B.pdf",
     filename: "Module4_Assignment_4B.pdf",
   },
   {
-    fileUrl: "/code-playground/CS85/mod-4/show_inventory.php",
+    fileUrl: "/course-materials/CS85/mod-4/show_inventory.php",
     filename: "show_inventory.php",
   },
 ];

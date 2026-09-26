@@ -54,6 +54,28 @@ export default function AppRoutes() {
         />
 
         <Route
+          path="/coursework/ESL10G"
+          element={
+            <Suspense
+              fallback={<PageLoadingState label="Loading ESL 10G..." />}
+            >
+              <Screens.ESL10GPage />
+            </Suspense>
+          }
+        />
+
+        <Route
+          path="/coursework/ESL10G/presentation-1"
+          element={
+            <Suspense
+              fallback={<PageLoadingState label="Loading presentation..." />}
+            >
+              <Screens.ESL10GPresentationPage />
+            </Suspense>
+          }
+        />
+
+        <Route
           path="/coursework/:courseId"
           element={<CourseAssignmentRedirect />}
         />

@@ -21,12 +21,12 @@ export const cs79cModule10TextTasks = [
     previewFiles: [
       {
         fileUrl:
-          "/code-playground/CS79C/final-project/CS79C_AWS_Cloud_Stack_Report_Siarhei_Hancharou.pdf",
+          "/course-materials/CS79C/final-project/CS79C_AWS_Cloud_Stack_Report_Siarhei_Hancharou.pdf",
         filename: "CS79C_AWS_Cloud_Stack_Report_Siarhei_Hancharou.pdf",
         buttonLabel: "AWS Cloud Stack",
       },
       {
-        fileUrl: "/code-playground/CS79C/final-project/final-report.html",
+        fileUrl: "/course-materials/CS79C/final-project/final-report.html",
         filename: "final-report.html",
         buttonLabel: "Final report",
       },

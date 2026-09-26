@@ -16,7 +16,7 @@ const assignment10AItem: CanvasItem = {
 };
 
 const assignmentPdfUrl =
-  "/code-playground/CS85/mod-10/10a/Module_10A_completion_summary.pdf";
+  "/course-materials/CS85/mod-10/10a/Module_10A_completion_summary.pdf";
 
 const assignmentPdfFiles = [
   {

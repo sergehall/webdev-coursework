@@ -29,7 +29,7 @@ const requiredReadingItem: CanvasItem = {
 
 const assignment6AFiles = [
   {
-    fileUrl: "/code-playground/CS85/mod-6/Module6_Assignment_6A.pdf",
+    fileUrl: "/course-materials/CS85/mod-6/Module6_Assignment_6A.pdf",
     filename: "Module6_Assignment_6A.pdf",
   },
 ];

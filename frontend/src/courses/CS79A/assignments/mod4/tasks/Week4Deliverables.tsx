@@ -19,46 +19,46 @@ export default function Week4Deliverables() {
 
   const files = [
     {
-      fileUrl: "/code-playground/CS79A/mod-4/S3-Buckets-Bootstrap.png",
+      fileUrl: "/course-materials/CS79A/mod-4/S3-Buckets-Bootstrap.png",
       filename: "S3-Buckets-Bootstrap.png",
     },
     {
-      fileUrl: "/code-playground/CS79A/mod-4/FTP-Server-Lab.png",
+      fileUrl: "/course-materials/CS79A/mod-4/FTP-Server-Lab.png",
       filename: "FTP-Server-Lab.png",
     },
     {
-      fileUrl: "/code-playground/CS79A/mod-4/Screenshot2.png",
+      fileUrl: "/course-materials/CS79A/mod-4/Screenshot2.png",
       filename: "Screenshot2.png",
     },
     {
-      fileUrl: "/code-playground/CS79A/mod-4/Screenshot3.png",
+      fileUrl: "/course-materials/CS79A/mod-4/Screenshot3.png",
       filename: "Screenshot3.png",
     },
     {
-      fileUrl: "/code-playground/CS79A/mod-4/Screenshot4.png",
+      fileUrl: "/course-materials/CS79A/mod-4/Screenshot4.png",
       filename: "Screenshot4.png",
     },
   ];
 
   const screenshots = [
     {
-      src: "/code-playground/CS79A/mod-4/S3-Buckets-Bootstrap.png",
+      src: "/course-materials/CS79A/mod-4/S3-Buckets-Bootstrap.png",
       label: "S3 bucket hosting a Bootstrap website (example screenshot)",
     },
     {
-      src: "/code-playground/CS79A/mod-4/FTP-Server-Lab.png",
+      src: "/course-materials/CS79A/mod-4/FTP-Server-Lab.png",
       label: "FTP Server configured and accessible (example screenshot)",
     },
     {
-      src: "/code-playground/CS79A/mod-4/Screenshot2.png",
+      src: "/course-materials/CS79A/mod-4/Screenshot2.png",
       label: "FTP Server configured and accessible (example screenshot)",
     },
     {
-      src: "/code-playground/CS79A/mod-4/Screenshot3.png",
+      src: "/course-materials/CS79A/mod-4/Screenshot3.png",
       label: "FTP Server configured and accessible (example screenshot)",
     },
     {
-      src: "/code-playground/CS79A/mod-4/Screenshot4.png",
+      src: "/course-materials/CS79A/mod-4/Screenshot4.png",
       label: "FTP Server configured and accessible (example screenshot)",
     },
   ];

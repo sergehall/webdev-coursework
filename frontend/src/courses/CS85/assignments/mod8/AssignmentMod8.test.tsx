@@ -59,11 +59,11 @@ describe("<AssignmentMod8 />", () => {
 
     expect(screen.getByRole("link", { name: /README\.md/ })).toHaveAttribute(
       "href",
-      "/code-playground/CS85/mod-8/8a/README.md"
+      "/course-materials/CS85/mod-8/8a/README.md"
     );
     expect(screen.getByRole("link", { name: /.env\.example/ })).toHaveAttribute(
       "href",
-      "/code-playground/CS85/mod-8/8a/env.example"
+      "/course-materials/CS85/mod-8/8a/env.example"
     );
 
     await user.click(
@@ -72,7 +72,7 @@ describe("<AssignmentMod8 />", () => {
 
     expect(screen.getByAltText("php_artisan_migrate.png")).toHaveAttribute(
       "src",
-      "/code-playground/CS85/mod-8/8a/php_artisan_migrate.png"
+      "/course-materials/CS85/mod-8/8a/php_artisan_migrate.png"
     );
   });
 
@@ -103,7 +103,7 @@ describe("<AssignmentMod8 />", () => {
       screen.getByRole("link", { name: "Download assignment PDF" })
     ).toHaveAttribute(
       "href",
-      "/code-playground/CS85/mod-8/8b/Module8_Assignment_8B.pdf"
+      "/course-materials/CS85/mod-8/8b/Module8_Assignment_8B.pdf"
     );
     expect(
       screen.getByRole("link", {
@@ -120,7 +120,7 @@ describe("<AssignmentMod8 />", () => {
 
     expect(screen.getByTitle("Module8_Assignment_8B.pdf")).toHaveAttribute(
       "src",
-      "/code-playground/CS85/mod-8/8b/Module8_Assignment_8B.pdf"
+      "/course-materials/CS85/mod-8/8b/Module8_Assignment_8B.pdf"
     );
   });
 

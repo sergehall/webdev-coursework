@@ -162,11 +162,11 @@ describe("<AssignmentMod3 />", () => {
       screen.getByRole("link", { name: "Download Module3_Assignment_3A.pdf" })
     ).toHaveAttribute(
       "href",
-      "/code-playground/CS85/mod-3/Module3_Assignment_3A.pdf"
+      "/course-materials/CS85/mod-3/Module3_Assignment_3A.pdf"
     );
     expect(
       screen.getByRole("link", { name: "Download ContactForm.php" })
-    ).toHaveAttribute("href", "/code-playground/CS85/mod-3/ContactForm.php");
+    ).toHaveAttribute("href", "/course-materials/CS85/mod-3/ContactForm.php");
   });
 
   it("opens the Module 3 Assignment 3B PDF and PHP file preview", async () => {
@@ -190,7 +190,7 @@ describe("<AssignmentMod3 />", () => {
       screen.getByRole("link", { name: "Download Module3_Assignment_3B.pdf" })
     ).toHaveAttribute(
       "href",
-      "/code-playground/CS85/mod-3/Module3_Assignment_3B.pdf"
+      "/course-materials/CS85/mod-3/Module3_Assignment_3B.pdf"
     );
     expect(
       screen.getByRole("link", {
@@ -198,7 +198,7 @@ describe("<AssignmentMod3 />", () => {
       })
     ).toHaveAttribute(
       "href",
-      "/code-playground/CS85/mod-3/SecureProductContactForm.php"
+      "/course-materials/CS85/mod-3/SecureProductContactForm.php"
     );
   });
 

@@ -5,7 +5,7 @@ export default function Chapter5Overview() {
   const midtermFiles = [
     {
       fileUrl:
-        "/code-playground/CS60/Mid-Semester-Test/1712666_1749_CS60_ Mid_Semester_Test.docx.docx",
+        "/course-materials/CS60/Mid-Semester-Test/1712666_1749_CS60_ Mid_Semester_Test.docx.docx",
       filename: "1712666_1749_CS60_ Mid_Semester_Test.docx.docx",
     },
   ];

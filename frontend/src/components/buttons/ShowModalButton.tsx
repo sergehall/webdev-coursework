@@ -1,12 +1,13 @@
 // frontend/src/components/buttons/ShowModalButton.tsx
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 
 import { CloseModalButton } from "@/components/buttons";
 
 type File = {
   fileUrl: string;
   filename: string;
+  preview?: ReactNode;
 };
 
 type Props = {
@@ -151,7 +152,9 @@ export default function ShowModalButton({
                   Download {file.filename}
                 </a>
 
-                {filename.endsWith(".html") ? (
+                {file.preview ? (
+                  file.preview
+                ) : filename.endsWith(".html") ? (
                   <iframe
                     src={file.fileUrl}
                     title={file.filename}

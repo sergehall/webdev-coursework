@@ -4,7 +4,7 @@ import { BookOpen, CheckCircle2 } from "lucide-react";
 import { ShowModalButton, ToggleModalButton } from "@/components/buttons";
 
 const readingPdfUrl =
-  "/code-playground/CS85/mod-12/reading/m12-AIintergration.pdf";
+  "/course-materials/CS85/mod-12/reading/m12-AIintergration.pdf";
 
 const readingPdfFiles = [
   {

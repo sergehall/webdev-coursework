@@ -16,11 +16,11 @@ const assignment3BItem: CanvasItem = {
 
 const assignment3BFiles = [
   {
-    fileUrl: "/code-playground/CS85/mod-3/Module3_Assignment_3B.pdf",
+    fileUrl: "/course-materials/CS85/mod-3/Module3_Assignment_3B.pdf",
     filename: "Module3_Assignment_3B.pdf",
   },
   {
-    fileUrl: "/code-playground/CS85/mod-3/SecureProductContactForm.php",
+    fileUrl: "/course-materials/CS85/mod-3/SecureProductContactForm.php",
     filename: "SecureProductContactForm.php",
   },
 ];

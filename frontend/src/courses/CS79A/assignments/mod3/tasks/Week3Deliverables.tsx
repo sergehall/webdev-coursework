@@ -38,19 +38,19 @@ export default function Week3Deliverables() {
 
   const screenshots = [
     {
-      src: "/code-playground/CS79A/mod-3/Screenshot11.png",
+      src: "/course-materials/CS79A/mod-3/Screenshot11.png",
       label: "Ubuntu EC2 instance running in AWS Console",
     },
     {
-      src: "/code-playground/CS79A/mod-3/FTP-Server-Lab.png",
+      src: "/course-materials/CS79A/mod-3/FTP-Server-Lab.png",
       label: "Ubuntu EC2 instance running in AWS Console",
     },
     {
-      src: "/code-playground/CS79A/mod-3/Screenshot2.png",
+      src: "/course-materials/CS79A/mod-3/Screenshot2.png",
       label: "Successful SSH connection to Ubuntu server via terminal",
     },
     {
-      src: "/code-playground/CS79A/mod-3/Screenshot3.png",
+      src: "/course-materials/CS79A/mod-3/Screenshot3.png",
       label: "Successful SSH connection to Ubuntu server via terminal",
     },
   ];

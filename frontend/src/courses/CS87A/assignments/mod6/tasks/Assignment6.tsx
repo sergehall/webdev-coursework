@@ -15,7 +15,7 @@ const Assignment6 = () => {
   const screenshots = [
     {
       label: "Screenshot-assignment6 – Tkinter Pie Chart (PLUI)",
-      src: "/code-playground/CS87A/mod-6/screenshot-assignment6.png",
+      src: "/course-materials/CS87A/mod-6/screenshot-assignment6.png",
     },
   ];
 
@@ -108,7 +108,7 @@ const Assignment6 = () => {
           toggle={() => setShowScreenshots(!showScreenshots)}
         />
         <DownloadPDFButton
-          fileUrl="/code-playground/CS87A/mod-6/CS87A_FA2020_A06.pdf"
+          fileUrl="/course-materials/CS87A/mod-6/CS87A_FA2020_A06.pdf"
           filename="CS87A_FA2020_A06.pdf"
           label="Download Assignment"
         />

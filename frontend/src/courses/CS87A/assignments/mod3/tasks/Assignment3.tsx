@@ -15,7 +15,7 @@ const Assignment3 = () => {
   const screenshots = [
     {
       label: "Screenshot-assignment3 – Tic-Tac-Toe",
-      src: "/code-playground/CS87A/mod-3/screenshot-assignment3.png",
+      src: "/course-materials/CS87A/mod-3/screenshot-assignment3.png",
     },
   ];
 
@@ -95,7 +95,7 @@ const Assignment3 = () => {
           toggle={() => setShowScreenshots(!showScreenshots)}
         />
         <DownloadPDFButton
-          fileUrl="/code-playground/CS87A/mod-3/CS87A_FA2020_A03.pdf"
+          fileUrl="/course-materials/CS87A/mod-3/CS87A_FA2020_A03.pdf"
           filename="CS87A_FA2020_A03.pdf"
           label="Download Assignment"
         />

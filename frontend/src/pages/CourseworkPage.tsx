@@ -37,11 +37,11 @@ export default function CourseworkPage() {
         className="mx-auto w-full max-w-6xl text-center"
       >
         <h1 className="mb-10 bg-gradient-to-r from-indigo-500 via-sky-400 to-cyan-400 bg-clip-text text-4xl leading-tight font-extrabold text-transparent drop-shadow-lg sm:text-5xl">
-          Web Developer Coursework & Assignments
+          Coursework & Assignments
         </h1>
 
         <h3 className="mb-6 text-xl font-semibold text-gray-800 sm:text-2xl dark:text-white">
-          Select a completed course to access its assignments
+          Explore my coursework and class projects
         </h3>
 
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -112,6 +112,55 @@ export default function CourseworkPage() {
             <LoadMoreButton onClick={loadMore} />
           </div>
         )}
+
+        <section
+          className="mt-10 text-left"
+          aria-labelledby="esl-course-heading"
+        >
+          <p className="mb-3 text-sm font-bold tracking-[0.16em] text-sky-700 uppercase dark:text-sky-300">
+            Fall 2026 · In progress
+          </p>
+          <details className="group rounded-xl border border-sky-300 bg-gradient-to-r from-sky-50 to-indigo-50 p-5 shadow-sm dark:border-sky-800 dark:from-slate-900 dark:to-indigo-950">
+            <summary
+              className="cursor-pointer text-lg font-bold text-slate-900 dark:text-white"
+              id="esl-course-heading"
+            >
+              ESL 10G · Listening, Speaking & Grammar{" "}
+              <span className="ml-2 text-sm font-medium text-sky-700 dark:text-sky-300">
+                View course details
+              </span>
+            </summary>
+            <p className="mt-4 max-w-3xl text-sm leading-6 text-slate-700 dark:text-slate-300">
+              A 16-week Santa Monica College course for building English
+              listening, speaking, and grammar skills. We practice short
+              listening passages, everyday conversations, core grammar, and oral
+              presentations.
+            </p>
+            <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-slate-700 dark:text-slate-300">
+              <li>
+                Understand main ideas and supporting details in short talks.
+              </li>
+              <li>
+                Speak about familiar topics and deliver a 3–4 minute
+                presentation.
+              </li>
+              <li>
+                Use present, past, and future forms to make sentences and
+                questions.
+              </li>
+            </ul>
+            <Link
+              to="/coursework/ESL10G"
+              onClick={() => {
+                document.documentElement.scrollTop = 0;
+                document.body.scrollTop = 0;
+              }}
+              className="mt-5 inline-flex min-h-10 items-center rounded-lg bg-sky-700 px-4 py-2 text-sm font-bold text-white hover:bg-sky-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
+            >
+              Explore ESL 10G weeks and presentation
+            </Link>
+          </details>
+        </section>
       </motion.div>
 
       <Outlet />

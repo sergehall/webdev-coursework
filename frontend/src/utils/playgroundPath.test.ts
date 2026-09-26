@@ -31,9 +31,9 @@ describe("playgroundPath utilities", () => {
     expect(normalizePlaygroundRelativePath("CS81//demo.js")).toBeNull();
   });
 
-  it("builds encoded code-playground URLs", () => {
+  it("builds encoded course-material URLs for playground files", () => {
     expect(toCodePlaygroundUrl("CS81/mod 3/a.js")).toBe(
-      "/code-playground/CS81/mod%203/a.js"
+      "/course-materials/CS81/mod%203/a.js"
     );
   });
 });

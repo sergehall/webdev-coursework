@@ -15,7 +15,7 @@ const assignment1AItem: CanvasItem = {
 };
 
 const assignment1APdf = {
-  fileUrl: "/code-playground/CS85/mod-1/assignment_1a.pdf",
+  fileUrl: "/course-materials/CS85/mod-1/assignment_1a.pdf",
   filename: "assignment_1a.pdf",
 };
 

@@ -16,7 +16,7 @@ const assignment9AItem: CanvasItem = {
 };
 
 const assignmentPdfUrl =
-  "/code-playground/CS85/mod-9/9a/Module9_Assignment_9A.pdf";
+  "/course-materials/CS85/mod-9/9a/Module9_Assignment_9A.pdf";
 
 const assignmentPdfFiles = [
   {

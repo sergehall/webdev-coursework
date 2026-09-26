@@ -42,7 +42,7 @@ const assignment7AItem: CanvasItem = {
 const assignment7AFiles = [
   {
     fileUrl:
-      "/code-playground/CS85/mod-7/Module7_Assignment_7A_Hello_Route.pdf",
+      "/course-materials/CS85/mod-7/Module7_Assignment_7A_Hello_Route.pdf",
     filename: "Module7_Assignment_7A_Hello_Route.pdf",
   },
 ];

@@ -139,7 +139,7 @@ describe("<AssignmentMod1 />", () => {
     expect(screen.getByTitle("assignment_1a.pdf")).toBeInTheDocument();
     expect(
       screen.getByRole("link", { name: "Download assignment_1a.pdf" })
-    ).toHaveAttribute("href", "/code-playground/CS85/mod-1/assignment_1a.pdf");
+    ).toHaveAttribute("href", "/course-materials/CS85/mod-1/assignment_1a.pdf");
   });
 
   it("scores the Module 1 PHP quiz with the embedded answer key", async () => {

@@ -5,11 +5,11 @@ import { DownloadAssignmentBundleButton } from "@/components/buttons";
 export default function Chapter4Overview() {
   const problemSetFiles = [
     {
-      fileUrl: "/code-playground/CS60/mod-2/1712666_1749_CS60_V4.docx",
+      fileUrl: "/course-materials/CS60/mod-2/1712666_1749_CS60_V4.docx",
       filename: "CS60-Problem-Set-1-Fall-2025.docx",
     },
     {
-      fileUrl: "/code-playground/CS60/mod-4/1712666_1749_CS60_PS2.docx",
+      fileUrl: "/course-materials/CS60/mod-4/1712666_1749_CS60_PS2.docx",
       filename: "1712666_1749_CS60_PS2.docx",
     },
   ];

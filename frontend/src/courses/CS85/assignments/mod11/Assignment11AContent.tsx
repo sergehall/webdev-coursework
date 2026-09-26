@@ -15,7 +15,7 @@ const assignment11AItem: CanvasItem = {
 };
 
 const assignmentPdfUrl =
-  "/code-playground/CS85/mod-11/11a/Assignment_11A_API_Data_Report.pdf";
+  "/course-materials/CS85/mod-11/11a/Assignment_11A_API_Data_Report.pdf";
 
 const assignmentPdfFiles = [
   {

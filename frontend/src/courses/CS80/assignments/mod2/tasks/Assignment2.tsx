@@ -12,31 +12,32 @@ const Assignment2 = () => {
 
   const files = [
     {
-      fileUrl: "/code-playground/CS80/mod-2/assignment2.html",
+      fileUrl: "/course-materials/CS80/mod-2/assignment2.html",
       filename: "assignment2.html",
     },
     {
-      fileUrl: "/code-playground/CS80/mod-2/mod-2-scripts.js",
+      fileUrl: "/course-materials/CS80/mod-2/mod-2-scripts.js",
       filename: "mod-2-scripts.js",
     },
     {
-      fileUrl: "/code-playground/CS80/mod-2/mod-2-preview.html",
+      fileUrl: "/course-materials/CS80/mod-2/mod-2-preview.html",
       filename: "mod-2-preview.html",
     },
     {
-      fileUrl: "/code-playground/CS80/mod-2/mod-2-modal-tasks.css",
+      fileUrl: "/course-materials/CS80/mod-2/mod-2-modal-tasks.css",
       filename: "mod-2-modal-tasks.css",
     },
     {
-      fileUrl: "/code-playground/CS80/mod-2/mod-2-preview-btn.css",
+      fileUrl: "/course-materials/CS80/mod-2/mod-2-preview-btn.css",
       filename: "mod-2-preview-btn.css",
     },
     {
-      fileUrl: "/code-playground/CS80/mod-2/assignment-header-readme-block.css",
+      fileUrl:
+        "/course-materials/CS80/mod-2/assignment-header-readme-block.css",
       filename: "assignment-header-readme-block.css",
     },
     {
-      fileUrl: "/code-playground/CS80/mod-2/mod2-readme.html",
+      fileUrl: "/course-materials/CS80/mod-2/mod2-readme.html",
       filename: "mod2-readme.html",
     },
   ];
@@ -108,7 +109,7 @@ const Assignment2 = () => {
         />
         <DownloadAssignmentBundleButton files={files} />
         <DownloadHtmlButton
-          fileUrl="/code-playground/CS80/mod-2/assignment2_strict.html"
+          fileUrl="/course-materials/CS80/mod-2/assignment2_strict.html"
           filename="assignment2_strict.html"
           label="Strict HTML"
         />
@@ -121,7 +122,7 @@ const Assignment2 = () => {
             <CloseModalButton onClick={() => setIsModalOpen(false)} />
 
             <iframe
-              src="/code-playground/CS80/mod-2/assignment2.html"
+              src="/course-materials/CS80/mod-2/assignment2.html"
               className="h-full w-full border-none"
               title="Assignment 2 Preview"
               sandbox="allow-scripts allow-same-origin"

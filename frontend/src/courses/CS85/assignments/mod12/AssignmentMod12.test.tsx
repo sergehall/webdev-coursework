@@ -110,7 +110,7 @@ describe("<AssignmentMod12 />", () => {
     });
     expect(downloadLink).toHaveAttribute(
       "href",
-      "/code-playground/CS85/mod-12/12a/Module_12_Assignment_12A_Integrating_OpenAI_Report.pdf"
+      "/course-materials/CS85/mod-12/12a/Module_12_Assignment_12A_Integrating_OpenAI_Report.pdf"
     );
 
     await user.click(
@@ -123,7 +123,7 @@ describe("<AssignmentMod12 />", () => {
       )
     ).toHaveAttribute(
       "src",
-      "/code-playground/CS85/mod-12/12a/Module_12_Assignment_12A_Integrating_OpenAI_Report.pdf"
+      "/course-materials/CS85/mod-12/12a/Module_12_Assignment_12A_Integrating_OpenAI_Report.pdf"
     );
     expect(
       screen.queryByText(
@@ -184,14 +184,14 @@ describe("<AssignmentMod12 />", () => {
       screen.getByRole("link", { name: "Download reading PDF" })
     ).toHaveAttribute(
       "href",
-      "/code-playground/CS85/mod-12/reading/m12-AIintergration.pdf"
+      "/course-materials/CS85/mod-12/reading/m12-AIintergration.pdf"
     );
 
     await user.click(screen.getByRole("button", { name: "View reading PDF" }));
 
     expect(screen.getByTitle("m12-AIintergration.pdf")).toHaveAttribute(
       "src",
-      "/code-playground/CS85/mod-12/reading/m12-AIintergration.pdf"
+      "/course-materials/CS85/mod-12/reading/m12-AIintergration.pdf"
     );
     expect(
       screen.queryByText("Required Reading content will be filled in later.")
@@ -292,7 +292,7 @@ describe("<AssignmentMod12 />", () => {
       screen.getByRole("link", { name: "Download final report" })
     ).toHaveAttribute(
       "href",
-      "/code-playground/CS85/mod-12/final-project/CS85_Siarhei_Hancharo_Final_Project_AI_Powered_Web_Application.pdf"
+      "/course-materials/CS85/mod-12/final-project/CS85_Siarhei_Hancharo_Final_Project_AI_Powered_Web_Application.pdf"
     );
 
     await user.click(screen.getByRole("button", { name: "View final report" }));
@@ -303,7 +303,7 @@ describe("<AssignmentMod12 />", () => {
       )
     ).toHaveAttribute(
       "src",
-      "/code-playground/CS85/mod-12/final-project/CS85_Siarhei_Hancharo_Final_Project_AI_Powered_Web_Application.pdf"
+      "/course-materials/CS85/mod-12/final-project/CS85_Siarhei_Hancharo_Final_Project_AI_Powered_Web_Application.pdf"
     );
   });
 });

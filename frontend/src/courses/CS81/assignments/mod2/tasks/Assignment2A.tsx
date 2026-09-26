@@ -15,7 +15,7 @@ const Assignment2A = () => {
   const screenshots = [
     {
       label: "Hello World alert and console screenshot",
-      src: "/code-playground/CS81/mod-2/A/HelloWorld_Assignment_Screenshot.png",
+      src: "/course-materials/CS81/mod-2/A/HelloWorld_Assignment_Screenshot.png",
     },
   ];
   console.log("Hello, World!");
@@ -57,12 +57,12 @@ const Assignment2A = () => {
         <RunFunctionButton onClick={showMessage} label="Trigger alert" />
 
         <DownloadHtmlButton
-          fileUrl="/code-playground/CS81/mod-2/A/hello-world.html"
+          fileUrl="/course-materials/CS81/mod-2/A/hello-world.html"
           filename="hello-world.html"
         />
 
         <DownloadJsButton
-          fileUrl="/code-playground/CS81/mod-2/A/helloWorld.js"
+          fileUrl="/course-materials/CS81/mod-2/A/helloWorld.js"
           filename="helloWorld.js"
         />
 

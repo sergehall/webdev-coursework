@@ -137,7 +137,7 @@ describe("<AssignmentMod2 />", () => {
       screen.getByRole("link", { name: "Download module2_assignment_2a.pdf" })
     ).toHaveAttribute(
       "href",
-      "/code-playground/CS85/mod-2/module2_assignment_2a.pdf"
+      "/course-materials/CS85/mod-2/module2_assignment_2a.pdf"
     );
   });
 
@@ -160,13 +160,13 @@ describe("<AssignmentMod2 />", () => {
       screen.getByRole("link", { name: "Download module2_assignment_2b.pdf" })
     ).toHaveAttribute(
       "href",
-      "/code-playground/CS85/mod-2/module2_assignment_2b.pdf"
+      "/course-materials/CS85/mod-2/module2_assignment_2b.pdf"
     );
     expect(
       screen.getByRole("link", { name: "Download CosmicCalendarBuilder.php" })
     ).toHaveAttribute(
       "href",
-      "/code-playground/CS85/mod-2/CosmicCalendarBuilder.php"
+      "/course-materials/CS85/mod-2/CosmicCalendarBuilder.php"
     );
   });
 

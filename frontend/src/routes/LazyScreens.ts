@@ -8,6 +8,12 @@ export const NotFound = lazy(() => import("../pages/NotFound"));
 
 // Assignment-related pages
 export const CourseworkPage = lazy(() => import("../pages/./CourseworkPage"));
+export const ESL10GPage = lazy(() => import("../courses/ESL10G/ESL10GPage"));
+export const ESL10GPresentationPage = lazy(() =>
+  import("../courses/ESL10G/ESL10GPage").then((module) => ({
+    default: module.ESL10GPresentationPage,
+  }))
+);
 export const AssignmentWrapper = lazy(
   () => import("../components/AssignmentWrapper")
 );

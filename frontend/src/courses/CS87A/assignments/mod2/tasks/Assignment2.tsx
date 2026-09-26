@@ -15,7 +15,7 @@ const Assignment2 = () => {
   const screenshots = [
     {
       label: "Screenshot-assignment2 – Python Trivia Game",
-      src: "/code-playground/CS87A/mod-2/screenshot-assignment2.png",
+      src: "/course-materials/CS87A/mod-2/screenshot-assignment2.png",
     },
   ];
 
@@ -99,7 +99,7 @@ const Assignment2 = () => {
           toggle={() => setShowScreenshots(!showScreenshots)}
         />
         <DownloadPDFButton
-          fileUrl="/code-playground/CS87A/mod-2/CS87A_FA2020_A02.pdf"
+          fileUrl="/course-materials/CS87A/mod-2/CS87A_FA2020_A02.pdf"
           filename="CS87A_FA2020_A02.pdf"
           label="Download Assignment"
         />

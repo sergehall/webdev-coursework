@@ -83,7 +83,7 @@ export const cs79cModule01Blueprint = {
   ],
   overviewScreenshots: [
     {
-      src: "/code-playground/CS79C/mod-1/overview/module-1-overview-reference.png",
+      src: "/course-materials/CS79C/mod-1/overview/module-1-overview-reference.png",
       alt: "Module 1 reference view showing assignments, additional material, and certification focus sections.",
     },
   ],

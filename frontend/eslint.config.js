@@ -31,7 +31,7 @@ export default [
       ".cache/**",
       "temp/**",
       "tmp/**",
-      "public/code-playground/**",
+      "public/course-materials/**",
     ],
   },
   js.configs.recommended,

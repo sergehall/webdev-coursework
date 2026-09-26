@@ -90,7 +90,7 @@ describe("<AssignmentMod10 />", () => {
     });
     expect(downloadLink).toHaveAttribute(
       "href",
-      "/code-playground/CS85/mod-10/10a/Module_10A_completion_summary.pdf"
+      "/course-materials/CS85/mod-10/10a/Module_10A_completion_summary.pdf"
     );
 
     await user.click(
@@ -101,7 +101,7 @@ describe("<AssignmentMod10 />", () => {
       screen.getByTitle("Module_10A_completion_summary.pdf")
     ).toHaveAttribute(
       "src",
-      "/code-playground/CS85/mod-10/10a/Module_10A_completion_summary.pdf"
+      "/course-materials/CS85/mod-10/10a/Module_10A_completion_summary.pdf"
     );
   });
 

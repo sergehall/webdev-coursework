@@ -17,25 +17,25 @@ const assignment8AItem: CanvasItem = {
 
 const migrationScreenshotFiles = [
   {
-    fileUrl: "/code-playground/CS85/mod-8/8a/php_artisan_migrate.png",
+    fileUrl: "/course-materials/CS85/mod-8/8a/php_artisan_migrate.png",
     filename: "php_artisan_migrate.png",
   },
 ];
 
 const submissionArtifacts = [
   {
-    href: "/code-playground/CS85/mod-8/8a/README.md",
+    href: "/course-materials/CS85/mod-8/8a/README.md",
     filename: "README.md",
     description:
       "Setup instructions, implementation notes, and troubleshooting.",
   },
   {
-    href: "/code-playground/CS85/mod-8/8a/env.example",
+    href: "/course-materials/CS85/mod-8/8a/env.example",
     filename: ".env.example",
     description: "Sanitized local configuration with placeholder credentials.",
   },
   {
-    href: "/code-playground/CS85/mod-8/8a/php_artisan_migrate.png",
+    href: "/course-materials/CS85/mod-8/8a/php_artisan_migrate.png",
     filename: "php_artisan_migrate.png",
     description: "Screenshot confirming successful Laravel migrations.",
   },

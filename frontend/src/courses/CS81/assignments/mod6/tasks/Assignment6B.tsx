@@ -15,7 +15,7 @@ const Assignment6B = () => {
   const screenshots = [
     {
       label: "Console Output Example",
-      src: "/code-playground/CS81/mod-6/B/assistant-console-output.png",
+      src: "/course-materials/CS81/mod-6/B/assistant-console-output.png",
     },
   ];
 
@@ -65,7 +65,7 @@ const Assignment6B = () => {
         />
 
         <DownloadJsButton
-          fileUrl="/code-playground/CS81/mod-6/B/assistant.js"
+          fileUrl="/course-materials/CS81/mod-6/B/assistant.js"
           filename="assistant.js"
           label="assistant.js"
         />
@@ -76,7 +76,7 @@ const Assignment6B = () => {
         />
 
         <DownloadMdButton
-          fileUrl="/code-playground/CS81/mod-6/B/REFLECTION.md"
+          fileUrl="/course-materials/CS81/mod-6/B/REFLECTION.md"
           filename="REFLECTION.md"
           label="REFLECTION.md"
         />

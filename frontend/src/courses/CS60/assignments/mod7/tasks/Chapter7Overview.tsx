@@ -4,15 +4,15 @@ import { DownloadAssignmentBundleButton } from "@/components/buttons";
 export default function Chapter7Overview() {
   const problemSet4Files = [
     {
-      fileUrl: "/code-playground/CS60/mod-7/CS60_Problem_Set_4-F25.docx",
+      fileUrl: "/course-materials/CS60/mod-7/CS60_Problem_Set_4-F25.docx",
       filename: "CS60-Problem-Set-4-F25.docx",
     },
     {
-      fileUrl: "/code-playground/CS60/mod-7/PS4_Datafile.txt",
+      fileUrl: "/course-materials/CS60/mod-7/PS4_Datafile.txt",
       filename: "PS4_Datafile.txt",
     },
     {
-      fileUrl: "/code-playground/CS60/mod-7/MySQL_DataFile.txt",
+      fileUrl: "/course-materials/CS60/mod-7/MySQL_DataFile.txt",
       filename: "MySQL_DataFile.txt",
     },
   ];

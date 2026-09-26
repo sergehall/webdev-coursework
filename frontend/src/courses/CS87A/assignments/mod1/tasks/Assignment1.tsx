@@ -14,7 +14,7 @@ const Assignment1 = () => {
   const screenshots = [
     {
       label: "Screenshot-assignment1 – Python Intro",
-      src: "/code-playground/CS87A/mod-1/screenshot-assignment1.png",
+      src: "/course-materials/CS87A/mod-1/screenshot-assignment1.png",
     },
   ];
 
@@ -87,7 +87,7 @@ const Assignment1 = () => {
           toggle={() => setShowScreenshots(!showScreenshots)}
         />
         <DownloadPDFButton
-          fileUrl="/code-playground/CS87A/mod-1/CS87A_FA2020_A01.pdf"
+          fileUrl="/course-materials/CS87A/mod-1/CS87A_FA2020_A01.pdf"
           filename="CS87A_FA2020_A01.pdf"
           label="Download Assignment"
         />

@@ -18,22 +18,22 @@ const Assignment11 = () => {
   const screenshots = [
     {
       label: "Module 11 – Contact Form",
-      src: "/code-playground/CS81/mod-11/module11-assignment11a-react-contact-form.png",
+      src: "/course-materials/CS81/mod-11/module11-assignment11a-react-contact-form.png",
     },
   ];
 
   const files = [
     {
-      fileUrl: "/code-playground/CS81/mod-11/README.md",
+      fileUrl: "/course-materials/CS81/mod-11/README.md",
       filename: "README.md",
     },
     {
       fileUrl:
-        "/code-playground/CS81/mod-11/module11-assignment11a-react-contact-form.png",
+        "/course-materials/CS81/mod-11/module11-assignment11a-react-contact-form.png",
       filename: "module11-assignment11a-react-contact-form.png",
     },
     {
-      fileUrl: "/code-playground/CS81/mod-11/module11-contact-form.zip",
+      fileUrl: "/course-materials/CS81/mod-11/module11-contact-form.zip",
       filename: "module11-contact-form.zip",
     },
   ];

@@ -14,7 +14,7 @@ const Assignment1C = () => {
   const screenshots = [
     {
       label: "Console output screenshot",
-      src: "/code-playground/CS81/mod-1/C/introToJS.png",
+      src: "/course-materials/CS81/mod-1/C/introToJS.png",
     },
   ];
 
@@ -53,7 +53,7 @@ const Assignment1C = () => {
 
       <div className="mt-4 grid w-full grid-cols-1 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-3">
         <DownloadHtmlButton
-          fileUrl="/code-playground/CS81/mod-1/C/intro-to-javascript.html"
+          fileUrl="/course-materials/CS81/mod-1/C/intro-to-javascript.html"
           filename="intro-to-javascript.html"
         />
         <RunInPlaygroundButton file="CS81/mod-1/C/helloWorldName.js" />

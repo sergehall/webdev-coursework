@@ -10,11 +10,12 @@ type IntroItem = {
 export default function CourseIntroduction() {
   const files = [
     {
-      fileUrl: "/code-playground/CS79A/Syllabus-Cloud-Computing-AWS-CS-79A.pdf",
+      fileUrl:
+        "/course-materials/CS79A/Syllabus-Cloud-Computing-AWS-CS-79A.pdf",
       filename: "Syllabus-Cloud-Computing-AWS-CS-79A.pdf",
     },
     {
-      fileUrl: "/code-playground/CS79A/Welcome.pdf",
+      fileUrl: "/course-materials/CS79A/Welcome.pdf",
       filename: "CS79A/Welcome.pdf",
     },
   ];

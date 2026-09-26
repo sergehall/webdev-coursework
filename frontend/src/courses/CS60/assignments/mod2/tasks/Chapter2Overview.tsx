@@ -13,7 +13,7 @@ export default function Chapter2Overview() {
 
   const problemSetFiles = [
     {
-      fileUrl: "/code-playground/CS60/mod-2/1712666_1749_CS60_V4.docx",
+      fileUrl: "/course-materials/CS60/mod-2/1712666_1749_CS60_V4.docx",
       filename: "1712666_1749_CS60_V4.docx",
     },
   ];

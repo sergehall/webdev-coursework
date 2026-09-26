@@ -29,7 +29,7 @@ const finalProjectItem: CanvasItem = {
 };
 
 const finalReportPdfUrl =
-  "/code-playground/CS85/mod-12/final-project/CS85_Siarhei_Hancharo_Final_Project_AI_Powered_Web_Application.pdf";
+  "/course-materials/CS85/mod-12/final-project/CS85_Siarhei_Hancharo_Final_Project_AI_Powered_Web_Application.pdf";
 
 const finalReportPdfFiles = [
   {

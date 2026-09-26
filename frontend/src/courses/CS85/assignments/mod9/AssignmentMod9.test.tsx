@@ -67,7 +67,7 @@ describe("<AssignmentMod9 />", () => {
       screen.getByRole("link", { name: "Download assignment PDF" })
     ).toHaveAttribute(
       "href",
-      "/code-playground/CS85/mod-9/9a/Module9_Assignment_9A.pdf"
+      "/course-materials/CS85/mod-9/9a/Module9_Assignment_9A.pdf"
     );
 
     await user.click(
@@ -76,7 +76,7 @@ describe("<AssignmentMod9 />", () => {
 
     expect(screen.getByTitle("Module9_Assignment_9A.pdf")).toHaveAttribute(
       "src",
-      "/code-playground/CS85/mod-9/9a/Module9_Assignment_9A.pdf"
+      "/course-materials/CS85/mod-9/9a/Module9_Assignment_9A.pdf"
     );
   });
 

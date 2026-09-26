@@ -153,7 +153,7 @@ describe("<AssignmentMod4 />", () => {
       screen.getByRole("link", { name: "Download Module4_Assignment_4A.pdf" })
     ).toHaveAttribute(
       "href",
-      "/code-playground/CS85/mod-4/Module4_Assignment_4A.pdf"
+      "/course-materials/CS85/mod-4/Module4_Assignment_4A.pdf"
     );
   });
 
@@ -178,11 +178,14 @@ describe("<AssignmentMod4 />", () => {
       screen.getByRole("link", { name: "Download Module4_Assignment_4B.pdf" })
     ).toHaveAttribute(
       "href",
-      "/code-playground/CS85/mod-4/Module4_Assignment_4B.pdf"
+      "/course-materials/CS85/mod-4/Module4_Assignment_4B.pdf"
     );
     expect(
       screen.getByRole("link", { name: "Download show_inventory.php" })
-    ).toHaveAttribute("href", "/code-playground/CS85/mod-4/show_inventory.php");
+    ).toHaveAttribute(
+      "href",
+      "/course-materials/CS85/mod-4/show_inventory.php"
+    );
   });
 
   it("scores the Module 4 database quiz with the embedded answer key", async () => {

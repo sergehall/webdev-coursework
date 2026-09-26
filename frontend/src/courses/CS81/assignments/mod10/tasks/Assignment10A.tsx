@@ -21,22 +21,22 @@ const Assignment10A = () => {
   const screenshots = [
     {
       label: "StudentCard with Comments",
-      src: "/code-playground/CS81/mod-10/A/StudentCard-Component.png",
+      src: "/course-materials/CS81/mod-10/A/StudentCard-Component.png",
     },
   ];
 
   const files = [
     {
-      fileUrl: "/code-playground/CS81/mod-10/A/README.md",
+      fileUrl: "/course-materials/CS81/mod-10/A/README.md",
       filename: "README.md",
     },
     {
-      fileUrl: "/code-playground/CS81/mod-10/A/StudentCard-Component.png",
+      fileUrl: "/course-materials/CS81/mod-10/A/StudentCard-Component.png",
       filename: "StudentCard-Component.png",
     },
     {
       fileUrl:
-        "/code-playground/CS81/mod-10/A/module10a-studentcard-review.zip",
+        "/course-materials/CS81/mod-10/A/module10a-studentcard-review.zip",
       filename: "module10a-studentcard-review.zip",
     },
   ];

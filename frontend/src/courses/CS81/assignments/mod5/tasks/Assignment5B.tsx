@@ -16,25 +16,25 @@ const Assignment5B = () => {
   const screenshots = [
     {
       label: "Sample Console Output",
-      src: "/code-playground/CS81/mod-5/B/runTracker-output.png",
+      src: "/course-materials/CS81/mod-5/B/runTracker-output.png",
     },
   ];
 
   const files = [
     {
-      fileUrl: "/code-playground/CS81/mod-5/B/activityTracker.js",
+      fileUrl: "/course-materials/CS81/mod-5/B/activityTracker.js",
       filename: "activityTracker.js",
     },
     {
-      fileUrl: "/code-playground/CS81/mod-5/B/README.md",
+      fileUrl: "/course-materials/CS81/mod-5/B/README.md",
       filename: "README.md",
     },
     {
-      fileUrl: "/code-playground/CS81/mod-5/B/REFLECTION.md",
+      fileUrl: "/course-materials/CS81/mod-5/B/REFLECTION.md",
       filename: "REFLECTION.md",
     },
     {
-      fileUrl: "/code-playground/CS81/mod-5/B/runTracker.js",
+      fileUrl: "/course-materials/CS81/mod-5/B/runTracker.js",
       filename: "runTracker.js",
     },
   ];

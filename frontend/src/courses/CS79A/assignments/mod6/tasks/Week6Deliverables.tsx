@@ -19,39 +19,39 @@ export default function Week6Deliverables() {
 
   const files = [
     {
-      fileUrl: "/code-playground/CS79A/mod-6/wordPress-Launched.png",
+      fileUrl: "/course-materials/CS79A/mod-6/wordPress-Launched.png",
       filename: "wordPress-Launched.png",
     },
     {
-      fileUrl: "/code-playground/CS79A/mod-6/wordPress-Site.png",
+      fileUrl: "/course-materials/CS79A/mod-6/wordPress-Site.png",
       filename: "wordPress-Site.png",
     },
     {
-      fileUrl: "/code-playground/CS79A/mod-6/VPC-Deliverables.png",
+      fileUrl: "/course-materials/CS79A/mod-6/VPC-Deliverables.png",
       filename: "VPC-Deliverables.png",
     },
     {
       fileUrl:
-        "/code-playground/CS79A/mod-6/Extra-Credit-Pinging-Using-ICMP.png",
+        "/course-materials/CS79A/mod-6/Extra-Credit-Pinging-Using-ICMP.png",
       filename: "Extra-Credit-Pinging-Using-ICMP.png",
     },
   ];
 
   const screenshots = [
     {
-      src: "/code-playground/CS79A/mod-6/wordPress-Launched.png",
+      src: "/course-materials/CS79A/mod-6/wordPress-Launched.png",
       label: "WordPress site successfully running on an EC2 instance",
     },
     {
-      src: "/code-playground/CS79A/mod-6/wordPress-Site.png",
+      src: "/course-materials/CS79A/mod-6/wordPress-Site.png",
       label: "WordPress site",
     },
     {
-      src: "/code-playground/CS79A/mod-6/VPC-Deliverables.png",
+      src: "/course-materials/CS79A/mod-6/VPC-Deliverables.png",
       label: "VPC-Deliverables",
     },
     {
-      src: "/code-playground/CS79A/mod-6/Extra-Credit-Pinging-Using-ICMP.png",
+      src: "/course-materials/CS79A/mod-6/Extra-Credit-Pinging-Using-ICMP.png",
       label: "Extra-Credit-Pinging-Using-ICMP",
     },
   ];

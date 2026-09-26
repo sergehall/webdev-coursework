@@ -17,7 +17,7 @@ const assignment7BItem: CanvasItem = {
 const assignment7BFiles = [
   {
     fileUrl:
-      "/code-playground/CS85/mod-7/Hancharou_Siarhei_Routing_Documentation.pdf",
+      "/course-materials/CS85/mod-7/Hancharou_Siarhei_Routing_Documentation.pdf",
     filename: "Hancharou_Siarhei_Routing_Documentation.pdf",
   },
 ];

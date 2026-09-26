@@ -36,7 +36,7 @@ const assignmentItem: CanvasItem = {
 
 const assignment5AFiles = [
   {
-    fileUrl: "/code-playground/CS85/mod-5/Module5_Assignment_5A.pdf",
+    fileUrl: "/course-materials/CS85/mod-5/Module5_Assignment_5A.pdf",
     filename: "Module5_Assignment_5A.pdf",
   },
 ];

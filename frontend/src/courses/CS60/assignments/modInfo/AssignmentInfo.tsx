@@ -10,15 +10,15 @@ type StartHereItem = {
 export default function AssignmentInfo() {
   const files = [
     {
-      fileUrl: "/code-playground/CS70/Syllabus-CS70-1750.pdf",
+      fileUrl: "/course-materials/CS70/Syllabus-CS70-1750.pdf",
       filename: "Syllabus-CS70-1750.pdf",
     },
     {
-      fileUrl: "/code-playground/CS70/Network_Rack_Facts.pdf",
+      fileUrl: "/course-materials/CS70/Network_Rack_Facts.pdf",
       filename: "Network_Rack_Facts.pdf",
     },
     {
-      fileUrl: "/code-playground/CS70/Commands-Cisco-Switch.pdf",
+      fileUrl: "/course-materials/CS70/Commands-Cisco-Switch.pdf",
       filename: "Commands-Cisco-Switch.pdf",
     },
   ];

@@ -50,7 +50,7 @@ describe("<AssignmentMod7 />", () => {
       })
     ).toHaveAttribute(
       "href",
-      "/code-playground/CS85/mod-7/Module7_Assignment_7A_Hello_Route.pdf"
+      "/course-materials/CS85/mod-7/Module7_Assignment_7A_Hello_Route.pdf"
     );
   });
 
@@ -89,7 +89,7 @@ describe("<AssignmentMod7 />", () => {
       })
     ).toHaveAttribute(
       "href",
-      "/code-playground/CS85/mod-7/Hancharou_Siarhei_Routing_Documentation.pdf"
+      "/course-materials/CS85/mod-7/Hancharou_Siarhei_Routing_Documentation.pdf"
     );
   });
 

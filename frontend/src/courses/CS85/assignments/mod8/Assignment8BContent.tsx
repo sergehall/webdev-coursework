@@ -16,7 +16,7 @@ const assignment8BItem: CanvasItem = {
 };
 
 const assignmentPdfUrl =
-  "/code-playground/CS85/mod-8/8b/Module8_Assignment_8B.pdf";
+  "/course-materials/CS85/mod-8/8b/Module8_Assignment_8B.pdf";
 
 const assignmentPdfFiles = [
   {

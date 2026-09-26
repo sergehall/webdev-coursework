@@ -15,7 +15,7 @@ const assignment12AItem: CanvasItem = {
 };
 
 const assignmentPdfUrl =
-  "/code-playground/CS85/mod-12/12a/Module_12_Assignment_12A_Integrating_OpenAI_Report.pdf";
+  "/course-materials/CS85/mod-12/12a/Module_12_Assignment_12A_Integrating_OpenAI_Report.pdf";
 
 const assignmentPdfFiles = [
   {

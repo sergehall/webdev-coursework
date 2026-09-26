@@ -15,19 +15,19 @@ const Assignment4 = () => {
   const screenshots = [
     {
       label: "Screenshot-assignment4 – More Fun With Functions & Lists",
-      src: "/code-playground/CS87A/mod-4/screenshot-assignment4.png",
+      src: "/course-materials/CS87A/mod-4/screenshot-assignment4.png",
     },
     {
       label: "Screenshot-assignment4 – More Fun With Functions & Lists",
-      src: "/code-playground/CS87A/mod-4/screenshot-assignment4-1.png",
+      src: "/course-materials/CS87A/mod-4/screenshot-assignment4-1.png",
     },
     {
       label: "Screenshot-assignment4 – More Fun With Functions & Lists",
-      src: "/code-playground/CS87A/mod-4/screenshot-assignment4-2.png",
+      src: "/course-materials/CS87A/mod-4/screenshot-assignment4-2.png",
     },
     {
       label: "Screenshot-assignment4 – More Fun With Functions & Lists",
-      src: "/code-playground/CS87A/mod-4/screenshot-assignment4-3.png",
+      src: "/course-materials/CS87A/mod-4/screenshot-assignment4-3.png",
     },
   ];
 
@@ -112,7 +112,7 @@ const Assignment4 = () => {
           toggle={() => setShowScreenshots(!showScreenshots)}
         />
         <DownloadPDFButton
-          fileUrl="/code-playground/CS87A/mod-4/CS87A_FA2020_A04.pdf"
+          fileUrl="/course-materials/CS87A/mod-4/CS87A_FA2020_A04.pdf"
           filename="CS87A_FA2020_A04.pdf"
           label="Download Assignment"
         />

@@ -43,25 +43,25 @@ const Assignment3B = () => {
         />
 
         <DownloadJsButton
-          fileUrl="/code-playground/CS81/mod-3/B/math.js"
+          fileUrl="/course-materials/CS81/mod-3/B/math.js"
           filename="math.js"
           label="Download math.js"
         />
 
         <DownloadMdButton
-          fileUrl="/code-playground/CS81/mod-3/B/PREDICTIONS.md"
+          fileUrl="/course-materials/CS81/mod-3/B/PREDICTIONS.md"
           filename="PREDICTIONS.md"
           label="PREDICTIONS.md"
         />
 
         <DownloadMdButton
-          fileUrl="/code-playground/CS81/mod-3/B/RESULTS.md"
+          fileUrl="/course-materials/CS81/mod-3/B/RESULTS.md"
           filename="RESULTS.md"
           label="RESULTS.md"
         />
 
         <DownloadMdButton
-          fileUrl="/code-playground/CS81/mod-3/B/REFLECTION.md"
+          fileUrl="/course-materials/CS81/mod-3/B/REFLECTION.md"
           filename="REFLECTION.md"
           label="REFLECTION.md"
         />

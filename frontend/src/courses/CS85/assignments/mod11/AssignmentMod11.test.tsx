@@ -82,7 +82,7 @@ describe("<AssignmentMod11 />", () => {
     });
     expect(downloadLink).toHaveAttribute(
       "href",
-      "/code-playground/CS85/mod-11/11a/Assignment_11A_API_Data_Report.pdf"
+      "/course-materials/CS85/mod-11/11a/Assignment_11A_API_Data_Report.pdf"
     );
 
     await user.click(
@@ -93,7 +93,7 @@ describe("<AssignmentMod11 />", () => {
       screen.getByTitle("Assignment_11A_API_Data_Report.pdf")
     ).toHaveAttribute(
       "src",
-      "/code-playground/CS85/mod-11/11a/Assignment_11A_API_Data_Report.pdf"
+      "/course-materials/CS85/mod-11/11a/Assignment_11A_API_Data_Report.pdf"
     );
   });
 

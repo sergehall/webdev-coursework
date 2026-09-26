@@ -1,4 +1,4 @@
-// public/code-playground/my-script.js
+// public/course-materials/my-script.js
 console.log("✅ Script executed!");
 
 const el = document.createElement("h2");

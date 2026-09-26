@@ -14,7 +14,7 @@ const Assignment5A = () => {
   const screenshots = [
     {
       label: "Sample Console Output",
-      src: "/code-playground/CS81/mod-5/A/hobbyTracker-output.png",
+      src: "/course-materials/CS81/mod-5/A/hobbyTracker-output.png",
     },
   ];
 
@@ -60,7 +60,7 @@ const Assignment5A = () => {
         />
 
         <DownloadJsButton
-          fileUrl="/code-playground/CS81/mod-5/A/hobbyTracker.js"
+          fileUrl="/course-materials/CS81/mod-5/A/hobbyTracker.js"
           filename="hobbyTracker.js"
           label="hobbyTracker.js"
         />
@@ -71,7 +71,7 @@ const Assignment5A = () => {
         />
 
         <DownloadMdButton
-          fileUrl="/code-playground/CS81/mod-5/A/REFLECTION.md"
+          fileUrl="/course-materials/CS81/mod-5/A/REFLECTION.md"
           filename="REFLECTION.md"
           label="REFLECTION.md"
         />
