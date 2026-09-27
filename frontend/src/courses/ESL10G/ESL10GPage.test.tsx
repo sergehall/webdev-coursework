@@ -372,6 +372,48 @@ describe("ESL 10G coursework page", () => {
     }
   });
 
+  it.each(["missing", "rejected"])(
+    "uses viewport full screen when the API is %s",
+    async (availability) => {
+      const user = userEvent.setup();
+      const { unmount } = renderPage("/coursework/ESL10G/presentation-1");
+      const viewer = screen.getByLabelText("Presentation 1 slide viewer");
+      Object.defineProperty(viewer, "requestFullscreen", {
+        configurable: true,
+        value:
+          availability === "missing"
+            ? undefined
+            : vi.fn().mockRejectedValue(new Error("Unsupported")),
+      });
+      const previousOverflow = document.body.style.overflow;
+      await user.click(
+        screen.getByRole("button", { name: "Show full screen" })
+      );
+      expect(viewer).toHaveClass("fixed", "inset-0", "h-dvh");
+      expect(document.body.style.overflow).toBe("hidden");
+      expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+      await user.click(screen.getByRole("button", { name: "Next slide" }));
+      expect(
+        screen.getByRole("heading", { name: "My first years in the U.S." })
+      ).toBeInTheDocument();
+      await user.click(
+        screen.getByRole("button", { name: "Exit full screen" })
+      );
+      expect(viewer).not.toHaveClass("fixed");
+      expect(document.body.style.overflow).toBe(previousOverflow);
+      await user.click(
+        screen.getByRole("button", { name: "Show full screen" })
+      );
+      await user.keyboard("{Escape}");
+      expect(viewer).not.toHaveClass("fixed");
+      await user.click(
+        screen.getByRole("button", { name: "Show full screen" })
+      );
+      unmount();
+      expect(document.body.style.overflow).toBe(previousOverflow);
+    }
+  );
+
   it("keeps playback guidance behind an information button", async () => {
     const user = userEvent.setup();
     renderPage("/coursework/ESL10G/presentation-1");

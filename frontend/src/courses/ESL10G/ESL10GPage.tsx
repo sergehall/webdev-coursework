@@ -114,8 +114,9 @@ function PresentationViewer() {
   const [videoPlaying, setVideoPlaying] = useState(true);
   const [infoOpen, setInfoOpen] = useState(false);
   const [suppressInfoHover, setSuppressInfoHover] = useState(false);
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const [fullscreenError, setFullscreenError] = useState(false);
+  const [nativeFullscreen, setNativeFullscreen] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const isFullscreen = nativeFullscreen || expanded;
   const viewerRef = useRef<HTMLDivElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const infoContainer = useRef<HTMLDivElement | null>(null);
@@ -188,7 +189,7 @@ function PresentationViewer() {
 
   useEffect(() => {
     const syncFullscreen = () => {
-      setIsFullscreen(document.fullscreenElement === viewerRef.current);
+      setNativeFullscreen(document.fullscreenElement === viewerRef.current);
     };
 
     document.addEventListener("fullscreenchange", syncFullscreen);
@@ -216,20 +217,43 @@ function PresentationViewer() {
     setPlayback({ ...initialPlayback, playing: true });
   };
 
+  // Keep the complete presentation available when the browser cannot fullscreen
+  // arbitrary elements (including iPhone browsers).
+  useEffect(() => {
+    if (!expanded) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    viewerRef.current?.focus();
+    const onEscape = (event: globalThis.KeyboardEvent) => {
+      if (event.key === "Escape") setExpanded(false);
+    };
+    document.addEventListener("keydown", onEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", onEscape);
+    };
+  }, [expanded]);
+
   const toggleFullscreen = async () => {
     const viewer = viewerRef.current;
     if (!viewer) return;
-
-    try {
-      if (document.fullscreenElement === viewer) {
-        await document.exitFullscreen();
-      } else {
-        await viewer.requestFullscreen();
-      }
-      setFullscreenError(false);
-    } catch {
-      setFullscreenError(true);
+    if (expanded) {
+      setExpanded(false);
+      return;
     }
+    if (document.fullscreenElement === viewer) {
+      await document.exitFullscreen();
+      return;
+    }
+    if (typeof viewer.requestFullscreen === "function") {
+      try {
+        await viewer.requestFullscreen();
+        return;
+      } catch {
+        // Rejected requests use the same viewport mode as unsupported browsers.
+      }
+    }
+    setExpanded(true);
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
@@ -305,7 +329,7 @@ function PresentationViewer() {
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
         aria-label="Presentation 1 slide viewer"
-        className={`overflow-hidden rounded-2xl border border-slate-200 bg-slate-950 shadow-xl outline-none focus-visible:ring-4 focus-visible:ring-sky-400 dark:border-slate-700 ${isFullscreen ? "flex h-dvh h-screen w-full flex-col rounded-none border-0" : ""}`}
+        className={`overflow-hidden rounded-2xl border border-slate-200 bg-slate-950 shadow-xl outline-none focus-visible:ring-4 focus-visible:ring-sky-400 dark:border-slate-700 ${isFullscreen ? "flex h-dvh h-screen w-full flex-col rounded-none border-0" : ""} ${expanded ? "fixed inset-0 z-[100]" : ""}`}
       >
         <div
           className={`relative overflow-hidden ${isFullscreen ? "min-h-0 flex-1" : ""}`}
@@ -361,7 +385,7 @@ function PresentationViewer() {
             </p>
           </div>
         </div>
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/15 px-3 py-3 sm:px-5">
+        <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-white/15 px-3 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-5">
           <div className="flex items-center gap-2">
             <button
               type="button"
@@ -453,11 +477,6 @@ function PresentationViewer() {
           />
         </div>
       </div>
-      {fullscreenError && (
-        <p role="alert" className="mt-2 text-sm text-red-600 dark:text-red-400">
-          Full screen is unavailable in this browser.
-        </p>
-      )}
       <div className="mt-3 flex justify-end">
         <div ref={infoContainer} className="relative">
           <button
