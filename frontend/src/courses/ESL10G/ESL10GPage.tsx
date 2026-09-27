@@ -35,6 +35,11 @@ const VIDEO_SLIDE_COUNT = presentationSlides.filter(
   (slide) => "video" in slide
 ).length;
 const PHOTO_SLIDE_COUNT = presentationSlides.length - VIDEO_SLIDE_COUNT;
+const ANIMATED_SLIDE = presentationSlides.find((slide) => "video" in slide);
+const ANIMATION_URL =
+  ANIMATED_SLIDE && "video" in ANIMATED_SLIDE
+    ? `/course-materials/esl10g/presentation/${ANIMATED_SLIDE.video}`
+    : undefined;
 const PRESENTATION_TEXT_FILES = [
   {
     fileUrl: "/course-materials/esl10g/presentation/Presentation_1.pdf",
@@ -117,6 +122,12 @@ function PresentationViewer() {
   const [nativeFullscreen, setNativeFullscreen] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const isFullscreen = nativeFullscreen || expanded;
+  const [viewportBounds, setViewportBounds] = useState<{
+    height: number;
+    width: number;
+    top: number;
+    left: number;
+  } | null>(null);
   const viewerRef = useRef<HTMLDivElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const infoContainer = useRef<HTMLDivElement | null>(null);
@@ -126,10 +137,50 @@ function PresentationViewer() {
   const slideVideo = "video" in slide ? slide.video : undefined;
 
   useEffect(() => {
+    // Two low-priority image requests at a time avoid flooding a slow connection.
+    const queue = [
+      ...new Set(presentationSlides.slice(1).map((item) => item.image)),
+    ];
+    const images: HTMLImageElement[] = [];
+    let cancelled = false;
+    const loadNext = () => {
+      if (cancelled) return;
+      const imageName = queue.shift();
+      if (!imageName) return;
+      const image = new Image();
+      images.push(image);
+      image.decoding = "async";
+      image.fetchPriority = "low";
+      image.onload = () => {
+        const decoded =
+          typeof image.decode === "function"
+            ? image.decode()
+            : Promise.resolve();
+        void decoded.catch(() => {}).then(loadNext);
+      };
+      image.onerror = loadNext;
+      image.src = `/course-materials/esl10g/presentation/${imageName}.png`;
+    };
+    loadNext();
+    loadNext();
+    return () => {
+      cancelled = true;
+      images.forEach((image) => {
+        image.onload = null;
+        image.onerror = null;
+      });
+    };
+  }, []);
+
+  useEffect(() => {
+    if (slideVideo && videoRef.current) videoRef.current.currentTime = 0;
+  }, [slideVideo]);
+
+  useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    if (videoPlaying) {
+    if (videoPlaying && slideVideo) {
       void video.play().catch(() => {
         // The poster remains available if the browser blocks playback.
       });
@@ -221,6 +272,19 @@ function PresentationViewer() {
   // arbitrary elements (including iPhone browsers).
   useEffect(() => {
     if (!expanded) return;
+    const viewport = window.visualViewport;
+    const syncViewport = () => {
+      setViewportBounds({
+        height: viewport?.height ?? window.innerHeight,
+        width: viewport?.width ?? window.innerWidth,
+        top: viewport?.offsetTop ?? 0,
+        left: viewport?.offsetLeft ?? 0,
+      });
+    };
+    syncViewport();
+    viewport?.addEventListener("resize", syncViewport);
+    viewport?.addEventListener("scroll", syncViewport);
+    window.addEventListener("resize", syncViewport);
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     viewerRef.current?.focus();
@@ -229,6 +293,9 @@ function PresentationViewer() {
     };
     document.addEventListener("keydown", onEscape);
     return () => {
+      viewport?.removeEventListener("resize", syncViewport);
+      viewport?.removeEventListener("scroll", syncViewport);
+      window.removeEventListener("resize", syncViewport);
       document.body.style.overflow = previousOverflow;
       document.removeEventListener("keydown", onEscape);
     };
@@ -329,28 +396,40 @@ function PresentationViewer() {
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
         aria-label="Presentation 1 slide viewer"
-        className={`overflow-hidden rounded-2xl border border-slate-200 bg-slate-950 shadow-xl outline-none focus-visible:ring-4 focus-visible:ring-sky-400 dark:border-slate-700 ${isFullscreen ? "flex h-dvh h-screen w-full flex-col rounded-none border-0" : ""} ${expanded ? "fixed inset-0 z-[100]" : ""}`}
+        style={expanded && viewportBounds ? viewportBounds : undefined}
+        className={`overflow-hidden rounded-2xl border border-slate-200 bg-slate-950 shadow-xl outline-none focus-visible:ring-4 focus-visible:ring-sky-400 dark:border-slate-700 ${isFullscreen ? "flex h-dvh h-screen w-full flex-col rounded-none border-0" : ""} ${expanded ? "fixed top-0 left-0 z-[100]" : "relative"}`}
       >
+        {isFullscreen && (
+          <button
+            type="button"
+            onClick={toggleFullscreen}
+            aria-label="Close full screen"
+            className="absolute top-[max(0.75rem,env(safe-area-inset-top))] left-[max(0.75rem,env(safe-area-inset-left))] z-20 min-h-11 rounded-lg border border-white/30 bg-slate-950/80 px-3 py-2 text-sm font-bold text-white shadow-lg"
+          >
+            ✕ Exit
+          </button>
+        )}
         <div
           className={`relative overflow-hidden ${isFullscreen ? "min-h-0 flex-1" : ""}`}
         >
           <div
             className={`relative overflow-hidden ${isFullscreen ? "h-full" : "aspect-video"}`}
           >
-            {slideVideo ? (
+            {ANIMATION_URL && (
               <video
-                key={slideVideo}
                 ref={videoRef}
-                src={`/course-materials/esl10g/presentation/${slideVideo}`}
-                poster={`/course-materials/esl10g/presentation/${slide.image}.png`}
-                aria-label={slide.alt}
+                src={ANIMATION_URL}
+                poster={`/course-materials/esl10g/presentation/${ANIMATED_SLIDE?.image}.png`}
+                aria-label={slideVideo ? slide.alt : undefined}
+                aria-hidden={!slideVideo}
                 muted
                 loop
                 playsInline
                 preload="auto"
-                className={`absolute inset-0 h-full w-full ${isFullscreen ? "object-contain" : "object-cover"}`}
+                className={`absolute inset-0 h-full w-full ${slideVideo ? "" : "hidden"} ${isFullscreen ? "object-contain" : "object-cover"}`}
               />
-            ) : (
+            )}
+            {!slideVideo && (
               <img
                 src={`/course-materials/esl10g/presentation/${slide.image}.png`}
                 alt={slide.alt}
@@ -377,7 +456,9 @@ function PresentationViewer() {
             <p className="mb-2 text-xs font-bold tracking-[0.18em] text-sky-200 uppercase">
               Sergei · My story
             </p>
-            <h3 className="text-2xl font-bold sm:text-3xl md:text-5xl">
+            <h3
+              className={`font-bold ${isFullscreen ? "text-xl sm:text-2xl md:text-3xl" : "text-2xl sm:text-3xl md:text-5xl"}`}
+            >
               {slide.title}
             </h3>
             <p className="mt-3 max-w-2xl text-sm leading-relaxed sm:text-base md:text-lg">

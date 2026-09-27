@@ -1,4 +1,10 @@
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -26,7 +32,55 @@ describe("ESL 10G coursework page", () => {
   });
 
   afterEach(() => {
+    cleanup();
     vi.restoreAllMocks();
+  });
+
+  it("buffers the same video from page entry through slide changes", async () => {
+    const user = userEvent.setup();
+    const { container } = renderPage("/coursework/ESL10G/presentation-1");
+    const video = container.querySelector("video")!;
+    expect(video).toHaveAttribute("preload", "auto");
+    expect(video).toHaveAttribute(
+      "src",
+      "/course-materials/esl10g/presentation/web-development.mp4"
+    );
+    expect(video).toHaveClass("hidden");
+    expect(HTMLMediaElement.prototype.play).not.toHaveBeenCalled();
+    for (let i = 0; i < 5; i++)
+      await user.click(screen.getByRole("button", { name: "Next slide" }));
+    expect(container.querySelector("video")).toBe(video);
+    expect(video).not.toHaveClass("hidden");
+    expect(HTMLMediaElement.prototype.play).toHaveBeenCalledTimes(1);
+    await user.click(screen.getByRole("button", { name: "Next slide" }));
+    expect(container.querySelector("video")).toBe(video);
+    expect(video).toHaveClass("hidden");
+  });
+
+  it("preloads images in a bounded queue and continues after a failed image", async () => {
+    const images: HTMLImageElement[] = [];
+    vi.stubGlobal("Image", function () {
+      const image = document.createElement("img");
+      images.push(image);
+      return image;
+    });
+    const { unmount } = renderPage("/coursework/ESL10G/presentation-1");
+    try {
+      expect(images).toHaveLength(2);
+      expect(images[0].src).toContain("/brooklyn.png");
+      expect(images[0].fetchPriority).toBe("low");
+      fireEvent.error(images[0]);
+      expect(images).toHaveLength(3);
+      await act(async () => {
+        fireEvent.load(images[1]);
+      });
+      expect(images).toHaveLength(4);
+      unmount();
+      expect(images[2].onload).toBeNull();
+    } finally {
+      unmount();
+      vi.unstubAllGlobals();
+    }
   });
 
   it("plays the video only during the Web Development slide's allotted time", () => {
@@ -389,7 +443,7 @@ describe("ESL 10G coursework page", () => {
       await user.click(
         screen.getByRole("button", { name: "Show full screen" })
       );
-      expect(viewer).toHaveClass("fixed", "inset-0", "h-dvh");
+      expect(viewer).toHaveClass("fixed", "h-dvh");
       expect(document.body.style.overflow).toBe("hidden");
       expect(screen.queryByRole("alert")).not.toBeInTheDocument();
       await user.click(screen.getByRole("button", { name: "Next slide" }));
@@ -413,6 +467,44 @@ describe("ESL 10G coursework page", () => {
       expect(document.body.style.overflow).toBe(previousOverflow);
     }
   );
+
+  it("fits the visible viewport as mobile browser toolbars resize it", async () => {
+    const viewport = new EventTarget();
+    Object.assign(viewport, {
+      height: 280,
+      width: 844,
+      offsetTop: 25,
+      offsetLeft: 0,
+    });
+    vi.stubGlobal("visualViewport", viewport);
+    const user = userEvent.setup();
+    const { unmount } = renderPage("/coursework/ESL10G/presentation-1");
+    try {
+      const viewer = screen.getByLabelText("Presentation 1 slide viewer");
+      Object.defineProperty(viewer, "requestFullscreen", { value: undefined });
+      await user.click(
+        screen.getByRole("button", { name: "Show full screen" })
+      );
+      expect(viewer).toHaveStyle({
+        height: "280px",
+        width: "844px",
+        top: "25px",
+      });
+      Object.assign(viewport, { height: 240, offsetTop: 40 });
+      act(() => {
+        viewport.dispatchEvent(new Event("resize"));
+      });
+      expect(viewer).toHaveStyle({ height: "240px", top: "40px" });
+      await user.click(
+        screen.getByRole("button", { name: "Close full screen" })
+      );
+      expect(viewer).not.toHaveClass("fixed");
+      expect(viewer.style.height).toBe("");
+    } finally {
+      unmount();
+      vi.unstubAllGlobals();
+    }
+  });
 
   it("keeps playback guidance behind an information button", async () => {
     const user = userEvent.setup();
