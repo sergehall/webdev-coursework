@@ -17,6 +17,7 @@ import {
   Volume2,
   VolumeX,
 } from "lucide-react";
+import { flushSync } from "react-dom";
 import { Link } from "react-router-dom";
 
 import ShowModalButton from "../../components/buttons/ShowModalButton";
@@ -133,6 +134,103 @@ function resetPageScroll() {
   document.body.scrollTop = 0;
 }
 
+function TeacherAnnotation() {
+  return (
+    <svg
+      className="esl10g-teacher-annotation"
+      viewBox="0 0 1672 935"
+      preserveAspectRatio="xMidYMid meet"
+      role="img"
+      aria-label="One of my first ESL teachers is highlighted in the class photo"
+    >
+      <g transform="rotate(-4 277 84)">
+        <rect
+          x="42"
+          y="20"
+          width="470"
+          height="132"
+          rx="25"
+          fill="#fff2bd"
+          stroke="#19314c"
+          strokeWidth="5"
+        />
+        <text x="83" y="74" className="esl10g-teacher-annotation__eyebrow">
+          ONE OF MY FIRST
+        </text>
+        <text x="83" y="126" className="esl10g-teacher-annotation__label">
+          ESL teachers!
+        </text>
+      </g>
+      <path
+        d="M 478 135 C 504 144 511 158 500 177"
+        className="esl10g-teacher-annotation__arrow"
+      />
+      <path
+        d="M 484 165 L 500 177 L 514 164"
+        className="esl10g-teacher-annotation__arrow"
+      />
+      <ellipse
+        cx="574"
+        cy="188"
+        rx="89"
+        ry="104"
+        transform="rotate(-8 574 188)"
+        className="esl10g-teacher-annotation__ring"
+      />
+      <path
+        d="M 671 67 L 678 81 L 692 88 L 678 95 L 671 109 L 664 95 L 650 88 L 664 81 Z"
+        className="esl10g-teacher-annotation__sparkle"
+      />
+    </svg>
+  );
+}
+
+function MatthewAnnotation() {
+  return (
+    <svg
+      className="esl10g-matthew-annotation"
+      viewBox="0 0 1672 941"
+      preserveAspectRatio="xMidYMid meet"
+      role="img"
+      aria-label="Matthew, my current ESL teacher, is speaking to the class"
+    >
+      <ellipse
+        cx="948"
+        cy="488"
+        rx="169"
+        ry="190"
+        className="esl10g-matthew-annotation__halo"
+      />
+      <g className="esl10g-matthew-annotation__rays">
+        <path d="M 946 275 L 945 238" />
+        <path d="M 816 326 L 788 294" />
+        <path d="M 759 445 L 719 436" />
+        <path d="M 1085 324 L 1119 291" />
+        <path d="M 1139 426 L 1180 414" />
+        <path d="M 802 648 L 771 677" />
+      </g>
+      <g className="esl10g-matthew-annotation__speech-lines">
+        <path d="M 1055 452 Q 1095 471 1055 492" />
+        <path d="M 1080 438 Q 1142 471 1080 507" />
+      </g>
+      <path
+        d="M 1115 31 H 1575 Q 1600 31 1600 56 V 152 Q 1600 176 1575 176 H 1221 L 1154 218 L 1174 176 H 1115 Q 1090 176 1090 152 V 56 Q 1090 31 1115 31 Z"
+        className="esl10g-matthew-annotation__bubble"
+      />
+      <text x="1130" y="94" className="esl10g-matthew-annotation__name">
+        Meet Matthew!
+      </text>
+      <text x="1130" y="144" className="esl10g-matthew-annotation__caption">
+        MY CURRENT ESL TEACHER
+      </text>
+      <path
+        d="M 730 245 L 738 263 L 756 271 L 738 279 L 730 297 L 722 279 L 704 271 L 722 263 Z"
+        className="esl10g-matthew-annotation__sparkle"
+      />
+    </svg>
+  );
+}
+
 function PresentationViewer() {
   const [playback, setPlayback] = useState<PlaybackState>(initialPlayback);
   const [showSubtitles, setShowSubtitles] = useState(true);
@@ -158,11 +256,29 @@ function PresentationViewer() {
   const infoContainer = useRef<HTMLDivElement | null>(null);
   const touchStart = useRef<{ x: number; y: number } | null>(null);
   const lastTickAt = useRef(0);
+  const slideTransition = useRef<ViewTransition | null>(null);
+  const navigationRequest = useRef(0);
+  const targetSlideIndex = useRef(0);
   const slide = presentationSlides[playback.slideIndex];
   const slideVideo = "video" in slide ? slide.video : undefined;
   const isOpening = "kind" in slide && slide.kind === "opening";
   const isClosing = "kind" in slide && slide.kind === "closing";
   const musicSection = isOpening || isClosing ? "bookend" : "story";
+
+  useEffect(() => {
+    targetSlideIndex.current = playback.slideIndex;
+  }, [playback.slideIndex]);
+
+  useEffect(
+    () => () => {
+      slideTransition.current?.skipTransition();
+      document.documentElement.classList.remove("esl10g-slide-transition");
+      document.documentElement.classList.remove(
+        "esl10g-slide-transition--fullscreen"
+      );
+    },
+    []
+  );
 
   useEffect(() => {
     if (isOpening || isClosing) {
@@ -322,13 +438,63 @@ function PresentationViewer() {
   }, []);
 
   const goToSlide = (index: number) => {
-    setVideoPlaying(true);
-    setPlayback((current) => ({
-      ...current,
-      slideIndex: Math.max(0, Math.min(index, presentationSlides.length - 1)),
-      slideElapsedMs: 0,
-      playing: false,
-    }));
+    const nextIndex = Math.max(
+      0,
+      Math.min(index, presentationSlides.length - 1)
+    );
+    if (nextIndex === targetSlideIndex.current) return;
+
+    targetSlideIndex.current = nextIndex;
+    const request = ++navigationRequest.current;
+    const updateSlide = () => {
+      if (request !== navigationRequest.current) return;
+      setVideoPlaying(true);
+      setPlayback((current) => ({
+        ...current,
+        slideIndex: nextIndex,
+        slideElapsedMs: 0,
+        playing: false,
+      }));
+    };
+
+    slideTransition.current?.skipTransition();
+    if (
+      !document.startViewTransition ||
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
+    ) {
+      updateSlide();
+      return;
+    }
+
+    document.documentElement.classList.add("esl10g-slide-transition");
+    document.documentElement.classList.toggle(
+      "esl10g-slide-transition--fullscreen",
+      isFullscreen
+    );
+    const transition = document.startViewTransition(async () => {
+      const nextSlide = presentationSlides[nextIndex];
+      if ("image" in nextSlide && !("video" in nextSlide)) {
+        const image = new Image();
+        image.src = presentationImageUrl(nextSlide.image);
+        if (typeof image.decode === "function") {
+          await image.decode().catch(() => {});
+        }
+      }
+      if (request === navigationRequest.current) flushSync(updateSlide);
+    });
+    slideTransition.current = transition;
+    void transition.ready.catch(() => {
+      // Rapid navigation can skip a transition before its animation starts.
+    });
+    const finish = () => {
+      if (slideTransition.current !== transition) return;
+      slideTransition.current = null;
+      document.documentElement.classList.remove("esl10g-slide-transition");
+      document.documentElement.classList.remove(
+        "esl10g-slide-transition--fullscreen"
+      );
+    };
+    void transition.finished.then(finish, finish);
   };
 
   const togglePlayback = () => {
@@ -338,6 +504,9 @@ function PresentationViewer() {
   };
 
   const restartPlayback = () => {
+    navigationRequest.current += 1;
+    slideTransition.current?.skipTransition();
+    targetSlideIndex.current = 0;
     setVideoPlaying(true);
     setMusicPaused(false);
     if (bookendAudioRef.current) bookendAudioRef.current.currentTime = 0;
@@ -420,10 +589,10 @@ function PresentationViewer() {
   const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
     if (event.key === "ArrowRight") {
       event.preventDefault();
-      goToSlide(playback.slideIndex + 1);
+      goToSlide(targetSlideIndex.current + 1);
     } else if (event.key === "ArrowLeft") {
       event.preventDefault();
-      goToSlide(playback.slideIndex - 1);
+      goToSlide(targetSlideIndex.current - 1);
     }
   };
 
@@ -445,7 +614,7 @@ function PresentationViewer() {
       Math.abs(deltaX) <= Math.abs(deltaY)
     )
       return;
-    goToSlide(playback.slideIndex + (deltaX < 0 ? 1 : -1));
+    goToSlide(targetSlideIndex.current + (deltaX < 0 ? 1 : -1));
   };
 
   const timeProgress = Math.min(1, playback.elapsedMs / MAX_DURATION_MS);
@@ -518,7 +687,7 @@ function PresentationViewer() {
           </button>
         )}
         <div
-          className={`relative overflow-hidden ${isFullscreen ? "min-h-0 flex-1" : ""}`}
+          className={`esl10g-slide-stage relative overflow-hidden ${isFullscreen ? "esl10g-slide-stage--fullscreen min-h-0 flex-1" : ""}`}
         >
           <div
             className={`relative overflow-hidden ${isFullscreen ? "h-full" : "aspect-video"}`}
@@ -621,7 +790,7 @@ function PresentationViewer() {
                         alt=""
                       />
                       <img
-                        src="/course-materials/esl10g/presentation/learning-together.png"
+                        src="/course-materials/esl10g/presentation/learning-together-personalized.png"
                         alt=""
                       />
                     </div>
@@ -638,6 +807,13 @@ function PresentationViewer() {
                 aria-hidden="true"
               />
             )}
+            {!isOpening &&
+              !isClosing &&
+              "image" in slide &&
+              slide.image === "classroom" && <TeacherAnnotation />}
+            {!isOpening &&
+              !isClosing &&
+              slide.title === "Learning together" && <MatthewAnnotation />}
             {playback.playing && (
               <div
                 role="timer"
@@ -755,7 +931,7 @@ function PresentationViewer() {
           <div className="flex items-center gap-1">
             <button
               type="button"
-              onClick={() => goToSlide(playback.slideIndex - 1)}
+              onClick={() => goToSlide(targetSlideIndex.current - 1)}
               disabled={playback.slideIndex === 0}
               aria-label="Previous slide"
               className="inline-flex min-h-10 items-center gap-1 rounded-lg px-2 py-2 text-sm font-semibold text-white hover:bg-white/15 focus-visible:outline-2 focus-visible:outline-sky-300 disabled:cursor-not-allowed disabled:opacity-40"
@@ -770,7 +946,7 @@ function PresentationViewer() {
             </span>
             <button
               type="button"
-              onClick={() => goToSlide(playback.slideIndex + 1)}
+              onClick={() => goToSlide(targetSlideIndex.current + 1)}
               disabled={playback.slideIndex === presentationSlides.length - 1}
               aria-label="Next slide"
               className="inline-flex min-h-10 items-center gap-1 rounded-lg px-2 py-2 text-sm font-semibold text-white hover:bg-white/15 focus-visible:outline-2 focus-visible:outline-sky-300 disabled:cursor-not-allowed disabled:opacity-40"

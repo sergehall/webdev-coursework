@@ -193,7 +193,7 @@ export const storySlides = [
   },
   {
     title: "Learning together",
-    image: "learning-together",
+    image: "learning-together-personalized",
     alt: "Students talking together on the Santa Monica College campus",
     text: "I also enjoy meeting people in our class. We have students from many different countries, and I think we can learn a lot from each other.",
   },

@@ -1,3 +1,170 @@
+.esl10g-matthew-annotation {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.esl10g-matthew-annotation__halo {
+  fill: none;
+  stroke: #64e6d3;
+  stroke-width: 14px;
+  filter: drop-shadow(0 0 15px #4df6e5);
+}
+
+.esl10g-matthew-annotation__rays,
+.esl10g-matthew-annotation__speech-lines {
+  fill: none;
+  stroke: #ffe078;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 12px;
+  filter: drop-shadow(0 3px 2px #17314bb3);
+}
+
+.esl10g-matthew-annotation__speech-lines {
+  stroke-width: 9px;
+}
+
+.esl10g-matthew-annotation__bubble {
+  fill: #fff2b9;
+  stroke: #17314b;
+  stroke-linejoin: round;
+  stroke-width: 6px;
+  filter: drop-shadow(0 9px 9px #17314b66);
+}
+
+.esl10g-matthew-annotation__name,
+.esl10g-matthew-annotation__caption {
+  fill: #17314b;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-weight: 900;
+}
+
+.esl10g-matthew-annotation__name {
+  font-size: 57px;
+  letter-spacing: -0.04em;
+}
+
+.esl10g-matthew-annotation__caption {
+  font-size: 31px;
+  letter-spacing: 0.025em;
+}
+
+.esl10g-matthew-annotation__sparkle {
+  fill: #ffe078;
+  stroke: #17314b;
+  stroke-width: 5px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .esl10g-matthew-annotation__halo {
+    animation: esl10g-matthew-glow 3s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+}
+
+@keyframes esl10g-matthew-glow {
+  50% {
+    opacity: 0.72;
+    transform: scale(1.025);
+  }
+}
+
+.esl10g-teacher-annotation {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  filter: drop-shadow(0 3px 5px #15223880);
+}
+
+.esl10g-teacher-annotation__eyebrow,
+.esl10g-teacher-annotation__label {
+  fill: #19314c;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-weight: 900;
+}
+
+.esl10g-teacher-annotation__eyebrow {
+  font-size: 30px;
+  letter-spacing: 0.08em;
+}
+
+.esl10g-teacher-annotation__label {
+  font-size: 49px;
+  letter-spacing: -0.04em;
+}
+
+.esl10g-teacher-annotation__arrow,
+.esl10g-teacher-annotation__ring {
+  fill: none;
+  stroke: #ffb84c;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 12px;
+}
+
+.esl10g-teacher-annotation__ring {
+  stroke-dasharray: 690 30;
+}
+
+.esl10g-teacher-annotation__sparkle {
+  fill: #ffd66d;
+  stroke: #19314c;
+  stroke-width: 4px;
+}
+
+.esl10g-slide-stage {
+  border-radius: 1rem 1rem 0 0;
+  view-transition-name: esl10g-slide;
+}
+
+.esl10g-slide-stage--fullscreen {
+  border-radius: 0;
+}
+
+.esl10g-slide-transition::view-transition-group(esl10g-slide) {
+  clip-path: inset(0 round 1rem 1rem 0 0);
+}
+
+.esl10g-slide-transition--fullscreen::view-transition-group(esl10g-slide) {
+  clip-path: none;
+}
+
+.esl10g-slide-transition::view-transition-old(root),
+.esl10g-slide-transition::view-transition-new(root) {
+  animation-duration: 0s;
+}
+
+.esl10g-slide-transition::view-transition-old(esl10g-slide) {
+  animation: 180ms ease-out both esl10g-slide-out;
+}
+
+.esl10g-slide-transition::view-transition-new(esl10g-slide) {
+  animation: 220ms ease-out both esl10g-slide-in;
+}
+
+@keyframes esl10g-slide-out {
+  to {
+    opacity: 0;
+    transform: scale(1.01);
+  }
+}
+
+@keyframes esl10g-slide-in {
+  from {
+    opacity: 0;
+    transform: scale(0.99);
+  }
+}
+
 .bookend {
   position: absolute;
   inset: 0;

@@ -291,6 +291,60 @@ describe("ESL 10G coursework page", () => {
     expect(next).toBeDisabled();
   });
 
+  it("waits for the next photo before a native slide transition", async () => {
+    renderPage("/coursework/ESL10G/presentation-1");
+    const originalTransition = Object.getOwnPropertyDescriptor(
+      document,
+      "startViewTransition"
+    );
+    let updateSlide: (() => Promise<void>) | undefined;
+    let finishDecode: (() => void) | undefined;
+    const decoded = new Promise<void>((resolve) => {
+      finishDecode = resolve;
+    });
+    const startTransition = vi.fn((update: () => Promise<void>) => {
+      updateSlide = update;
+      return {
+        skipTransition: vi.fn(),
+        ready: Promise.resolve(),
+        finished: new Promise<void>(() => {}),
+      } as unknown as ViewTransition;
+    });
+    Object.defineProperty(document, "startViewTransition", {
+      configurable: true,
+      value: startTransition,
+    });
+    vi.stubGlobal("Image", function () {
+      return { src: "", decode: () => decoded };
+    });
+
+    try {
+      fireEvent.click(screen.getByRole("button", { name: "Next slide" }));
+      expect(startTransition).toHaveBeenCalledOnce();
+      expect(screen.getByText("1 / 10")).toBeInTheDocument();
+      expect(updateSlide).toBeDefined();
+
+      await act(async () => {
+        const update = updateSlide?.();
+        expect(screen.getByText("1 / 10")).toBeInTheDocument();
+        finishDecode?.();
+        await update;
+      });
+      expect(screen.getByText("2 / 10")).toBeInTheDocument();
+    } finally {
+      if (originalTransition) {
+        Object.defineProperty(
+          document,
+          "startViewTransition",
+          originalTransition
+        );
+      } else {
+        Reflect.deleteProperty(document, "startViewTransition");
+      }
+      vi.unstubAllGlobals();
+    }
+  });
+
   it("uses the versioned Brooklyn photo on the opening and story slides", () => {
     const { container } = renderPage("/coursework/ESL10G/presentation-1");
     const openingPhoto = container.querySelector(
@@ -311,6 +365,57 @@ describe("ESL 10G coursework page", () => {
         name: "A street scene in Brooklyn, New York",
       })
     ).toHaveAttribute("src", imageUrl);
+  });
+
+  it("highlights an early ESL teacher only on the classroom photo", () => {
+    renderPage("/coursework/ESL10G/presentation-1");
+    const next = screen.getByRole("button", { name: "Next slide" });
+    const teacherLabel = /One of my first ESL teachers is highlighted/;
+
+    expect(screen.queryByRole("img", { name: teacherLabel })).toBeNull();
+    for (let i = 0; i < 5; i += 1) fireEvent.click(next);
+    expect(
+      screen.getByRole("heading", { name: "Learning English at SMC" })
+    ).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: teacherLabel })).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Subtitles" }));
+    expect(screen.getByRole("img", { name: teacherLabel })).toBeInTheDocument();
+    fireEvent.click(next);
+    expect(screen.queryByRole("img", { name: teacherLabel })).toBeNull();
+  });
+
+  it("introduces Matthew only on the learning together photo", () => {
+    const { container } = renderPage("/coursework/ESL10G/presentation-1");
+    const next = screen.getByRole("button", { name: "Next slide" });
+    const matthewLabel =
+      /Matthew, my current ESL teacher, is speaking to the class/;
+
+    expect(screen.queryByRole("img", { name: matthewLabel })).toBeNull();
+    for (let i = 0; i < 8; i += 1) fireEvent.click(next);
+    expect(
+      screen.getByRole("heading", { name: "Learning together" })
+    ).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: matthewLabel })).toBeInTheDocument();
+    expect(
+      screen.getByRole("img", {
+        name: "Students talking together on the Santa Monica College campus",
+      })
+    ).toHaveAttribute(
+      "src",
+      "/course-materials/esl10g/presentation/learning-together-personalized.png"
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Subtitles" }));
+    expect(screen.getByRole("img", { name: matthewLabel })).toBeInTheDocument();
+    fireEvent.click(next);
+    expect(screen.queryByRole("img", { name: matthewLabel })).toBeNull();
+    expect(
+      container.querySelector(".bookend__photos--closing img:last-child")
+    ).toHaveAttribute(
+      "src",
+      "/course-materials/esl10g/presentation/learning-together-personalized.png"
+    );
   });
 
   it("toggles subtitles across the opening, story, and closing slides", async () => {
@@ -528,6 +633,9 @@ describe("ESL 10G coursework page", () => {
         screen.getByRole("button", { name: "Show full screen" })
       );
       expect(viewer).toHaveClass("h-dvh");
+      expect(viewer.querySelector(".esl10g-slide-stage")).toHaveClass(
+        "esl10g-slide-stage--fullscreen"
+      );
       expect(
         screen.getByRole("button", { name: "Exit full screen" })
       ).toHaveAttribute("aria-pressed", "true");
@@ -541,6 +649,9 @@ describe("ESL 10G coursework page", () => {
         screen.getByRole("button", { name: "Exit full screen" })
       );
       expect(viewer).not.toHaveClass("h-dvh");
+      expect(viewer.querySelector(".esl10g-slide-stage")).not.toHaveClass(
+        "esl10g-slide-stage--fullscreen"
+      );
       expect(
         screen.getByRole("button", { name: "Show full screen" })
       ).toHaveAttribute("aria-pressed", "false");
