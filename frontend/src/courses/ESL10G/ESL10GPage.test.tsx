@@ -47,7 +47,7 @@ describe("ESL 10G coursework page", () => {
     );
     expect(video).toHaveClass("hidden");
     expect(HTMLMediaElement.prototype.play).not.toHaveBeenCalled();
-    for (let i = 0; i < 5; i++)
+    for (let i = 0; i < 6; i++)
       await user.click(screen.getByRole("button", { name: "Next slide" }));
     expect(container.querySelector("video")).toBe(video);
     expect(video).not.toHaveClass("hidden");
@@ -92,7 +92,7 @@ describe("ESL 10G coursework page", () => {
       fireEvent.click(
         screen.getByRole("button", { name: "Play presentation" })
       );
-      act(() => vi.advanceTimersByTime(112_250));
+      act(() => vi.advanceTimersByTime(111_750));
       expect(screen.queryByLabelText(videoLabel)).not.toBeInTheDocument();
       act(() => vi.advanceTimersByTime(250));
       const video = screen.getByLabelText(videoLabel) as HTMLVideoElement;
@@ -110,7 +110,7 @@ describe("ESL 10G coursework page", () => {
       );
       expect(HTMLMediaElement.prototype.pause).toHaveBeenCalled();
       act(() => vi.advanceTimersByTime(5_000));
-      expect(screen.getByText("6 / 8")).toBeInTheDocument();
+      expect(screen.getByText("7 / 10")).toBeInTheDocument();
       expect(HTMLMediaElement.prototype.play).toHaveBeenCalledTimes(1);
 
       fireEvent.click(
@@ -118,7 +118,7 @@ describe("ESL 10G coursework page", () => {
       );
       expect(HTMLMediaElement.prototype.play).toHaveBeenCalledTimes(2);
       act(() => vi.advanceTimersByTime(22_500));
-      expect(screen.getByText("7 / 8")).toBeInTheDocument();
+      expect(screen.getByText("8 / 10")).toBeInTheDocument();
       expect(screen.queryByLabelText(videoLabel)).not.toBeInTheDocument();
 
       fireEvent.click(screen.getByRole("button", { name: "Previous slide" }));
@@ -136,13 +136,13 @@ describe("ESL 10G coursework page", () => {
     const videoLabel = "Code being typed and scrolled on a laptop and monitor";
 
     try {
-      for (let i = 0; i < 5; i += 1) {
+      for (let i = 0; i < 6; i += 1) {
         fireEvent.click(screen.getByRole("button", { name: "Next slide" }));
       }
       expect(screen.getByLabelText(videoLabel)).toBeInTheDocument();
       expect(HTMLMediaElement.prototype.play).toHaveBeenCalledTimes(1);
       act(() => vi.advanceTimersByTime(30_000));
-      expect(screen.getByText("6 / 8")).toBeInTheDocument();
+      expect(screen.getByText("7 / 10")).toBeInTheDocument();
       expect(screen.getByRole("timer")).toHaveTextContent("0:00");
       expect(
         screen.getByRole("button", { name: "Play presentation" })
@@ -270,21 +270,135 @@ describe("ESL 10G coursework page", () => {
     const previous = screen.getByRole("button", { name: "Previous slide" });
     const next = screen.getByRole("button", { name: "Next slide" });
     expect(previous).toBeDisabled();
-    expect(screen.getByText("1 / 8")).toBeInTheDocument();
+    expect(screen.getByText("1 / 10")).toBeInTheDocument();
 
     await user.click(next);
-    expect(screen.getByText("2 / 8")).toBeInTheDocument();
+    expect(screen.getByText("2 / 10")).toBeInTheDocument();
     fireEvent.keyDown(viewer, { key: "ArrowRight" });
-    expect(screen.getByText("3 / 8")).toBeInTheDocument();
+    expect(screen.getByText("3 / 10")).toBeInTheDocument();
     fireEvent.touchStart(viewer, { touches: [{ clientX: 200, clientY: 50 }] });
     fireEvent.touchEnd(viewer, {
       changedTouches: [{ clientX: 100, clientY: 55 }],
     });
-    expect(screen.getByText("4 / 8")).toBeInTheDocument();
+    expect(screen.getByText("4 / 10")).toBeInTheDocument();
 
-    for (let i = 0; i < 4; i += 1) await user.click(next);
-    expect(screen.getByText("8 / 8")).toBeInTheDocument();
+    for (let i = 0; i < 6; i += 1) await user.click(next);
+    expect(screen.getByText("10 / 10")).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: /We learn together/i })
+    ).toBeInTheDocument();
     expect(next).toBeDisabled();
+  });
+
+  it("toggles subtitles across the opening, story, and closing slides", async () => {
+    const user = userEvent.setup();
+    renderPage("/coursework/ESL10G/presentation-1");
+
+    const subtitles = screen.getByRole("button", { name: "Subtitles" });
+    const next = screen.getByRole("button", { name: "Next slide" });
+    expect(subtitles).toHaveAttribute("aria-pressed", "true");
+    expect(
+      screen.getByText(/From Belarus to California — and what I learned/i)
+    ).toBeInTheDocument();
+
+    await user.click(subtitles);
+    expect(subtitles).toHaveAttribute("aria-pressed", "false");
+    expect(
+      screen.queryByText(/From Belarus to California — and what I learned/i)
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getAllByRole("heading", { name: "A little about myself" })
+    ).toHaveLength(2);
+
+    await user.click(next);
+    expect(
+      screen.getByRole("heading", { name: "Where I’m from" })
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        "I am from Belarus. Belarus is a small country in Eastern Europe."
+      )
+    ).not.toBeInTheDocument();
+
+    await user.click(subtitles);
+    expect(subtitles).toHaveAttribute("aria-pressed", "true");
+    expect(
+      screen.getByText(
+        "I am from Belarus. Belarus is a small country in Eastern Europe."
+      )
+    ).toBeInTheDocument();
+
+    for (let i = 0; i < 8; i += 1) await user.click(next);
+    expect(
+      screen.getByText(/Different journeys. One classroom. Thank you for/i)
+    ).toBeInTheDocument();
+    await user.click(subtitles);
+    expect(
+      screen.queryByText(/Different journeys. One classroom. Thank you for/i)
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "We learn together" })
+    ).toBeInTheDocument();
+  });
+
+  it("plays two licensed music tracks at a quiet adjustable volume and can turn them off", () => {
+    vi.useFakeTimers();
+    const { container, unmount } = renderPage(
+      "/coursework/ESL10G/presentation-1"
+    );
+
+    try {
+      const [bookend, story] = Array.from(container.querySelectorAll("audio"));
+      const music = screen.getByRole("button", { name: "Music" });
+      const volume = screen.getByRole("slider", { name: "Music volume" });
+
+      expect(bookend).toHaveAttribute(
+        "src",
+        "/course-materials/esl10g/presentation/music/upbeat-acoustic-the-mountain.mp3"
+      );
+      expect(story).toHaveAttribute(
+        "src",
+        "/course-materials/esl10g/presentation/music/acoustic-paulyudin.mp3"
+      );
+      expect(music).toHaveAttribute("aria-pressed", "false");
+      expect(volume).toHaveValue("12");
+      expect(bookend).toHaveAttribute("preload", "none");
+
+      fireEvent.click(music);
+      expect(music).toHaveAttribute("aria-pressed", "true");
+      expect(bookend).toHaveAttribute("preload", "auto");
+      expect(HTMLMediaElement.prototype.play).toHaveBeenCalled();
+      act(() => vi.advanceTimersByTime(720));
+      expect(bookend.volume).toBeCloseTo(0.12);
+
+      fireEvent.click(screen.getByRole("button", { name: "Next slide" }));
+      act(() => vi.advanceTimersByTime(720));
+      expect(story.volume).toBeCloseTo(0.12);
+      expect(bookend.volume).toBeCloseTo(0);
+
+      fireEvent.change(volume, { target: { value: "25" } });
+      act(() => vi.advanceTimersByTime(720));
+      expect(story.volume).toBeCloseTo(0.25);
+
+      fireEvent.click(
+        screen.getByRole("button", { name: "Play presentation" })
+      );
+      vi.mocked(HTMLMediaElement.prototype.pause).mockClear();
+      fireEvent.click(
+        screen.getByRole("button", { name: "Pause presentation" })
+      );
+      const pausedMedia = vi.mocked(HTMLMediaElement.prototype.pause).mock
+        .instances;
+      expect(pausedMedia).toContain(bookend);
+      expect(pausedMedia).toContain(story);
+
+      fireEvent.click(music);
+      expect(music).toHaveAttribute("aria-pressed", "false");
+      expect(HTMLMediaElement.prototype.pause).toHaveBeenCalled();
+    } finally {
+      unmount();
+      vi.useRealTimers();
+    }
   });
 
   it("automatically advances slides, pauses, and shows the speaking time window", () => {
@@ -302,14 +416,15 @@ describe("ESL 10G coursework page", () => {
       expect(progress).toHaveAttribute("aria-valuenow", "0");
       expect(progress.firstElementChild).toHaveStyle({ width: "0%" });
       expect(
-        screen.getByText("8 slides · 7 photos · 1 video · target 2:30–3:30")
+        screen.getByText("10 slides · 7 photos · 1 video · target 2:30–3:30")
       ).toBeInTheDocument();
 
       fireEvent.click(
         screen.getByRole("button", { name: "Play presentation" })
       );
-      act(() => vi.advanceTimersByTime(22_500));
-      expect(screen.getByText("2 / 8")).toBeInTheDocument();
+      act(() => vi.advanceTimersByTime(12_000));
+      expect(screen.getByText("2 / 10")).toBeInTheDocument();
+      act(() => vi.advanceTimersByTime(10_500));
       expect(timer).toHaveTextContent("0:22");
 
       fireEvent.click(
@@ -317,13 +432,13 @@ describe("ESL 10G coursework page", () => {
       );
       act(() => vi.advanceTimersByTime(10_000));
       expect(timer).toHaveTextContent("0:22");
-      expect(screen.getByText("2 / 8")).toBeInTheDocument();
+      expect(screen.getByText("2 / 10")).toBeInTheDocument();
 
       fireEvent.click(
         screen.getByRole("button", { name: "Restart presentation" })
       );
       expect(timer).toHaveTextContent("0:00");
-      expect(screen.getByText("1 / 8")).toBeInTheDocument();
+      expect(screen.getByText("1 / 10")).toBeInTheDocument();
 
       act(() => vi.advanceTimersByTime(150_000));
       expect(timer).toHaveTextContent(/^2:30$/);
@@ -446,6 +561,7 @@ describe("ESL 10G coursework page", () => {
       expect(viewer).toHaveClass("fixed", "h-dvh");
       expect(document.body.style.overflow).toBe("hidden");
       expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+      await user.click(screen.getByRole("button", { name: "Next slide" }));
       await user.click(screen.getByRole("button", { name: "Next slide" }));
       expect(
         screen.getByRole("heading", { name: "My first years in the U.S." })

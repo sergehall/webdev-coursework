@@ -147,7 +147,7 @@ export const presentationTextParagraphs = [
   "Thank you very much for listening. If you have any questions, I will be happy to answer them.",
 ] as const;
 
-export const presentationSlides = [
+export const storySlides = [
   {
     title: "Where I’m from",
     image: "belarus",
@@ -196,5 +196,19 @@ export const presentationSlides = [
     image: "learning-together",
     alt: "Students talking together on the Santa Monica College campus",
     text: "I also enjoy meeting people in our class. We have students from many different countries, and I think we can learn a lot from each other.",
+  },
+] as const;
+
+export const presentationSlides = [
+  {
+    kind: "opening",
+    title: "A little about myself",
+    text: "From Belarus to California — and what I learned along the way.",
+  },
+  ...storySlides,
+  {
+    kind: "closing",
+    title: "Thank you for listening!",
+    text: "Different journeys. One classroom. We learn more together.",
   },
 ] as const;

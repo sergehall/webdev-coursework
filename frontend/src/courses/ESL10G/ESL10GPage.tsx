@@ -14,6 +14,8 @@ import {
   Pause,
   Play,
   RotateCcw,
+  Volume2,
+  VolumeX,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -23,19 +25,30 @@ import {
   courseWeeks,
   presentationSlides,
   presentationTextParagraphs,
+  storySlides,
 } from "./courseContent";
+import "./presentation-bookends.css";
 
 const SWIPE_THRESHOLD = 50;
-const REHEARSAL_DURATION_MS = 3 * 60 * 1000;
 const MIN_DURATION_MS = 2.5 * 60 * 1000;
 const MAX_DURATION_MS = 3.5 * 60 * 1000;
 const PROGRESS_COLOR_CHANGE_MS = 2 * 60 * 1000;
-const SLIDE_DURATION_MS = REHEARSAL_DURATION_MS / presentationSlides.length;
-const VIDEO_SLIDE_COUNT = presentationSlides.filter(
+const STORY_SLIDE_DURATION_MS = 20 * 1000;
+const BOOKEND_DURATIONS_MS = [12 * 1000, 8 * 1000] as const;
+const MUSIC_FADE_MS = 700;
+const DEFAULT_MUSIC_VOLUME = 12;
+const MUSIC_BASE_PATH = "/course-materials/esl10g/presentation/music";
+const slideDuration = (index: number) =>
+  index === 0
+    ? BOOKEND_DURATIONS_MS[0]
+    : index === presentationSlides.length - 1
+      ? BOOKEND_DURATIONS_MS[1]
+      : STORY_SLIDE_DURATION_MS;
+const VIDEO_SLIDE_COUNT = storySlides.filter(
   (slide) => "video" in slide
 ).length;
-const PHOTO_SLIDE_COUNT = presentationSlides.length - VIDEO_SLIDE_COUNT;
-const ANIMATED_SLIDE = presentationSlides.find((slide) => "video" in slide);
+const PHOTO_SLIDE_COUNT = storySlides.length - VIDEO_SLIDE_COUNT;
+const ANIMATED_SLIDE = storySlides.find((slide) => "video" in slide);
 const ANIMATION_URL =
   ANIMATED_SLIDE && "video" in ANIMATED_SLIDE
     ? `/course-materials/esl10g/presentation/${ANIMATED_SLIDE.video}`
@@ -116,6 +129,10 @@ function resetPageScroll() {
 
 function PresentationViewer() {
   const [playback, setPlayback] = useState<PlaybackState>(initialPlayback);
+  const [showSubtitles, setShowSubtitles] = useState(true);
+  const [musicEnabled, setMusicEnabled] = useState(false);
+  const [musicPaused, setMusicPaused] = useState(false);
+  const [musicVolume, setMusicVolume] = useState(DEFAULT_MUSIC_VOLUME);
   const [videoPlaying, setVideoPlaying] = useState(true);
   const [infoOpen, setInfoOpen] = useState(false);
   const [suppressInfoHover, setSuppressInfoHover] = useState(false);
@@ -130,17 +147,67 @@ function PresentationViewer() {
   } | null>(null);
   const viewerRef = useRef<HTMLDivElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const bookendAudioRef = useRef<HTMLAudioElement | null>(null);
+  const storyAudioRef = useRef<HTMLAudioElement | null>(null);
   const infoContainer = useRef<HTMLDivElement | null>(null);
   const touchStart = useRef<{ x: number; y: number } | null>(null);
   const lastTickAt = useRef(0);
   const slide = presentationSlides[playback.slideIndex];
   const slideVideo = "video" in slide ? slide.video : undefined;
+  const isOpening = "kind" in slide && slide.kind === "opening";
+  const isClosing = "kind" in slide && slide.kind === "closing";
+  const musicSection = isOpening || isClosing ? "bookend" : "story";
+
+  useEffect(() => {
+    if (isOpening || isClosing) {
+      if (bookendAudioRef.current) bookendAudioRef.current.currentTime = 0;
+    }
+  }, [isOpening, isClosing]);
+
+  useEffect(() => {
+    const bookend = bookendAudioRef.current;
+    const story = storyAudioRef.current;
+    if (!bookend || !story) return;
+    if (!musicEnabled || musicPaused) {
+      bookend.pause();
+      story.pause();
+      return;
+    }
+
+    const active = musicSection === "bookend" ? bookend : story;
+    const outgoing = musicSection === "bookend" ? story : bookend;
+    const startVolume = active.paused ? 0 : active.volume;
+    const outgoingVolume = outgoing.paused ? 0 : outgoing.volume;
+    const targetVolume = musicVolume / 100;
+    active.volume = startVolume;
+    void active.play().catch(() => setMusicEnabled(false));
+
+    const startedAt = Date.now();
+    const fade = window.setInterval(() => {
+      const progress = Math.min(1, (Date.now() - startedAt) / MUSIC_FADE_MS);
+      active.volume = startVolume + (targetVolume - startVolume) * progress;
+      outgoing.volume = outgoingVolume * (1 - progress);
+      if (progress === 1) {
+        outgoing.pause();
+        window.clearInterval(fade);
+      }
+    }, 40);
+
+    return () => window.clearInterval(fade);
+  }, [musicEnabled, musicPaused, musicSection, musicVolume]);
+
+  useEffect(() => {
+    const bookend = bookendAudioRef.current;
+    const story = storyAudioRef.current;
+    return () => {
+      bookend?.pause();
+      story?.pause();
+    };
+  }, []);
 
   useEffect(() => {
     // Two low-priority image requests at a time avoid flooding a slow connection.
-    const queue = [
-      ...new Set(presentationSlides.slice(1).map((item) => item.image)),
-    ];
+    const queue = [...new Set(storySlides.slice(1).map((item) => item.image))];
     const images: HTMLImageElement[] = [];
     let cancelled = false;
     const loadNext = () => {
@@ -206,17 +273,17 @@ function PresentationViewer() {
         let slideIndex = current.slideIndex;
         let slideElapsedMs = current.slideElapsedMs + delta;
         while (
-          slideElapsedMs >= SLIDE_DURATION_MS &&
+          slideElapsedMs >= slideDuration(slideIndex) &&
           slideIndex < presentationSlides.length - 1
         ) {
-          slideElapsedMs -= SLIDE_DURATION_MS;
+          slideElapsedMs -= slideDuration(slideIndex);
           slideIndex += 1;
         }
 
         return {
           ...current,
           slideIndex,
-          slideElapsedMs: Math.min(slideElapsedMs, SLIDE_DURATION_MS),
+          slideElapsedMs: Math.min(slideElapsedMs, slideDuration(slideIndex)),
           elapsedMs: current.elapsedMs + delta,
         };
       });
@@ -260,12 +327,33 @@ function PresentationViewer() {
 
   const togglePlayback = () => {
     setVideoPlaying(!playback.playing);
+    setMusicPaused(playback.playing);
     setPlayback((current) => ({ ...current, playing: !current.playing }));
   };
 
   const restartPlayback = () => {
     setVideoPlaying(true);
+    setMusicPaused(false);
+    if (bookendAudioRef.current) bookendAudioRef.current.currentTime = 0;
+    if (storyAudioRef.current) storyAudioRef.current.currentTime = 0;
     setPlayback({ ...initialPlayback, playing: true });
+  };
+
+  const toggleMusic = () => {
+    if (musicEnabled) {
+      setMusicEnabled(false);
+      return;
+    }
+    const active =
+      musicSection === "bookend"
+        ? bookendAudioRef.current
+        : storyAudioRef.current;
+    if (active) {
+      active.volume = 0;
+      void active.play().catch(() => setMusicEnabled(false));
+    }
+    setMusicPaused(false);
+    setMusicEnabled(true);
   };
 
   // Keep the complete presentation available when the browser cannot fullscreen
@@ -399,6 +487,20 @@ function PresentationViewer() {
         style={expanded && viewportBounds ? viewportBounds : undefined}
         className={`overflow-hidden rounded-2xl border border-slate-200 bg-slate-950 shadow-xl outline-none focus-visible:ring-4 focus-visible:ring-sky-400 dark:border-slate-700 ${isFullscreen ? "flex h-dvh h-screen w-full flex-col rounded-none border-0" : ""} ${expanded ? "fixed top-0 left-0 z-[100]" : "relative"}`}
       >
+        <audio
+          ref={bookendAudioRef}
+          src={`${MUSIC_BASE_PATH}/upbeat-acoustic-the-mountain.mp3`}
+          preload={musicEnabled ? "auto" : "none"}
+          loop
+          aria-hidden="true"
+        />
+        <audio
+          ref={storyAudioRef}
+          src={`${MUSIC_BASE_PATH}/acoustic-paulyudin.mp3`}
+          preload={musicEnabled ? "auto" : "none"}
+          loop
+          aria-hidden="true"
+        />
         {isFullscreen && (
           <button
             type="button"
@@ -420,7 +522,9 @@ function PresentationViewer() {
                 ref={videoRef}
                 src={ANIMATION_URL}
                 poster={`/course-materials/esl10g/presentation/${ANIMATED_SLIDE?.image}.png`}
-                aria-label={slideVideo ? slide.alt : undefined}
+                aria-label={
+                  slideVideo && "alt" in slide ? slide.alt : undefined
+                }
                 aria-hidden={!slideVideo}
                 muted
                 loop
@@ -429,17 +533,108 @@ function PresentationViewer() {
                 className={`absolute inset-0 h-full w-full ${slideVideo ? "" : "hidden"} ${isFullscreen ? "object-contain" : "object-cover"}`}
               />
             )}
-            {!slideVideo && (
+            {!slideVideo && "image" in slide && (
               <img
                 src={`/course-materials/esl10g/presentation/${slide.image}.png`}
                 alt={slide.alt}
                 className={`absolute inset-0 h-full w-full ${isFullscreen ? "object-contain" : "object-cover"}`}
               />
             )}
-            <div
-              className={`absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/25 to-transparent ${isFullscreen ? "" : "hidden sm:block"}`}
-              aria-hidden="true"
-            />
+            {(isOpening || isClosing) && (
+              <div
+                className={`bookend ${isOpening ? "bookend--opening" : "bookend--closing"}`}
+              >
+                <div className="bookend__glow" aria-hidden="true" />
+                <div className="bookend__eyebrow">
+                  ESL 10G <span>✳</span> Sergei’s story
+                </div>
+                {isOpening ? (
+                  <>
+                    <div className="bookend__copy">
+                      <span className="bookend__hello">
+                        Hello, everyone! 👋
+                      </span>
+                      <h2 aria-label="A little about myself">
+                        A little
+                        <br />
+                        <em>about myself.</em>
+                      </h2>
+                      {showSubtitles && (
+                        <p>
+                          From Belarus to California — and what I learned along
+                          the way.
+                        </p>
+                      )}
+                    </div>
+                    <div
+                      className="bookend__photos bookend__photos--opening"
+                      aria-hidden="true"
+                    >
+                      <img
+                        src="/course-materials/esl10g/presentation/belarus.png"
+                        alt=""
+                      />
+                      <img
+                        src="/course-materials/esl10g/presentation/brooklyn.png"
+                        alt=""
+                      />
+                      <img
+                        src="/course-materials/esl10g/presentation/los-angeles.png"
+                        alt=""
+                      />
+                    </div>
+                    <div className="bookend__footer">
+                      Belarus <span>→</span> New York <span>→</span> California
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="bookend__copy">
+                      <span className="bookend__hello">
+                        The best part of the journey ✨
+                      </span>
+                      <h2 aria-label="We learn together">
+                        We learn
+                        <br />
+                        <em>together.</em>
+                      </h2>
+                      {showSubtitles && (
+                        <p>
+                          Different journeys. One classroom. Thank you for
+                          listening!
+                        </p>
+                      )}
+                    </div>
+                    <div
+                      className="bookend__photos bookend__photos--closing"
+                      aria-hidden="true"
+                    >
+                      <img
+                        src="/course-materials/esl10g/presentation/hiking.png"
+                        alt=""
+                      />
+                      <img
+                        src="/course-materials/esl10g/presentation/classroom.png"
+                        alt=""
+                      />
+                      <img
+                        src="/course-materials/esl10g/presentation/learning-together.png"
+                        alt=""
+                      />
+                    </div>
+                    <div className="bookend__footer">
+                      Any questions? <span>✳</span> Let’s talk!
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+            {!isOpening && !isClosing && (
+              <div
+                className={`absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/25 to-transparent ${isFullscreen ? "" : "hidden sm:block"}`}
+                aria-hidden="true"
+              />
+            )}
             <div
               role="timer"
               aria-label="Presentation elapsed time"
@@ -450,24 +645,28 @@ function PresentationViewer() {
               </span>
             </div>
           </div>
-          <div
-            className={`p-5 text-white sm:p-8 md:p-10 ${isFullscreen ? "absolute inset-x-0 bottom-0" : "sm:absolute sm:inset-x-0 sm:bottom-0"}`}
-          >
-            <p className="mb-2 text-xs font-bold tracking-[0.18em] text-sky-200 uppercase">
-              Sergei · My story
-            </p>
-            <h3
-              className={`font-bold ${isFullscreen ? "text-xl sm:text-2xl md:text-3xl" : "text-2xl sm:text-3xl md:text-5xl"}`}
+          {!isOpening && !isClosing && (
+            <div
+              className={`p-5 text-white sm:p-8 md:p-10 ${isFullscreen ? "absolute inset-x-0 bottom-0" : "sm:absolute sm:inset-x-0 sm:bottom-0"}`}
             >
-              {slide.title}
-            </h3>
-            <p className="mt-3 max-w-2xl text-sm leading-relaxed sm:text-base md:text-lg">
-              {slide.text}
-            </p>
-          </div>
+              <p className="mb-2 text-xs font-bold tracking-[0.18em] text-sky-200 uppercase">
+                Sergei · My story
+              </p>
+              <h3
+                className={`font-bold ${isFullscreen ? "text-xl sm:text-2xl md:text-3xl" : "text-2xl sm:text-3xl md:text-5xl"}`}
+              >
+                {slide.title}
+              </h3>
+              {showSubtitles && (
+                <p className="mt-3 max-w-2xl text-sm leading-relaxed sm:text-base md:text-lg">
+                  {slide.text}
+                </p>
+              )}
+            </div>
+          )}
         </div>
         <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-white/15 px-3 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-5">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
               onClick={togglePlayback}
@@ -491,6 +690,44 @@ function PresentationViewer() {
             >
               <RotateCcw className="h-4 w-4" aria-hidden="true" /> Restart
             </button>
+            <button
+              type="button"
+              onClick={() => setShowSubtitles((visible) => !visible)}
+              aria-label="Subtitles"
+              aria-pressed={showSubtitles}
+              className={`inline-flex min-h-10 items-center rounded-lg border px-3 py-2 text-sm font-semibold text-white focus-visible:outline-2 focus-visible:outline-sky-300 ${showSubtitles ? "border-sky-300/70 bg-sky-500/20 hover:bg-sky-500/30" : "border-white/30 hover:bg-white/15"}`}
+            >
+              Subtitles
+            </button>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={toggleMusic}
+                aria-label="Music"
+                aria-pressed={musicEnabled}
+                className={`inline-flex min-h-10 items-center gap-1 rounded-lg border px-3 py-2 text-sm font-semibold text-white focus-visible:outline-2 focus-visible:outline-sky-300 ${musicEnabled ? "border-sky-300/70 bg-sky-500/20 hover:bg-sky-500/30" : "border-white/30 hover:bg-white/15"}`}
+              >
+                {musicEnabled ? (
+                  <Volume2 className="h-4 w-4" aria-hidden="true" />
+                ) : (
+                  <VolumeX className="h-4 w-4" aria-hidden="true" />
+                )}
+                Music
+              </button>
+              <label htmlFor="presentation-music-volume" className="sr-only">
+                Music volume
+              </label>
+              <input
+                id="presentation-music-volume"
+                type="range"
+                min="0"
+                max="100"
+                value={musicVolume}
+                onChange={(event) => setMusicVolume(Number(event.target.value))}
+                aria-valuetext={`${musicVolume}%`}
+                className="w-16 cursor-pointer accent-sky-400 sm:w-20"
+              />
+            </div>
             <button
               type="button"
               onClick={toggleFullscreen}
@@ -558,7 +795,28 @@ function PresentationViewer() {
           />
         </div>
       </div>
-      <div className="mt-3 flex justify-end">
+      <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+        <p className="text-xs leading-5 text-slate-500 dark:text-slate-400">
+          Music:{" "}
+          <a
+            href="https://pixabay.com/music/indie-pop-acoustic-153886/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-sky-700 dark:hover:text-sky-300"
+          >
+            Acoustic by PaulYudin
+          </a>{" "}
+          ·{" "}
+          <a
+            href="https://pixabay.com/music/instrumental-upbeat-acoustic-593084/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-sky-700 dark:hover:text-sky-300"
+          >
+            Upbeat Acoustic by The_Mountain
+          </a>{" "}
+          · Pixabay Content License
+        </p>
         <div ref={infoContainer} className="relative">
           <button
             type="button"
@@ -582,11 +840,13 @@ function PresentationViewer() {
             role="tooltip"
             className={`absolute right-0 bottom-full z-20 mb-2 w-[min(24rem,calc(100vw-2rem))] rounded-xl border border-slate-200 bg-white p-4 text-sm leading-6 text-slate-700 shadow-xl dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 ${infoOpen ? "block" : suppressInfoHover ? "hidden" : "hidden peer-hover:block peer-focus-visible:block"}`}
           >
-            Play advances each slide about every 23 seconds for a 3-minute
-            rehearsal. The timer keeps running on the final slide so you can
-            check your speaking time. Manual navigation pauses the presentation
-            timer. The Web Development video loops automatically when you open
-            that slide.
+            Play shows the opening for 12 seconds, each story slide for 20
+            seconds, and the closing for 8 seconds in a 3-minute rehearsal. The
+            timer keeps running on the final slide so you can check your
+            speaking time. Manual navigation pauses the presentation timer. The
+            Web Development video loops automatically when you open that slide.
+            Music is off until you press Music; the volume slider starts at 12%.
+            Pause also pauses music during timed playback.
           </div>
         </div>
       </div>
