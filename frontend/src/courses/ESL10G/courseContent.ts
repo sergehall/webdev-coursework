@@ -152,7 +152,7 @@ export const storySlides = [
     title: "Where I’m from",
     image: "belarus",
     alt: "A map of Europe highlighting Belarus",
-    text: "I am from Belarus. Belarus is a small country in Eastern Europe.",
+    text: "I am from Belarus. Belarus is a small country in Eastern Europe. It is near Ukraine, Poland, Lithuania, and Russia.",
   },
   {
     title: "My first years in the U.S.",
@@ -164,7 +164,7 @@ export const storySlides = [
     title: "Working in New York",
     image: "restaurant",
     alt: "A collage of restaurant staff and musicians at a Ukrainian restaurant",
-    text: "I worked as a waiter and bartender in a Ukrainian restaurant.",
+    text: "I worked as a waiter and bartender in a Ukrainian restaurant, and most of our customers spoke Russian or Ukrainian.",
   },
   {
     title: "A new start in Los Angeles",
@@ -176,7 +176,7 @@ export const storySlides = [
     title: "Learning English at SMC",
     image: "classroom",
     alt: "Students learning together in a classroom",
-    text: "I started taking free ESL classes at Santa Monica College.",
+    text: "I started taking free ESL classes at Santa Monica College. I started from the beginning and continued to higher levels.",
   },
   {
     title: "Web Development",
