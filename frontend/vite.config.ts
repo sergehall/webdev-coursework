@@ -1,6 +1,8 @@
 // frontend/vite.config.ts
 import { fileURLToPath } from "url";
 import * as path from "path";
+import { createHash } from "node:crypto";
+import { readFileSync } from "node:fs";
 
 import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
@@ -9,6 +11,17 @@ import { envSchema } from "./src/config/env/env.schema";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const brooklynImageVersion = createHash("sha256")
+  .update(
+    readFileSync(
+      path.resolve(
+        __dirname,
+        "public/course-materials/esl10g/presentation/brooklyn.png"
+      )
+    )
+  )
+  .digest("hex")
+  .slice(0, 12);
 const courseChunkGroups: Array<[pathSegment: string, chunkName: string]> = [
   ["/courses/CS60/", "course-cs60"],
   ["/courses/CS70/", "course-cs70"],
@@ -118,6 +131,7 @@ export default defineConfig(({ mode }) => {
     },
     define: {
       __APP_ENV__: JSON.stringify(env.VITE_ENVIRONMENT),
+      __ESL10G_BROOKLYN_IMAGE_VERSION__: JSON.stringify(brooklynImageVersion),
       "process.env.NODE_ENV": JSON.stringify(
         isProd ? "production" : "development"
       ),

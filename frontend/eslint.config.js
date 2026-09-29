@@ -55,6 +55,7 @@ export default [
         RequestInit: "readonly",
         importScripts: "readonly",
         loadPyodide: "readonly",
+        __ESL10G_BROOKLYN_IMAGE_VERSION__: "readonly",
       },
     },
     plugins: {

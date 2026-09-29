@@ -68,6 +68,7 @@ describe("ESL 10G coursework page", () => {
     try {
       expect(images).toHaveLength(2);
       expect(images[0].src).toContain("/brooklyn.png");
+      expect(images[0].src).toMatch(/\/brooklyn\.png\?v=[a-f0-9]{12}$/);
       expect(images[0].fetchPriority).toBe("low");
       fireEvent.error(images[0]);
       expect(images).toHaveLength(3);
@@ -288,6 +289,28 @@ describe("ESL 10G coursework page", () => {
       screen.getByRole("heading", { name: /We learn together/i })
     ).toBeInTheDocument();
     expect(next).toBeDisabled();
+  });
+
+  it("uses the versioned Brooklyn photo on the opening and story slides", () => {
+    const { container } = renderPage("/coursework/ESL10G/presentation-1");
+    const openingPhoto = container.querySelector(
+      '.bookend__photos--opening img[src*="brooklyn.png"]'
+    );
+    const imageUrl = openingPhoto?.getAttribute("src");
+    expect(imageUrl).toMatch(/\/brooklyn\.png\?v=[a-f0-9]{12}$/);
+
+    fireEvent.click(screen.getByRole("button", { name: "Next slide" }));
+    expect(
+      screen.getByRole("img", {
+        name: "A map of Europe highlighting Belarus",
+      })
+    ).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Next slide" }));
+    expect(
+      screen.getByRole("img", {
+        name: "A street scene in Brooklyn, New York",
+      })
+    ).toHaveAttribute("src", imageUrl);
   });
 
   it("toggles subtitles across the opening, story, and closing slides", async () => {

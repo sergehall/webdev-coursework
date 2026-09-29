@@ -38,6 +38,12 @@ const BOOKEND_DURATIONS_MS = [12 * 1000, 8 * 1000] as const;
 const MUSIC_FADE_MS = 700;
 const DEFAULT_MUSIC_VOLUME = 12;
 const MUSIC_BASE_PATH = "/course-materials/esl10g/presentation/music";
+const presentationImageUrl = (image: string) => {
+  const url = `/course-materials/esl10g/presentation/${image}.png`;
+  return image === "brooklyn"
+    ? `${url}?v=${__ESL10G_BROOKLYN_IMAGE_VERSION__}`
+    : url;
+};
 const slideDuration = (index: number) =>
   index === 0
     ? BOOKEND_DURATIONS_MS[0]
@@ -226,7 +232,7 @@ function PresentationViewer() {
         void decoded.catch(() => {}).then(loadNext);
       };
       image.onerror = loadNext;
-      image.src = `/course-materials/esl10g/presentation/${imageName}.png`;
+      image.src = presentationImageUrl(imageName);
     };
     loadNext();
     loadNext();
@@ -521,7 +527,7 @@ function PresentationViewer() {
               <video
                 ref={videoRef}
                 src={ANIMATION_URL}
-                poster={`/course-materials/esl10g/presentation/${ANIMATED_SLIDE?.image}.png`}
+                poster={presentationImageUrl(ANIMATED_SLIDE?.image ?? "")}
                 aria-label={
                   slideVideo && "alt" in slide ? slide.alt : undefined
                 }
@@ -535,7 +541,7 @@ function PresentationViewer() {
             )}
             {!slideVideo && "image" in slide && (
               <img
-                src={`/course-materials/esl10g/presentation/${slide.image}.png`}
+                src={presentationImageUrl(slide.image)}
                 alt={slide.alt}
                 className={`absolute inset-0 h-full w-full ${isFullscreen ? "object-contain" : "object-cover"}`}
               />
@@ -574,10 +580,7 @@ function PresentationViewer() {
                         src="/course-materials/esl10g/presentation/belarus.png"
                         alt=""
                       />
-                      <img
-                        src="/course-materials/esl10g/presentation/brooklyn.png"
-                        alt=""
-                      />
+                      <img src={presentationImageUrl("brooklyn")} alt="" />
                       <img
                         src="/course-materials/esl10g/presentation/los-angeles.png"
                         alt=""
