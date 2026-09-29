@@ -635,15 +635,17 @@ function PresentationViewer() {
                 aria-hidden="true"
               />
             )}
-            <div
-              role="timer"
-              aria-label="Presentation elapsed time"
-              className={`absolute top-4 right-4 rounded-xl border px-3 py-2 text-right text-white shadow-lg backdrop-blur-sm sm:top-6 sm:right-6 ${playback.elapsedMs > MAX_DURATION_MS ? "border-red-300/70 bg-red-900/50" : playback.elapsedMs >= MIN_DURATION_MS ? "border-emerald-300/70 bg-emerald-900/50" : "border-white/30 bg-slate-950/45"}`}
-            >
-              <span className="block font-mono text-xl font-bold tabular-nums sm:text-2xl">
-                {formatElapsedTime(playback.elapsedMs)}
-              </span>
-            </div>
+            {playback.playing && (
+              <div
+                role="timer"
+                aria-label="Presentation elapsed time"
+                className={`absolute top-4 right-4 rounded-xl border px-3 py-2 text-right text-white shadow-lg backdrop-blur-sm sm:top-6 sm:right-6 ${playback.elapsedMs > MAX_DURATION_MS ? "border-red-300/70 bg-red-900/50" : playback.elapsedMs >= MIN_DURATION_MS ? "border-emerald-300/70 bg-emerald-900/50" : "border-white/30 bg-slate-950/45"}`}
+              >
+                <span className="block font-mono text-xl font-bold tabular-nums sm:text-2xl">
+                  {formatElapsedTime(playback.elapsedMs)}
+                </span>
+              </div>
+            )}
           </div>
           {!isOpening && !isClosing && (
             <div

@@ -143,7 +143,7 @@ describe("ESL 10G coursework page", () => {
       expect(HTMLMediaElement.prototype.play).toHaveBeenCalledTimes(1);
       act(() => vi.advanceTimersByTime(30_000));
       expect(screen.getByText("7 / 10")).toBeInTheDocument();
-      expect(screen.getByRole("timer")).toHaveTextContent("0:00");
+      expect(screen.queryByRole("timer")).not.toBeInTheDocument();
       expect(
         screen.getByRole("button", { name: "Play presentation" })
       ).toBeInTheDocument();
@@ -154,7 +154,7 @@ describe("ESL 10G coursework page", () => {
       fireEvent.click(screen.getByRole("button", { name: "Previous slide" }));
       expect(screen.getByLabelText(videoLabel)).toBeInTheDocument();
       expect(HTMLMediaElement.prototype.play).toHaveBeenCalledTimes(2);
-      expect(screen.getByRole("timer")).toHaveTextContent("0:00");
+      expect(screen.queryByRole("timer")).not.toBeInTheDocument();
     } finally {
       unmount();
       vi.useRealTimers();
@@ -293,6 +293,8 @@ describe("ESL 10G coursework page", () => {
   it("toggles subtitles across the opening, story, and closing slides", async () => {
     const user = userEvent.setup();
     renderPage("/coursework/ESL10G/presentation-1");
+    const belarusSubtitle =
+      "I am from Belarus. Belarus is a small country in Eastern Europe. It is near Ukraine, Poland, Lithuania, and Russia.";
 
     const subtitles = screen.getByRole("button", { name: "Subtitles" });
     const next = screen.getByRole("button", { name: "Next slide" });
@@ -314,19 +316,11 @@ describe("ESL 10G coursework page", () => {
     expect(
       screen.getByRole("heading", { name: "Where I’m from" })
     ).toBeInTheDocument();
-    expect(
-      screen.queryByText(
-        "I am from Belarus. Belarus is a small country in Eastern Europe."
-      )
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText(belarusSubtitle)).not.toBeInTheDocument();
 
     await user.click(subtitles);
     expect(subtitles).toHaveAttribute("aria-pressed", "true");
-    expect(
-      screen.getByText(
-        "I am from Belarus. Belarus is a small country in Eastern Europe."
-      )
-    ).toBeInTheDocument();
+    expect(screen.getByText(belarusSubtitle)).toBeInTheDocument();
 
     for (let i = 0; i < 8; i += 1) await user.click(next);
     expect(
@@ -406,13 +400,10 @@ describe("ESL 10G coursework page", () => {
     const { unmount } = renderPage("/coursework/ESL10G/presentation-1");
 
     try {
-      const timer = screen.getByRole("timer", {
-        name: "Presentation elapsed time",
-      });
       const progress = screen.getByRole("progressbar", {
         name: "Presentation speaking time progress",
       });
-      expect(timer).toHaveTextContent(/^0:00$/);
+      expect(screen.queryByRole("timer")).not.toBeInTheDocument();
       expect(progress).toHaveAttribute("aria-valuenow", "0");
       expect(progress.firstElementChild).toHaveStyle({ width: "0%" });
       expect(
@@ -422,6 +413,10 @@ describe("ESL 10G coursework page", () => {
       fireEvent.click(
         screen.getByRole("button", { name: "Play presentation" })
       );
+      let timer = screen.getByRole("timer", {
+        name: "Presentation elapsed time",
+      });
+      expect(timer).toHaveTextContent(/^0:00$/);
       act(() => vi.advanceTimersByTime(12_000));
       expect(screen.getByText("2 / 10")).toBeInTheDocument();
       act(() => vi.advanceTimersByTime(10_500));
@@ -431,12 +426,19 @@ describe("ESL 10G coursework page", () => {
         screen.getByRole("button", { name: "Pause presentation" })
       );
       act(() => vi.advanceTimersByTime(10_000));
-      expect(timer).toHaveTextContent("0:22");
+      expect(screen.queryByRole("timer")).not.toBeInTheDocument();
       expect(screen.getByText("2 / 10")).toBeInTheDocument();
+
+      fireEvent.click(
+        screen.getByRole("button", { name: "Play presentation" })
+      );
+      timer = screen.getByRole("timer");
+      expect(timer).toHaveTextContent("0:22");
 
       fireEvent.click(
         screen.getByRole("button", { name: "Restart presentation" })
       );
+      timer = screen.getByRole("timer");
       expect(timer).toHaveTextContent("0:00");
       expect(screen.getByText("1 / 10")).toBeInTheDocument();
 
@@ -455,6 +457,7 @@ describe("ESL 10G coursework page", () => {
       });
 
       fireEvent.click(screen.getByRole("button", { name: "Previous slide" }));
+      expect(screen.queryByRole("timer")).not.toBeInTheDocument();
       expect(
         screen.getByRole("button", { name: "Play presentation" })
       ).toBeInTheDocument();
