@@ -93,7 +93,7 @@ describe("ESL 10G coursework page", () => {
       fireEvent.click(
         screen.getByRole("button", { name: "Play presentation" })
       );
-      act(() => vi.advanceTimersByTime(111_750));
+      act(() => vi.advanceTimersByTime(130_250));
       expect(screen.queryByLabelText(videoLabel)).not.toBeInTheDocument();
       act(() => vi.advanceTimersByTime(250));
       const video = screen.getByLabelText(videoLabel) as HTMLVideoElement;
@@ -118,7 +118,7 @@ describe("ESL 10G coursework page", () => {
         screen.getByRole("button", { name: "Play presentation" })
       );
       expect(HTMLMediaElement.prototype.play).toHaveBeenCalledTimes(2);
-      act(() => vi.advanceTimersByTime(22_500));
+      act(() => vi.advanceTimersByTime(25_500));
       expect(screen.getByText("8 / 10")).toBeInTheDocument();
       expect(screen.queryByLabelText(videoLabel)).not.toBeInTheDocument();
 
@@ -601,23 +601,31 @@ describe("ESL 10G coursework page", () => {
         name: "Presentation elapsed time",
       });
       expect(timer).toHaveTextContent(/^0:00$/);
-      act(() => vi.advanceTimersByTime(12_000));
+      act(() => vi.advanceTimersByTime(2_750));
+      expect(screen.getByText("1 / 10")).toBeInTheDocument();
+      act(() => vi.advanceTimersByTime(250));
       expect(screen.getByText("2 / 10")).toBeInTheDocument();
+      expect(timer).toHaveTextContent("0:03");
       act(() => vi.advanceTimersByTime(10_500));
-      expect(timer).toHaveTextContent("0:22");
+      expect(timer).toHaveTextContent("0:13");
+      act(() => vi.advanceTimersByTime(14_750));
+      expect(screen.getByText("2 / 10")).toBeInTheDocument();
+      act(() => vi.advanceTimersByTime(250));
+      expect(screen.getByText("3 / 10")).toBeInTheDocument();
+      expect(timer).toHaveTextContent("0:28");
 
       fireEvent.click(
         screen.getByRole("button", { name: "Pause presentation" })
       );
       act(() => vi.advanceTimersByTime(10_000));
       expect(screen.queryByRole("timer")).not.toBeInTheDocument();
-      expect(screen.getByText("2 / 10")).toBeInTheDocument();
+      expect(screen.getByText("3 / 10")).toBeInTheDocument();
 
       fireEvent.click(
         screen.getByRole("button", { name: "Play presentation" })
       );
       timer = screen.getByRole("timer");
-      expect(timer).toHaveTextContent("0:22");
+      expect(timer).toHaveTextContent("0:28");
 
       fireEvent.click(
         screen.getByRole("button", { name: "Restart presentation" })
@@ -632,15 +640,36 @@ describe("ESL 10G coursework page", () => {
       expect(
         parseFloat((progress.firstElementChild as HTMLElement).style.width)
       ).toBeCloseTo((150 / 210) * 100);
-      act(() => vi.advanceTimersByTime(61_000));
-      expect(timer).toHaveTextContent(/^3:31$/);
+      act(() => vi.advanceTimersByTime(56_750));
+      expect(timer).toHaveTextContent(/^3:26$/);
+      expect(screen.getByText("9 / 10")).toBeInTheDocument();
+      act(() => vi.advanceTimersByTime(250));
+      expect(timer).toHaveTextContent(/^3:27$/);
+      expect(screen.getByText("10 / 10")).toBeInTheDocument();
+      act(() => vi.advanceTimersByTime(2_750));
+      expect(timer).toHaveTextContent(/^3:29$/);
+      act(() => vi.advanceTimersByTime(250));
+      expect(screen.queryByRole("timer")).not.toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: "Play presentation" })
+      ).toBeInTheDocument();
       expect(progress).toHaveAttribute("aria-valuenow", "210");
       expect(progress.firstElementChild).toHaveStyle({
         width: "100%",
         backgroundColor: "hsl(0 70% 65%)",
       });
 
-      fireEvent.click(screen.getByRole("button", { name: "Previous slide" }));
+      act(() => vi.advanceTimersByTime(10_000));
+      expect(screen.getByText("10 / 10")).toBeInTheDocument();
+      expect(progress).toHaveAttribute("aria-valuenow", "210");
+
+      fireEvent.click(
+        screen.getByRole("button", { name: "Play presentation" })
+      );
+      expect(screen.getByText("1 / 10")).toBeInTheDocument();
+      expect(screen.getByRole("timer")).toHaveTextContent(/^0:00$/);
+
+      fireEvent.click(screen.getByRole("button", { name: "Next slide" }));
       expect(screen.queryByRole("timer")).not.toBeInTheDocument();
       expect(
         screen.getByRole("button", { name: "Play presentation" })

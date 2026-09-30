@@ -34,8 +34,10 @@ const SWIPE_THRESHOLD = 50;
 const MIN_DURATION_MS = 2.5 * 60 * 1000;
 const MAX_DURATION_MS = 3.5 * 60 * 1000;
 const PROGRESS_COLOR_CHANGE_MS = 2 * 60 * 1000;
-const STORY_SLIDE_DURATION_MS = 20 * 1000;
-const BOOKEND_DURATIONS_MS = [12 * 1000, 8 * 1000] as const;
+const BOOKEND_DURATIONS_MS = [3 * 1000, 3 * 1000] as const;
+const STORY_SLIDE_DURATION_MS =
+  (MAX_DURATION_MS - BOOKEND_DURATIONS_MS[0] - BOOKEND_DURATIONS_MS[1]) /
+  storySlides.length;
 const MUSIC_FADE_MS = 700;
 const DEFAULT_MUSIC_VOLUME = 12;
 const MUSIC_BASE_PATH = "/course-materials/esl10g/presentation/music";
@@ -649,17 +651,35 @@ function PresentationViewer() {
           slideIndex += 1;
         }
 
+        const finished =
+          slideIndex === presentationSlides.length - 1 &&
+          slideElapsedMs >= slideDuration(slideIndex);
+        const overshoot = finished
+          ? slideElapsedMs - slideDuration(slideIndex)
+          : 0;
+
         return {
           ...current,
           slideIndex,
           slideElapsedMs: Math.min(slideElapsedMs, slideDuration(slideIndex)),
-          elapsedMs: current.elapsedMs + delta,
+          elapsedMs: current.elapsedMs + delta - overshoot,
+          playing: !finished,
         };
       });
     }, 250);
 
     return () => window.clearInterval(interval);
   }, [playback.playing]);
+
+  useEffect(() => {
+    if (
+      !playback.playing &&
+      playback.slideIndex === presentationSlides.length - 1 &&
+      playback.slideElapsedMs >= slideDuration(playback.slideIndex)
+    ) {
+      setMusicPaused(true);
+    }
+  }, [playback.playing, playback.slideIndex, playback.slideElapsedMs]);
 
   useEffect(() => {
     if (!infoOpen) return;
@@ -745,6 +765,14 @@ function PresentationViewer() {
   };
 
   const togglePlayback = () => {
+    if (
+      !playback.playing &&
+      playback.slideIndex === presentationSlides.length - 1 &&
+      playback.slideElapsedMs >= slideDuration(playback.slideIndex)
+    ) {
+      restartPlayback();
+      return;
+    }
     setVideoPlaying(!playback.playing);
     setMusicPaused(playback.playing);
     setPlayback((current) => ({ ...current, playing: !current.playing }));
