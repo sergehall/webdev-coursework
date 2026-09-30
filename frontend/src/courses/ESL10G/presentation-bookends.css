@@ -1,3 +1,306 @@
+.esl10g-hike {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  filter: drop-shadow(0 4px 5px #14274699);
+}
+
+.esl10g-hike__trail-shadow,
+.esl10g-hike__trail {
+  fill: none;
+  stroke-linecap: round;
+  stroke-dasharray: 4 19;
+}
+
+.esl10g-hike__trail-shadow {
+  stroke: #18324f;
+  stroke-width: 12px;
+}
+
+.esl10g-hike__trail {
+  stroke: #ffe298;
+  stroke-width: 7px;
+}
+
+.esl10g-hike__flag path:first-child {
+  fill: none;
+  stroke: #17314b;
+  stroke-linecap: round;
+  stroke-width: 7px;
+}
+
+.esl10g-hike__flag path:last-child {
+  fill: #ff8c62;
+  stroke: #17314b;
+  stroke-linejoin: round;
+  stroke-width: 5px;
+}
+
+.esl10g-hike__summit rect {
+  fill: #fff2c4;
+  stroke: #17314b;
+  stroke-width: 5px;
+}
+
+.esl10g-hike__summit text {
+  fill: #17314b;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: 38px;
+  font-weight: 900;
+  letter-spacing: 0.035em;
+}
+
+.esl10g-hike__sparkle {
+  fill: #ffe298;
+  stroke: #17314b;
+  stroke-width: 4px;
+}
+
+.esl10g-hike__pack {
+  fill: #ff8c62;
+  stroke: #17314b;
+  stroke-width: 4px;
+}
+
+.esl10g-hike__head {
+  fill: #fff2c4;
+  stroke: #17314b;
+  stroke-width: 4px;
+}
+
+.esl10g-hike__limbs,
+.esl10g-hike__pole {
+  fill: none;
+  stroke: #17314b;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 7px;
+}
+
+.esl10g-hike__pole {
+  stroke-width: 4px;
+}
+
+.esl10g-hike__hiker-static {
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .esl10g-hike__trail {
+    animation: esl10g-hike-dashes 1.2s linear infinite;
+  }
+
+  .esl10g-hike__sparkle {
+    animation: esl10g-hike-sparkle 2s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .esl10g-hike__hiker {
+    display: none;
+  }
+
+  .esl10g-hike__hiker-static {
+    display: inline;
+  }
+}
+
+@keyframes esl10g-hike-dashes {
+  to {
+    stroke-dashoffset: -23;
+  }
+}
+
+@keyframes esl10g-hike-sparkle {
+  50% {
+    opacity: 0.55;
+    transform: scale(1.15);
+  }
+}
+
+.esl10g-flight {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  filter: drop-shadow(0 3px 5px #08162b99);
+}
+
+.esl10g-flight__path-shadow,
+.esl10g-flight__path {
+  fill: none;
+  stroke-linecap: round;
+  stroke-dasharray: 3 17;
+}
+
+.esl10g-flight__path-shadow {
+  stroke: #142b49;
+  stroke-width: 11px;
+}
+
+.esl10g-flight__path {
+  stroke: #ffe08a;
+  stroke-width: 6px;
+}
+
+.esl10g-flight__destination rect {
+  fill: #fff2c4;
+  stroke: #183650;
+  stroke-width: 5px;
+}
+
+.esl10g-flight__destination text {
+  fill: #183650;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: 31px;
+  font-weight: 900;
+  letter-spacing: 0.025em;
+}
+
+.esl10g-flight__plane-body {
+  fill: #fff5d6;
+  stroke: #183650;
+  stroke-linejoin: round;
+  stroke-width: 5px;
+}
+
+.esl10g-flight__plane-detail {
+  fill: none;
+  stroke: #e56f50;
+  stroke-linecap: round;
+  stroke-width: 5px;
+}
+
+.esl10g-flight__trail-static,
+.esl10g-flight__plane-static {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .esl10g-flight__trail,
+  .esl10g-flight__plane {
+    display: none;
+  }
+
+  .esl10g-flight__trail-static,
+  .esl10g-flight__plane-static {
+    display: inline;
+  }
+}
+
+.esl10g-route66 {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  filter: drop-shadow(0 5px 6px #12264280);
+}
+
+.esl10g-route66__road-edge,
+.esl10g-route66__road,
+.esl10g-route66__center-line {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.esl10g-route66__road-edge {
+  stroke: #fff2c1;
+  stroke-width: 48px;
+}
+
+.esl10g-route66__road {
+  stroke: #283d59;
+  stroke-width: 39px;
+}
+
+.esl10g-route66__center-line {
+  stroke: #ffca65;
+  stroke-width: 4px;
+  stroke-dasharray: 23 19;
+}
+
+.esl10g-route66__city rect {
+  fill: #fff3c8;
+  stroke: #20364f;
+  stroke-width: 4px;
+}
+
+.esl10g-route66__city text,
+.esl10g-route66__shield text {
+  fill: #20364f;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-weight: 900;
+  letter-spacing: 0.045em;
+}
+
+.esl10g-route66__city text {
+  font-size: 24px;
+}
+
+.esl10g-route66__city--via text {
+  font-size: 21px;
+}
+
+.esl10g-route66__shield path {
+  fill: #fff6dc;
+  stroke: #20364f;
+  stroke-width: 5px;
+}
+
+.esl10g-route66__shield-top {
+  font-size: 21px;
+}
+
+.esl10g-route66__shield-number {
+  font-size: 46px;
+  letter-spacing: -0.04em;
+}
+
+.esl10g-route66__car-body {
+  fill: #ff7a4e;
+  stroke: #20364f;
+  stroke-width: 4px;
+}
+
+.esl10g-route66__car-window {
+  fill: #c8f4f6;
+  stroke: #20364f;
+  stroke-width: 3px;
+}
+
+.esl10g-route66__wheel {
+  fill: #20364f;
+}
+
+.esl10g-route66__hubcap {
+  fill: #fff3c8;
+}
+
+.esl10g-route66__car-static {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .esl10g-route66__car {
+    display: none;
+  }
+
+  .esl10g-route66__car-static {
+    display: inline;
+  }
+}
+
 .esl10g-matthew-annotation {
   position: absolute;
   inset: 0;

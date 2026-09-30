@@ -385,6 +385,62 @@ describe("ESL 10G coursework page", () => {
     expect(screen.queryByRole("img", { name: teacherLabel })).toBeNull();
   });
 
+  it("shows a flight from Belarus toward New York only on the Belarus slide", () => {
+    const { container } = renderPage("/coursework/ESL10G/presentation-1");
+    const flightLabel =
+      /An airplane flies from Belarus toward New York, leaving a dotted flight path/;
+
+    expect(screen.queryByRole("img", { name: flightLabel })).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Next slide" }));
+    expect(screen.getByRole("img", { name: flightLabel })).toBeInTheDocument();
+    expect(
+      container.querySelector(".esl10g-flight animateMotion")
+    ).not.toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "Next slide" }));
+    expect(screen.queryByRole("img", { name: flightLabel })).toBeNull();
+  });
+
+  it("shows the Route 66 car journey only on the Los Angeles slide", () => {
+    const { container } = renderPage("/coursework/ESL10G/presentation-1");
+    const next = screen.getByRole("button", { name: "Next slide" });
+    const journeyLabel =
+      /A car travels from New York through Oklahoma City, then along Route 66 to Los Angeles/;
+
+    expect(screen.queryByRole("img", { name: journeyLabel })).toBeNull();
+    for (let i = 0; i < 4; i += 1) fireEvent.click(next);
+    expect(
+      screen.getByRole("heading", { name: "A new start in Los Angeles" })
+    ).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: journeyLabel })).toBeInTheDocument();
+    expect(
+      container.querySelector(".esl10g-route66 animateMotion")
+    ).not.toBeNull();
+
+    fireEvent.click(next);
+    expect(screen.queryByRole("img", { name: journeyLabel })).toBeNull();
+  });
+
+  it("shows the climbing hiker only on the California hiking slide", () => {
+    const { container } = renderPage("/coursework/ESL10G/presentation-1");
+    const next = screen.getByRole("button", { name: "Next slide" });
+    const hikerLabel =
+      /A little hiker climbs a winding trail toward a summit flag/;
+
+    expect(screen.queryByRole("img", { name: hikerLabel })).toBeNull();
+    for (let i = 0; i < 7; i += 1) fireEvent.click(next);
+    expect(
+      screen.getByRole("heading", { name: "Life in California" })
+    ).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: hikerLabel })).toBeInTheDocument();
+    expect(
+      container.querySelector(".esl10g-hike animateMotion")
+    ).not.toBeNull();
+
+    fireEvent.click(next);
+    expect(screen.queryByRole("img", { name: hikerLabel })).toBeNull();
+  });
+
   it("introduces Matthew only on the learning together photo", () => {
     const { container } = renderPage("/coursework/ESL10G/presentation-1");
     const next = screen.getByRole("button", { name: "Next slide" });
