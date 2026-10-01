@@ -25,6 +25,7 @@ type Method = {
   locked_until: Date | null;
 };
 type Challenge = {
+  auth_method: "password" | "github";
   account_id: string;
   revision: string;
   attempts: number;
@@ -383,6 +384,7 @@ export class MfaService {
             accountId: pending.account_id,
             revision: pending.revision,
             verifiedAt: new Date().toISOString(),
+            authMethod: pending.auth_method,
           }
         : null;
     });

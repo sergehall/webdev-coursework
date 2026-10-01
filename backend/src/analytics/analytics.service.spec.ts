@@ -20,6 +20,8 @@ function fixture() {
     }),
     dashboard: jest.fn(),
     audits: jest.fn(),
+    recordSession: jest.fn().mockResolvedValue(undefined),
+    forgetSession: jest.fn().mockResolvedValue(undefined),
   };
   Object.assign(store, {
     account: store.owner,
@@ -67,6 +69,20 @@ function fixture() {
 }
 
 describe("Owner access and anonymous analytics", () => {
+  it("removes a newly issued cache token if registering its session fails", async () => {
+    const { service, store, redis } = fixture();
+    store.recordSession.mockRejectedValueOnce(
+      new Error("database unavailable")
+    );
+    await expect(service.createSession(await store.owner())).rejects.toThrow(
+      "database unavailable"
+    );
+    expect(redis.del).toHaveBeenCalledWith(redis.set.mock.calls[0][0]);
+    expect(store.recordSession.mock.calls[0][0]).not.toHaveProperty("token");
+    expect(store.recordSession.mock.calls[0][0].tokenHash).toMatch(
+      /^[0-9a-f]{64}$/
+    );
+  });
   it("hashes passwords and rejects incorrect or malformed hashes", async () => {
     const hash = await hashOwnerPassword("a long private password");
     expect(await verifyOwnerPassword("a long private password", hash)).toBe(

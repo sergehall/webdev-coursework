@@ -20,6 +20,9 @@ const {
 const {
   AddAccountPreferences1790917200000,
 } = require("../dist/db/migrations/1790917200000-AddAccountPreferences");
+const {
+  AddAccountSessions1790920800000,
+} = require("../dist/db/migrations/1790920800000-AddAccountSessions");
 const db = new DataSource({
   ...AppDataSource.options,
   logging: false,
@@ -31,6 +34,7 @@ const db = new DataSource({
     IndexSecurityActivity1790910000000,
     AddAccountMfa1790913600000,
     AddAccountPreferences1790917200000,
+    AddAccountSessions1790920800000,
   ],
 });
 (async () => {

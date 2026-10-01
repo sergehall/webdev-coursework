@@ -746,3 +746,74 @@
     grid-template-columns: 1fr;
   }
 }
+
+.owner-active-sessions {
+  display: grid;
+  gap: 0.7rem;
+  margin: 0.75rem 0 1rem;
+}
+.owner-sessions-heading {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: space-between;
+  align-items: start;
+}
+.owner-sessions-heading h3 {
+  font-size: 0.85rem;
+  font-weight: 750;
+  margin-bottom: 0.3rem;
+}
+.owner-sessions-heading .owner-button {
+  flex-shrink: 0;
+}
+.owner-sessions-list {
+  max-height: 26rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.owner-sessions-list ul {
+  display: grid;
+  gap: 0.6rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.owner-session-row {
+  border: 1px solid var(--owner-border);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  font-size: 0.8rem;
+  background: var(--owner-soft);
+}
+.owner-session-device {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.7rem;
+}
+.owner-session-device > .owner-muted {
+  flex-basis: 100%;
+  text-transform: capitalize;
+}
+.owner-session-times {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+.owner-session-times dt {
+  color: var(--owner-muted);
+  font-size: 0.7rem;
+}
+.owner-session-times dd {
+  margin-top: 0.2rem;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 580px) {
+  .owner-sessions-heading {
+    flex-direction: column;
+  }
+  .owner-session-times {
+    grid-template-columns: 1fr;
+  }
+}

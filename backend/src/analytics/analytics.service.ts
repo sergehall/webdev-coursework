@@ -42,6 +42,7 @@ type OwnerSession = {
   issuedAt: string;
   expiresAt: string;
   mfaVerifiedAt?: string;
+  authMethod?: "password" | "github" | "unknown";
 };
 
 const PREFIX = "webdev:qr";
@@ -338,20 +339,26 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
       throw new UnauthorizedException("Unable to sign in");
     }
     await this.audit("owner.login", true, true);
-    return this.authenticate(account, "password");
+    return this.authenticate(account, "password", req);
   }
 
   async authenticate(
     account: OwnerAccount,
-    method: "password" | "github"
+    method: "password" | "github",
+    req?: Request
   ): Promise<LoginResult> {
     const challenge = await this.mfa.challenge(account, method);
-    return challenge ?? { token: await this.createSession(account) };
+    return (
+      challenge ?? {
+        token: await this.createSession(account, undefined, { req, method }),
+      }
+    );
   }
 
   async createSession(
     account: OwnerAccount,
-    mfaVerifiedAt?: string
+    mfaVerifiedAt?: string,
+    context?: { req?: Request; method?: "password" | "github" | "unknown" }
   ): Promise<string> {
     if ((await this.mfa.enabled(account.id)) && !mfaVerifiedAt)
       throw new UnauthorizedException("Two-factor verification required");
@@ -360,6 +367,7 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
       accountId: account.id,
       role: account.role,
       revision: account.revision,
+      authMethod: context?.method ?? "unknown",
       issuedAt: new Date().toISOString(),
       expiresAt: new Date(Date.now() + SESSION_SECONDS * 1000).toISOString(),
       ...(mfaVerifiedAt ? { mfaVerifiedAt } : {}),
@@ -370,7 +378,64 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
       "EX",
       SESSION_SECONDS
     );
+    try {
+      await this.registerSession(session, token, context?.req);
+    } catch (error) {
+      await this.connection().del(`${PREFIX}:session:${this.digest(token)}`);
+      throw error;
+    }
     return token;
+  }
+
+  private async registerSession(
+    session: OwnerSession,
+    token: string,
+    req?: Request
+  ) {
+    await this.store.recordSession({
+      ...session,
+      tokenHash: this.digest(token),
+      authMethod: session.authMethod ?? "unknown",
+      ...normalizeDevice(req?.get("user-agent") ?? ""),
+    });
+  }
+
+  async sessions(req: Request, cursor?: string) {
+    const session = await this.authorize(req, "owner.sessions.view", false);
+    const account = await this.store.account(session.accountId);
+    if (!account) throw new UnauthorizedException("Sign in again");
+    const page = await this.store.sessions(
+      account.id,
+      account.revision,
+      cursor
+    );
+    const entries = await Promise.all(
+      page.entries.map(async (entry) => {
+        const raw = await this.connection().get(
+          `${PREFIX}:session:${entry.tokenHash}`
+        );
+        let cached: OwnerSession | null = null;
+        try {
+          cached = raw ? (JSON.parse(raw) as OwnerSession) : null;
+        } catch {
+          /* Invalid cache entries are not active sessions. */
+        }
+        if (
+          !cached ||
+          cached.accountId !== account.id ||
+          cached.revision !== account.revision ||
+          cached.role !== account.role ||
+          !(Date.parse(cached.expiresAt) > Date.now())
+        )
+          return null;
+        const { tokenHash, ...safe } = entry;
+        return { ...safe, current: tokenHash === this.digest(session.token) };
+      })
+    );
+    return {
+      entries: entries.filter((entry) => entry !== null),
+      nextCursor: page.nextCursor,
+    };
   }
 
   async githubStart(req: Request) {
@@ -474,7 +539,7 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
         this.github.ownerId
       );
       await this.audit("account.github.login", true, account.role === "admin");
-      return await this.authenticate(account, "github");
+      return await this.authenticate(account, "github", req);
     } catch {
       if (this.redis?.status === "ready")
         await this.audit("owner.github.login", false, false);
@@ -578,6 +643,7 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
         throw error;
       }
     }
+    await this.registerSession(session, token as string, req);
     await this.audit(action, true, account.role === "admin");
     const { displayName, timeZone, theme, reportDays } = account;
     return {
@@ -589,6 +655,7 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
       canManageRoles: account.id === AnalyticsStore.ROOT_ID,
       mfaEnabled,
       mfaVerifiedAt: session.mfaVerifiedAt,
+      authMethod: session.authMethod ?? "unknown",
       profile: {
         displayName,
         timeZone,
@@ -650,6 +717,10 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
     const session = await this.authorize(req, "owner.logout", false);
     await this.connection().del(
       `${PREFIX}:session:${this.digest(session.token)}`
+    );
+    await this.store.forgetSession(
+      this.digest(session.token),
+      session.accountId
     );
   }
 

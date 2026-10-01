@@ -102,3 +102,19 @@ export async function ownerRequest<T>(
   }
   return (await response.json()) as T;
 }
+
+export type ActiveSession = {
+  id: string;
+  issuedAt: string;
+  expiresAt: string;
+  lastSeenAt: string;
+  device: string;
+  os: string;
+  browser: string;
+  authMethod: string;
+  current: boolean;
+};
+export type ActiveSessionsPage = {
+  entries: ActiveSession[];
+  nextCursor: string | null;
+};

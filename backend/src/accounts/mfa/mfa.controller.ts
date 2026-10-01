@@ -72,7 +72,7 @@ export class MfaController {
     @Body() dto: MfaEnrollmentDto,
     @Res({ passthrough: true }) res: Response
   ) {
-    const { account } = await this.signed(req, "verify-enrollment");
+    const { session, account } = await this.signed(req, "verify-enrollment");
     const result = await this.mfa.verifyEnrollment(
       account,
       dto.enrollmentId,
@@ -82,7 +82,10 @@ export class MfaController {
     if (!updated || updated.revision !== result.revision)
       throw new UnauthorizedException("Sign in again");
     const verifiedAt = new Date().toISOString();
-    const token = await this.auth.createSession(updated, verifiedAt);
+    const token = await this.auth.createSession(updated, verifiedAt, {
+      req,
+      method: session.authMethod,
+    });
     res.cookie(this.auth.cookieName, token, {
       ...this.options(),
       maxAge: 3600000,
@@ -145,7 +148,10 @@ export class MfaController {
     const account = await this.store.account(result.accountId);
     if (!account || account.revision !== result.revision)
       throw new UnauthorizedException("Sign in again");
-    const token = await this.auth.createSession(account, result.verifiedAt);
+    const token = await this.auth.createSession(account, result.verifiedAt, {
+      req,
+      method: result.authMethod,
+    });
     res.clearCookie(this.auth.mfaCookieName, this.options());
     res.cookie(this.auth.cookieName, token, {
       ...this.options(),

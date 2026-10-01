@@ -19,6 +19,7 @@ import type { Request, Response } from "express";
 import { AnalyticsService } from "./analytics.service";
 import {
   AuditQueryDto,
+  SessionQueryDto,
   AccountRoleDto,
   OwnerLoginDto,
   OwnerPasswordDto,
@@ -157,6 +158,11 @@ export class OwnerController {
   @Get("session")
   session(@Req() req: Request) {
     return this.analytics.session(req);
+  }
+
+  @Get("sessions")
+  sessions(@Req() req: Request, @Query() query: SessionQueryDto) {
+    return this.analytics.sessions(req, query.cursor);
   }
 
   @Post("logout")

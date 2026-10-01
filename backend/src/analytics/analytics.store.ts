@@ -144,6 +144,98 @@ export class AnalyticsStore {
       ]
     );
   }
+  async recordSession(session: {
+    tokenHash: string;
+    accountId: string;
+    revision: string;
+    issuedAt: string;
+    expiresAt: string;
+    authMethod: "password" | "github" | "unknown";
+    device: QrEvent["device"];
+    os: QrEvent["os"];
+    browser: QrEvent["browser"];
+  }): Promise<void> {
+    await this.db.query(
+      `INSERT INTO webdev_account_sessions
+      (id,token_hash,account_id,revision,issued_at,expires_at,device,os,browser,auth_method)
+      VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+      ON CONFLICT(token_hash) DO UPDATE SET last_seen_at=now()
+      WHERE webdev_account_sessions.account_id=EXCLUDED.account_id
+        AND webdev_account_sessions.revision=EXCLUDED.revision
+        AND webdev_account_sessions.last_seen_at < now() - interval '1 minute'`,
+      [
+        randomUUID(),
+        session.tokenHash,
+        session.accountId,
+        session.revision,
+        session.issuedAt,
+        session.expiresAt,
+        session.device,
+        session.os,
+        session.browser,
+        session.authMethod,
+      ]
+    );
+  }
+  async forgetSession(tokenHash: string, accountId: string): Promise<void> {
+    await this.db.query(
+      "DELETE FROM webdev_account_sessions WHERE token_hash=$1 AND account_id=$2",
+      [tokenHash, accountId]
+    );
+  }
+  async sessions(accountId: string, revision: string, cursor?: string) {
+    let at: string | null = null,
+      id: string | null = null;
+    if (cursor) {
+      try {
+        const parsed = JSON.parse(
+          Buffer.from(cursor, "base64url").toString("utf8")
+        ) as { at: string; id: string };
+        if (
+          !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(parsed.at) ||
+          new Date(parsed.at).toISOString() !== parsed.at ||
+          !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+            parsed.id
+          )
+        )
+          throw new Error();
+        at = parsed.at;
+        id = parsed.id;
+      } catch {
+        throw new BadRequestException("Invalid sessions cursor");
+      }
+    }
+    const rows: {
+      id: string;
+      tokenHash: string;
+      issuedAt: Date;
+      expiresAt: Date;
+      lastSeenAt: Date;
+      device: string;
+      os: string;
+      browser: string;
+      authMethod: string;
+    }[] = await this.db.query(
+      `
+      SELECT id,token_hash AS "tokenHash",issued_at AS "issuedAt",expires_at AS "expiresAt",last_seen_at AS "lastSeenAt",device,os,browser,auth_method AS "authMethod"
+      FROM webdev_account_sessions WHERE account_id=$1 AND revision=$2 AND expires_at>now()
+        AND ($3::timestamptz IS NULL OR (issued_at,id)<($3::timestamptz,$4::uuid))
+      ORDER BY issued_at DESC,id DESC LIMIT 6`,
+      [accountId, revision, at, id]
+    );
+    const entries = rows.slice(0, 5),
+      last = entries.at(-1);
+    return {
+      entries,
+      nextCursor:
+        rows.length > 5 && last
+          ? Buffer.from(
+              JSON.stringify({ at: last.issuedAt.toISOString(), id: last.id })
+            ).toString("base64url")
+          : null,
+    };
+  }
+
   async password(
     hash: string,
     revision: string,
@@ -324,6 +416,9 @@ export class AnalyticsStore {
 
   async retain(): Promise<void> {
     await this.db.transaction(async (db) => {
+      await db.query(
+        "DELETE FROM webdev_account_sessions s WHERE expires_at <= now() OR NOT EXISTS (SELECT 1 FROM webdev_accounts a WHERE a.id=s.account_id AND a.revision=s.revision)"
+      );
       await db.query(
         "DELETE FROM webdev_runtime_state WHERE expires_at < now()"
       );

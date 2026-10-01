@@ -24,6 +24,7 @@ import {
   type QrStatistics,
 } from "./owner-api";
 import { useOwner } from "./owner-context";
+import ActiveSessionsPanel from "./ActiveSessionsPanel";
 import AccountPreferencesPanel from "./AccountPreferencesPanel";
 import { formatAccountTime } from "./account-time";
 import SecurityActivityPanel from "./SecurityActivityPanel";
@@ -424,7 +425,7 @@ function SecurityPanel({ session }: { session: OwnerSession }) {
             {
               id: "sessions",
               label: "Sessions",
-              note: "Current session and access",
+              note: "Active devices and sign-ins",
             },
           ].map((item) => (
             <Link
@@ -542,26 +543,11 @@ function SecurityPanel({ session }: { session: OwnerSession }) {
           {windowId === "sessions" && (
             <section className="owner-card">
               <h2>Account sessions</h2>
-              <dl className="owner-details">
-                <div>
-                  <dt>Signed in</dt>
-                  <dd>{time(session.issuedAt)}</dd>
-                </div>
-                <div>
-                  <dt>Session ends</dt>
-                  <dd>{time(session.expiresAt)}</dd>
-                </div>
-                <div>
-                  <dt>Time zone</dt>
-                  <dd>{session.profile.timeZone}</dd>
-                </div>
-                <div>
-                  <dt>Access</dt>
-                  <dd>
-                    {session.role === "admin" ? "Administrator" : "Client"}
-                  </dd>
-                </div>
-              </dl>
+              <ActiveSessionsPanel profile={session.profile} />
+              <p className="owner-muted">
+                Time zone: {session.profile.timeZone} · Access:{" "}
+                {session.role === "admin" ? "Administrator" : "Client"}
+              </p>
               <p className="owner-muted">
                 End every session, including this one, if you no longer trust a
                 device.

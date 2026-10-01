@@ -115,3 +115,10 @@ export class AuditQueryDto {
   @MaxLength(300)
   cursor?: string;
 }
+
+export class SessionQueryDto {
+  @IsOptional()
+  @IsString()
+  @MaxLength(300)
+  cursor?: string;
+}
