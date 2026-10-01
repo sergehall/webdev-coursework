@@ -67,11 +67,11 @@ it.each(["light", "system"] as const)(
     const toggle = screen.getByRole("button", {
       name: `Toggle Theme: ${original}`,
     });
-    expect(toggle).toHaveTextContent(original);
+    expect(toggle.textContent).toBe("");
     fireEvent.click(toggle);
     expect(
-      screen.getByRole("button", { name: `Toggle Theme: ${switched}` })
-    ).toHaveTextContent(switched);
+      screen.getByRole("button", { name: `Toggle Theme: ${switched}` }).textContent
+    ).toBe("");
     expect(document.documentElement.classList.contains("dark")).toBe(
       switched === "Dark Mode"
     );

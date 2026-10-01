@@ -1,58 +1,31 @@
-// src/components/buttons/ToggleThemeButton.tsx
-import { Sun, Moon } from "lucide-react";
-import type { ReactNode } from "react";
-
-import { BaseButton, ColoredButton } from "@/components/buttons";
-import type { Variants } from "@/components/buttons/types/variants";
-import type { ButtonSize, ButtonType } from "@/components/buttons/BaseButton";
+import { Moon, Sun } from "lucide-react";
 
 type ToggleThemeButtonProps = {
   isDark: boolean;
   toggleTheme: () => void;
   className?: string;
-  variant?: Variants;
-  size?: ButtonSize;
-  type?: ButtonType;
-  icon?: ReactNode;
-  label?: string;
 };
 
 export default function ToggleThemeButton({
   isDark,
   toggleTheme,
   className = "",
-  variant = "gray",
-  size = "sm",
-  type = "button",
-  icon,
-  label,
 }: ToggleThemeButtonProps) {
-  const finalIcon =
-    icon ??
-    (isDark ? (
-      <Moon size={16} aria-hidden="true" />
-    ) : (
-      <Sun size={16} aria-hidden="true" />
-    ));
-
-  const finalLabel = label ?? (isDark ? "Dark Mode" : "Light Mode");
-
-  const colorClass = ColoredButton({
-    variant,
-    className,
-  });
+  const mode = isDark ? "Dark" : "Light";
 
   return (
-    <BaseButton
+    <button
+      type="button"
       onClick={toggleTheme}
-      icon={finalIcon}
-      size={size}
-      type={type}
-      className={`${variant === "gray" ? "border border-green-700 bg-green-100 text-green-900 hover:bg-green-200 dark:border-green-400 dark:bg-[#24e66f] dark:text-green-950 dark:hover:bg-green-300" : colorClass} h-10 shrink-0 rounded-lg font-bold ${className}`}
+      className={`inline-flex size-10 shrink-0 items-center justify-center rounded-full border border-slate-300 bg-transparent text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 focus-visible:ring-2 focus-visible:ring-green-400 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100 ${className}`}
       title={`Switch to ${isDark ? "Light" : "Dark"} Mode`}
-      aria-label={`Toggle Theme: ${finalLabel}`}
+      aria-label={`Toggle Theme: ${mode} Mode`}
     >
-      {finalLabel}
-    </BaseButton>
+      {isDark ? (
+        <Moon size={16} aria-hidden="true" />
+      ) : (
+        <Sun size={16} aria-hidden="true" />
+      )}
+    </button>
   );
 }
