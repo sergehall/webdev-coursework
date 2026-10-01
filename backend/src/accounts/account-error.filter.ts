@@ -26,11 +26,9 @@ export class AccountErrorFilter implements ExceptionFilter {
     this.logger.error(
       "Account request failed; private error details suppressed"
     );
-    response
-      .status(503)
-      .json({
-        message: "The account service is temporarily unavailable",
-        statusCode: 503,
-      });
+    response.status(503).json({
+      message: "The account service is temporarily unavailable",
+      statusCode: 503,
+    });
   }
 }

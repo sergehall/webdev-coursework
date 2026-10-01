@@ -6,6 +6,7 @@ import {
   type ReactNode,
 } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { FaGithub } from "react-icons/fa";
 import {
   ArrowUpRight,
   BarChart3,
@@ -179,19 +180,36 @@ function ProfilePanel({ profile }: { profile: OwnerProfile }) {
             underscores or hyphens. Changing it does not change your GitHub
             username.
           </p>
-          <label>
-            Email (cannot be changed)
-            <input
-              readOnly
-              value={profile.email ?? "No email stored on this account"}
-              aria-describedby="profile-email-help"
-            />
-          </label>
-          <p id="profile-email-help" className="owner-muted">
-            {profile.email
-              ? `Your registration email is permanent. ${profile.emailVerified ? "Email confirmed." : "Email not confirmed."}`
-              : "No email is stored for this account. GitHub sign-in is shown separately below."}
-          </p>
+          {!profile.email && profile.githubLinked ? (
+            <div className="owner-profile-signin">
+              <span className="owner-profile-signin-label">Sign-in method</span>
+              <div className="owner-profile-provider">
+                <FaGithub aria-hidden="true" />
+                <strong>GitHub</strong>
+                <span className="owner-profile-provider-status">Connected</span>
+              </div>
+              <p className="owner-muted">
+                Use your GitHub account to sign in. No email address is linked
+                to this site account.
+              </p>
+            </div>
+          ) : (
+            <>
+              <label>
+                Email (cannot be changed)
+                <input
+                  readOnly
+                  value={profile.email ?? "No email stored on this account"}
+                  aria-describedby="profile-email-help"
+                />
+              </label>
+              <p id="profile-email-help" className="owner-muted">
+                {profile.email
+                  ? `Your registration email is permanent. ${profile.emailVerified ? "Email confirmed." : "Email not confirmed."}`
+                  : "No email address is linked to this account."}
+              </p>
+            </>
+          )}
           <button
             className="owner-button owner-button--primary"
             disabled={busy}

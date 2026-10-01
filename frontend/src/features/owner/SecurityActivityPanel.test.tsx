@@ -13,25 +13,23 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 it("requests ten records, fetches the next page on demand and resets pagination when filtering", async () => {
-  const fetcher = vi
-    .fn()
-    .mockImplementation(() =>
-      Promise.resolve(
-        new Response(
-          JSON.stringify({
-            entries: [
-              {
-                eventId: "entry",
-                occurredAt: new Date().toISOString(),
-                action: "owner.login",
-                allowed: true,
-              },
-            ],
-            nextCursor: "next-page",
-          })
-        )
+  const fetcher = vi.fn().mockImplementation(() =>
+    Promise.resolve(
+      new Response(
+        JSON.stringify({
+          entries: [
+            {
+              eventId: "entry",
+              occurredAt: new Date().toISOString(),
+              action: "owner.login",
+              allowed: true,
+            },
+          ],
+          nextCursor: "next-page",
+        })
       )
-    );
+    )
+  );
   vi.stubGlobal("fetch", fetcher);
   render(<SecurityActivityPanel />);
   await screen.findByText("owner.login");

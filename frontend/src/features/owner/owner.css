@@ -141,6 +141,36 @@
 .owner-profile-identity {
   margin-top: 0.7rem;
 }
+.owner-profile-signin {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border: 1px solid var(--owner-border);
+  border-radius: 0.5rem;
+  background: var(--owner-soft);
+}
+.owner-profile-signin-label {
+  font-size: 0.8rem;
+  font-weight: 650;
+}
+.owner-profile-provider {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.owner-profile-provider svg {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+.owner-profile-provider-status {
+  color: var(--owner-accent);
+  font-size: 0.75rem;
+  font-weight: 650;
+}
+.owner-profile-signin .owner-muted {
+  margin: 0;
+}
 .owner-profile-identity .owner-details {
   margin-bottom: 0;
 }

@@ -115,9 +115,14 @@ describe("Owner account", () => {
       </MemoryRouter>
     );
     expect(screen.getByText("GitHub · Social sign-up")).toBeInTheDocument();
-    expect(screen.getByLabelText("Email (cannot be changed)")).toHaveValue(
-      "No email stored on this account"
-    );
+    expect(
+      screen.queryByLabelText("Email (cannot be changed)")
+    ).not.toBeInTheDocument();
+    expect(screen.getByText("Sign-in method")).toBeInTheDocument();
+    expect(screen.getByText("GitHub")).toBeInTheDocument();
+    expect(
+      screen.getByText(/Use your GitHub account to sign in/)
+    ).toBeInTheDocument();
     expect(screen.getByText("Not enabled")).toBeInTheDocument();
   });
   it("offers configured GitHub sign-in and password backup", async () => {
