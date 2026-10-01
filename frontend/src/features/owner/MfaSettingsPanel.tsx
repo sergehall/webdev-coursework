@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import QRCode from "qrcode";
 import { ShieldCheck } from "lucide-react";
 
+import { formatAccountTime } from "./account-time";
 import { ownerRequest, OwnerApiError } from "./owner-api";
 import { useOwner } from "./owner-context";
 import type { MfaResponse, MfaSetup, MfaStatus } from "./mfa-api";
@@ -112,11 +113,7 @@ export default function MfaSettingsPanel({
   }
   const time = (value: string | null) =>
     value
-      ? new Intl.DateTimeFormat("en-US", {
-          dateStyle: "medium",
-          timeStyle: "short",
-          timeZone: owner.session?.profile.timeZone,
-        }).format(new Date(value))
+      ? formatAccountTime(value, owner.session?.profile)
       : "Not verified yet";
   const hasProof = /^(?:\d{6}|[A-Fa-f0-9]{5}(?:-[A-Fa-f0-9]{5}){3})$/.test(
     proof.trim()

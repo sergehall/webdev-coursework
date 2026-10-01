@@ -23,6 +23,8 @@ import {
   type QrStatistics,
 } from "./owner-api";
 import { useOwner } from "./owner-context";
+import AccountPreferencesPanel from "./AccountPreferencesPanel";
+import { formatAccountTime } from "./account-time";
 import SecurityActivityPanel from "./SecurityActivityPanel";
 import AccountRolesPanel from "./AccountRolesPanel";
 import AccountAuthPage, { authPages } from "./AccountAuthPage";
@@ -232,96 +234,13 @@ function ProfilePanel({ profile }: { profile: OwnerProfile }) {
 }
 
 function PreferencesPanel({ profile }: { profile: OwnerProfile }) {
-  const owner = useOwner()!;
-  const [form, setForm] = useState({
-    timeZone: profile.timeZone,
-    theme: profile.theme,
-    reportDays: profile.reportDays,
-  });
-  const [busy, setBusy] = useState(false);
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
-  async function save(e: FormEvent) {
-    e.preventDefault();
-    setBusy(true);
-    setError("");
-    setMessage("");
-    try {
-      await ownerRequest("preferences", { method: "PUT", body: form });
-      await owner.refresh();
-      setMessage("Preferences saved.");
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Unable to save preferences."
-      );
-    } finally {
-      setBusy(false);
-    }
-  }
   return (
     <>
       <PageHeader
         title="Preferences"
-        description="Personalize your workspace and default reports."
+        description="Set your account appearance, timestamp format, and report defaults."
       />
-      <section className="owner-card owner-narrow">
-        <form className="owner-form" onSubmit={(e) => void save(e)}>
-          <label>
-            Account theme
-            <select
-              value={form.theme}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  theme: e.target.value as OwnerProfile["theme"],
-                })
-              }
-            >
-              <option value="system">Use portfolio theme</option>
-              <option value="light">Light</option>
-              <option value="dark">Dark</option>
-            </select>
-          </label>
-          <label>
-            Default report period
-            <select
-              value={form.reportDays}
-              onChange={(e) =>
-                setForm({ ...form, reportDays: Number(e.target.value) })
-              }
-            >
-              {[7, 30, 90].map((days) => (
-                <option key={days} value={days}>
-                  Last {days} days
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Time zone
-            <input
-              required
-              maxLength={64}
-              value={form.timeZone}
-              onChange={(e) => setForm({ ...form, timeZone: e.target.value })}
-              placeholder="America/Los_Angeles"
-            />
-          </label>
-          <p className="owner-muted">
-            Your time zone is used for account and security timestamps. Daily
-            visit counts are grouped in UTC.
-          </p>
-          <button
-            className="owner-button owner-button--primary"
-            disabled={busy}
-            type="submit"
-          >
-            {busy ? "Saving…" : "Save preferences"}
-          </button>
-          {message && <Message>{message}</Message>}
-          {error && <Message error>{error}</Message>}
-        </form>
-      </section>
+      <AccountPreferencesPanel profile={profile} />
     </>
   );
 }
@@ -363,12 +282,7 @@ function SecurityPanel({ session }: { session: OwnerSession }) {
   useEffect(() => {
     if (confirmRevoke) dialog.current?.showModal();
   }, [confirmRevoke]);
-  const time = (value: string) =>
-    new Intl.DateTimeFormat("en-US", {
-      dateStyle: "medium",
-      timeStyle: "short",
-      timeZone: session.profile.timeZone,
-    }).format(new Date(value));
+  const time = (value: string) => formatAccountTime(value, session.profile);
   async function change(e: FormEvent) {
     e.preventDefault();
     setError("");
@@ -833,12 +747,7 @@ function StatisticsPanel({
             These are anonymous visits through the QR link, not identified
             people or unique visitors. A shared link also counts; device
             categories are approximate. Updated{" "}
-            {new Intl.DateTimeFormat("en-US", {
-              dateStyle: "medium",
-              timeStyle: "short",
-              timeZone: profile.timeZone,
-            }).format(new Date(data.generatedAt))}
-            .
+            {formatAccountTime(data.generatedAt, profile)}.
           </p>
         </>
       )}

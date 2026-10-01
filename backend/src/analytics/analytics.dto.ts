@@ -56,6 +56,22 @@ export class OwnerPreferencesDto {
   @IsString()
   @MaxLength(64)
   timeZone!: string;
+
+  @ValidateIf((_object, value: unknown) => value !== undefined)
+  @IsIn(["medium", "day-first", "iso"])
+  dateFormat?: "medium" | "day-first" | "iso";
+
+  @ValidateIf((_object, value: unknown) => value !== undefined)
+  @IsIn(["12h", "24h"])
+  clockFormat?: "12h" | "24h";
+
+  @ValidateIf((_object, value: unknown) => value !== undefined)
+  @IsIn([1, 7, 30, 365])
+  activityDays?: number;
+
+  @ValidateIf((_object, value: unknown) => value !== undefined)
+  @IsIn([10, 25, 50])
+  activityPageSize?: number;
 }
 
 export class OwnerPasswordDto extends OwnerLoginDto {

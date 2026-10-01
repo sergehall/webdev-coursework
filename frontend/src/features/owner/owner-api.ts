@@ -9,6 +9,10 @@ export type OwnerProfile = {
   timeZone: string;
   theme: "system" | "light" | "dark";
   reportDays: number;
+  dateFormat?: "medium" | "day-first" | "iso";
+  clockFormat?: "12h" | "24h";
+  activityDays?: number;
+  activityPageSize?: number;
 };
 export type OwnerSession = {
   role: "admin" | "client";

@@ -594,6 +594,10 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
         timeZone,
         theme,
         reportDays,
+        dateFormat: account.dateFormat ?? "medium",
+        clockFormat: account.clockFormat ?? "12h",
+        activityDays: account.activityDays ?? 7,
+        activityPageSize: account.activityPageSize ?? 10,
         username: account.username,
         email: account.email,
         emailVerified: account.emailVerified,
@@ -680,6 +684,17 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
     } catch {
       throw new BadRequestException("Choose a valid time zone");
     }
+    if (
+      session.role !== "admin" &&
+      (dto.reportDays !== session.profile.reportDays ||
+        (dto.activityDays !== undefined &&
+          dto.activityDays !== session.profile.activityDays) ||
+        (dto.activityPageSize !== undefined &&
+          dto.activityPageSize !== session.profile.activityPageSize))
+    )
+      throw new ForbiddenException(
+        "Report defaults are available to administrators"
+      );
     await this.store.preferences(dto, session.accountId);
   }
 

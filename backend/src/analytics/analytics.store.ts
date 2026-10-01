@@ -21,6 +21,10 @@ export type OwnerAccount = {
   timeZone: string;
   theme: "system" | "light" | "dark";
   reportDays: number;
+  dateFormat?: "medium" | "day-first" | "iso";
+  clockFormat?: "12h" | "24h";
+  activityDays?: number;
+  activityPageSize?: number;
 };
 
 export type AccessAudit = {
@@ -36,7 +40,7 @@ export class AnalyticsStore {
   constructor(readonly db: DataSource) {}
 
   static readonly ROOT_ID = "00000000-0000-4000-8000-000000000001";
-  private readonly selectAccount = `SELECT id, role, username, email, email_verified_at IS NOT NULL AS "emailVerified", github_id AS "githubId", password_hash AS "passwordHash", revision, display_name AS "displayName", time_zone AS "timeZone", theme, report_days AS "reportDays" FROM webdev_accounts`;
+  private readonly selectAccount = `SELECT id, role, username, email, email_verified_at IS NOT NULL AS "emailVerified", github_id AS "githubId", password_hash AS "passwordHash", revision, display_name AS "displayName", time_zone AS "timeZone", theme, report_days AS "reportDays", date_format AS "dateFormat", clock_format AS "clockFormat", activity_days AS "activityDays", activity_page_size AS "activityPageSize" FROM webdev_accounts`;
 
   async initializeOwner(hash: string, revision: string): Promise<void> {
     await this.db.query(
@@ -127,8 +131,17 @@ export class AnalyticsStore {
     id = AnalyticsStore.ROOT_ID
   ): Promise<void> {
     await this.db.query(
-      "UPDATE webdev_accounts SET time_zone=$1,theme=$2,report_days=$3,updated_at=now() WHERE id=$4",
-      [dto.timeZone, dto.theme, dto.reportDays, id]
+      "UPDATE webdev_accounts SET time_zone=$1,theme=$2,report_days=$3,date_format=COALESCE($5,date_format),clock_format=COALESCE($6,clock_format),activity_days=COALESCE($7,activity_days),activity_page_size=COALESCE($8,activity_page_size),updated_at=now() WHERE id=$4",
+      [
+        dto.timeZone,
+        dto.theme,
+        dto.reportDays,
+        id,
+        dto.dateFormat,
+        dto.clockFormat,
+        dto.activityDays,
+        dto.activityPageSize,
+      ]
     );
   }
   async password(

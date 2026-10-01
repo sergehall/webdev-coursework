@@ -673,3 +673,46 @@
     min-height: 2.75rem;
   }
 }
+
+/* Preferences use the same compact cards and account color tokens. */
+.owner-preferences-grid {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+  align-items: stretch;
+}
+.owner-preferences-grid .owner-card {
+  display: grid;
+  align-content: start;
+  gap: 0.7rem;
+  min-width: 0;
+}
+.owner-preferences-grid h2 {
+  margin-bottom: 0;
+}
+.owner-preferences-grid select {
+  width: 100%;
+  min-width: 0;
+}
+.owner-preferences-grid .owner-button {
+  justify-self: start;
+}
+.owner-time-preview {
+  display: grid;
+  gap: 0.3rem;
+  border-left: 3px solid var(--owner-accent);
+  padding-left: 0.7rem;
+  font-size: 0.8rem;
+}
+.owner-preferences-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+@media (max-width: 580px) {
+  .owner-preferences .owner-profile-fields {
+    grid-template-columns: 1fr;
+  }
+}

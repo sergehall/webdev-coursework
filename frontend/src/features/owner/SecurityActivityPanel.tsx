@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { formatAccountTime } from "./account-time";
 import { ownerRequest, OwnerApiError, type AuditEntry } from "./owner-api";
 import { useOwner } from "./owner-context";
 type Page = {
@@ -10,8 +11,8 @@ export default function SecurityActivityPanel() {
   const owner = useOwner();
   const clear = owner?.clear;
   const [filters, setFilters] = useState({
-    limit: 10,
-    days: 7,
+    limit: owner?.session?.profile.activityPageSize ?? 10,
+    days: owner?.session?.profile.activityDays ?? 7,
     result: "all",
     group: "all",
   });
@@ -58,11 +59,7 @@ export default function SecurityActivityPanel() {
     }));
   }
   const time = (value: string) =>
-    new Intl.DateTimeFormat("en-US", {
-      dateStyle: "medium",
-      timeStyle: "short",
-      timeZone: owner?.session?.profile.timeZone ?? "UTC",
-    }).format(new Date(value));
+    formatAccountTime(value, owner?.session?.profile);
   return (
     <section className="owner-card" aria-labelledby="activity-title">
       <h2 id="activity-title">Security activity</h2>
