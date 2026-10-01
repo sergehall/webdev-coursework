@@ -18,12 +18,12 @@ export default function Header() {
           className="h-10 w-10 rounded-xl shadow-sm"
           aria-hidden="true"
         />
-        <span className="max-w-44 text-sm leading-5 font-black sm:max-w-none sm:text-base">
+        <span className="hidden max-w-44 text-sm leading-5 font-black min-[480px]:block sm:max-w-none sm:text-base">
           Web Engineering Portfolio
         </span>
       </Link>
 
-      <div className="flex items-center gap-3">
+      <div className="flex shrink-0 items-center gap-2 sm:gap-3">
         <OwnerAccountMenu />
         <ThemeToggle />
       </div>

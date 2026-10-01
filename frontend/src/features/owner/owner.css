@@ -16,24 +16,15 @@
   border-radius: 0.65rem;
   overflow: clip;
 }
-.dark .owner-workspace,
-.owner-workspace[data-theme="dark"] {
+.dark .owner-workspace {
   --owner-bg: #111827;
   --owner-card: #1b2432;
-  --owner-text: #edf2ef;
-  --owner-muted: #a6b3ad;
-  --owner-border: #34413e;
-  --owner-accent: #4ade80;
-  --owner-soft: #19382a;
-}
-.owner-workspace[data-theme="light"] {
-  --owner-bg: #f6f8f7;
-  --owner-card: #fff;
-  --owner-text: #1c2923;
-  --owner-muted: #59685f;
-  --owner-border: #dce5df;
-  --owner-accent: #15803d;
-  --owner-soft: #edf8ef;
+  --owner-text: #f4fff8;
+  --owner-muted: #c0d0c7;
+  --owner-border: #365044;
+  --owner-accent: #22e878;
+  --owner-primary: #24e66f;
+  --owner-soft: #133d29;
 }
 .owner-content {
   padding: clamp(0.8rem, 1.6vw, 1.25rem);
@@ -142,6 +133,26 @@
   font-size: 0.8rem;
   font-weight: 650;
 }
+.owner-profile-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+.owner-profile-identity {
+  margin-top: 0.7rem;
+}
+.owner-profile-identity .owner-details {
+  margin-bottom: 0;
+}
+.owner-form input[readonly] {
+  color: var(--owner-muted);
+  cursor: default;
+}
+@media (max-width: 540px) {
+  .owner-profile-fields {
+    grid-template-columns: 1fr;
+  }
+}
 .owner-workspace input,
 .owner-workspace select {
   min-height: 2.25rem;
@@ -241,9 +252,13 @@
   border: 1px solid var(--owner-border);
   border-radius: 0.8rem;
   padding: clamp(1.1rem, 2.5vw, 1.75rem);
-  color: #fff;
-  background: radial-gradient(circle at top right, #1b4832, #14251d 65%);
-  box-shadow: 0 20px 60px -30px #071d2d;
+  color: var(--owner-text);
+  background: radial-gradient(
+    circle at top right,
+    var(--owner-soft),
+    var(--owner-card) 75%
+  );
+  box-shadow: 0 20px 60px -30px var(--owner-border);
 }
 .owner-login-card h1 {
   margin: 0.75rem 0;
@@ -252,12 +267,16 @@
 }
 .owner-login-card > p:not(.owner-eyebrow) {
   font-size: 0.9rem;
-  color: #b8cdbf;
+  color: var(--owner-muted);
   line-height: 1.6;
+}
+.owner-login-card > p.owner-auth-description {
+  font-size: 0.8rem;
+  line-height: 1.5;
 }
 .owner-login-card .owner-eyebrow,
 .owner-login-card .owner-text-link {
-  color: #86efac;
+  color: var(--owner-accent);
 }
 .owner-login-icon {
   display: flex;
@@ -268,7 +287,7 @@
   margin-bottom: 1rem;
   border-radius: 0.5rem;
   color: var(--owner-primary);
-  background: #22c55e1a;
+  background: var(--owner-soft);
 }
 .owner-login-card form {
   margin: 1rem 0;
@@ -280,18 +299,18 @@
   font-weight: 650;
 }
 .owner-login-card input {
-  border-color: #ffffff40;
-  background: #ffffff0d;
-  color: #fff;
+  border-color: var(--owner-border);
+  background: var(--owner-bg);
+  color: var(--owner-text);
   padding-right: 4rem;
 }
 .owner-login-card .owner-button--primary {
-  color: #102337;
+  color: var(--owner-primary-text);
   background: var(--owner-primary);
   border-color: var(--owner-primary);
 }
 .owner-login-card .owner-button--primary:hover {
-  background: #4ade80;
+  background: color-mix(in srgb, var(--owner-primary) 90%, white);
 }
 .owner-login-card .owner-message {
   margin-top: 1rem;
@@ -306,22 +325,22 @@
   height: 100%;
   font-size: 0.75rem;
   font-weight: 700;
-  color: #86efac;
+  color: var(--owner-accent);
 }
 .owner-github {
-  margin-top: 1rem;
-  border-color: #ffffff55;
-  background: #ffffff0d;
-  color: white;
+  margin-top: 1.1rem;
+  border-color: var(--owner-border);
+  background: var(--owner-bg);
+  color: var(--owner-text);
 }
 .owner-github:hover {
-  background: #ffffff20;
+  background: var(--owner-soft);
 }
 .owner-login-divider {
   margin-top: 1rem;
   text-align: center;
   font-size: 0.75rem;
-  color: #b8cdbf;
+  color: var(--owner-muted);
 }
 .owner-breakdown {
   display: grid;

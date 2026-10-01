@@ -1,14 +1,47 @@
-import { useCallback, useEffect, useState, type ReactNode } from "react";
+import {
+  use,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { useLocation } from "react-router-dom";
+
+import { ThemeContext } from "../../context/ThemeContext";
 
 import { OwnerApiError, ownerRequest, type OwnerSession } from "./owner-api";
 import { OwnerContext, type OwnerState } from "./owner-context";
 
 export default function OwnerProvider({ children }: { children: ReactNode }) {
   const location = useLocation();
+  const setTheme = use(ThemeContext)?.setTheme;
   const [session, setSession] = useState<OwnerSession | null>(null);
   const [status, setStatus] = useState<OwnerState["status"]>("idle");
   const [error, setError] = useState("");
+  const accountTheme = session?.profile.theme;
+  const previousAccountTheme = useRef<typeof accountTheme>(undefined);
+  useEffect(() => {
+    const previousTheme = previousAccountTheme.current;
+    previousAccountTheme.current = accountTheme;
+    if (!accountTheme || !setTheme) return;
+    // On first sign-in, "system" respects the browser's saved header choice.
+    // Choosing "system" in Preferences explicitly reapplies the OS setting.
+    if (
+      accountTheme === "system" &&
+      (previousTheme === undefined || previousTheme === "system")
+    )
+      return;
+    // Apply the saved preference on sign-in/change, then let the header toggle
+    // control the whole page without a conflicting cabinet-only override.
+    setTheme(
+      accountTheme === "system"
+        ? window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light"
+        : accountTheme
+    );
+  }, [accountTheme, setTheme]);
   const clear = useCallback(() => {
     setSession(null);
     setStatus("anonymous");

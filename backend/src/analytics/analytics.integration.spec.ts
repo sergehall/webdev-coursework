@@ -79,6 +79,111 @@ run("Owner HTTP and PostgreSQL integration", () => {
   beforeEach(async () => {
     await db.query("DELETE FROM webdev_runtime_state");
   });
+  it("changes only the current account username, preserves email and GitHub identity, and rejects occupied names", async () => {
+    const server = app.getHttpServer();
+    const store = app.get(AnalyticsStore);
+    const id = randomUUID();
+    const email = "profile@example.test";
+    await db.query(
+      "INSERT INTO webdev_accounts(id,role,username,email,email_verified_at,password_hash,revision,display_name) VALUES($1,'client','profile_before',$2,now(),$3,$4,'Profile Test')",
+      [id, email, await hashOwnerPassword(password), randomUUID()]
+    );
+    const cookie = `webdev_owner=${await service.createSession((await store.account(id))!)}`;
+    const update = (body: Record<string, unknown>) =>
+      request(server)
+        .put("/api/account/profile")
+        .set("Origin", origin)
+        .set("Cookie", cookie)
+        .send(body);
+    await update({ displayName: "Renamed", username: "profile_after" }).expect(
+      200
+    );
+    const account = await store.account(id);
+    expect(account).toMatchObject({
+      username: "profile_after",
+      displayName: "Renamed",
+      email,
+      role: "client",
+    });
+    const session = await request(server)
+      .get("/api/account/session")
+      .set("Cookie", cookie)
+      .expect(200);
+    expect(session.body.profile.registrationMethod).toBe("email");
+    await request(server)
+      .post("/api/account/login")
+      .set("Origin", origin)
+      .send({ identity: "profile_before", password })
+      .expect(401);
+    await request(server)
+      .post("/api/account/login")
+      .set("Origin", origin)
+      .send({ identity: "PROFILE_AFTER", password })
+      .expect(200);
+    await update({ displayName: "Rejected", username: "SERGEHALL" }).expect(
+      409
+    );
+    for (const username of ["ab", "has spaces", null])
+      await update({ displayName: "Rejected", username }).expect(400);
+    await update({
+      displayName: "Rejected",
+      email: "changed@example.test",
+    }).expect(400);
+    await update({
+      displayName: "Rejected",
+      username: "other",
+      accountId: AnalyticsStore.ROOT_ID,
+    }).expect(400);
+    expect(await store.account(id)).toMatchObject({
+      username: "profile_after",
+      displayName: "Renamed",
+      email,
+    });
+    expect(await store.owner()).toMatchObject({
+      username: "sergehall",
+      displayName: "Serge",
+      role: "admin",
+    });
+
+    const github = await store.githubAccount(
+      { id: 81234567, login: "profile_github" },
+      "42"
+    );
+    const githubCookie = `webdev_owner=${await service.createSession(github)}`;
+    await request(server)
+      .put("/api/account/profile")
+      .set("Origin", origin)
+      .set("Cookie", githubCookie)
+      .send({ displayName: "GitHub member", username: "site_username" })
+      .expect(200);
+    expect(await store.account(github.id)).toMatchObject({
+      username: "site_username",
+      githubId: "81234567",
+      email: null,
+      role: "client",
+    });
+    const githubSession = await request(server)
+      .get("/api/account/session")
+      .set("Cookie", githubCookie)
+      .expect(200);
+    expect(githubSession.body.profile).toMatchObject({
+      username: "site_username",
+      registrationMethod: "github",
+      githubLinked: true,
+      email: null,
+    });
+    expect(
+      (
+        await store.githubAccount(
+          { id: 81234567, login: "renamed_github" },
+          "42"
+        )
+      ).id
+    ).toBe(github.id);
+    // The old display-name-only payload remains valid for existing clients.
+    await update({ displayName: "Final Name" }).expect(200);
+    expect((await store.account(id))?.username).toBe("profile_after");
+  });
   it("protects reports, persists deduplicated visits and revokes sessions", async () => {
     const server = app.getHttpServer();
     await request(server)

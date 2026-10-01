@@ -101,6 +101,7 @@ function useResource<T>(path: string) {
 function ProfilePanel({ profile }: { profile: OwnerProfile }) {
   const owner = useOwner()!;
   const [name, setName] = useState(profile.displayName);
+  const [username, setUsername] = useState(profile.username ?? "");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -112,12 +113,18 @@ function ProfilePanel({ profile }: { profile: OwnerProfile }) {
     try {
       await ownerRequest("profile", {
         method: "PUT",
-        body: { displayName: name.trim() },
+        body: { displayName: name.trim(), username: username.trim() },
       });
       await owner.refresh();
       setMessage("Profile saved.");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unable to save profile.");
+      setError(
+        err instanceof OwnerApiError && err.status === 409
+          ? "This username is already in use. Choose another username."
+          : err instanceof Error
+            ? err.message
+            : "Unable to save profile."
+      );
     } finally {
       setBusy(false);
     }
@@ -126,37 +133,59 @@ function ProfilePanel({ profile }: { profile: OwnerProfile }) {
     <>
       <PageHeader
         title="Profile"
-        description="Choose the name shown in your account."
+        description="Manage your display name and site username."
       />
       <section className="owner-card owner-narrow">
         <form className="owner-form" onSubmit={(e) => void save(e)}>
+          <div className="owner-profile-fields">
+            <label>
+              Display name
+              <input
+                required
+                minLength={1}
+                maxLength={80}
+                autoComplete="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                aria-describedby="profile-name-help"
+              />
+            </label>
+            <label>
+              Username
+              <input
+                required
+                minLength={3}
+                maxLength={40}
+                pattern="[a-zA-Z0-9_-]{3,40}"
+                autoComplete="username"
+                autoCapitalize="none"
+                spellCheck={false}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                aria-describedby="profile-username-help"
+              />
+            </label>
+          </div>
+          <p id="profile-name-help" className="owner-muted">
+            Display name appears in your account menu.
+          </p>
+          <p id="profile-username-help" className="owner-muted">
+            Username is your login on this site: 3–40 letters, numbers,
+            underscores or hyphens. Changing it does not change your GitHub
+            username.
+          </p>
           <label>
-            Display name
+            Email (cannot be changed)
             <input
-              required
-              minLength={1}
-              maxLength={80}
-              autoComplete="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              readOnly
+              value={profile.email ?? "No email stored on this account"}
+              aria-describedby="profile-email-help"
             />
           </label>
-          <dl className="owner-details">
-            <div>
-              <dt>Username</dt>
-              <dd>{profile.username}</dd>
-            </div>
-            <div>
-              <dt>Email</dt>
-              <dd>
-                {profile.email ?? "GitHub sign-in"}
-                {profile.emailVerified ? " · Confirmed" : ""}
-              </dd>
-            </div>
-          </dl>
-          <p className="owner-muted">
-            This name is used in your account menu. Visitor analytics remain
-            anonymous.
+          <p id="profile-email-help" className="owner-muted">
+            {profile.email
+              ? `Your registration email is permanent. ${profile.emailVerified ? "Email confirmed." : "Email not confirmed."}`
+              : "No email is stored for this account. GitHub sign-in is shown separately below."}
           </p>
           <button
             className="owner-button owner-button--primary"
@@ -168,6 +197,32 @@ function ProfilePanel({ profile }: { profile: OwnerProfile }) {
           {message && <Message>{message}</Message>}
           {error && <Message error>{error}</Message>}
         </form>
+      </section>
+      <section className="owner-card owner-narrow owner-profile-identity">
+        <h2>Account identity</h2>
+        <dl className="owner-details">
+          <div>
+            <dt>Registration</dt>
+            <dd>
+              {profile.registrationMethod === "administrator"
+                ? "Site administrator account"
+                : profile.registrationMethod === "github" ||
+                    (profile.githubLinked &&
+                      !profile.email &&
+                      !profile.passwordEnabled)
+                  ? "GitHub · Social sign-up"
+                  : "Email and password"}
+            </dd>
+          </div>
+          <div>
+            <dt>GitHub sign-in</dt>
+            <dd>{profile.githubLinked ? "Connected" : "Not connected"}</dd>
+          </div>
+          <div>
+            <dt>Username and password sign-in</dt>
+            <dd>{profile.passwordEnabled ? "Enabled" : "Not enabled"}</dd>
+          </div>
+        </dl>
       </section>
     </>
   );
@@ -693,7 +748,7 @@ export default function OwnerPage() {
     return <Navigate to="/account/overview" replace />;
   const { profile } = owner.session;
   return (
-    <div className="owner-workspace" data-theme={profile.theme}>
+    <div className="owner-workspace">
       <nav aria-label="Account sections" className="owner-tabs">
         {availableSections.map((item) => (
           <Link

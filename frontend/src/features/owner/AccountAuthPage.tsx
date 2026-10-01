@@ -110,7 +110,7 @@ export default function AccountAuthPage({ mode }: { mode: Mode }) {
         </div>
         <p className="owner-eyebrow">Web Engineering Portfolio</p>
         <h1 id="account-auth-title">{titles[mode]}</h1>
-        <p>
+        <p className="owner-auth-description">
           {mode === "login"
             ? "Sign in with GitHub, or your username/email and password."
             : mode === "register"
@@ -131,7 +131,7 @@ export default function AccountAuthPage({ mode }: { mode: Mode }) {
         )}
         {github && (
           <a
-            className="owner-button owner-button--wide"
+            className="owner-button owner-button--wide owner-github"
             href={`${import.meta.env.VITE_OWNER_API_URL ?? import.meta.env.VITE_API_URL ?? ""}/api/account/github/start`}
           >
             Continue with GitHub

@@ -8,6 +8,7 @@ import {
   Matches,
   MaxLength,
   MinLength,
+  ValidateIf,
 } from "class-validator";
 import { QR_CAMPAIGN } from "./analytics.types";
 
@@ -38,6 +39,11 @@ export class OwnerProfileDto {
   @MaxLength(80)
   @Matches(/^[\p{L}\p{N} .'-]+$/u)
   displayName!: string;
+
+  @ValidateIf((_object, value: unknown) => value !== undefined)
+  @IsString()
+  @Matches(/^[a-zA-Z0-9_-]{3,40}$/)
+  username?: string;
 }
 
 export class OwnerPreferencesDto {

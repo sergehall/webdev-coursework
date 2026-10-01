@@ -103,12 +103,24 @@ export class AnalyticsStore {
   }
   async profile(
     displayName: string,
-    id = AnalyticsStore.ROOT_ID
+    id = AnalyticsStore.ROOT_ID,
+    username?: string
   ): Promise<void> {
-    await this.db.query(
-      "UPDATE webdev_accounts SET display_name=$1,updated_at=now() WHERE id=$2",
-      [displayName.trim(), id]
-    );
+    try {
+      await this.db.query(
+        "UPDATE webdev_accounts SET display_name=$1,username=COALESCE($3,username),updated_at=now() WHERE id=$2",
+        [displayName.trim(), id, username ?? null]
+      );
+    } catch (error) {
+      // The unique index also protects concurrent updates and ignores case.
+      const failure = error as { code?: string; constraint?: string };
+      if (
+        failure.code === "23505" &&
+        failure.constraint === "webdev_accounts_username"
+      )
+        throw new ConflictException("This username is already in use");
+      throw error;
+    }
   }
   async preferences(
     dto: OwnerPreferencesDto,

@@ -30,9 +30,9 @@ export default function ToggleThemeButton({
   const finalIcon =
     icon ??
     (isDark ? (
-      <Moon size={16} className="text-white" />
+      <Moon size={16} aria-hidden="true" />
     ) : (
-      <Sun size={16} className="text-yellow-500" />
+      <Sun size={16} aria-hidden="true" />
     ));
 
   const finalLabel = label ?? (isDark ? "Dark Mode" : "Light Mode");
@@ -48,9 +48,11 @@ export default function ToggleThemeButton({
       icon={finalIcon}
       size={size}
       type={type}
-      className={`${colorClass} h-10 w-10 rounded-full p-0`}
+      className={`${variant === "gray" ? "border border-green-700 bg-green-100 text-green-900 hover:bg-green-200 dark:border-green-400 dark:bg-[#24e66f] dark:text-green-950 dark:hover:bg-green-300" : colorClass} h-10 shrink-0 rounded-lg font-bold ${className}`}
       title={`Switch to ${isDark ? "Light" : "Dark"} Mode`}
       aria-label={`Toggle Theme: ${finalLabel}`}
-    />
+    >
+      {finalLabel}
+    </BaseButton>
   );
 }

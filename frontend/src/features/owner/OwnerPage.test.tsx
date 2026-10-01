@@ -16,6 +16,12 @@ const session: OwnerSession = {
   issuedAt: new Date().toISOString(),
   expiresAt: new Date(Date.now() + 3600000).toISOString(),
   profile: {
+    username: "sergehall",
+    email: "serge@example.test",
+    emailVerified: true,
+    githubLinked: true,
+    passwordEnabled: true,
+    registrationMethod: "administrator",
     displayName: "Serge",
     timeZone: "UTC",
     theme: "system",
@@ -45,6 +51,75 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 describe("Owner account", () => {
+  it("saves the site username separately and keeps email read-only", async () => {
+    const fetcher = vi
+      .fn()
+      .mockResolvedValue(new Response(JSON.stringify({ saved: true })));
+    vi.stubGlobal("fetch", fetcher);
+    const state = show("/account/profile");
+    const email = screen.getByLabelText("Email (cannot be changed)");
+    expect(email).toHaveAttribute("readonly");
+    expect(email).toHaveValue("serge@example.test");
+    expect(screen.getByText("Site administrator account")).toBeInTheDocument();
+    expect(screen.getByText("Connected")).toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText("Username"), {
+      target: { value: "new_username" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Save profile" }));
+    expect(await screen.findByText("Profile saved.")).toBeInTheDocument();
+    expect(JSON.parse(fetcher.mock.calls[0][1].body)).toEqual({
+      displayName: "Serge",
+      username: "new_username",
+    });
+    expect(state.refresh).toHaveBeenCalledOnce();
+  });
+  it("explains a taken username and preserves the entered name", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(new Response("{}", { status: 409 }))
+    );
+    show("/account/profile");
+    fireEvent.change(screen.getByLabelText("Username"), {
+      target: { value: "taken_name" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Save profile" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "This username is already in use"
+    );
+    expect(screen.getByLabelText("Username")).toHaveValue("taken_name");
+  });
+  it("shows GitHub registration without substituting a provider name for email", () => {
+    const githubSession: OwnerSession = {
+      ...session,
+      profile: {
+        ...session.profile,
+        email: null,
+        passwordEnabled: false,
+        registrationMethod: "github",
+      },
+    };
+    render(
+      <MemoryRouter initialEntries={["/account/profile"]}>
+        <OwnerContext.Provider
+          value={{
+            session: githubSession,
+            status: "authenticated",
+            error: "",
+            refresh: vi.fn(),
+            logout: vi.fn(),
+            clear: vi.fn(),
+          }}
+        >
+          <OwnerPage />
+        </OwnerContext.Provider>
+      </MemoryRouter>
+    );
+    expect(screen.getByText("GitHub · Social sign-up")).toBeInTheDocument();
+    expect(screen.getByLabelText("Email (cannot be changed)")).toHaveValue(
+      "No email stored on this account"
+    );
+    expect(screen.getByText("Not enabled")).toBeInTheDocument();
+  });
   it("offers configured GitHub sign-in and password backup", async () => {
     vi.stubGlobal(
       "fetch",

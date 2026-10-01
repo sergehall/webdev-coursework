@@ -25,6 +25,7 @@ import type {
   AuditQueryDto,
   OwnerPasswordDto,
   OwnerPreferencesDto,
+  OwnerProfileDto,
   QrEventDto,
 } from "./analytics.dto";
 import {
@@ -553,6 +554,12 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
         emailVerified: account.emailVerified,
         passwordEnabled: !!account.passwordHash,
         githubLinked: !!account.githubId,
+        registrationMethod:
+          account.id === AnalyticsStore.ROOT_ID
+            ? "administrator"
+            : account.githubId && !account.email
+              ? "github"
+              : "email",
       },
     };
   }
@@ -574,12 +581,12 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
     return session;
   }
 
-  async profile(req: Request, displayName: string): Promise<void> {
+  async profile(req: Request, dto: OwnerProfileDto): Promise<void> {
     this.assertOrigin(req);
     const session = await this.authorize(req, "owner.profile.update", false);
-    if (!displayName.trim())
+    if (!dto.displayName.trim())
       throw new BadRequestException("Display name is required");
-    await this.store.profile(displayName, session.accountId);
+    await this.store.profile(dto.displayName, session.accountId, dto.username);
   }
 
   async preferences(req: Request, dto: OwnerPreferencesDto): Promise<void> {

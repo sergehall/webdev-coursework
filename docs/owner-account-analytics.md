@@ -22,6 +22,13 @@ session revocation invalidate existing sessions on the next request.
 
 All protected requests check the authoritative database role, account ID, session
 revision and expiry. Clients can update only their own profile/preferences.
+Profile updates accept a display name and optional site username (3–40 ASCII
+letters, digits, underscores or hyphens). Username uniqueness is enforced by the
+case-insensitive database index; conflicts return 409. Email, role and external
+GitHub identity cannot be changed through this endpoint. A renamed username does
+not affect GitHub sign-in or primary administrator rights, which use stable IDs.
+The profile shows registration source and available sign-in methods separately
+from the immutable email; GitHub accounts without a stored email say so explicitly.
 Sessions are random opaque HttpOnly, SameSite=Strict cookies lasting one hour.
 The cookie path is `/api`. Mutations require an exact trusted Origin. Auth routes
 return `Cache-Control: no-store`; logs exclude bodies, query values, IPs and UA.

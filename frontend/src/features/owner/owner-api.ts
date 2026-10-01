@@ -4,6 +4,7 @@ export type OwnerProfile = {
   emailVerified?: boolean;
   passwordEnabled?: boolean;
   githubLinked?: boolean;
+  registrationMethod?: "administrator" | "github" | "email";
   displayName: string;
   timeZone: string;
   theme: "system" | "light" | "dark";

@@ -158,7 +158,7 @@ export class OwnerController {
 
   @Put("profile")
   async profile(@Req() req: Request, @Body() dto: OwnerProfileDto) {
-    await this.analytics.profile(req, dto.displayName);
+    await this.analytics.profile(req, dto);
     return { saved: true };
   }
 
