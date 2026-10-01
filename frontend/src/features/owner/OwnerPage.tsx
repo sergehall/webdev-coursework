@@ -26,6 +26,9 @@ import { useOwner } from "./owner-context";
 import SecurityActivityPanel from "./SecurityActivityPanel";
 import AccountRolesPanel from "./AccountRolesPanel";
 import AccountAuthPage, { authPages } from "./AccountAuthPage";
+import MfaSettingsPanel from "./MfaSettingsPanel";
+import MfaChallengePage from "./MfaChallengePage";
+import type { MfaStatus } from "./mfa-api";
 import "./owner.css";
 
 const sections = [
@@ -326,6 +329,30 @@ function PreferencesPanel({ profile }: { profile: OwnerProfile }) {
 function SecurityPanel({ session }: { session: OwnerSession }) {
   const owner = useOwner()!;
   const navigate = useNavigate();
+  const hash = useLocation().hash.slice(1);
+  const windowId = ["password", "providers", "mfa", "sessions"].includes(hash)
+    ? hash
+    : "password";
+  const [mfaStatus, setMfaStatus] = useState<MfaStatus | null>(null);
+  const [mfaError, setMfaError] = useState("");
+  useEffect(() => {
+    let active = true;
+    void ownerRequest<MfaStatus>("mfa/status")
+      .then((value) => {
+        if (active) setMfaStatus(value);
+      })
+      .catch((err) => {
+        if (active)
+          setMfaError(
+            err instanceof Error
+              ? err.message
+              : "Unable to load security status."
+          );
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmation, setConfirmation] = useState("");
@@ -394,103 +421,230 @@ function SecurityPanel({ session }: { session: OwnerSession }) {
     <>
       <PageHeader
         title="Security"
-        description="Manage your password and access to your account."
+        description="Manage your password, connected sign-in providers, two-factor protection and account sessions."
       />
-      <div className="owner-grid">
+      <div className="owner-metrics owner-security-summary">
         <section className="owner-card">
-          <h2>Password</h2>
+          <p className="owner-muted">Password</p>
+          <h2>
+            {session.profile.passwordEnabled !== false
+              ? "Ready"
+              : "Managed by GitHub"}
+          </h2>
           <p className="owner-muted">
-            Changing your password signs you out on every device.
+            {session.profile.passwordEnabled !== false
+              ? "Username / password sign-in"
+              : "No site password configured"}
           </p>
-          {session.profile.passwordEnabled !== false ? (
-            <form className="owner-form" onSubmit={(e) => void change(e)}>
-              <label>
-                Current password
-                <input
-                  autoComplete="current-password"
-                  type="password"
-                  minLength={12}
-                  maxLength={128}
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </label>
-              <label>
-                New password
-                <input
-                  autoComplete="new-password"
-                  type="password"
-                  minLength={12}
-                  maxLength={128}
-                  required
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                />
-              </label>
-              <label>
-                Confirm new password
-                <input
-                  autoComplete="new-password"
-                  type="password"
-                  minLength={12}
-                  maxLength={128}
-                  required
-                  value={confirmation}
-                  onChange={(e) => setConfirmation(e.target.value)}
-                />
-              </label>
-              <p className="owner-muted">
-                Use a unique password of at least 12 characters.
-              </p>
-              <button
-                type="submit"
-                disabled={busy}
-                className="owner-button owner-button--primary"
-              >
-                {busy ? "Saving…" : "Change password"}
-              </button>
-            </form>
-          ) : (
-            <p className="owner-muted">
-              You sign in through GitHub. Your GitHub account manages your
-              password.
-            </p>
-          )}
         </section>
         <section className="owner-card">
-          <h2>Account sessions</h2>
+          <p className="owner-muted">Providers</p>
+          <h2>
+            {session.profile.githubLinked
+              ? "GitHub connected"
+              : "Email / password"}
+          </h2>
+          <p className="owner-muted">Only the methods linked to this account</p>
+        </section>
+        <section className="owner-card">
+          <p className="owner-muted">Two-factor</p>
+          <h2>
+            {mfaStatus
+              ? mfaStatus.enabled
+                ? "Enabled"
+                : "Disabled"
+              : "Loading…"}
+          </h2>
+          <p className="owner-muted">
+            {mfaStatus?.pendingEnrollment
+              ? "Setup in progress"
+              : "Authenticator app and recovery codes"}
+          </p>
+        </section>
+        <section className="owner-card">
+          <p className="owner-muted">Sessions</p>
+          <h2>Current session</h2>
+          <p className="owner-muted">Expires {time(session.expiresAt)}</p>
+        </section>
+      </div>
+      <section className="owner-card">
+        <h2>Security windows</h2>
+        <p className="owner-muted">
+          Open the section you need without scrolling through one long form.
+        </p>
+        <nav className="owner-security-windows" aria-label="Security windows">
+          {[
+            {
+              id: "password",
+              label: "Password",
+              note: "Credentials and recovery",
+            },
+            {
+              id: "providers",
+              label: "Providers",
+              note: "GitHub and site login",
+            },
+            {
+              id: "mfa",
+              label: "Two-factor",
+              note: "Authenticator and recovery codes",
+            },
+            {
+              id: "sessions",
+              label: "Sessions",
+              note: "Current session and access",
+            },
+          ].map((item) => (
+            <Link
+              key={item.id}
+              to={`#${item.id}`}
+              className="owner-card owner-security-window"
+              aria-current={windowId === item.id ? "page" : undefined}
+            >
+              <strong>{item.label}</strong>
+              <span className="owner-muted">{item.note}</span>
+            </Link>
+          ))}
+        </nav>
+      </section>
+      {mfaError && <Message error>{mfaError}</Message>}
+      {windowId === "mfa" && (
+        <MfaSettingsPanel status={mfaStatus} onChange={setMfaStatus} />
+      )}
+      {windowId === "providers" && (
+        <section className="owner-card" id="providers">
+          <h2>Sign-in providers</h2>
           <dl className="owner-details">
             <div>
-              <dt>Signed in</dt>
-              <dd>{time(session.issuedAt)}</dd>
+              <dt>GitHub</dt>
+              <dd>
+                {session.profile.githubLinked ? "Connected" : "Not connected"}
+              </dd>
             </div>
             <div>
-              <dt>Session ends</dt>
-              <dd>{time(session.expiresAt)}</dd>
+              <dt>Username / password</dt>
+              <dd>
+                {session.profile.passwordEnabled !== false
+                  ? "Enabled"
+                  : "Not configured"}
+              </dd>
             </div>
             <div>
-              <dt>Time zone</dt>
-              <dd>{session.profile.timeZone}</dd>
-            </div>
-            <div>
-              <dt>Access</dt>
-              <dd>{session.role === "admin" ? "Administrator" : "Client"}</dd>
+              <dt>Registration email</dt>
+              <dd>
+                {session.profile.email ?? "No email stored for this account"}
+              </dd>
             </div>
           </dl>
           <p className="owner-muted">
-            End every session, including this one, if you no longer trust a
-            device.
+            Connected methods use the same account's two-factor protection. Your
+            email cannot be changed.
           </p>
-          <button
-            className="owner-button"
-            disabled={busy}
-            onClick={() => setConfirmRevoke(true)}
-          >
-            End all sessions
-          </button>
         </section>
-      </div>
+      )}
+      {(windowId === "password" || windowId === "sessions") && (
+        <div>
+          {windowId === "password" && (
+            <section className="owner-card">
+              <h2>Password</h2>
+              <p className="owner-muted">
+                Changing your password signs you out on every device.
+              </p>
+              {session.profile.passwordEnabled !== false ? (
+                <form className="owner-form" onSubmit={(e) => void change(e)}>
+                  <label>
+                    Current password
+                    <input
+                      autoComplete="current-password"
+                      type="password"
+                      minLength={12}
+                      maxLength={128}
+                      required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                    />
+                  </label>
+                  <label>
+                    New password
+                    <input
+                      autoComplete="new-password"
+                      type="password"
+                      minLength={12}
+                      maxLength={128}
+                      required
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                    />
+                  </label>
+                  <label>
+                    Confirm new password
+                    <input
+                      autoComplete="new-password"
+                      type="password"
+                      minLength={12}
+                      maxLength={128}
+                      required
+                      value={confirmation}
+                      onChange={(e) => setConfirmation(e.target.value)}
+                    />
+                  </label>
+                  <p className="owner-muted">
+                    Use a unique password of at least 12 characters.
+                  </p>
+                  <button
+                    type="submit"
+                    disabled={busy}
+                    className="owner-button owner-button--primary"
+                  >
+                    {busy ? "Saving…" : "Change password"}
+                  </button>
+                </form>
+              ) : (
+                <p className="owner-muted">
+                  You sign in through GitHub. Your GitHub account manages your
+                  password.
+                </p>
+              )}
+            </section>
+          )}
+          {windowId === "sessions" && (
+            <section className="owner-card">
+              <h2>Account sessions</h2>
+              <dl className="owner-details">
+                <div>
+                  <dt>Signed in</dt>
+                  <dd>{time(session.issuedAt)}</dd>
+                </div>
+                <div>
+                  <dt>Session ends</dt>
+                  <dd>{time(session.expiresAt)}</dd>
+                </div>
+                <div>
+                  <dt>Time zone</dt>
+                  <dd>{session.profile.timeZone}</dd>
+                </div>
+                <div>
+                  <dt>Access</dt>
+                  <dd>
+                    {session.role === "admin" ? "Administrator" : "Client"}
+                  </dd>
+                </div>
+              </dl>
+              <p className="owner-muted">
+                End every session, including this one, if you no longer trust a
+                device.
+              </p>
+              <button
+                className="owner-button"
+                disabled={busy}
+                onClick={() => setConfirmRevoke(true)}
+              >
+                End all sessions
+              </button>
+            </section>
+          )}
+        </div>
+      )}
       {error && <Message error>{error}</Message>}
       {confirmRevoke && (
         <dialog
@@ -728,9 +882,16 @@ export default function OwnerPage() {
         <p role="status">Checking account access…</p>
       </div>
     );
+  if (path === "mfa")
+    return (
+      <div className="owner-workspace">
+        <MfaChallengePage />
+      </div>
+    );
   if (
     authPages.includes(path) &&
-    (!owner.session || ["verify-email", "reset-password"].includes(path))
+    (!owner.session ||
+      ["verify-email", "reset-password", "reauthenticate"].includes(path))
   )
     return (
       <div className="owner-workspace">

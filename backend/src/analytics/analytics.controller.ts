@@ -87,8 +87,18 @@ export class OwnerController {
       this.githubCookieOptions()
     );
     try {
-      const token = await this.analytics.githubCallback(req);
-      res.cookie(this.analytics.cookieName, token, {
+      const result = await this.analytics.githubCallback(req);
+      if (result.mfaRequired) {
+        res.clearCookie(this.analytics.cookieName, this.cookieOptions());
+        res.cookie(this.analytics.mfaCookieName, result.challengeToken, {
+          ...this.cookieOptions(),
+          maxAge: 300000,
+        });
+        res.redirect(303, `${this.analytics.frontendOrigin}/account/mfa`);
+        return;
+      }
+      res.clearCookie(this.analytics.mfaCookieName, this.cookieOptions());
+      res.cookie(this.analytics.cookieName, result.token, {
         ...this.cookieOptions(),
         maxAge: 3600000,
       });
@@ -127,11 +137,20 @@ export class OwnerController {
     @Body() dto: OwnerLoginDto,
     @Res({ passthrough: true }) res: Response
   ) {
-    const token = await this.analytics.login(req, dto.password, dto.identity);
-    res.cookie(this.analytics.cookieName, token, {
+    const result = await this.analytics.login(req, dto.password, dto.identity);
+    if (result.mfaRequired) {
+      res.clearCookie(this.analytics.cookieName, this.cookieOptions());
+      res.cookie(this.analytics.mfaCookieName, result.challengeToken, {
+        ...this.cookieOptions(),
+        maxAge: 300000,
+      });
+      return { authenticated: false, mfaRequired: true };
+    }
+    res.cookie(this.analytics.cookieName, result.token, {
       ...this.cookieOptions(),
       maxAge: 60 * 60 * 1000,
     });
+    res.clearCookie(this.analytics.mfaCookieName, this.cookieOptions());
     return { authenticated: true };
   }
 

@@ -21,6 +21,8 @@ const random = () => randomBytes(32).toString("base64url");
 settings.LOCAL_POSTGRES_PASSWORD ||= random();
 settings.LOCAL_REDIS_PASSWORD ||= random();
 settings.OWNER_SESSION_SECRET ||= random();
+settings.MFA_ENCRYPTION_KEY ||= randomBytes(32).toString("base64");
+settings.MFA_ENCRYPTION_KEY_ID ||= "v1";
 if (!settings.OWNER_PASSWORD_HASH) {
   const salt = randomBytes(16).toString("hex");
   settings.OWNER_LOCAL_INITIAL_PASSWORD = random();

@@ -14,6 +14,9 @@ const {
 const {
   IndexSecurityActivity1790910000000,
 } = require("../dist/db/migrations/1790910000000-IndexSecurityActivity");
+const {
+  AddAccountMfa1790913600000,
+} = require("../dist/db/migrations/1790913600000-AddAccountMfa");
 const db = new DataSource({
   ...AppDataSource.options,
   logging: false,
@@ -23,6 +26,7 @@ const db = new DataSource({
     AddPublicAccounts1790902800000,
     UseAdminAndClientRoles1790906400000,
     IndexSecurityActivity1790910000000,
+    AddAccountMfa1790913600000,
   ],
 });
 (async () => {

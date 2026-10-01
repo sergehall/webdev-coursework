@@ -64,13 +64,15 @@ it.each(["light", "system"] as const)(
     await screen.findByLabelText("Username");
     const original = accountTheme === "system" ? "Dark Mode" : "Light Mode";
     const switched = accountTheme === "system" ? "Light Mode" : "Dark Mode";
-    const toggle = screen.getByRole("button", {
+    // The profile renders before its saved theme is applied by the provider effect.
+    const toggle = await screen.findByRole("button", {
       name: `Toggle Theme: ${original}`,
     });
     expect(toggle.textContent).toBe("");
     fireEvent.click(toggle);
     expect(
-      screen.getByRole("button", { name: `Toggle Theme: ${switched}` }).textContent
+      screen.getByRole("button", { name: `Toggle Theme: ${switched}` })
+        .textContent
     ).toBe("");
     expect(document.documentElement.classList.contains("dark")).toBe(
       switched === "Dark Mode"

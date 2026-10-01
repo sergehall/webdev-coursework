@@ -14,6 +14,7 @@ import { createHash, createHmac, randomBytes, randomUUID } from "crypto";
 import { Queue, Worker } from "bullmq";
 import Redis from "ioredis";
 import { PostgresState } from "./postgres-state";
+import { MfaService, type LoginResult } from "../accounts/mfa/mfa.service";
 import type { Request } from "express";
 import {
   AnalyticsStore,
@@ -40,6 +41,7 @@ type OwnerSession = {
   revision: string;
   issuedAt: string;
   expiresAt: string;
+  mfaVerifiedAt?: string;
 };
 
 const PREFIX = "webdev:qr";
@@ -72,6 +74,9 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
       ? "__Secure-webdev_github_state"
       : "webdev_github_state";
   }
+  get mfaCookieName(): string {
+    return this.secureCookie ? "__Secure-webdev_mfa" : "webdev_mfa";
+  }
   get frontendOrigin(): string {
     return this.origins[0];
   }
@@ -89,7 +94,8 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
 
   constructor(
     private readonly config: ConfigService,
-    private readonly store: AnalyticsStore
+    private readonly store: AnalyticsStore,
+    private readonly mfa: MfaService
   ) {
     this.secureCookie = config.get<string>("NODE_ENV") === "production";
     this.cookieName = this.secureCookie
@@ -301,7 +307,7 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
     req: Request,
     password: string,
     identity?: string
-  ): Promise<string> {
+  ): Promise<LoginResult> {
     try {
       this.assertOrigin(req);
     } catch (error) {
@@ -332,10 +338,23 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
       throw new UnauthorizedException("Unable to sign in");
     }
     await this.audit("owner.login", true, true);
-    return this.createSession(account);
+    return this.authenticate(account, "password");
   }
 
-  async createSession(account: OwnerAccount): Promise<string> {
+  async authenticate(
+    account: OwnerAccount,
+    method: "password" | "github"
+  ): Promise<LoginResult> {
+    const challenge = await this.mfa.challenge(account, method);
+    return challenge ?? { token: await this.createSession(account) };
+  }
+
+  async createSession(
+    account: OwnerAccount,
+    mfaVerifiedAt?: string
+  ): Promise<string> {
+    if ((await this.mfa.enabled(account.id)) && !mfaVerifiedAt)
+      throw new UnauthorizedException("Two-factor verification required");
     const token = randomBytes(32).toString("base64url");
     const session: OwnerSession = {
       accountId: account.id,
@@ -343,6 +362,7 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
       revision: account.revision,
       issuedAt: new Date().toISOString(),
       expiresAt: new Date(Date.now() + SESSION_SECONDS * 1000).toISOString(),
+      ...(mfaVerifiedAt ? { mfaVerifiedAt } : {}),
     };
     await this.connection().set(
       `${PREFIX}:session:${this.digest(token)}`,
@@ -379,7 +399,7 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
     return { state, url: url.href };
   }
 
-  async githubCallback(req: Request): Promise<string> {
+  async githubCallback(req: Request): Promise<LoginResult> {
     try {
       const { code, state } = req.query;
       if (
@@ -454,7 +474,7 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
         this.github.ownerId
       );
       await this.audit("account.github.login", true, account.role === "admin");
-      return await this.createSession(account);
+      return await this.authenticate(account, "github");
     } catch {
       if (this.redis?.status === "ready")
         await this.audit("owner.github.login", false, false);
@@ -535,6 +555,29 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
       await this.audit(action, false, false);
       throw new ForbiddenException("Owner access required");
     }
+    const mfaEnabled = await this.mfa.enabled(account.id);
+    if (
+      mfaEnabled &&
+      (!session.mfaVerifiedAt ||
+        !Number.isFinite(Date.parse(session.mfaVerifiedAt)))
+    ) {
+      await this.audit(action, false, account.role === "admin");
+      throw new UnauthorizedException("Two-factor verification required");
+    }
+    if (
+      requireOwner ||
+      ["owner.password.change", "owner.sessions.revoke"].includes(action)
+    ) {
+      try {
+        this.assertRecentMfa({
+          mfaEnabled,
+          mfaVerifiedAt: session.mfaVerifiedAt,
+        });
+      } catch (error) {
+        await this.audit(action, false, account.role === "admin");
+        throw error;
+      }
+    }
     await this.audit(action, true, account.role === "admin");
     const { displayName, timeZone, theme, reportDays } = account;
     return {
@@ -544,6 +587,8 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
       issuedAt: session.issuedAt,
       expiresAt: session.expiresAt,
       canManageRoles: account.id === AnalyticsStore.ROOT_ID,
+      mfaEnabled,
+      mfaVerifiedAt: session.mfaVerifiedAt,
       profile: {
         displayName,
         timeZone,
@@ -562,6 +607,38 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
               : "email",
       },
     };
+  }
+
+  assertRecentMfa(session: { mfaEnabled: boolean; mfaVerifiedAt?: string }) {
+    if (
+      session.mfaEnabled &&
+      (!session.mfaVerifiedAt ||
+        Date.now() - Date.parse(session.mfaVerifiedAt) > 300000)
+    )
+      throw new HttpException(
+        {
+          code: "MFA_STEP_UP_REQUIRED",
+          message:
+            "Verify your authenticator in Security before retrying this action.",
+        },
+        403
+      );
+  }
+
+  async markMfaVerified(req: Request, verifiedAt: string) {
+    const session = await this.authorize(req, "account.mfa.session", false);
+    const key = `${PREFIX}:session:${this.digest(session.token)}`;
+    const raw = await this.connection().get(key);
+    if (!raw) throw new UnauthorizedException("Sign in again");
+    const stored = JSON.parse(raw) as OwnerSession;
+    const ttl = Math.floor((Date.parse(stored.expiresAt) - Date.now()) / 1000);
+    if (ttl <= 0) throw new UnauthorizedException("Sign in again");
+    await this.connection().set(
+      key,
+      JSON.stringify({ ...stored, mfaVerifiedAt: verifiedAt }),
+      "EX",
+      ttl
+    );
   }
 
   async logout(req: Request): Promise<void> {
@@ -584,6 +661,8 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
   async profile(req: Request, dto: OwnerProfileDto): Promise<void> {
     this.assertOrigin(req);
     const session = await this.authorize(req, "owner.profile.update", false);
+    if (dto.username && dto.username !== session.profile.username)
+      this.assertRecentMfa(session);
     if (!dto.displayName.trim())
       throw new BadRequestException("Display name is required");
     await this.store.profile(dto.displayName, session.accountId, dto.username);

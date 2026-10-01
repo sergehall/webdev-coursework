@@ -13,6 +13,8 @@ export type OwnerProfile = {
 export type OwnerSession = {
   role: "admin" | "client";
   canManageRoles?: boolean;
+  mfaEnabled?: boolean;
+  mfaVerifiedAt?: string;
   issuedAt: string;
   expiresAt: string;
   profile: OwnerProfile;
@@ -38,7 +40,8 @@ export type AuditEntry = {
 export class OwnerApiError extends Error {
   constructor(
     public readonly status: number,
-    message: string
+    message: string,
+    public readonly code?: string
   ) {
     super(message);
   }
@@ -66,6 +69,23 @@ export async function ownerRequest<T>(
     );
   });
   if (!response.ok) {
+    const body = (await response.json().catch(() => null)) as {
+      code?: string;
+    } | null;
+    const mfaMessages: Record<string, string> = {
+      MFA_INVALID_CODE:
+        "Invalid or already used code. Wait for a new authenticator code or use a recovery code.",
+      MFA_STEP_UP_REQUIRED:
+        "Verify your authenticator in Security before retrying this action.",
+      RECENT_SIGN_IN_REQUIRED:
+        "Sign in again before starting authenticator setup.",
+    };
+    if (body?.code && mfaMessages[body.code])
+      throw new OwnerApiError(
+        response.status,
+        mfaMessages[body.code],
+        body.code
+      );
     const message =
       response.status === 401
         ? "Your session ended. Please sign in again."

@@ -17,34 +17,38 @@
 - Verify locally; synchronize authorized SMTP/OAuth configuration to production.
 - Production code rollout and migrations must be explicitly recorded as deployed or pending.
 
-## Next stage: MFA from Lavoval
+## Current local stage: MFA adapted from Lens Lounge
 
-Requested by Serge after completion of the current stage. Reference:
-`/Users/sergehall/GolandProjects/lavoval`.
+Serge updated the reference to `/Users/sergehall/WebstormProjects/lens-lounge-microservices`
+and `https://lens-lounge.com/dashboard/security#mfa` on 2026-10-01 (America/Los_Angeles).
+Its backend TOTP service, enrollment/recovery service, Security page/panel and MFA
+challenge form were inspected. Lens Lounge and Lavoval accounts, keys and live
+MFA settings are unchanged.
 
-1. Inspect Lavoval's MFA backend, frontend Security panel, migrations and tests.
-2. Adapt its Authenticator App enrollment UI to this portfolio's style.
-3. Add setup QR, six-digit TOTP verification and explicit enable/disable actions.
-4. Integrate the challenge with both GitHub and password login before issuing a full session.
-5. Port recovery-code handling and protect setup/reset with recent authentication.
-6. Encrypt each new TOTP secret with this project's key; never copy Lavoval's live secrets,
-   recovery codes or MFA enrollment data.
-7. Use separate `webdev_` migrations and test enrollment, challenge, replay prevention,
-   recovery, disable and session revocation.
+Implemented locally:
 
-MFA is not implemented as part of the current stage; no MFA settings are changed in Lavoval.
+- Compact Security summary and Password / Providers / Two-factor / Sessions windows,
+  using actual portfolio account data and green theme tokens.
+- Local QR generation, temporary manual secret, expiring enrollment and confirmation.
+- Password and GitHub login both stop at a restricted, expiring MFA challenge.
+  A full opaque session is issued only after verification.
+- Six-digit TOTP with replay protection and account-serialized verification.
+- Ten bcrypt-hashed single-use recovery codes, shown once; explicit regeneration
+  and disabling require a fresh code. Enabling and disabling revoke old sessions.
+- Recent sign-in for enrollment and recent MFA proof for protected administrator
+  access, username changes, password changes and session revocation.
+- Dedicated versioned AES-GCM key and per-account binding; no key fallback to JWT
+  or another application. Local configuration is ignored and mode 600.
+- Migration `AddAccountMfa1790913600000` creates only three `webdev_mfa_` tables;
+  the account-only migration runner includes it. Applied only to local data.
+- Lifecycle outcomes appear in Security activity; history stays paginated.
 
-### Reference inspection completed
+Verification: frontend full suite (276 tests), backend unit suite (99 tests), and
+HTTP e2e suite (13 tests), and isolated PostgreSQL integration suite (9 tests). Desktop/mobile Security
+was reviewed with no live authenticator enrollment or recovery codes exposed.
 
-- `apps/api/internal/service/auth_mfa_totp.go`: six-digit TOTP, random Base32 secret,
-  provisioning URI, constant-time comparison and AES-GCM encryption.
-- `infrastructure/db/migrations/008_auth_mfa_totp.sql`: separate encrypted pending/active
-  secrets and enrollment state.
-- `infrastructure/db/migrations/009_auth_mfa_challenges_and_recovery_codes.sql`:
-  expiring consumed challenges and hashed single-use recovery codes.
-- `apps/web/src/features/auth/mfa-settings.tsx`: setup QR, confirmation, cancellation,
-  recovery-code display/regeneration and disable UI.
-
-Lavoval's backend is Go; this project's backend is NestJS. Port the behavior and
-UI patterns with separate tests, rather than copying Go code or live credential data.
-Use a dedicated MFA encryption key in the new project rather than JWT-key fallback.
+Production MFA rollout is pending. The previous authorization covered accounts,
+registration and roles, explicitly excluding the next MFA stage. Before rollout:
+create a separate production MFA key, apply only the account migration whitelist,
+release backend before frontend, and verify existing sign-in plus MFA availability.
+See [account-mfa.md](account-mfa.md) for configuration and rollout details.

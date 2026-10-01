@@ -95,10 +95,10 @@ is deliberately absent.
 5. Deploy code, apply migrations before enabling accounts, then verify real login.
    Configuration synchronization alone does not deploy the feature.
 
-| Environment | OAuth settings | Callback |
-| --- | --- | --- |
-| Local | https://github.com/settings/applications/3895888 | http://127.0.0.1:3000/api/owner/github/callback |
-| Production | https://github.com/settings/applications/3895889 | https://api.webdev-coursework.com/api/owner/github/callback |
+| Environment | OAuth settings                                   | Callback                                                    |
+| ----------- | ------------------------------------------------ | ----------------------------------------------------------- |
+| Local       | https://github.com/settings/applications/3895888 | http://127.0.0.1:3000/api/owner/github/callback             |
+| Production  | https://github.com/settings/applications/3895889 | https://api.webdev-coursework.com/api/owner/github/callback |
 
 Separate GitHub secrets are stored in ignored backend `.env.local` and
 `.env.production.local`, permissions 600. The latter is staging only, never loaded
@@ -151,6 +151,7 @@ On Heroku, only the router hop is trusted (`trust proxy=1`, gated by `DYNO`),
 using the rightmost client address appended by [Heroku routing](https://devcenter.heroku.com/articles/http-routing)
 with [Express trusted-hop handling](https://expressjs.com/en/guide/behind-proxies.html).
 Other deployments must explicitly configure their trusted infrastructure. Monitor failed outbox rows and queue
-capacity. MFA is the next stage, documented in [account-plan.md](account-plan.md).
+capacity. MFA is implemented locally; its production rollout remains pending.
+See [account-mfa.md](account-mfa.md) and [account-plan.md](account-plan.md).
 
 Security activity loads 10 records by default, with server-side period, result and action-group filters. Keyset pagination fetches only the requested page (10/25/50), with a stable timestamp/UUID cursor and an indexed order. No bulk history request is used.

@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { LockKeyhole } from "lucide-react";
 
 import { ownerRequest, OwnerApiError } from "./owner-api";
@@ -7,6 +7,7 @@ import { useOwner } from "./owner-context";
 
 type Mode =
   | "login"
+  | "reauthenticate"
   | "register"
   | "verify-email"
   | "forgot-password"
@@ -14,6 +15,7 @@ type Mode =
   | "resend-verification";
 export const authPages = [
   "login",
+  "reauthenticate",
   "register",
   "verify-email",
   "forgot-password",
@@ -22,6 +24,7 @@ export const authPages = [
 ];
 const titles: Record<Mode, string> = {
   login: "Welcome back",
+  reauthenticate: "Confirm your sign-in",
   register: "Create your account",
   "verify-email": "Confirm your email",
   "forgot-password": "Forgot your password?",
@@ -30,7 +33,9 @@ const titles: Record<Mode, string> = {
 };
 export default function AccountAuthPage({ mode }: { mode: Mode }) {
   const owner = useOwner()!,
-    location = useLocation();
+    location = useLocation(),
+    navigate = useNavigate();
+  const isLogin = mode === "login" || mode === "reauthenticate";
   const [options, setOptions] = useState<{
     githubEnabled: boolean;
     registrationEnabled: boolean;
@@ -61,31 +66,44 @@ export default function AccountAuthPage({ mode }: { mode: Mode }) {
       .then(setOptions)
       .catch(() => {});
   }, []);
-  const hasPassword = ["login", "register", "reset-password"].includes(mode);
+  const hasPassword = [
+    "login",
+    "reauthenticate",
+    "register",
+    "reset-password",
+  ].includes(mode);
   async function submit(e: FormEvent) {
     e.preventDefault();
     setError("");
-    if (mode !== "login" && hasPassword && password !== confirmation) {
+    if (!isLogin && hasPassword && password !== confirmation) {
       setError("Passwords do not match.");
       return;
     }
     setBusy(true);
     try {
-      const body =
-        mode === "login"
-          ? { identity, password }
-          : mode === "register"
-            ? { username, email, password }
-            : mode === "verify-email"
-              ? { token }
-              : mode === "reset-password"
-                ? { token, password }
-                : { email };
-      await ownerRequest(mode, { method: "POST", body });
+      const body = isLogin
+        ? { identity, password }
+        : mode === "register"
+          ? { username, email, password }
+          : mode === "verify-email"
+            ? { token }
+            : mode === "reset-password"
+              ? { token, password }
+              : { email };
+      const response = await ownerRequest<{ mfaRequired?: boolean }>(
+        isLogin ? "login" : mode,
+        { method: "POST", body }
+      );
       setPassword("");
       setConfirmation("");
-      if (mode === "login") await owner.refresh();
-      else setDone(true);
+      if (isLogin && response.mfaRequired) {
+        owner.clear();
+        navigate("/account/mfa", { replace: true });
+      } else if (isLogin) {
+        await owner.refresh();
+        if (mode === "reauthenticate")
+          navigate("/account/security#mfa", { replace: true });
+      } else setDone(true);
     } catch (err) {
       setError(
         err instanceof OwnerApiError && err.status === 401
@@ -98,7 +116,9 @@ export default function AccountAuthPage({ mode }: { mode: Mode }) {
       setBusy(false);
     }
   }
-  const github = options?.githubEnabled && ["login", "register"].includes(mode);
+  const github =
+    options?.githubEnabled &&
+    ["login", "reauthenticate", "register"].includes(mode);
   return (
     <div className="owner-login">
       <section
@@ -111,7 +131,7 @@ export default function AccountAuthPage({ mode }: { mode: Mode }) {
         <p className="owner-eyebrow">Web Engineering Portfolio</p>
         <h1 id="account-auth-title">{titles[mode]}</h1>
         <p className="owner-auth-description">
-          {mode === "login"
+          {isLogin
             ? "Sign in with GitHub, or your username/email and password."
             : mode === "register"
               ? "Join with GitHub, or create an account and confirm your email."
@@ -147,7 +167,7 @@ export default function AccountAuthPage({ mode }: { mode: Mode }) {
           </div>
         ) : (
           <form className="owner-form" onSubmit={(e) => void submit(e)}>
-            {mode === "login" && (
+            {isLogin && (
               <label>
                 Username or email
                 <input
@@ -204,9 +224,7 @@ export default function AccountAuthPage({ mode }: { mode: Mode }) {
                     id="account-password"
                     required
                     type={show ? "text" : "password"}
-                    autoComplete={
-                      mode === "login" ? "current-password" : "new-password"
-                    }
+                    autoComplete={isLogin ? "current-password" : "new-password"}
                     minLength={12}
                     maxLength={128}
                     value={password}
@@ -223,7 +241,7 @@ export default function AccountAuthPage({ mode }: { mode: Mode }) {
                 </div>
               </>
             )}
-            {hasPassword && mode !== "login" && (
+            {hasPassword && !isLogin && (
               <>
                 <label>
                   Confirm password
@@ -257,7 +275,7 @@ export default function AccountAuthPage({ mode }: { mode: Mode }) {
             >
               {busy
                 ? "Please wait…"
-                : mode === "login"
+                : isLogin
                   ? "Log in"
                   : mode === "register"
                     ? "Create account"

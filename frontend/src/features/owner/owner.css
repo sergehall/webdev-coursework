@@ -144,6 +144,118 @@
 .owner-profile-identity .owner-details {
   margin-bottom: 0;
 }
+.owner-security-summary h2 {
+  margin-top: 0.35rem;
+}
+.owner-security-windows {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.6rem;
+  margin-top: 0.7rem;
+}
+.owner-security-window {
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+}
+.owner-security-window[aria-current="page"] {
+  border-color: var(--owner-accent);
+  background: var(--owner-soft);
+  color: var(--owner-accent);
+}
+.owner-security-badge {
+  display: inline-block;
+  width: fit-content;
+  padding: 0.2rem 0.6rem;
+  border: 1px solid var(--owner-border);
+  border-radius: 1rem;
+  color: var(--owner-accent);
+  font-size: 0.75rem;
+  font-weight: 750;
+  margin-top: 0.7rem;
+}
+.owner-mfa-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.owner-mfa-heading svg {
+  flex-shrink: 0;
+  color: var(--owner-accent);
+}
+.owner-mfa-state,
+.owner-mfa-setup,
+.owner-mfa-recovery {
+  margin-top: 0.8rem;
+}
+.owner-mfa-state {
+  align-items: stretch;
+}
+.owner-mfa-state .owner-button {
+  margin-top: 0.7rem;
+}
+.owner-mfa-proof {
+  display: grid;
+  gap: 0.35rem;
+  margin-top: 0.7rem;
+  font-size: 0.8rem;
+  font-weight: 650;
+}
+.owner-mfa-enrollment {
+  display: grid;
+  grid-template-columns: 224px minmax(0, 1fr);
+  gap: 1rem;
+  margin: 0.8rem 0;
+  align-items: center;
+}
+.owner-mfa-enrollment img {
+  background: #fff;
+  width: 224px;
+  height: 224px;
+  max-width: 100%;
+}
+.owner-recovery-codes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  margin: 0.7rem 0;
+  overflow-wrap: anywhere;
+}
+.owner-confirmation {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  margin: 0.7rem 0;
+}
+.owner-confirmation input[type="checkbox"] {
+  width: 1rem;
+  min-height: 1rem;
+  height: 1rem;
+  accent-color: var(--owner-primary);
+  flex-shrink: 0;
+}
+.owner-button--danger {
+  border-color: #f87171;
+  color: #b91c1c;
+}
+.dark .owner-button--danger {
+  color: #fca5a5;
+}
+@media (max-width: 900px) {
+  .owner-security-windows {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 640px) {
+  .owner-mfa-enrollment {
+    grid-template-columns: 1fr;
+  }
+  .owner-recovery-codes {
+    grid-template-columns: 1fr;
+  }
+}
 .owner-form input[readonly] {
   color: var(--owner-muted);
   cursor: default;

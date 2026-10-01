@@ -4,6 +4,7 @@ import { AnalyticsService } from "./analytics.service";
 import type { AnalyticsStore } from "./analytics.store";
 import { hashOwnerPassword, verifyOwnerPassword } from "./owner-password";
 import { normalizeDevice } from "./analytics.types";
+import type { MfaService } from "../accounts/mfa/mfa.service";
 
 function fixture() {
   const store = {
@@ -36,9 +37,14 @@ function fixture() {
     eval: jest.fn().mockResolvedValue(1),
     del: jest.fn(),
   };
+  const mfa = {
+    enabled: jest.fn().mockResolvedValue(false),
+    challenge: jest.fn().mockResolvedValue(null),
+  };
   const service = new AnalyticsService(
     new ConfigService(),
-    store as unknown as AnalyticsStore
+    store as unknown as AnalyticsStore,
+    mfa as unknown as MfaService
   );
   Object.assign(service, {
     redis,
@@ -57,7 +63,7 @@ function fixture() {
     query: {},
     get: jest.fn().mockReturnValue("http://localhost:3000"),
   } as unknown as Request;
-  return { service, store, redis, req };
+  return { service, store, redis, req, mfa };
 }
 
 describe("Owner access and anonymous analytics", () => {
@@ -175,7 +181,9 @@ describe("Owner access and anonymous analytics", () => {
         .mockResolvedValueOnce(
           new Response(JSON.stringify({ id, login: "test-user" }))
         );
-      expect(await service.githubCallback(req)).toHaveLength(43);
+      expect(await service.githubCallback(req)).toEqual({
+        token: expect.stringMatching(/^[A-Za-z0-9_-]{43}$/),
+      });
       expect(JSON.parse(redis.set.mock.calls[0][1]).role).toBe(
         id === 42 ? "admin" : "client"
       );

@@ -1,0 +1,164 @@
+import { useEffect, useState, type FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
+import { ShieldCheck } from "lucide-react";
+
+import { ownerRequest, OwnerApiError } from "./owner-api";
+import { useOwner } from "./owner-context";
+
+export default function MfaChallengePage() {
+  const owner = useOwner()!,
+    navigate = useNavigate();
+  const [recovery, setRecovery] = useState(false),
+    [code, setCode] = useState("");
+  const [expiresAt, setExpiresAt] = useState<number | null>(null),
+    [now, setNow] = useState(Date.now());
+  const [expired, setExpired] = useState(false),
+    [busy, setBusy] = useState(false),
+    [error, setError] = useState("");
+  useEffect(() => {
+    let active = true;
+    void ownerRequest<{ expiresAt: string }>("mfa/challenge")
+      .then((value) => {
+        if (active) setExpiresAt(Date.parse(value.expiresAt));
+      })
+      .catch(() => {
+        if (active) setExpired(true);
+      });
+    const timer = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => {
+      active = false;
+      window.clearInterval(timer);
+    };
+  }, []);
+  const isExpired = expired || (expiresAt !== null && expiresAt <= now);
+  const valid = recovery
+    ? /^[A-F0-9]{5}(?:-[A-F0-9]{5}){3}$/.test(code)
+    : /^\d{6}$/.test(code);
+  async function submit(e: FormEvent) {
+    e.preventDefault();
+    if (!valid || isExpired || busy) return;
+    setBusy(true);
+    setError("");
+    try {
+      await ownerRequest("mfa/challenge", { method: "POST", body: { code } });
+      setCode("");
+      await owner.refresh();
+      navigate("/account/security#mfa", { replace: true });
+    } catch (err) {
+      if (err instanceof OwnerApiError && err.status === 401) setExpired(true);
+      else
+        setError(
+          err instanceof Error ? err.message : "Unable to verify this code."
+        );
+    } finally {
+      setBusy(false);
+    }
+  }
+  async function restart() {
+    await ownerRequest("mfa/cancel-challenge", { method: "POST" }).catch(
+      () => {}
+    );
+    navigate("/account/login", { replace: true });
+  }
+  return (
+    <div className="owner-login">
+      <section className="owner-login-card" aria-labelledby="mfa-login-title">
+        <div className="owner-login-icon">
+          <ShieldCheck aria-hidden="true" />
+        </div>
+        <p className="owner-eyebrow">Web Engineering Portfolio</p>
+        <h1 id="mfa-login-title">Two-factor verification</h1>
+        <p className="owner-auth-description">
+          {recovery
+            ? "Enter a saved recovery code. Each code works only once."
+            : "Enter the 6-digit code from your authenticator app to finish signing in."}
+        </p>
+        {expiresAt !== null && !isExpired && (
+          <p className="owner-muted">
+            Verification expires in {Math.ceil((expiresAt - now) / 1000)}{" "}
+            seconds.
+          </p>
+        )}
+        {!isExpired && (
+          <>
+            <div className="owner-auth-links">
+              <button
+                type="button"
+                className="owner-button"
+                aria-pressed={!recovery}
+                disabled={busy}
+                onClick={() => {
+                  setRecovery(false);
+                  setCode("");
+                  setError("");
+                }}
+              >
+                Authenticator app
+              </button>
+              <button
+                type="button"
+                className="owner-button"
+                aria-pressed={recovery}
+                disabled={busy}
+                onClick={() => {
+                  setRecovery(true);
+                  setCode("");
+                  setError("");
+                }}
+              >
+                Recovery code
+              </button>
+            </div>
+            <form className="owner-form" onSubmit={(e) => void submit(e)}>
+              <label>
+                {recovery ? "Recovery code" : "Authenticator code"}
+                <input
+                  autoFocus
+                  autoComplete="one-time-code"
+                  inputMode={recovery ? "text" : "numeric"}
+                  autoCapitalize="characters"
+                  spellCheck={false}
+                  required
+                  maxLength={recovery ? 23 : 6}
+                  value={code}
+                  onChange={(e) =>
+                    setCode(
+                      recovery
+                        ? e.target.value
+                            .toUpperCase()
+                            .replace(/[^A-F0-9-]/g, "")
+                        : e.target.value.replace(/\D/g, "")
+                    )
+                  }
+                />
+              </label>
+              <button
+                className="owner-button owner-button--primary owner-button--wide"
+                disabled={busy || !valid || expiresAt === null}
+              >
+                {busy ? "Verifying…" : "Finish sign-in"}
+              </button>
+            </form>
+          </>
+        )}
+        {isExpired && (
+          <p role="alert" className="owner-message owner-message--error">
+            Verification expired. Sign in again to start a new check.
+          </p>
+        )}
+        {error && (
+          <p role="alert" className="owner-message owner-message--error">
+            {error}
+          </p>
+        )}
+        <button
+          className="owner-button"
+          disabled={busy}
+          onClick={() => void restart()}
+        >
+          {isExpired ? "Start again" : "Back to sign in"}
+        </button>
+      </section>
+    </div>
+  );
+}

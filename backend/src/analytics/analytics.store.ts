@@ -233,10 +233,15 @@ export class AnalyticsStore {
     const limit = query.limit ?? 10,
       days = query.days ?? 7;
     const groups: Record<string, string[]> = {
-      "sign-in": ["owner.login%", "owner.github.%", "account.github.%"],
+      "sign-in": [
+        "owner.login%",
+        "owner.github.%",
+        "account.github.%",
+        "account.mfa.login",
+      ],
       sessions: ["owner.session%", "owner.logout"],
       profile: ["owner.profile.%", "owner.preferences.%"],
-      security: ["owner.password.%", "owner.sessions.revoke"],
+      security: ["owner.password.%", "owner.sessions.revoke", "account.mfa.%"],
       administration: ["accounts.%"],
       analytics: ["analytics.%"],
       limits: ["rate.%"],
