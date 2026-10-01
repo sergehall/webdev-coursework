@@ -583,7 +583,7 @@ function StatisticsPanel({
               </Link>
             </section>
           )}
-          <div className="owner-grid">
+          <div className="owner-grid owner-grid--statistics">
             <Breakdown title="Devices" values={data.devices} />
             <Breakdown title="Operating systems" values={data.systems} />
             <Breakdown title="Browsers" values={data.browsers} />

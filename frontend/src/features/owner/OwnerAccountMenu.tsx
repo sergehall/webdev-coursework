@@ -35,7 +35,7 @@ export default function OwnerAccountMenu() {
       <Link
         to="/account/login"
         aria-label="Sign in"
-        className="inline-flex min-h-10 items-center gap-2 rounded-full border border-slate-300 px-3 text-sm font-semibold hover:bg-sky-50 focus-visible:ring-2 focus-visible:ring-sky-400 dark:border-slate-700 dark:hover:bg-slate-800"
+        className="inline-flex min-h-10 items-center gap-2 rounded-full border border-slate-300 px-3 text-sm font-semibold hover:bg-green-50 focus-visible:ring-2 focus-visible:ring-green-400 dark:border-slate-700 dark:hover:bg-slate-800"
       >
         <LogIn size={16} aria-hidden="true" />
         <span className="hidden sm:inline">Sign in</span>
@@ -51,9 +51,9 @@ export default function OwnerAccountMenu() {
         aria-controls="owner-account-menu"
         aria-label={`Open account menu for ${name}`}
         onClick={() => setOpen(!open)}
-        className="flex min-h-10 items-center gap-2 rounded-full border border-sky-500/40 bg-sky-50 pr-3 pl-1 text-sky-900 focus-visible:ring-2 focus-visible:ring-sky-400 dark:bg-sky-950 dark:text-sky-100"
+        className="flex min-h-10 items-center gap-2 rounded-full border border-green-500/40 bg-green-50 pr-3 pl-1 text-green-900 focus-visible:ring-2 focus-visible:ring-green-400 dark:bg-green-950 dark:text-green-100"
       >
-        <span className="flex size-8 items-center justify-center rounded-full bg-sky-700 text-sm font-bold text-white">
+        <span className="flex size-8 items-center justify-center rounded-full bg-green-700 text-sm font-bold text-white">
           {name.charAt(0).toUpperCase()}
         </span>
         <span className="hidden max-w-24 truncate text-sm font-semibold lg:inline">
@@ -68,9 +68,9 @@ export default function OwnerAccountMenu() {
         <nav
           id="owner-account-menu"
           aria-label="My account"
-          className="absolute top-[calc(100%+0.65rem)] right-0 w-64 rounded-2xl border border-slate-200 bg-white p-2 text-slate-900 shadow-2xl dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+          className="absolute top-[calc(100%+0.65rem)] right-0 w-56 rounded-lg border border-slate-200 bg-white p-2 text-slate-900 shadow-2xl dark:border-slate-700 dark:bg-slate-900 dark:text-white"
         >
-          <p className="truncate border-b border-slate-200 px-3 py-3 text-sm font-semibold dark:border-slate-700">
+          <p className="truncate border-b border-slate-200 px-3 py-2 text-sm font-semibold dark:border-slate-700">
             {name}
           </p>
           {[
@@ -86,7 +86,7 @@ export default function OwnerAccountMenu() {
             )
             .map(([label, path]) => (
               <Link
-                className="block rounded-xl px-3 py-2 text-sm hover:bg-sky-50 focus-visible:ring-2 focus-visible:ring-sky-400 dark:hover:bg-slate-800"
+                className="block rounded-md px-3 py-2 text-sm hover:bg-green-50 focus-visible:ring-2 focus-visible:ring-green-400 dark:hover:bg-slate-800"
                 to={`/account/${path}`}
                 key={path}
                 onClick={() => setOpen(false)}
@@ -95,7 +95,7 @@ export default function OwnerAccountMenu() {
               </Link>
             ))}
           <button
-            className="mt-1 w-full rounded-xl px-3 py-2 text-left text-sm font-semibold text-red-600 hover:bg-red-50 disabled:opacity-60 dark:hover:bg-red-950"
+            className="mt-1 w-full rounded-md px-3 py-2 text-left text-sm font-semibold text-red-600 hover:bg-red-50 disabled:opacity-60 dark:hover:bg-red-950"
             disabled={busy}
             onClick={async () => {
               setBusy(true);
