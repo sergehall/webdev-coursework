@@ -1,0 +1,7 @@
+**/.env*
+**/node_modules
+**/dist
+.git
+.yarn/cache
+.yarn/install-state.gz
+.pnp.*

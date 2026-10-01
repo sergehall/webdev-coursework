@@ -15,6 +15,7 @@ import { TypeOrmPostgresOptions } from "./db/TypeOrmPostgresOptions";
 import { HttpLoggingMiddleware } from "./middlewares/http-logging.middleware";
 import { QuizModule } from "./quiz/quiz.module";
 import { TokensModule } from "./tokens/tokens.module";
+import { AnalyticsModule } from "./analytics/analytics.module";
 
 @Module({
   imports: [
@@ -30,13 +31,15 @@ import { TokensModule } from "./tokens/tokens.module";
     ),
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ".env",
+      envFilePath:
+        process.env.NODE_ENV === "production" ? ".env" : [".env.local", ".env"],
     }),
     TypeOrmModule.forRootAsync({
       useClass: TypeOrmPostgresOptions,
     }),
     QuizModule,
     TokensModule,
+    AnalyticsModule,
   ],
   controllers: [AppController],
   providers: [AppService, CircuitBreakerService],

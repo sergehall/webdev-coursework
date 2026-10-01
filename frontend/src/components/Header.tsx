@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 
+import OwnerAccountMenu from "../features/owner/OwnerAccountMenu";
+
 import ThemeToggle from "./ThemeToggle";
 
 export default function Header() {
@@ -22,6 +24,7 @@ export default function Header() {
       </Link>
 
       <div className="flex items-center gap-3">
+        <OwnerAccountMenu />
         <ThemeToggle />
       </div>
     </header>

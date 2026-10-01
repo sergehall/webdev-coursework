@@ -13,6 +13,20 @@ export class HttpLoggingMiddleware implements NestMiddleware {
   // Middleware entry point
   use(req: Request, res: Response, next: NextFunction) {
     const { method, originalUrl } = req;
+    // Owner credentials, cookies, visitor headers, IPs, and query strings must
+    // never enter the general request log for analytics or account endpoints.
+    const path = originalUrl.split("?")[0];
+    if (
+      path.startsWith("/api/owner") ||
+      path.startsWith("/api/account") ||
+      path.startsWith("/api/analytics")
+    ) {
+      res.on("finish", () =>
+        this.logger.log(`${method} ${path} ${res.statusCode}`)
+      );
+      next();
+      return;
+    }
     const userAgent = req.get("user-agent") || "";
     const ip = req.ip ? req.ip : "";
 

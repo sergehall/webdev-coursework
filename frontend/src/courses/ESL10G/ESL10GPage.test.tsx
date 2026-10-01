@@ -293,7 +293,7 @@ describe("ESL 10G coursework page", () => {
     });
     expect(qrLink).toHaveAttribute(
       "href",
-      "https://webdev-coursework.com/coursework/ESL10G/presentation-1"
+      "https://webdev-coursework.com/coursework/ESL10G/presentation-1?source=esl10g-presentation-qr"
     );
     expect(qrLink).toHaveAttribute("rel", "noopener noreferrer");
     expect(qrLink).toHaveClass("bookend__qr");

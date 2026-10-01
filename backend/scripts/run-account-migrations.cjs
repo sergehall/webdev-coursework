@@ -1,0 +1,54 @@
+// Run only this account feature's migrations; never apply unrelated course migrations.
+require("reflect-metadata");
+const { DataSource } = require("typeorm");
+const { AppDataSource } = require("../dist/db/data-source");
+const {
+  AddQrAnalytics1790899200000,
+} = require("../dist/db/migrations/1790899200000-AddQrAnalytics");
+const {
+  AddPublicAccounts1790902800000,
+} = require("../dist/db/migrations/1790902800000-AddPublicAccounts");
+const {
+  UseAdminAndClientRoles1790906400000,
+} = require("../dist/db/migrations/1790906400000-UseAdminAndClientRoles");
+const {
+  IndexSecurityActivity1790910000000,
+} = require("../dist/db/migrations/1790910000000-IndexSecurityActivity");
+const db = new DataSource({
+  ...AppDataSource.options,
+  logging: false,
+  synchronize: false,
+  migrations: [
+    AddQrAnalytics1790899200000,
+    AddPublicAccounts1790902800000,
+    UseAdminAndClientRoles1790906400000,
+    IndexSecurityActivity1790910000000,
+  ],
+});
+(async () => {
+  try {
+    const target = new URL(process.env.DATABASE_URL || "");
+    if (
+      !process.env.DYNO &&
+      !(
+        target.hostname === "127.0.0.1" &&
+        target.port === "55432" &&
+        target.pathname === "/webdev_coursework_local"
+      )
+    )
+      throw new Error("Unapproved destination");
+    await db.initialize();
+    const applied = await db.runMigrations();
+    console.log(
+      "Account migrations applied:",
+      applied.map((m) => m.name)
+    );
+  } catch {
+    console.error(
+      "Account migrations failed; database credentials and private error details suppressed."
+    );
+    process.exitCode = 1;
+  } finally {
+    if (db.isInitialized) await db.destroy();
+  }
+})();

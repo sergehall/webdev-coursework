@@ -34,6 +34,26 @@ export default function AppRoutes() {
     <Routes>
       {/* Root layout, mounted only once */}
       <Route element={<Layout />}>
+        <Route
+          path="/owner/*"
+          element={
+            <Suspense
+              fallback={<PageLoadingState label="Loading owner account..." />}
+            >
+              <Screens.OwnerPage />
+            </Suspense>
+          }
+        />{" "}
+        <Route
+          path="/account/*"
+          element={
+            <Suspense
+              fallback={<PageLoadingState label="Loading owner account..." />}
+            >
+              <Screens.OwnerPage />
+            </Suspense>
+          }
+        />
         {/* Home */}
         <Route
           path="/"
@@ -43,7 +63,6 @@ export default function AppRoutes() {
             </Suspense>
           }
         />
-
         <Route
           path="/coursework"
           element={
@@ -52,7 +71,6 @@ export default function AppRoutes() {
             </Suspense>
           }
         />
-
         <Route
           path="/coursework/ESL10G"
           element={
@@ -63,7 +81,6 @@ export default function AppRoutes() {
             </Suspense>
           }
         />
-
         <Route
           path="/coursework/ESL10G/presentation-1"
           element={
@@ -74,12 +91,10 @@ export default function AppRoutes() {
             </Suspense>
           }
         />
-
         <Route
           path="/coursework/:courseId"
           element={<CourseAssignmentRedirect />}
         />
-
         <Route
           path="/coursework/:courseId/assignment"
           element={
@@ -100,7 +115,6 @@ export default function AppRoutes() {
             }
           />
         </Route>
-
         <Route
           path="/code-playground/*"
           element={
@@ -109,7 +123,6 @@ export default function AppRoutes() {
             </Suspense>
           }
         />
-
         <Route
           path="/web-developer-path"
           element={
@@ -118,7 +131,6 @@ export default function AppRoutes() {
             </Suspense>
           }
         />
-
         <Route
           path="/resources/*"
           element={
@@ -127,7 +139,6 @@ export default function AppRoutes() {
             </Suspense>
           }
         />
-
         <Route
           path="/projects"
           element={
@@ -136,7 +147,6 @@ export default function AppRoutes() {
             </Suspense>
           }
         />
-
         {/* Not found */}
         <Route
           path="*"

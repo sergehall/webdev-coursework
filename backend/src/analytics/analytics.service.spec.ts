@@ -1,0 +1,224 @@
+import { ConfigService } from "@nestjs/config";
+import type { Request } from "express";
+import { AnalyticsService } from "./analytics.service";
+import type { AnalyticsStore } from "./analytics.store";
+import { hashOwnerPassword, verifyOwnerPassword } from "./owner-password";
+import { normalizeDevice } from "./analytics.types";
+
+function fixture() {
+  const store = {
+    owner: jest.fn().mockResolvedValue({
+      id: "00000000-0000-4000-8000-000000000001",
+      role: "admin",
+      revision: "current",
+      passwordHash: "",
+      displayName: "Serge",
+      timeZone: "UTC",
+      theme: "system",
+      reportDays: 30,
+    }),
+    dashboard: jest.fn(),
+    audits: jest.fn(),
+  };
+  Object.assign(store, {
+    account: store.owner,
+    githubAccount: jest
+      .fn()
+      .mockImplementation(async (identity: { id: number }) => ({
+        ...(await store.owner()),
+        role: identity.id === 42 ? "admin" : "client",
+      })),
+  });
+  const redis = {
+    status: "ready",
+    get: jest.fn(),
+    set: jest.fn(),
+    eval: jest.fn().mockResolvedValue(1),
+    del: jest.fn(),
+  };
+  const service = new AnalyticsService(
+    new ConfigService(),
+    store as unknown as AnalyticsStore
+  );
+  Object.assign(service, {
+    redis,
+    secret: "a".repeat(40),
+    origins: ["http://localhost:3000"],
+    github: {
+      clientId: "id",
+      clientSecret: "secret",
+      ownerId: "42",
+      callback: "http://localhost:3000/api/owner/github/callback",
+    },
+  });
+  const req = {
+    cookies: {},
+    ip: "127.0.0.1",
+    query: {},
+    get: jest.fn().mockReturnValue("http://localhost:3000"),
+  } as unknown as Request;
+  return { service, store, redis, req };
+}
+
+describe("Owner access and anonymous analytics", () => {
+  it("hashes passwords and rejects incorrect or malformed hashes", async () => {
+    const hash = await hashOwnerPassword("a long private password");
+    expect(await verifyOwnerPassword("a long private password", hash)).toBe(
+      true
+    );
+    expect(await verifyOwnerPassword("another password", hash)).toBe(false);
+    expect(await verifyOwnerPassword("anything", "bad")).toBe(false);
+  });
+  it.each(["root_owner", "client", "support", "owner"])(
+    "denies a %s session",
+    async (role) => {
+      const { service, req, redis, store } = fixture();
+      req.cookies.webdev_owner = "x".repeat(43);
+      redis.get.mockResolvedValue(
+        JSON.stringify({
+          accountId: "00000000-0000-4000-8000-000000000001",
+          role,
+          revision: "current",
+          expiresAt: new Date(Date.now() + 60000).toISOString(),
+        })
+      );
+      await expect(service.dashboard(req, 30)).rejects.toThrow(
+        "Owner sign-in required"
+      );
+      expect(store.dashboard).not.toHaveBeenCalled();
+    }
+  );
+  it.each(["expired", "revoked"])("denies %s root sessions", async (reason) => {
+    const { service, req, redis } = fixture();
+    req.cookies.webdev_owner = "x".repeat(43);
+    redis.get.mockResolvedValue(
+      JSON.stringify({
+        accountId: "00000000-0000-4000-8000-000000000001",
+        role: "admin",
+        revision: reason === "revoked" ? "old" : "current",
+        expiresAt: new Date(
+          reason === "expired" ? 0 : Date.now() + 60000
+        ).toISOString(),
+      })
+    );
+    await expect(service.session(req)).rejects.toThrow();
+  });
+  it("returns only safe session fields to the browser", async () => {
+    const { service, req, redis } = fixture();
+    req.cookies.webdev_owner = "x".repeat(43);
+    redis.get.mockResolvedValue(
+      JSON.stringify({
+        accountId: "00000000-0000-4000-8000-000000000001",
+        role: "admin",
+        revision: "current",
+        issuedAt: new Date().toISOString(),
+        expiresAt: new Date(Date.now() + 60000).toISOString(),
+      })
+    );
+    const result = await service.session(req);
+    expect(result.profile.displayName).toBe("Serge");
+    expect(JSON.stringify(result)).not.toContain("passwordHash");
+    expect(result).not.toHaveProperty("token");
+  });
+  it("rejects password login from an untrusted origin", async () => {
+    const { service, req, store } = fixture();
+    (req.get as jest.Mock).mockReturnValue("https://attacker.example");
+    await expect(service.login(req, "some password")).rejects.toThrow(
+      "Untrusted origin"
+    );
+    expect(store.owner).not.toHaveBeenCalled();
+  });
+  it("creates PKCE challenge and ten-minute one-time OAuth state", async () => {
+    const { service, req, redis } = fixture();
+    const result = await service.githubStart(req);
+    const url = new URL(result.url);
+    expect(url.origin).toBe("https://github.com");
+    expect(url.searchParams.get("code_challenge_method")).toBe("S256");
+    expect(url.searchParams.has("scope")).toBe(false);
+    expect(redis.set).toHaveBeenCalledWith(
+      expect.stringContaining(":oauth:"),
+      expect.any(String),
+      "EX",
+      600,
+      "NX"
+    );
+    expect(result.state).toHaveLength(43);
+  });
+  it("rejects unbound OAuth state without exchanging credentials", async () => {
+    const { service, req } = fixture();
+    req.query = { code: "code", state: "x".repeat(43) };
+    const fetcher = jest.spyOn(global, "fetch");
+    await expect(service.githubCallback(req)).rejects.toThrow(
+      "Unable to sign in"
+    );
+    expect(fetcher).not.toHaveBeenCalled();
+  });
+  it.each([42, 999])(
+    "creates a correctly scoped GitHub session for ID %s",
+    async (id) => {
+      const { service, req, redis } = fixture();
+      req.query = { code: "code", state: "x".repeat(43) };
+      req.cookies.webdev_github_state = req.query.state;
+      redis.eval.mockImplementation(async (script: string) =>
+        script.includes("local v=") ? "verifier" : 1
+      );
+      jest
+        .spyOn(global, "fetch")
+        .mockResolvedValueOnce(
+          new Response(
+            JSON.stringify({
+              access_token: "ephemeral-token",
+              token_type: "bearer",
+            })
+          )
+        )
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify({ id, login: "test-user" }))
+        );
+      expect(await service.githubCallback(req)).toHaveLength(43);
+      expect(JSON.parse(redis.set.mock.calls[0][1]).role).toBe(
+        id === 42 ? "admin" : "client"
+      );
+    }
+  );
+  it("rejects consumed OAuth states", async () => {
+    const { service, req, redis } = fixture();
+    req.query = { code: "code", state: "x".repeat(43) };
+    req.cookies.webdev_github_state = req.query.state;
+    redis.eval.mockImplementation(async (script: string) =>
+      script.includes("local v=") ? null : 1
+    );
+    await expect(service.githubCallback(req)).rejects.toThrow();
+    expect(redis.set).not.toHaveBeenCalled();
+  });
+  it("normalizes devices without retaining raw UA or identifying models", () => {
+    expect(
+      normalizeDevice(
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1 Version/18 Mobile Safari/604.1"
+      )
+    ).toEqual({ device: "phone", os: "iOS", browser: "Safari" });
+  });
+  it("buffers only anonymous categories and server time", async () => {
+    const { service, req, redis } = fixture();
+    (req.get as jest.Mock).mockReturnValue(
+      "Mozilla/5.0 Android Chrome/100 Mobile"
+    );
+    await service.ingest(req, {
+      eventId: "b884fa37-6fab-4a47-8da9-b195c9d9af5a",
+      campaign: "esl10g-presentation-1",
+    });
+    const call = redis.eval.mock.calls.find((call) =>
+      String(call[0]).includes("RPUSH")
+    );
+    const event = JSON.parse(call![3] as string);
+    expect(Object.keys(event).sort()).toEqual([
+      "browser",
+      "campaign",
+      "device",
+      "eventId",
+      "occurredAt",
+      "os",
+    ]);
+    expect(JSON.stringify(event)).not.toContain("127.0.0.1");
+  });
+});

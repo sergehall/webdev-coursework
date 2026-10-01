@@ -20,6 +20,10 @@ import {
 import { flushSync } from "react-dom";
 import { Link } from "react-router-dom";
 
+import {
+  PRESENTATION_QR_URL,
+  useQrVisit,
+} from "../../features/analytics/useQrVisit";
 import ShowModalButton from "../../components/buttons/ShowModalButton";
 
 import {
@@ -1071,7 +1075,7 @@ function PresentationViewer() {
                     </div>
                     <a
                       className="bookend__qr"
-                      href="https://webdev-coursework.com/coursework/ESL10G/presentation-1"
+                      href={PRESENTATION_QR_URL}
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label="Open this presentation on your phone at webdev-coursework.com"
@@ -1598,6 +1602,7 @@ export default function ESL10GPage() {
 }
 
 export function ESL10GPresentationPage() {
+  useQrVisit();
   return (
     <div className="mx-auto max-w-6xl space-y-8 px-4 py-10">
       <Link
