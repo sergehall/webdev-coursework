@@ -97,7 +97,19 @@ Separate GitHub secrets are stored in ignored backend `.env.local` and
 `.env.production.local`, permissions 600. The latter is staging only, never loaded
 by development or committed. SMTP/OAuth values have been synchronized to Heroku;
 no database URL was copied. SMTP TLS/authentication was verified without sending
-an email. Production feature code/migrations are pending rollout.
+an email.
+
+### Production rollout — 2026-10-01 UTC
+
+- Backend code `2aae82d` was released to the existing Heroku app as v209.
+- All four account migrations were applied, including the security activity index;
+  unrelated quiz and reference application migrations were excluded.
+- Account/QR features are enabled. `/health` and `/api/account/login-options`
+  returned 200, with registration and GitHub sign-in available.
+- Production frontend configuration points account requests to
+  `https://api.webdev-coursework.com`. The existing Vercel project deploys the
+  GitHub `main` branch to `https://webdev-coursework.com`.
+- MFA remains the next stage. No production MFA enrollment is enabled by this release.
 
 ## Local runtime and validation
 

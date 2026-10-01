@@ -11,6 +11,8 @@
 - Only Serge's primary administrator can assign/revoke administrator roles; its own role is protected.
 - Keep profile/preferences/session changes scoped to the signed-in account.
 - Keep QR reports and security activity restricted to administrators.
+- Load security activity in pages of 10 by default, with server-side period,
+  action type and result filters and optional page sizes of 25 or 50.
 - New tables use `webdev_`; preserve the other application's tables and database configuration.
 - Verify locally; synchronize authorized SMTP/OAuth configuration to production.
 - Production code rollout and migrations must be explicitly recorded as deployed or pending.
