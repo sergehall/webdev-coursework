@@ -51,9 +51,14 @@ const db = new DataSource({
       throw new Error("Unapproved destination");
     await db.initialize();
     const applied = await db.runMigrations();
+    if (await db.showMigrations())
+      throw new Error("Account migrations remain pending");
     console.log(
       "Account migrations applied:",
       applied.map((m) => m.name)
+    );
+    console.log(
+      "Account migration verification passed: no pending migrations."
     );
   } catch {
     console.error(

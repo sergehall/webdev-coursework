@@ -26,6 +26,9 @@
   --owner-primary: #24e66f;
   --owner-soft: #133d29;
 }
+.owner-workspace:has(> .owner-login) {
+  background: transparent;
+}
 .owner-content {
   padding: clamp(0.8rem, 1.6vw, 1.25rem);
   display: grid;
@@ -381,7 +384,7 @@
 .owner-message--error {
   border-color: #e8a7a7;
   background: #fee2e2;
-  color: #991b1b;
+  color: #1c2923;
 }
 .owner-login {
   display: grid;
@@ -407,7 +410,7 @@
   font-size: 1.65rem;
   font-weight: 800;
 }
-.owner-login-card > p:not(.owner-eyebrow) {
+.owner-login-card > p:not(.owner-eyebrow, .owner-message) {
   font-size: 0.9rem;
   color: var(--owner-muted);
   line-height: 1.6;

@@ -82,6 +82,12 @@ is deliberately absent.
 
 ## Enable and production configuration
 
+Heroku's `release` process runs `migration:run:accounts` before the new web
+process starts. The runner then checks that no account migrations remain pending.
+A failed migration or verification blocks the release so authentication never
+starts against an outdated account schema. This runner excludes unrelated course
+migrations.
+
 1. Build the backend and run `migration:run:accounts` in the named Heroku app.
    This script applies only the account/QR migrations and the activity pagination index with SQL parameter logging disabled;
    it does not run unrelated course migrations. Locally use `migration:run:local`.
