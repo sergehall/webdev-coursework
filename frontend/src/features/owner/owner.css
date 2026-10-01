@@ -110,6 +110,10 @@
   gap: 0.7rem;
   align-items: start;
 }
+.owner-grid--statistics,
+.owner-shortcuts {
+  align-items: stretch;
+}
 .owner-metrics {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -376,6 +380,7 @@
   grid-template-columns: auto 1fr;
   gap: 0.25rem 0.6rem;
   align-items: center;
+  align-content: start;
 }
 .owner-shortcuts h2 {
   margin: 0;
