@@ -288,6 +288,28 @@ describe("ESL 10G coursework page", () => {
     expect(
       screen.getByRole("heading", { name: /We learn together/i })
     ).toBeInTheDocument();
+    const qrLink = screen.getByRole("link", {
+      name: /Open this presentation on your phone/i,
+    });
+    expect(qrLink).toHaveAttribute(
+      "href",
+      "https://webdev-coursework.com/coursework/ESL10G/presentation-1"
+    );
+    expect(qrLink).toHaveAttribute("rel", "noopener noreferrer");
+    expect(qrLink).toHaveClass("bookend__qr");
+    expect(
+      screen.getByRole("img", { name: "QR code for this presentation" })
+    ).toHaveAttribute(
+      "src",
+      "/course-materials/esl10g/presentation/presentation-qr.svg"
+    );
+    expect(screen.getByText("Let’s stay in touch!")).toBeInTheDocument();
+    expect(
+      screen.getByText("Scan to view • My presentation")
+    ).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Subtitles" }));
+    expect(qrLink).toHaveClass("bookend__qr");
+    expect(screen.getByText("Let’s stay in touch!")).toBeInTheDocument();
     expect(next).toBeDisabled();
   });
 

@@ -1069,6 +1069,41 @@ function PresentationViewer() {
                         alt=""
                       />
                     </div>
+                    <a
+                      className="bookend__qr"
+                      href="https://webdev-coursework.com/coursework/ESL10G/presentation-1"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Open this presentation on your phone at webdev-coursework.com"
+                    >
+                      <span className="bookend__qr-wave" aria-hidden="true" />
+                      <span
+                        className="bookend__qr-arrow bookend__qr-arrow--top"
+                        aria-hidden="true"
+                      >
+                        ↘
+                      </span>
+                      <span
+                        className="bookend__qr-arrow bookend__qr-arrow--bottom"
+                        aria-hidden="true"
+                      >
+                        ↗
+                      </span>
+                      <span className="bookend__qr-card">
+                        <span className="bookend__qr-title">
+                          Let’s stay in touch!
+                        </span>
+                        <img
+                          src="/course-materials/esl10g/presentation/presentation-qr.svg"
+                          alt="QR code for this presentation"
+                          width="220"
+                          height="220"
+                        />
+                        <span className="bookend__qr-caption">
+                          Scan to view • My presentation
+                        </span>
+                      </span>
+                    </a>
                     <div className="bookend__footer">
                       Any questions? <span>✳</span> Let’s talk!
                     </div>
