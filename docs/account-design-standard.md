@@ -50,8 +50,15 @@ and dark modules for scanning.
   gradients, glowing borders or decorative shadows to content cards.
 - Page titles carry the strongest text hierarchy. `MY ACCOUNT`, helper text and
   icons are muted; account branding does not compete with the page title.
-- Overview shortcuts are compact text/icon links, not a second row of large
-  navigation cards. Their destinations and role visibility match the main tabs.
+- Account navigation starts at the same left edge as the page header and cards,
+  with no extra horizontal padding around the tab row. Overview uses the main
+  account tabs without a second row of duplicate navigation links.
+- Keep QR-report methodology and source metadata in Administration, in one
+  dedicated card. Overview shows the visit summary without repeating that copy.
+  Use the report's campaign identifier to distinguish QR sources; do not label
+  unknown campaigns as the presentation or mix their counts. The current API
+  reports only `esl10g-presentation-1`; adding collection or selection for more
+  campaigns requires a separate API change.
 - Keep Security sections as the navigation block. Below it, Overview uses one
   compact status panel with actionable setup reminders, followed by separate
   GitHub and recovery-email cards. Do not repeat password or MFA settings in the

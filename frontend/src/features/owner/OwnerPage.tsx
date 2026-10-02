@@ -44,24 +44,6 @@ const sections = [
   { id: "administration", label: "Administration", icon: LockKeyhole },
 ];
 
-function AccountShortcuts({ items }: { items: typeof sections }) {
-  return (
-    <nav className="owner-shortcuts" aria-label="Quick account links">
-      {items.map((item) => (
-        <Link
-          className="owner-shortcut"
-          to={`/account/${item.id}`}
-          key={item.id}
-        >
-          <item.icon size={16} aria-hidden="true" />
-          {item.label}
-          <ArrowUpRight size={12} aria-hidden="true" />
-        </Link>
-      ))}
-    </nav>
-  );
-}
-
 function PageHeader({
   title,
   description,
@@ -644,7 +626,7 @@ function StatisticsPanel({
         }
         description={
           administration
-            ? "Presentation QR statistics and account activity."
+            ? "QR-link analytics and account activity."
             : "Your portfolio workspace, account settings, and presentation activity."
         }
       />
@@ -670,7 +652,7 @@ function StatisticsPanel({
         <Message error>{error}</Message>
       ) : !data ? (
         <section className="owner-card" aria-busy="true">
-          <p role="status">Loading presentation statistics…</p>
+          <p role="status">Loading QR statistics…</p>
         </section>
       ) : (
         <>
@@ -691,15 +673,18 @@ function StatisticsPanel({
             <section className="owner-card">
               <h2>Your first QR visit will appear here</h2>
               <p className="owner-muted">
-                Once collection is enabled, open the presentation through its QR
-                code. Refresh this report after about ten seconds.
+                Once collection is enabled, open the page through its QR link.
+                Refresh this report after about ten seconds.
               </p>
-              <Link
-                className="owner-text-link"
-                to="/coursework/ESL10G/presentation-1"
-              >
-                Open presentation <ArrowUpRight size={14} aria-hidden="true" />
-              </Link>
+              {data.campaign === "esl10g-presentation-1" && (
+                <Link
+                  className="owner-text-link"
+                  to="/coursework/ESL10G/presentation-1"
+                >
+                  Open presentation{" "}
+                  <ArrowUpRight size={14} aria-hidden="true" />
+                </Link>
+              )}
             </section>
           )}
           <div className="owner-grid owner-grid--statistics">
@@ -739,21 +724,51 @@ function StatisticsPanel({
               )}
             </section>
           </div>
-          <p className="owner-muted owner-report-note">
-            These are anonymous visits through the QR link, not identified
-            people or unique visitors. A shared link also counts; device
-            categories are approximate. Updated{" "}
-            {formatAccountTime(data.generatedAt, profile)}.
-          </p>
+          {administration && (
+            <section
+              className="owner-card owner-report-details"
+              aria-labelledby="qr-report-details-title"
+            >
+              <h2 id="qr-report-details-title">About this QR report</h2>
+              <dl className="owner-details owner-report-metadata">
+                <div>
+                  <dt>QR source</dt>
+                  <dd>
+                    {data.campaign === "esl10g-presentation-1"
+                      ? "ESL10G · Presentation 1"
+                      : data.campaign || "Not specified"}
+                  </dd>
+                  {data.campaign === "esl10g-presentation-1" && (
+                    <dd className="owner-muted">{data.campaign}</dd>
+                  )}
+                </div>
+                <div>
+                  <dt>Updated</dt>
+                  <dd>
+                    <time dateTime={data.generatedAt}>
+                      {formatAccountTime(data.generatedAt, profile)}
+                    </time>
+                  </dd>
+                </div>
+              </dl>
+              <p className="owner-muted">
+                These are anonymous visits through this source’s QR link, not
+                identified people or unique visitors. A shared link also counts;
+                device categories are approximate.
+              </p>
+              <p className="owner-muted">
+                The numbers above belong to this QR source. Reports for other QR
+                sources should be kept separate.
+              </p>
+            </section>
+          )}
         </>
       )}
-      {administration ? (
+      {administration && (
         <>
           <SecurityActivityPanel />
           {canManageRoles && <AccountRolesPanel />}
         </>
-      ) : (
-        <AccountShortcuts items={sections.slice(1)} />
       )}
     </>
   );
@@ -821,13 +836,10 @@ export default function OwnerPage() {
         ) : path === "security" ? (
           <SecurityPanel session={owner.session} />
         ) : owner.session.role === "client" ? (
-          <>
-            <PageHeader
-              title={`Hello, ${profile.displayName}`}
-              description="Your profile, preferences and account security."
-            />
-            <AccountShortcuts items={availableSections.slice(1)} />
-          </>
+          <PageHeader
+            title={`Hello, ${profile.displayName}`}
+            description="Your profile, preferences and account security."
+          />
         ) : (
           <StatisticsPanel
             key={path}
