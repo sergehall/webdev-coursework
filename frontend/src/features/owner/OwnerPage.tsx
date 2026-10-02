@@ -791,7 +791,7 @@ export default function OwnerPage() {
     (owner.status === "loading" && !owner.session)
   )
     return (
-      <div className="owner-workspace">
+      <div className="owner-workspace owner-workspace--loading">
         <p role="status">Checking account access…</p>
       </div>
     );

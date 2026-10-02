@@ -26,7 +26,8 @@
   --owner-primary: #24e66f;
   --owner-soft: #133d29;
 }
-.owner-workspace:has(> .owner-login) {
+.owner-workspace:has(> .owner-login),
+.owner-workspace--loading {
   background: transparent;
 }
 .owner-content {
