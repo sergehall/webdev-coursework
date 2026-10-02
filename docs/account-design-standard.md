@@ -43,6 +43,9 @@ and dark modules for scanning.
   restore a large account background rectangle.
 - Navigation, full-width panels and grid rows share the same outer edges.
   Profile panels have no independent narrow-width cap.
+- Profile keeps account identity inside the main form card, before its save
+  action. Registration and sign-in facts use three columns on desktop and stack
+  on mobile, with a quiet divider instead of another outer card.
 - The navigation row is transparent. Only selected items have a filled surface.
 - Keep summary tiles and related settings in responsive equal-width grids.
   On small screens, stack forms and scroll navigation within its own row.
@@ -74,6 +77,12 @@ and dark modules for scanning.
   account data; loading or unavailable status must not be shown as disabled or safe.
 
 ## Color and interaction rules
+
+- Preferences use native select controls with a consistent minimum height of
+  44px and a decorative chevron. Appearance includes a local preview using the
+  shared account palette: selecting a theme updates the preview while the page
+  and saved settings change only through the existing save flow. The portfolio
+  choice inherits the current theme. Keep the preview non-interactive.
 
 - Reserve accent-filled buttons for the primary action of each form/window.
   Refresh, cancel, copy and pagination actions use neutral secondary buttons.

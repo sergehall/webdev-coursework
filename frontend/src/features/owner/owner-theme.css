@@ -1,6 +1,7 @@
 /* Account design contract: docs/account-design-standard.md. */
 .owner-workspace,
-.owner-account-menu {
+.owner-account-menu,
+.owner-theme-preview[data-theme="light"] {
   --owner-bg: #f3f5f7;
   --owner-card: #f5f7fa;
   --owner-panel: #fff;
@@ -18,7 +19,8 @@
   --owner-danger-border: #d99898;
 }
 .dark .owner-workspace,
-.dark .owner-account-menu {
+.dark .owner-account-menu,
+.owner-theme-preview[data-theme="dark"] {
   --owner-bg: #1c2634;
   --owner-card: #1c2634;
   --owner-panel: #151d29;

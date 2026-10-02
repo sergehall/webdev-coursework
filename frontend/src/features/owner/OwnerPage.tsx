@@ -213,6 +213,35 @@ function ProfilePanel({ profile }: { profile: OwnerProfile }) {
               </p>
             </>
           )}
+          <section
+            className="owner-profile-identity"
+            aria-labelledby="profile-identity-title"
+          >
+            <h2 id="profile-identity-title">Account identity</h2>
+            <dl className="owner-details">
+              <div>
+                <dt>Registration</dt>
+                <dd>
+                  {profile.registrationMethod === "administrator"
+                    ? "Site administrator account"
+                    : profile.registrationMethod === "github" ||
+                        (profile.githubLinked &&
+                          !profile.email &&
+                          !profile.passwordEnabled)
+                      ? "GitHub · Social sign-up"
+                      : "Email and password"}
+                </dd>
+              </div>
+              <div>
+                <dt>GitHub sign-in</dt>
+                <dd>{profile.githubLinked ? "Connected" : "Not connected"}</dd>
+              </div>
+              <div>
+                <dt>Username and password sign-in</dt>
+                <dd>{profile.passwordEnabled ? "Enabled" : "Not enabled"}</dd>
+              </div>
+            </dl>
+          </section>
           <button
             className="owner-button owner-button--primary"
             disabled={busy}
@@ -223,32 +252,6 @@ function ProfilePanel({ profile }: { profile: OwnerProfile }) {
           {message && <Message>{message}</Message>}
           {error && <Message error>{error}</Message>}
         </form>
-      </section>
-      <section className="owner-card owner-profile-identity">
-        <h2>Account identity</h2>
-        <dl className="owner-details">
-          <div>
-            <dt>Registration</dt>
-            <dd>
-              {profile.registrationMethod === "administrator"
-                ? "Site administrator account"
-                : profile.registrationMethod === "github" ||
-                    (profile.githubLinked &&
-                      !profile.email &&
-                      !profile.passwordEnabled)
-                  ? "GitHub · Social sign-up"
-                  : "Email and password"}
-            </dd>
-          </div>
-          <div>
-            <dt>GitHub sign-in</dt>
-            <dd>{profile.githubLinked ? "Connected" : "Not connected"}</dd>
-          </div>
-          <div>
-            <dt>Username and password sign-in</dt>
-            <dd>{profile.passwordEnabled ? "Enabled" : "Not enabled"}</dd>
-          </div>
-        </dl>
       </section>
     </>
   );

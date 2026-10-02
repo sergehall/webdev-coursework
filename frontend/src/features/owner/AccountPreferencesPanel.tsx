@@ -1,8 +1,63 @@
-import { useMemo, useState, type FormEvent } from "react";
+import { useMemo, useState, type ComponentProps, type FormEvent } from "react";
+import { ChevronDown } from "lucide-react";
 
 import { formatAccountTime } from "./account-time";
 import { ownerRequest, OwnerApiError, type OwnerProfile } from "./owner-api";
 import { useOwner } from "./owner-context";
+
+function PreferenceSelect(props: ComponentProps<"select">) {
+  return (
+    <span className="owner-preference-select">
+      <select {...props} />
+      <ChevronDown size={16} aria-hidden="true" />
+    </span>
+  );
+}
+
+function ThemePreview({ theme }: { theme: OwnerProfile["theme"] }) {
+  const label = { system: "Portfolio theme", light: "Light", dark: "Dark" }[
+    theme
+  ];
+  return (
+    <div>
+      <p className="owner-appearance-preview-label">
+        <span className="owner-muted">Theme preview</span>
+        <span>{label}</span>
+      </p>
+      <div
+        className="owner-theme-preview"
+        data-theme={theme}
+        role="img"
+        aria-label={`Account theme preview: ${label}`}
+      >
+        <div aria-hidden="true">
+          <div className="owner-theme-preview-toolbar">
+            <span>My account</span>
+            <span className="owner-theme-preview-active">Preferences</span>
+          </div>
+          <div className="owner-theme-preview-content">
+            <div className="owner-theme-preview-fields">
+              <div>
+                <span>Display name</span>
+                <strong>Your name</strong>
+              </div>
+              <div>
+                <span>Time zone</span>
+                <strong>Local time</strong>
+              </div>
+            </div>
+            <div className="owner-theme-preview-actions">
+              <span className="owner-theme-preview-primary">
+                Save preferences
+              </span>
+              <span>Manage profile</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function values(profile: OwnerProfile) {
   return {
@@ -93,7 +148,7 @@ export default function AccountPreferencesPanel({
           </p>
           <label>
             Account theme
-            <select
+            <PreferenceSelect
               value={form.theme}
               onChange={(e) =>
                 change("theme", e.target.value as typeof form.theme)
@@ -102,8 +157,9 @@ export default function AccountPreferencesPanel({
               <option value="system">Use portfolio theme</option>
               <option value="light">Light</option>
               <option value="dark">Dark</option>
-            </select>
+            </PreferenceSelect>
           </label>
+          <ThemePreview theme={form.theme} />
           <p className="owner-muted">
             Your choice applies after saving. The header button can switch the
             theme during your current visit.
@@ -116,7 +172,7 @@ export default function AccountPreferencesPanel({
           </p>
           <label>
             Time zone
-            <select
+            <PreferenceSelect
               value={form.timeZone}
               onChange={(e) => change("timeZone", e.target.value)}
             >
@@ -125,7 +181,7 @@ export default function AccountPreferencesPanel({
                   {zone.replaceAll("_", " ")}
                 </option>
               ))}
-            </select>
+            </PreferenceSelect>
           </label>
           <button
             type="button"
@@ -142,7 +198,7 @@ export default function AccountPreferencesPanel({
           <div className="owner-profile-fields">
             <label>
               Date format
-              <select
+              <PreferenceSelect
                 value={form.dateFormat}
                 onChange={(e) =>
                   change("dateFormat", e.target.value as typeof form.dateFormat)
@@ -151,11 +207,11 @@ export default function AccountPreferencesPanel({
                 <option value="medium">Oct 1, 2026</option>
                 <option value="day-first">01/10/2026 (day/month/year)</option>
                 <option value="iso">2026-10-01 (year-month-day)</option>
-              </select>
+              </PreferenceSelect>
             </label>
             <label>
               Clock format
-              <select
+              <PreferenceSelect
                 value={form.clockFormat}
                 onChange={(e) =>
                   change(
@@ -166,7 +222,7 @@ export default function AccountPreferencesPanel({
               >
                 <option value="12h">12-hour · 02:30 PM</option>
                 <option value="24h">24-hour · 14:30</option>
-              </select>
+              </PreferenceSelect>
             </label>
           </div>
           <p className="owner-time-preview">
@@ -188,7 +244,7 @@ export default function AccountPreferencesPanel({
               </p>
               <label>
                 Default report period
-                <select
+                <PreferenceSelect
                   value={form.reportDays}
                   onChange={(e) => change("reportDays", Number(e.target.value))}
                 >
@@ -197,7 +253,7 @@ export default function AccountPreferencesPanel({
                       Last {days} days
                     </option>
                   ))}
-                </select>
+                </PreferenceSelect>
               </label>
             </section>
             <section
@@ -212,7 +268,7 @@ export default function AccountPreferencesPanel({
               <div className="owner-profile-fields">
                 <label>
                   Default activity period
-                  <select
+                  <PreferenceSelect
                     value={form.activityDays}
                     onChange={(e) =>
                       change("activityDays", Number(e.target.value))
@@ -228,11 +284,11 @@ export default function AccountPreferencesPanel({
                         {label}
                       </option>
                     ))}
-                  </select>
+                  </PreferenceSelect>
                 </label>
                 <label>
                   Default records per page
-                  <select
+                  <PreferenceSelect
                     value={form.activityPageSize}
                     onChange={(e) =>
                       change("activityPageSize", Number(e.target.value))
@@ -243,7 +299,7 @@ export default function AccountPreferencesPanel({
                         {size} records
                       </option>
                     ))}
-                  </select>
+                  </PreferenceSelect>
                 </label>
               </div>
               <p className="owner-muted">
