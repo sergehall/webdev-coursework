@@ -1,14 +1,6 @@
+@import "./owner-theme.css";
+
 .owner-workspace {
-  --owner-bg: #f6f8f7;
-  --owner-card: #fff;
-  --owner-panel: #f0f4f2;
-  --owner-text: #1c2923;
-  --owner-muted: #59685f;
-  --owner-border: #dce5df;
-  --owner-accent: #15803d;
-  --owner-soft: #edf8ef;
-  --owner-primary: #22c55e; /* Green used in the portfolio wave logo. */
-  --owner-primary-text: #052e16;
   width: calc(100% - 1rem);
   max-width: 68.75rem;
   min-height: 65vh;
@@ -18,28 +10,17 @@
   border-radius: 0.65rem;
   overflow: clip;
 }
-.dark .owner-workspace {
-  --owner-bg: #111827;
-  --owner-card: #1b2432;
-  --owner-panel: #101724;
-  --owner-text: #f4fff8;
-  --owner-muted: #c0d0c7;
-  --owner-border: #365044;
-  --owner-accent: #22e878;
-  --owner-primary: #24e66f;
-  --owner-soft: #133d29;
-}
 .owner-content {
   padding-block: clamp(0.8rem, 1.6vw, 1.25rem);
   display: grid;
-  gap: 0.85rem;
+  gap: 1rem;
 }
 .owner-tabs {
   display: flex;
   gap: 0.4rem;
   padding: 0.5rem 0.75rem;
   overflow-x: auto;
-  background: var(--owner-card);
+  background: transparent;
   border-bottom: 1px solid var(--owner-border);
 }
 .owner-tab {
@@ -51,31 +32,32 @@
   padding: 0.4rem 0.75rem;
   border-radius: 0.4rem;
   font-size: 0.8rem;
-  font-weight: 700;
+  font-weight: 650;
+  color: var(--owner-text);
 }
 .owner-tab:hover {
-  background: var(--owner-soft);
+  background: var(--owner-hover);
+  color: var(--owner-text);
 }
 .owner-tab[aria-current="page"] {
   background: var(--owner-soft);
-  color: var(--owner-accent);
-  box-shadow: inset 0 -2px var(--owner-primary);
+  color: var(--owner-text);
 }
-.owner-workspace :is(a, button, input, select):focus-visible {
+.owner-workspace :is(a, button, input, select, textarea):focus-visible {
   outline: 3px solid var(--owner-accent);
   outline-offset: 3px;
 }
 .owner-eyebrow {
-  color: var(--owner-accent);
+  color: var(--owner-muted);
   font-size: 0.7rem;
-  font-weight: 800;
+  font-weight: 650;
   text-transform: uppercase;
   letter-spacing: 0.16em;
 }
 .owner-page-header h1 {
   margin-top: 0.25rem;
   font-size: clamp(1.25rem, 2vw, 1.55rem);
-  font-weight: 850;
+  font-weight: 750;
   line-height: 1.2;
 }
 .owner-page-header > p:last-child {
@@ -95,7 +77,7 @@
 }
 .owner-card h2 {
   font-size: 0.9rem;
-  font-weight: 750;
+  font-weight: 650;
   margin-bottom: 0.5rem;
 }
 .owner-grid {
@@ -104,8 +86,7 @@
   gap: 0.7rem;
   align-items: start;
 }
-.owner-grid--statistics,
-.owner-shortcuts {
+.owner-grid--statistics {
   align-items: stretch;
 }
 .owner-metrics {
@@ -115,7 +96,8 @@
 }
 .owner-metric {
   font-size: 1.55rem;
-  font-weight: 850;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
   margin-top: 0.15rem;
 }
 .owner-muted {
@@ -147,7 +129,7 @@
   padding: 0.75rem;
   border: 1px solid var(--owner-border);
   border-radius: 0.5rem;
-  background: var(--owner-soft);
+  background: var(--owner-card);
 }
 .owner-profile-signin-label {
   font-size: 0.8rem;
@@ -164,7 +146,7 @@
   height: 1.2rem;
 }
 .owner-profile-provider-status {
-  color: var(--owner-accent);
+  color: var(--owner-text);
   font-size: 0.75rem;
   font-weight: 650;
 }
@@ -188,10 +170,12 @@
   gap: 0.3rem;
   font-size: 0.85rem;
 }
-.owner-security-window[aria-current="page"] {
+.owner-security-window:hover {
   border-color: var(--owner-accent);
+}
+.owner-security-window[aria-current="page"] {
   background: var(--owner-soft);
-  color: var(--owner-accent);
+  color: var(--owner-text);
 }
 .owner-security-badge {
   display: inline-block;
@@ -199,7 +183,7 @@
   padding: 0.2rem 0.6rem;
   border: 1px solid var(--owner-border);
   border-radius: 1rem;
-  color: var(--owner-accent);
+  color: var(--owner-muted);
   font-size: 0.75rem;
   font-weight: 750;
   margin-top: 0.7rem;
@@ -227,7 +211,7 @@
 .owner-provider-heading svg {
   width: 1.1rem;
   height: 1.1rem;
-  color: var(--owner-accent);
+  color: var(--owner-muted);
 }
 .owner-provider-heading h3 {
   font-size: 0.85rem;
@@ -246,7 +230,7 @@
 }
 .owner-mfa-heading svg {
   flex-shrink: 0;
-  color: var(--owner-accent);
+  color: var(--owner-muted);
 }
 .owner-mfa-state,
 .owner-mfa-setup,
@@ -301,13 +285,6 @@
   accent-color: var(--owner-primary);
   flex-shrink: 0;
 }
-.owner-button--danger {
-  border-color: #f87171;
-  color: #b91c1c;
-}
-.dark .owner-button--danger {
-  color: #fca5a5;
-}
 @media (max-width: 900px) {
   .owner-security-windows {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -334,7 +311,7 @@
 .owner-workspace select {
   min-height: 2.25rem;
   width: 100%;
-  border: 1px solid var(--owner-border);
+  border: 1px solid var(--owner-control-border);
   border-radius: 0.5rem;
   padding: 0.4rem 0.65rem;
   color: var(--owner-text);
@@ -358,7 +335,7 @@
   cursor: pointer;
 }
 .owner-button:hover {
-  background: var(--owner-soft);
+  background: var(--owner-hover);
 }
 .owner-button--primary {
   border-color: var(--owner-primary);
@@ -367,6 +344,13 @@
 }
 .owner-button--primary:hover {
   background: color-mix(in srgb, var(--owner-primary) 85%, white);
+}
+.owner-button--danger {
+  border-color: var(--owner-danger-border);
+  color: var(--owner-danger);
+}
+.owner-button--danger:hover {
+  background: var(--owner-danger-bg);
 }
 .owner-button:disabled {
   opacity: 0.6;
@@ -398,11 +382,12 @@
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
-  color: var(--owner-accent);
-  font-weight: 700;
+  color: var(--owner-text);
+  font-weight: 600;
   font-size: 0.875rem;
 }
 .owner-text-link:hover {
+  color: var(--owner-accent);
   text-decoration: underline;
 }
 .owner-message {
@@ -410,13 +395,13 @@
   border-radius: 0.5rem;
   padding: 0.9rem 1rem;
   font-size: 0.875rem;
-  background: var(--owner-soft);
+  background: var(--owner-card);
   color: var(--owner-text);
 }
 .owner-message--error {
-  border-color: #e8a7a7;
-  background: #fee2e2;
-  color: #1c2923;
+  border-color: var(--owner-danger-border);
+  background: var(--owner-danger-bg);
+  color: var(--owner-danger);
 }
 .owner-login {
   display: grid;
@@ -447,12 +432,7 @@
   border-radius: 0.8rem;
   padding: clamp(1.1rem, 2.5vw, 1.75rem);
   color: var(--owner-text);
-  background: radial-gradient(
-    circle at top right,
-    var(--owner-soft),
-    var(--owner-card) 75%
-  );
-  box-shadow: 0 20px 60px -30px var(--owner-border);
+  background: var(--owner-panel);
 }
 .owner-login-card h1 {
   margin: 0.75rem 0;
@@ -467,10 +447,6 @@
 .owner-login-card > p.owner-auth-description {
   font-size: 0.8rem;
   line-height: 1.5;
-}
-.owner-login-card .owner-eyebrow,
-.owner-login-card .owner-text-link {
-  color: var(--owner-accent);
 }
 .owner-login-icon {
   display: flex;
@@ -493,7 +469,7 @@
   font-weight: 650;
 }
 .owner-login-card input {
-  border-color: var(--owner-border);
+  border-color: var(--owner-control-border);
   background: var(--owner-bg);
   color: var(--owner-text);
   padding-right: 4rem;
@@ -528,7 +504,7 @@
   color: var(--owner-text);
 }
 .owner-github:hover {
-  background: var(--owner-soft);
+  background: var(--owner-hover);
 }
 .owner-login-divider {
   margin-top: 1rem;
@@ -550,7 +526,7 @@
 .owner-bar {
   grid-column: 1 / -1;
   display: block;
-  height: 0.2rem;
+  height: 0.15rem;
   min-width: 2px;
   border-radius: 999px;
   background: var(--owner-accent);
@@ -588,22 +564,26 @@
 .owner-table td:last-child {
   text-align: right;
 }
-.owner-shortcuts a {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 0.25rem 0.6rem;
+.owner-shortcuts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  border-top: 1px solid var(--owner-border);
+  padding-top: 0.85rem;
+}
+.owner-shortcut {
+  display: inline-flex;
   align-items: center;
-  align-content: start;
+  gap: 0.4rem;
+  border-radius: 0.4rem;
+  padding: 0.5rem 0.65rem;
+  color: var(--owner-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
 }
-.owner-shortcuts h2 {
-  margin: 0;
-}
-.owner-shortcuts .owner-text-link {
-  grid-column: 2;
-  font-size: 0.7rem;
-}
-.owner-shortcuts a:hover {
-  border-color: var(--owner-accent);
+.owner-shortcut:hover {
+  background: var(--owner-hover);
+  color: var(--owner-accent);
 }
 .owner-report-note {
   max-width: 65rem;
@@ -630,7 +610,7 @@
   overflow-wrap: anywhere;
 }
 .owner-denied {
-  color: #e34848;
+  color: var(--owner-danger);
 }
 .owner-dialog {
   max-width: 28rem;
@@ -639,7 +619,7 @@
   border: 1px solid var(--owner-border);
   border-radius: 0.65rem;
   padding: 1.5rem;
-  background: var(--owner-card);
+  background: var(--owner-panel);
   color: var(--owner-text);
 }
 .owner-dialog::backdrop {
@@ -706,7 +686,7 @@
   width: 100%;
   min-width: 0;
   padding: 0.4rem 0.55rem;
-  border: 1px solid var(--owner-border);
+  border: 1px solid var(--owner-control-border);
   border-radius: 0.45rem;
   background: var(--owner-card);
   color: var(--owner-text);
@@ -719,9 +699,6 @@
 .owner-metrics .owner-card {
   padding: 0.65rem 0.85rem;
 }
-.owner-shortcuts {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
 .owner-table th {
   font-size: 0.7rem;
   color: var(--owner-muted);
@@ -729,21 +706,11 @@
 }
 .owner-table tbody tr:hover,
 .owner-audit li:hover {
-  background: var(--owner-soft);
+  background: var(--owner-hover);
 }
 @media (min-width: 1100px) {
   .owner-grid--statistics {
     grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-}
-@media (max-width: 900px) {
-  .owner-shortcuts {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-@media (max-width: 600px) {
-  .owner-shortcuts {
-    grid-template-columns: 1fr;
   }
 }
 @media (pointer: coarse) {
@@ -782,7 +749,7 @@
 .owner-time-preview {
   display: grid;
   gap: 0.3rem;
-  border-left: 3px solid var(--owner-accent);
+  border-left: 3px solid var(--owner-border);
   padding-left: 0.7rem;
   font-size: 0.8rem;
 }
@@ -834,7 +801,7 @@
   border-radius: 0.5rem;
   padding: 0.75rem;
   font-size: 0.8rem;
-  background: var(--owner-soft);
+  background: var(--owner-card);
 }
 .owner-session-device {
   display: flex;

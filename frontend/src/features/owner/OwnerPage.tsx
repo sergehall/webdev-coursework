@@ -44,6 +44,24 @@ const sections = [
   { id: "administration", label: "Administration", icon: LockKeyhole },
 ];
 
+function AccountShortcuts({ items }: { items: typeof sections }) {
+  return (
+    <nav className="owner-shortcuts" aria-label="Quick account links">
+      {items.map((item) => (
+        <Link
+          className="owner-shortcut"
+          to={`/account/${item.id}`}
+          key={item.id}
+        >
+          <item.icon size={16} aria-hidden="true" />
+          {item.label}
+          <ArrowUpRight size={12} aria-hidden="true" />
+        </Link>
+      ))}
+    </nav>
+  );
+}
+
 function PageHeader({
   title,
   description,
@@ -767,22 +785,7 @@ function StatisticsPanel({
           {canManageRoles && <AccountRolesPanel />}
         </>
       ) : (
-        <div className="owner-grid owner-shortcuts">
-          {sections.slice(1).map((item) => (
-            <Link
-              className="owner-card"
-              to={`/account/${item.id}`}
-              key={item.id}
-            >
-              <item.icon size={22} aria-hidden="true" />
-              <h2>{item.label}</h2>
-              <span className="owner-text-link">
-                Open {item.label.toLowerCase()}{" "}
-                <ArrowUpRight size={14} aria-hidden="true" />
-              </span>
-            </Link>
-          ))}
-        </div>
+        <AccountShortcuts items={sections.slice(1)} />
       )}
     </>
   );
@@ -855,18 +858,7 @@ export default function OwnerPage() {
               title={`Hello, ${profile.displayName}`}
               description="Your profile, preferences and account security."
             />
-            <div className="owner-grid">
-              {availableSections.slice(1).map((item) => (
-                <Link
-                  className="owner-card"
-                  to={`/account/${item.id}`}
-                  key={item.id}
-                >
-                  <item.icon size={22} aria-hidden="true" />
-                  <h2>{item.label}</h2>
-                </Link>
-              ))}
-            </div>
+            <AccountShortcuts items={availableSections.slice(1)} />
           </>
         ) : (
           <StatisticsPanel

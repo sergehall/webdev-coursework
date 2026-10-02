@@ -1,0 +1,37 @@
+/* Account design contract: docs/account-design-standard.md. */
+.owner-workspace,
+.owner-account-menu {
+  --owner-bg: #f3f5f7;
+  --owner-card: #f5f7fa;
+  --owner-panel: #fff;
+  --owner-text: #202936;
+  --owner-muted: #5e6b7c;
+  --owner-border: #d9e0e8;
+  --owner-control-border: #7d8c9e;
+  --owner-accent: #38664c;
+  --owner-soft: #e8f1eb;
+  --owner-hover: #edf1f5;
+  --owner-primary: #38664c;
+  --owner-primary-text: #fff;
+  --owner-danger: #b91c1c;
+  --owner-danger-bg: #fff1f1;
+  --owner-danger-border: #d99898;
+}
+.dark .owner-workspace,
+.dark .owner-account-menu {
+  --owner-bg: #1c2634;
+  --owner-card: #1c2634;
+  --owner-panel: #151d29;
+  --owner-text: #f1f5f9;
+  --owner-muted: #9ca8b8;
+  --owner-border: #2b3544;
+  --owner-control-border: #637287;
+  --owner-accent: #a4d8b9;
+  --owner-soft: #20352b;
+  --owner-hover: #243040;
+  --owner-primary: #a4d8b9;
+  --owner-primary-text: #13261b;
+  --owner-danger: #f2a5a5;
+  --owner-danger-bg: #342127;
+  --owner-danger-border: #87565d;
+}

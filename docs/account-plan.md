@@ -2,6 +2,10 @@
 
 ## Current stage: accounts and QR analytics
 
+Account presentation follows [account-design-standard.md](account-design-standard.md):
+graphite surfaces, neutral dividers, a muted sage accent and a centered 1100px
+workspace. Shared theme tokens cover the account pages and signed-in header menu.
+
 - Public GitHub sign-in and account creation, bound OAuth state and PKCE.
 - Username/email and password sign-in; separate registration and email confirmation pages.
 - Password reset, single-use expiring links, encrypted transactional email outbox.
@@ -28,7 +32,7 @@ MFA settings are unchanged.
 Implemented locally:
 
 - Compact Security summary and Password / Providers / Two-factor / Sessions windows,
-  using actual portfolio account data and green theme tokens.
+  using actual portfolio account data and the shared account theme tokens.
 - Local QR generation, temporary manual secret, expiring enrollment and confirmation.
 - Password and GitHub login both stop at a restricted, expiring MFA challenge.
   A full opaque session is issued only after verification.

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ChevronDown, LogIn } from "lucide-react";
 
 import { useOwner } from "./owner-context";
+import "./owner-theme.css";
 
 export default function OwnerAccountMenu() {
   const owner = useOwner();
@@ -35,7 +36,7 @@ export default function OwnerAccountMenu() {
       <Link
         to="/account/login"
         aria-label="Sign in"
-        className="inline-flex min-h-10 items-center gap-2 rounded-full border border-slate-300 px-3 text-sm font-semibold hover:bg-green-50 focus-visible:ring-2 focus-visible:ring-green-400 dark:border-slate-700 dark:hover:bg-slate-800"
+        className="owner-account-menu inline-flex min-h-10 items-center gap-2 rounded-full border border-[var(--owner-border)] px-3 text-sm font-semibold text-[var(--owner-text)] hover:bg-[var(--owner-hover)] focus-visible:ring-2 focus-visible:ring-[var(--owner-accent)]"
       >
         <LogIn size={16} aria-hidden="true" />
         <span className="hidden sm:inline">Sign in</span>
@@ -43,7 +44,7 @@ export default function OwnerAccountMenu() {
     );
   const name = owner.session.profile.displayName;
   return (
-    <div className="relative" ref={panel}>
+    <div className="owner-account-menu relative" ref={panel}>
       <button
         ref={trigger}
         type="button"
@@ -51,9 +52,9 @@ export default function OwnerAccountMenu() {
         aria-controls="owner-account-menu"
         aria-label={`Open account menu for ${name}`}
         onClick={() => setOpen(!open)}
-        className="flex min-h-10 items-center gap-2 rounded-full border border-[#b7cfc0] bg-[#edf5ef] pr-3 pl-1 text-[#355b45] focus-visible:ring-2 focus-visible:ring-[#a8c7b4] dark:border-[#a8c7b4]/30 dark:bg-[#a8c7b4]/12 dark:text-[#d9e8df]"
+        className="flex min-h-10 items-center gap-2 rounded-full border border-[var(--owner-border)] bg-[var(--owner-panel)] pr-3 pl-1 text-[var(--owner-text)] hover:border-[var(--owner-accent)] focus-visible:ring-2 focus-visible:ring-[var(--owner-accent)]"
       >
-        <span className="flex size-8 items-center justify-center rounded-full bg-[#c6ddce] text-sm font-bold text-[#355b45] dark:bg-[#a8c7b4]/25 dark:text-[#d9e8df]">
+        <span className="flex size-8 items-center justify-center rounded-full bg-[var(--owner-soft)] text-sm font-bold text-[var(--owner-accent)]">
           {name.charAt(0).toUpperCase()}
         </span>
         <span className="hidden max-w-24 truncate text-sm font-semibold lg:inline">
@@ -68,9 +69,9 @@ export default function OwnerAccountMenu() {
         <nav
           id="owner-account-menu"
           aria-label="My account"
-          className="absolute top-[calc(100%+0.65rem)] right-0 w-56 rounded-lg border border-slate-200 bg-white p-2 text-slate-900 shadow-2xl dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+          className="absolute top-[calc(100%+0.65rem)] right-0 w-56 rounded-lg border border-[var(--owner-border)] bg-[var(--owner-panel)] p-2 text-[var(--owner-text)] shadow-2xl"
         >
-          <p className="truncate border-b border-slate-200 px-3 py-2 text-sm font-semibold dark:border-slate-700">
+          <p className="truncate border-b border-[var(--owner-border)] px-3 py-2 text-sm font-semibold">
             {name}
           </p>
           {[
@@ -86,7 +87,7 @@ export default function OwnerAccountMenu() {
             )
             .map(([label, path]) => (
               <Link
-                className="block rounded-md px-3 py-2 text-sm hover:bg-green-50 focus-visible:ring-2 focus-visible:ring-green-400 dark:hover:bg-slate-800"
+                className="block rounded-md px-3 py-2 text-sm hover:bg-[var(--owner-hover)] focus-visible:ring-2 focus-visible:ring-[var(--owner-accent)]"
                 to={`/account/${path}`}
                 key={path}
                 onClick={() => setOpen(false)}
@@ -95,7 +96,7 @@ export default function OwnerAccountMenu() {
               </Link>
             ))}
           <button
-            className="mt-1 w-full rounded-md px-3 py-2 text-left text-sm font-semibold text-red-600 hover:bg-red-50 disabled:opacity-60 dark:hover:bg-red-950"
+            className="mt-1 w-full rounded-md px-3 py-2 text-left text-sm font-semibold text-[var(--owner-danger)] hover:bg-[var(--owner-danger-bg)] focus-visible:ring-2 focus-visible:ring-[var(--owner-accent)] disabled:opacity-60"
             disabled={busy}
             onClick={async () => {
               setBusy(true);
@@ -114,7 +115,10 @@ export default function OwnerAccountMenu() {
             {busy ? "Signing out…" : "Sign out"}
           </button>
           {error && (
-            <p role="alert" className="px-3 py-2 text-sm text-red-600">
+            <p
+              role="alert"
+              className="px-3 py-2 text-sm text-[var(--owner-danger)]"
+            >
               {error}
             </p>
           )}
