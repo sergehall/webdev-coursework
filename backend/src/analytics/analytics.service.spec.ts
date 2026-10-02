@@ -1,5 +1,6 @@
 import { ConfigService } from "@nestjs/config";
 import type { Request } from "express";
+import { TurnstileService } from "../security/turnstile/turnstile.service";
 import { AnalyticsService } from "./analytics.service";
 import type { AnalyticsStore } from "./analytics.store";
 import { hashOwnerPassword, verifyOwnerPassword } from "./owner-password";
@@ -46,7 +47,14 @@ function fixture() {
   const service = new AnalyticsService(
     new ConfigService(),
     store as unknown as AnalyticsStore,
-    mfa as unknown as MfaService
+    mfa as unknown as MfaService,
+    new TurnstileService(
+      new ConfigService({
+        TURNSTILE_SECRET_KEY: "",
+        TURNSTILE_SITE_KEY: "",
+        TURNSTILE_ALLOWED_HOSTNAMES: "",
+      })
+    )
   );
   Object.assign(service, {
     redis,
@@ -82,6 +90,23 @@ describe("Owner access and anonymous analytics", () => {
     expect(store.recordSession.mock.calls[0][0].tokenHash).toMatch(
       /^[0-9a-f]{64}$/
     );
+  });
+  it("blocks password login and owner aliases before looking up credentials when Turnstile is required", async () => {
+    const { service, req, store, redis } = fixture();
+    Object.assign(service, {
+      turnstile: new TurnstileService(
+        new ConfigService({
+          TURNSTILE_SECRET_KEY: "test-private-secret",
+          TURNSTILE_SITE_KEY: "test-site-key",
+          TURNSTILE_ALLOWED_HOSTNAMES: "localhost",
+        })
+      ),
+    });
+    await expect(
+      service.login(req, "a long private password")
+    ).rejects.toMatchObject({ response: { code: "TURNSTILE_REJECTED" } });
+    expect(store.owner).not.toHaveBeenCalled();
+    expect(redis.eval).toHaveBeenCalledTimes(2);
   });
   it("hashes passwords and rejects incorrect or malformed hashes", async () => {
     const hash = await hashOwnerPassword("a long private password");

@@ -1,3 +1,5 @@
+// HTTP boundary coverage: Basic Auth, Turnstile, schemas/assets, clearance cookies and CORS.
+import { TurnstileModule } from "../../src/security/turnstile/turnstile.module";
 import { type INestApplication } from "@nestjs/common";
 import { Test } from "@nestjs/testing";
 import type { OpenAPIObject } from "@nestjs/swagger";
@@ -21,6 +23,7 @@ import { TokensService } from "../../src/tokens/service/tokens.service";
 import { AnswersTokenGuard } from "../../src/guards/answers-token.guard";
 import { AdminApiKeyGuard } from "../../src/guards/admin-api-key.guard";
 import { RequestThrottleService } from "../../src/security/request-throttle.service";
+import { configureCors } from "../../src/bootstrap/configure-cors";
 import { configureSwagger } from "../../src/bootstrap/configure-swagger";
 
 type OperationObject = NonNullable<
@@ -37,6 +40,10 @@ describe("Swagger API contracts and production access", () => {
     "SWAGGER_ENABLED",
     "SWAGGER_USERNAME",
     "SWAGGER_PASSWORD",
+    "ALLOWED_ORIGINS",
+    "TURNSTILE_SECRET_KEY",
+    "TURNSTILE_SITE_KEY",
+    "TURNSTILE_ALLOWED_HOSTNAMES",
   ];
   let original: (string | undefined)[];
   let app: INestApplication | undefined;
@@ -53,8 +60,10 @@ describe("Swagger API contracts and production access", () => {
       else process.env[name] = original[i];
     });
   });
-  async function create() {
+  async function create(withCors = false) {
     const module = await Test.createTestingModule({
+      // Resolve the real exported provider through its module, as application bootstrap does.
+      imports: [TurnstileModule],
       controllers: [
         AccountController,
         AccountProvidersController,
@@ -88,6 +97,7 @@ describe("Swagger API contracts and production access", () => {
       .useValue({ canActivate: () => true })
       .compile();
     app = module.createNestApplication();
+    if (withCors) configureCors(app);
     configureSwagger(app);
     await app.init();
     return app.getHttpServer();
@@ -229,5 +239,89 @@ describe("Swagger API contracts and production access", () => {
     consume.mockRejectedValue(new Error("private infrastructure error"));
     const failure = await request(server).get("/docs").expect(503);
     expect(failure.text).not.toContain("private infrastructure");
+  });
+  it("requires Turnstile in addition to Basic auth for docs, assets and schema; accepts a scoped expiring cookie", async () => {
+    process.env.NODE_ENV = "production";
+    process.env.SWAGGER_ENABLED = "true";
+    process.env.SWAGGER_USERNAME = "docs-reader";
+    process.env.SWAGGER_PASSWORD = "test-documentation-password-unique";
+    process.env.TURNSTILE_SECRET_KEY = "private-test-secret";
+    process.env.TURNSTILE_SITE_KEY = "public-site-key";
+    process.env.TURNSTILE_ALLOWED_HOSTNAMES = "api.example.test";
+    process.env.ALLOWED_ORIGINS = "http://frontend.example.test";
+    const server = await create(true);
+    const get = (path: string, cookie?: string) => {
+      const req = request(server)
+        .get(path)
+        .set("Host", "api.example.test")
+        .auth("docs-reader", process.env.SWAGGER_PASSWORD!);
+      return cookie ? req.set("Cookie", cookie) : req;
+    };
+    const page = await get("/docs").expect(200);
+    expect(page.text).toContain('data-sitekey="public-site-key"');
+    expect(page.text).not.toContain("private-test-secret");
+    expect(page.text).not.toContain("swagger-ui-init.js");
+    for (const path of [
+      "/openapi.json",
+      "/openapi.yaml",
+      "/openapi.json/",
+      "/docs/swagger-ui-init.js",
+      "/docs-json",
+      "/docs-yaml",
+    ])
+      await get(path).expect(403);
+    await get("/docs/turnstile.js").expect(200);
+    const verify = (origin: string, token = "test-token") =>
+      request(server)
+        .post("/docs/turnstile-verify")
+        .set("Host", "api.example.test")
+        .set("Origin", origin)
+        .auth("docs-reader", process.env.SWAGGER_PASSWORD!)
+        .type("form")
+        .send({ token });
+    const fetcher = jest.spyOn(global, "fetch").mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          success: true,
+          hostname: "api.example.test",
+          action: "api_docs",
+        })
+      )
+    );
+    await verify("http://attacker.example").expect(403);
+    expect(fetcher).not.toHaveBeenCalled();
+    fetcher.mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
+          success: true,
+          hostname: "api.example.test",
+          action: "account_login",
+        })
+      )
+    );
+    await verify("http://api.example.test").expect(403);
+    const passed = await verify("http://api.example.test").expect(200);
+    const setCookie = passed.headers["set-cookie"][0];
+    expect(setCookie).toContain("HttpOnly");
+    expect(setCookie).toContain("Secure");
+    expect(setCookie).toContain("SameSite=Strict");
+    expect(setCookie).toContain("Path=/;");
+    const cookie = setCookie.split(";")[0];
+    await get("/docs", cookie)
+      .expect(200)
+      .expect((response) =>
+        expect(response.text).toContain("swagger-ui-init.js")
+      );
+    await get("/openapi.json", cookie).expect(200);
+    await request(server)
+      .get("/openapi.json")
+      .set("Cookie", cookie)
+      .expect(401);
+    await get("/openapi.json", cookie.slice(0, -1) + "!").expect(403);
+    const now = Date.now();
+    const clock = jest.spyOn(Date, "now").mockReturnValue(now + 601000);
+    await get("/openapi.json", cookie).expect(403);
+    clock.mockRestore();
+    fetcher.mockRestore();
   });
 });

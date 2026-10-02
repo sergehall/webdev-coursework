@@ -10,6 +10,7 @@ import {
   type OnModuleInit,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
+import { TurnstileService } from "../security/turnstile/turnstile.service";
 import { createHash, createHmac, randomBytes, randomUUID } from "crypto";
 import { Queue, Worker } from "bullmq";
 import Redis from "ioredis";
@@ -83,6 +84,8 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
   }
   loginOptions() {
     return {
+      // The frontend reads verification settings here; no build-time secret is needed.
+      ...this.turnstile.publicOptions(),
       registrationEnabled:
         !!this.config.get<string>("SMTP_HOST") &&
         this.redis?.status === "ready",
@@ -96,7 +99,8 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
   constructor(
     private readonly config: ConfigService,
     private readonly store: AnalyticsStore,
-    private readonly mfa: MfaService
+    private readonly mfa: MfaService,
+    private readonly turnstile: TurnstileService
   ) {
     this.secureCookie = config.get<string>("NODE_ENV") === "production";
     this.cookieName = this.secureCookie
@@ -307,7 +311,8 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
   async login(
     req: Request,
     password: string,
-    identity?: string
+    identity?: string,
+    turnstileToken?: string
   ): Promise<LoginResult> {
     try {
       this.assertOrigin(req);
@@ -322,6 +327,8 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
       900
     );
     await this.rateLimit("login-global", 100, 900);
+    // Shared by account/owner aliases and reauthentication; protect credential lookup too.
+    await this.turnstile.verify(turnstileToken, "account_login");
     const account = identity
       ? await this.store.byLogin(identity.trim())
       : await this.store.owner();

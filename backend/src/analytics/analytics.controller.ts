@@ -87,10 +87,11 @@ export class OwnerController {
   @Get("login-options")
   @ApiContract(
     "Get available sign-in methods",
-    "Public configuration for email registration and GitHub sign-in. Returns availability only.",
+    "Public configuration for email registration, GitHub sign-in and required human verification. Includes only the public Turnstile site key; no provider secrets.",
     LoginOptionsDto,
     {}
   )
+  // Keep browser configuration on the existing account API, separate from provider verification.
   loginOptions() {
     return this.analytics.loginOptions();
   }
@@ -291,7 +292,7 @@ export class OwnerController {
   @HttpCode(200)
   @ApiContract(
     "Sign in with password",
-    "Requires trusted Origin. Password login is limited to five attempts per IP per 15 minutes plus a global budget. Sets an HttpOnly session cookie or a five-minute MFA challenge cookie.",
+    "Requires trusted Origin and a single-use account_login Turnstile token when configured. Password login is limited to five attempts per IP per 15 minutes plus a global budget. Sets an HttpOnly session cookie or a five-minute MFA challenge cookie.",
     LoginResponseDto,
     {}
   )
@@ -300,7 +301,13 @@ export class OwnerController {
     @Body() dto: OwnerLoginDto,
     @Res({ passthrough: true }) res: Response
   ) {
-    const result = await this.analytics.login(req, dto.password, dto.identity);
+    // Both route aliases forward the token to the same rate-limited sign-in boundary.
+    const result = await this.analytics.login(
+      req,
+      dto.password,
+      dto.identity,
+      dto.turnstileToken
+    );
     if (result.mfaRequired) {
       res.clearCookie(this.analytics.cookieName, this.cookieOptions());
       res.cookie(this.analytics.mfaCookieName, result.challengeToken, {

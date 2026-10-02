@@ -28,6 +28,19 @@ export class QrEventDto {
 }
 
 export class OwnerLoginDto {
+  // Bound/validate the transport field here; the configured security provider enforces presence.
+  @ValidateIf((_object, value: unknown) => value !== undefined)
+  @IsString()
+  @MinLength(1)
+  @MaxLength(2048)
+  @ApiPropertyOptional({
+    maxLength: 2048,
+    writeOnly: true,
+    description:
+      "Single-use Turnstile token; required when human verification is configured.",
+  })
+  turnstileToken?: string;
+
   @IsOptional()
   @IsString()
   @MinLength(3)

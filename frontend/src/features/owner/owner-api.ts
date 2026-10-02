@@ -79,6 +79,10 @@ export async function ownerRequest<T>(
       code?: string;
     } | null;
     const mfaMessages: Record<string, string> = {
+      // Use stable server codes, without exposing Cloudflare responses or infrastructure details.
+      TURNSTILE_REJECTED: "Complete human verification and try again.",
+      TURNSTILE_UNAVAILABLE:
+        "Human verification is unavailable. Please try again later.",
       MFA_INVALID_CODE:
         "Invalid or already used code. Wait for a new authenticator code or use a recovery code.",
       MFA_ENROLLMENT_EXPIRED: "Authenticator setup expired. Start again.",

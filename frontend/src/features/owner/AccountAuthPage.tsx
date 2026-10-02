@@ -5,6 +5,7 @@ import { LockKeyhole } from "lucide-react";
 import { ownerRequest, OwnerApiError } from "./owner-api";
 import { useOwner } from "./owner-context";
 import { securityReturn } from "./auth-return";
+import TurnstileWidget from "./auth/TurnstileWidget";
 
 type Mode =
   | "login"
@@ -40,6 +41,8 @@ export default function AccountAuthPage({ mode }: { mode: Mode }) {
   const [options, setOptions] = useState<{
     githubEnabled: boolean;
     registrationEnabled: boolean;
+    turnstileRequired?: boolean;
+    turnstileSiteKey?: string;
   } | null>(null);
   const [identity, setIdentity] = useState(""),
     [email, setEmail] = useState(""),
@@ -51,6 +54,13 @@ export default function AccountAuthPage({ mode }: { mode: Mode }) {
     [done, setDone] = useState(false),
     [error, setError] = useState("");
   const [showVerificationHelp, setShowVerificationHelp] = useState(false);
+  // Keep verification tokens in memory only; never persist them with account preferences.
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const [turnstileAttempt, setTurnstileAttempt] = useState(0);
+  const [optionsError, setOptionsError] = useState(false);
+  const [optionsAttempt, setOptionsAttempt] = useState(0);
+  const protectedForm = isLogin || mode === "register";
+  const requiresTurnstile = protectedForm && !!options?.turnstileRequired;
   const [token] = useState(
     () => new URLSearchParams(location.hash.slice(1)).get("token") ?? ""
   );
@@ -77,10 +87,21 @@ export default function AccountAuthPage({ mode }: { mode: Mode }) {
       ? "GitHub connected. All previous sessions ended. Sign in again to continue."
       : undefined);
   useEffect(() => {
+    let disposed = false;
     void ownerRequest<typeof options>("login-options")
-      .then(setOptions)
-      .catch(() => {});
-  }, []);
+      .then((value) => {
+        if (!disposed) {
+          setOptions(value);
+          setOptionsError(false);
+        }
+      })
+      .catch(() => {
+        if (!disposed) setOptionsError(true);
+      });
+    return () => {
+      disposed = true;
+    };
+  }, [optionsAttempt]);
   const hasPassword = [
     "login",
     "reauthenticate",
@@ -89,18 +110,33 @@ export default function AccountAuthPage({ mode }: { mode: Mode }) {
   ].includes(mode);
   async function submit(e: FormEvent) {
     e.preventDefault();
+    if (busy) return;
     setError("");
     setShowVerificationHelp(false);
     if (!isLogin && hasPassword && password !== confirmation) {
       setError("Passwords do not match.");
       return;
     }
+    // Missing configuration or an expired challenge must block submission, including Enter.
+    if (protectedForm && (!options || (requiresTurnstile && !turnstileToken))) {
+      setError("Complete human verification before continuing.");
+      return;
+    }
     setBusy(true);
     try {
       const body = isLogin
-        ? { identity, password }
+        ? {
+            identity,
+            password,
+            ...(requiresTurnstile ? { turnstileToken } : {}),
+          }
         : mode === "register"
-          ? { username, email, password }
+          ? {
+              username,
+              email,
+              password,
+              ...(requiresTurnstile ? { turnstileToken } : {}),
+            }
           : mode === "verify-email"
             ? { token }
             : mode === "reset-password"
@@ -135,6 +171,11 @@ export default function AccountAuthPage({ mode }: { mode: Mode }) {
             : "Unable to complete this request."
       );
     } finally {
+      // Siteverify consumes tokens once, including failed credential attempts. Mount a fresh widget.
+      if (requiresTurnstile) {
+        setTurnstileToken("");
+        setTurnstileAttempt((value) => value + 1);
+      }
       setBusy(false);
     }
   }
@@ -296,11 +337,41 @@ export default function AccountAuthPage({ mode }: { mode: Mode }) {
               !token && (
                 <p role="alert">Open the link from your email to continue.</p>
               )}
+            {requiresTurnstile && options?.turnstileSiteKey && (
+              <TurnstileWidget
+                key={`${mode}:${turnstileAttempt}`}
+                siteKey={options.turnstileSiteKey}
+                action={isLogin ? "account_login" : "account_register"}
+                onToken={setTurnstileToken}
+              />
+            )}
+            {requiresTurnstile && !options?.turnstileSiteKey && (
+              <p role="alert">
+                Human verification is unavailable. Please try again later.
+              </p>
+            )}
+            {protectedForm && optionsError && (
+              <p role="alert">
+                Sign-in options could not load.{" "}
+                <button
+                  type="button"
+                  className="owner-text-link"
+                  onClick={() => {
+                    setOptionsError(false);
+                    setOptionsAttempt((value) => value + 1);
+                  }}
+                >
+                  Try again
+                </button>
+              </p>
+            )}
             <button
               type="submit"
               className="owner-button owner-button--primary owner-button--wide"
               disabled={
                 busy ||
+                (protectedForm &&
+                  (!options || (requiresTurnstile && !turnstileToken))) ||
                 ((mode === "verify-email" || mode === "reset-password") &&
                   !token)
               }

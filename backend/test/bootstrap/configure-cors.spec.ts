@@ -1,3 +1,5 @@
+// The documentation exception is same-origin and route-specific; other API origins stay restricted.
+import type { Request } from "express";
 import { Logger } from "@nestjs/common";
 import type { INestApplication } from "@nestjs/common";
 
@@ -74,6 +76,31 @@ describe("configureCors", () => {
     );
   });
 
+  it("allows only the documentation verification route to post from the API's own origin", () => {
+    process.env.ALLOWED_ORIGINS = "https://frontend.example.test";
+    const req = (path: string, origin: string) =>
+      ({
+        method: "POST",
+        path,
+        protocol: "https",
+        get: (name: string) =>
+          name === "origin" ? origin : "api.example.test",
+      }) as unknown as Request;
+    const callback = jest.fn<void, Parameters<OriginCallback>>();
+    configureAndCaptureOptions(
+      req("/docs/turnstile-verify", "https://api.example.test")
+    ).origin("https://api.example.test", callback);
+    expect(callback).toHaveBeenLastCalledWith(null, true);
+    configureAndCaptureOptions(
+      req("/api/account/login", "https://api.example.test")
+    ).origin("https://api.example.test", callback);
+    expect(callback).toHaveBeenLastCalledWith(expect.any(Error), false);
+    configureAndCaptureOptions(
+      req("/docs/turnstile-verify", "https://attacker.example")
+    ).origin("https://attacker.example", callback);
+    expect(callback).toHaveBeenLastCalledWith(expect.any(Error), false);
+  });
+
   it("should reject production startup without an allowlist", () => {
     process.env.NODE_ENV = "production";
     expect(() => configureAndCaptureOptions()).toThrow(
@@ -82,7 +109,14 @@ describe("configureCors", () => {
   });
 });
 
-function configureAndCaptureOptions(): CapturedCorsOptions {
+function configureAndCaptureOptions(
+  req = {
+    method: "GET",
+    path: "/",
+    protocol: "https",
+    get: () => undefined,
+  } as unknown as Request
+): CapturedCorsOptions {
   const enableCors = jest.fn();
   const app = {
     enableCors,
@@ -90,7 +124,9 @@ function configureAndCaptureOptions(): CapturedCorsOptions {
 
   configureCors(app);
 
-  const options = enableCors.mock.calls[0]?.[0] as
+  const captured = jest.fn();
+  enableCors.mock.calls[0]?.[0](req, captured);
+  const options = captured.mock.calls[0]?.[1] as
     | CapturedCorsOptions
     | undefined;
   if (!options) {

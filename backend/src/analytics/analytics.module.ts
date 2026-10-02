@@ -1,5 +1,6 @@
 import { AccountController } from "../accounts/account.controller";
 import { AccountService } from "../accounts/account.service";
+import { TurnstileModule } from "../security/turnstile/turnstile.module";
 import { AuthMailService } from "../accounts/auth-mail";
 import { MfaController } from "../accounts/mfa/mfa.controller";
 import { MfaService } from "../accounts/mfa/mfa.service";
@@ -11,7 +12,9 @@ import { AnalyticsController, OwnerController } from "./analytics.controller";
 import { AnalyticsService } from "./analytics.service";
 import { AnalyticsStore } from "./analytics.store";
 
+// Account operations consume shared verification through the security module boundary.
 @Module({
+  imports: [TurnstileModule],
   controllers: [
     AnalyticsController,
     OwnerController,

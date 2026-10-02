@@ -1,10 +1,11 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import {
   IsEmail,
   IsString,
   Matches,
   MaxLength,
   MinLength,
+  ValidateIf,
 } from "class-validator";
 export class EmailDto {
   @IsEmail()
@@ -17,6 +18,19 @@ export class EmailDto {
   email!: string;
 }
 export class RegisterDto extends EmailDto {
+  // Optional at the schema level for unconfigured environments; required by the verifier when enabled.
+  @ValidateIf((_object, value: unknown) => value !== undefined)
+  @IsString()
+  @MinLength(1)
+  @MaxLength(2048)
+  @ApiPropertyOptional({
+    maxLength: 2048,
+    writeOnly: true,
+    description:
+      "Single-use Turnstile token; required when human verification is configured.",
+  })
+  turnstileToken?: string;
+
   @IsString()
   @Matches(/^[a-zA-Z0-9_-]{3,40}$/)
   @ApiProperty({

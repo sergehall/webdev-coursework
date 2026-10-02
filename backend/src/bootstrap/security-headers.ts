@@ -1,20 +1,21 @@
 import type { INestApplication } from "@nestjs/common";
 import type { NextFunction, Request, Response } from "express";
 
+// The API documentation gate needs Cloudflare scripts/frames; inline scripts remain prohibited.
 export const contentSecurityPolicy = [
   "default-src 'self'",
   "base-uri 'self'",
   "object-src 'none'",
   "frame-ancestors 'self'",
   "form-action 'self'",
-  "script-src 'self' 'sha256-mqaaJKyEBAtrHnTmEqRs3kIzLcqrfe/bwtUYbNSfq2s=' 'wasm-unsafe-eval' https://cdn.jsdelivr.net https://code.jquery.com",
+  "script-src 'self' 'sha256-mqaaJKyEBAtrHnTmEqRs3kIzLcqrfe/bwtUYbNSfq2s=' 'wasm-unsafe-eval' https://cdn.jsdelivr.net https://code.jquery.com https://challenges.cloudflare.com",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https://images.unsplash.com https://avatars.githubusercontent.com https://randomuser.me https://www.smc.edu https://www.google.com",
   "font-src 'self' data:",
   "connect-src 'self' https://cdn.jsdelivr.net https://*.ingest.sentry.io https://*.ingest.us.sentry.io",
   "media-src 'self' data: blob:",
   "worker-src 'self' blob:",
-  "frame-src 'self' blob:",
+  "frame-src 'self' blob: https://challenges.cloudflare.com",
   "manifest-src 'self'",
 ].join("; ");
 

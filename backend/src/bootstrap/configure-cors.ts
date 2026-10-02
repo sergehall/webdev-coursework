@@ -1,3 +1,5 @@
+import type { Request } from "express";
+import type { CorsOptions } from "cors";
 import type { INestApplication } from "@nestjs/common";
 import { ForbiddenException, Logger } from "@nestjs/common";
 
@@ -30,26 +32,36 @@ export function configureCors(app: INestApplication): void {
     logger.log(`Allowed origins: ${allowedOrigins.join(", ")}`);
   }
 
-  app.enableCors({
-    origin: (
-      origin: string | undefined,
-      callback: (error: Error | null, allow?: boolean) => void
+  app.enableCors(
+    (
+      req: Request,
+      done: (error: Error | null, options?: CorsOptions) => void
     ) => {
-      // Allow non-browser clients (no Origin header).
-      if (!origin) {
-        callback(null, true);
-        return;
-      }
-
-      // If no explicit allowlist is configured, allow all origins.
-      if (allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
-        callback(null, true);
-        return;
-      }
-
-      callback(new ForbiddenException("Not allowed by CORS"), false);
-    },
-    credentials: true,
-    exposedHeaders: ["Retry-After"],
-  });
+      // The documentation gate posts to this API's own origin, independent of
+      // the frontend's cross-origin allowlist. Its handler also validates Origin.
+      const docsVerification =
+        req.method === "POST" &&
+        req.path === "/docs/turnstile-verify" &&
+        req.get("origin") === `${req.protocol}://${req.get("host")}`;
+      done(null, {
+        origin: (
+          origin: string | undefined,
+          callback: (error: Error | null, allow?: boolean) => void
+        ) => {
+          if (
+            !origin ||
+            docsVerification ||
+            allowedOrigins.length === 0 ||
+            allowedOrigins.includes(origin)
+          ) {
+            callback(null, true);
+            return;
+          }
+          callback(new ForbiddenException("Not allowed by CORS"), false);
+        },
+        credentials: true,
+        exposedHeaders: ["Retry-After"],
+      });
+    }
+  );
 }

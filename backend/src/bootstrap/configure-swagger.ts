@@ -3,6 +3,8 @@ import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { SWAGGER_SECURITY } from "../swagger/security.constants";
 import { createHash, timingSafeEqual } from "crypto";
 import type { Request, Response, NextFunction } from "express";
+import { TurnstileService } from "../security/turnstile/turnstile.service";
+import { swaggerTurnstileGate } from "../swagger/turnstile/swagger-turnstile.middleware";
 import { RequestThrottleService } from "../security/request-throttle.service";
 
 export function isSwaggerEnabled(): boolean {
@@ -80,7 +82,13 @@ export function configureSwagger(app: INestApplication): void {
     username && password
       ? createHash("sha256").update(`${username}:${password}`).digest()
       : null;
-  const throttle = expected ? app.get(RequestThrottleService) : null;
+  // Bootstrap composes protections; Swagger owns its verification page and clearance cookie.
+  const turnstile = app.get(TurnstileService);
+  const gate = swaggerTurnstileGate(turnstile, expected);
+  const throttle =
+    expected || turnstile.publicOptions().turnstileRequired
+      ? app.get(RequestThrottleService)
+      : null;
   app.use(async (req: Request, res: Response, next: NextFunction) => {
     if (!/^\/(?:docs(?:[/-]|$)|openapi\.(?:json|yaml)\/?$)/i.test(req.path))
       return next();
@@ -133,6 +141,8 @@ export function configureSwagger(app: INestApplication): void {
         return;
       }
     }
+    // Basic credentials and request budgets remain mandatory even with a valid clearance cookie.
+    if (await gate(req, res)) return;
     next();
   });
   const document = SwaggerModule.createDocument(app, swaggerConfig(), {

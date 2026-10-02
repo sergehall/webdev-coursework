@@ -237,6 +237,9 @@ describe("Public accounts", () => {
     fireEvent.change(screen.getByLabelText("Password"), {
       target: { value: "student private password" },
     });
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: "Log in" })).toBeEnabled()
+    );
     fireEvent.click(screen.getByRole("button", { name: "Log in" }));
     expect(await screen.findByRole("alert")).toHaveTextContent(
       "confirm your email first"

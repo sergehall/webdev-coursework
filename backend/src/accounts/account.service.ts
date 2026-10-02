@@ -10,13 +10,15 @@ import { AnalyticsStore } from "../analytics/analytics.store";
 import { hashOwnerPassword } from "../analytics/owner-password";
 import { AuthMailService } from "./auth-mail";
 import type { RegisterDto } from "./account.dto";
+import { TurnstileService } from "../security/turnstile/turnstile.service";
 
 @Injectable()
 export class AccountService {
   constructor(
     private readonly auth: AnalyticsService,
     private readonly store: AnalyticsStore,
-    private readonly mail: AuthMailService
+    private readonly mail: AuthMailService,
+    private readonly turnstile: TurnstileService
   ) {}
   private async gate(req: Request, email?: string): Promise<void> {
     this.auth.assertOrigin(req);
@@ -39,6 +41,8 @@ export class AccountService {
   async register(req: Request, dto: RegisterDto): Promise<void> {
     const email = this.email(dto.email);
     await this.gate(req, email);
+    // Apply origin/mail budgets first, then reject bots before password hashing or writes.
+    await this.turnstile.verify(dto.turnstileToken, "account_register");
     const passwordHash = await hashOwnerPassword(dto.password);
     await this.store.db.transaction(async (q) => {
       const id = randomUUID(),

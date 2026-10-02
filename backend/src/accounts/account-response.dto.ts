@@ -45,7 +45,16 @@ export class LoginResponseDto {
   @ApiPropertyOptional({ example: true, enum: [true] })
   mfaRequired?: boolean;
 }
+// Browser-safe configuration DTO. Server secrets must never be added to this response.
 export class LoginOptionsDto {
+  @ApiProperty({ example: true })
+  turnstileRequired!: boolean;
+  @ApiProperty({
+    description:
+      "Public Cloudflare Turnstile site key. Empty when unconfigured.",
+    example: "0x4example-public-site-key",
+  })
+  turnstileSiteKey!: string;
   @ApiProperty({ example: true })
   registrationEnabled!: boolean;
   @ApiProperty({ example: true })

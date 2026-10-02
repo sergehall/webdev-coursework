@@ -1,3 +1,4 @@
+// Deployed CSP coverage; Vercel strict JSON policy details are documented in docs/cloudflare-turnstile.md.
 import { describe, expect, it } from "vitest";
 
 import vercelConfig from "../../vercel.json";
@@ -38,6 +39,15 @@ describe("security headers", () => {
     const connectSrc = getDirective("connect-src");
 
     expect(connectSrc).toContain("https://api.webdev-coursework.com");
+  });
+
+  it("allows the official Turnstile script and frame without relaxing inline scripts", () => {
+    expect(getDirective("script-src")).toContain(
+      "https://challenges.cloudflare.com"
+    );
+    expect(getDirective("frame-src")).toContain(
+      "https://challenges.cloudflare.com"
+    );
   });
 
   it("publishes hardening headers through Vercel", () => {

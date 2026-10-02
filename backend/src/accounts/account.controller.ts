@@ -20,7 +20,7 @@ export class AccountController {
   @HttpCode(202)
   @ApiContract(
     "Register an email/password account",
-    "Accepts registration without revealing existing identities. Verification email is queued; delivery is asynchronous. Requires a trusted Origin. Public-auth IP/global and per-email limits apply.",
+    "Accepts registration without revealing existing identities. Verification email is queued; delivery is asynchronous. Requires a trusted Origin and an account_register Turnstile token when configured. Public-auth IP/global and per-email limits apply.",
     AcceptedDto,
     { status: 202 }
   )

@@ -7,6 +7,7 @@ import { ConfigService } from "@nestjs/config";
 import type { INestApplication } from "@nestjs/common";
 import { DataSource } from "typeorm";
 import { AccountController } from "../accounts/account.controller";
+import { TurnstileService } from "../security/turnstile/turnstile.service";
 import { AccountService } from "../accounts/account.service";
 import { AuthMailService } from "../accounts/auth-mail";
 import { AddPublicAccounts1790902800000 } from "../db/migrations/2026/10/1790902800000-AddPublicAccounts";
@@ -85,6 +86,7 @@ run("Owner HTTP and PostgreSQL integration", () => {
         AnalyticsService,
         AnalyticsStore,
         AccountService,
+        TurnstileService,
         AuthMailService,
         MfaCrypto,
         MfaService,
