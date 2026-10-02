@@ -26,6 +26,7 @@ import {
 import { useOwner } from "./owner-context";
 import ActiveSessionsPanel from "./ActiveSessionsPanel";
 import AccountPreferencesPanel from "./AccountPreferencesPanel";
+import AccountOverviewPanel from "./AccountOverviewPanel";
 import { formatAccountTime } from "./account-time";
 import SecurityActivityPanel from "./SecurityActivityPanel";
 import AccountRolesPanel from "./AccountRolesPanel";
@@ -606,13 +607,7 @@ function Breakdown({
   );
 }
 
-function StatisticsPanel({
-  administration,
-  profile,
-}: {
-  administration: boolean;
-  profile: OwnerProfile;
-}) {
+function StatisticsPanel({ profile }: { profile: OwnerProfile }) {
   const canManageRoles = useOwner()?.session?.canManageRoles;
   const [days, setDays] = useState(profile.reportDays);
   const { data, error, retry } = useResource<QrStatistics>(
@@ -621,14 +616,8 @@ function StatisticsPanel({
   return (
     <>
       <PageHeader
-        title={
-          administration ? "Administration" : `Hello, ${profile.displayName}`
-        }
-        description={
-          administration
-            ? "QR-link analytics and account activity."
-            : "Your portfolio workspace, account settings, and presentation activity."
-        }
+        title="Administration"
+        description="QR-link analytics and account activity."
       />
       <div className="owner-actions owner-report-controls">
         <label>
@@ -724,52 +713,46 @@ function StatisticsPanel({
               )}
             </section>
           </div>
-          {administration && (
-            <section
-              className="owner-card owner-report-details"
-              aria-labelledby="qr-report-details-title"
-            >
-              <h2 id="qr-report-details-title">About this QR report</h2>
-              <dl className="owner-details owner-report-metadata">
-                <div>
-                  <dt>QR source</dt>
-                  <dd>
-                    {data.campaign === "esl10g-presentation-1"
-                      ? "ESL10G · Presentation 1"
-                      : data.campaign || "Not specified"}
-                  </dd>
-                  {data.campaign === "esl10g-presentation-1" && (
-                    <dd className="owner-muted">{data.campaign}</dd>
-                  )}
-                </div>
-                <div>
-                  <dt>Updated</dt>
-                  <dd>
-                    <time dateTime={data.generatedAt}>
-                      {formatAccountTime(data.generatedAt, profile)}
-                    </time>
-                  </dd>
-                </div>
-              </dl>
-              <p className="owner-muted">
-                These are anonymous visits through this source’s QR link, not
-                identified people or unique visitors. A shared link also counts;
-                device categories are approximate.
-              </p>
-              <p className="owner-muted">
-                The numbers above belong to this QR source. Reports for other QR
-                sources should be kept separate.
-              </p>
-            </section>
-          )}
+          <section
+            className="owner-card owner-report-details"
+            aria-labelledby="qr-report-details-title"
+          >
+            <h2 id="qr-report-details-title">About this QR report</h2>
+            <dl className="owner-details owner-report-metadata">
+              <div>
+                <dt>QR source</dt>
+                <dd>
+                  {data.campaign === "esl10g-presentation-1"
+                    ? "ESL10G · Presentation 1"
+                    : data.campaign || "Not specified"}
+                </dd>
+                {data.campaign === "esl10g-presentation-1" && (
+                  <dd className="owner-muted">{data.campaign}</dd>
+                )}
+              </div>
+              <div>
+                <dt>Updated</dt>
+                <dd>
+                  <time dateTime={data.generatedAt}>
+                    {formatAccountTime(data.generatedAt, profile)}
+                  </time>
+                </dd>
+              </div>
+            </dl>
+            <p className="owner-muted">
+              These are anonymous visits through this source’s QR link, not
+              identified people or unique visitors. A shared link also counts;
+              device categories are approximate.
+            </p>
+            <p className="owner-muted">
+              The numbers above belong to this QR source. Reports for other QR
+              sources should be kept separate.
+            </p>
+          </section>
         </>
       )}
-      {administration && (
-        <>
-          <SecurityActivityPanel />
-          {canManageRoles && <AccountRolesPanel />}
-        </>
-      )}
+      <SecurityActivityPanel />
+      {canManageRoles && <AccountRolesPanel />}
     </>
   );
 }
@@ -835,17 +818,16 @@ export default function OwnerPage() {
           <PreferencesPanel profile={profile} />
         ) : path === "security" ? (
           <SecurityPanel session={owner.session} />
-        ) : owner.session.role === "client" ? (
-          <PageHeader
-            title={`Hello, ${profile.displayName}`}
-            description="Your profile, preferences and account security."
-          />
+        ) : path === "overview" ? (
+          <>
+            <PageHeader
+              title={`Hello, ${profile.displayName}`}
+              description="Your profile, sign-in protection, current session and saved preferences at a glance."
+            />
+            <AccountOverviewPanel session={owner.session} />
+          </>
         ) : (
-          <StatisticsPanel
-            key={path}
-            administration={path === "administration"}
-            profile={profile}
-          />
+          <StatisticsPanel profile={profile} />
         )}
       </div>
     </div>

@@ -166,21 +166,27 @@ describe("Owner account", () => {
   it("explains empty reports and excludes booking/email sections", async () => {
     vi.stubGlobal(
       "fetch",
-      vi.fn().mockResolvedValue(
-        new Response(
-          JSON.stringify({
-            days: 30,
-            total: 0,
-            daily: {},
-            devices: {},
-            systems: {},
-            browsers: {},
-            generatedAt: new Date().toISOString(),
-          })
+      vi.fn().mockImplementation((url) =>
+        Promise.resolve(
+          new Response(
+            JSON.stringify({
+              campaign: "esl10g-presentation-1",
+              days: 30,
+              total: 0,
+              daily: {},
+              devices: {},
+              systems: {},
+              browsers: {},
+              generatedAt: new Date().toISOString(),
+              ...(String(url).includes("/audit?")
+                ? { entries: [], nextCursor: null }
+                : {}),
+            })
+          )
         )
       )
     );
-    show("/owner/overview");
+    show("/owner/administration");
     expect(
       await screen.findByText("Your first QR visit will appear here")
     ).toBeInTheDocument();
@@ -296,34 +302,61 @@ describe("Public accounts", () => {
       password: "student private password",
     });
   });
-  it("keeps analytics and administration out of a client's workspace", async () => {
-    const fetcher = vi.fn();
-    vi.stubGlobal("fetch", fetcher);
-    render(
-      <MemoryRouter initialEntries={["/account/overview"]}>
-        <OwnerContext.Provider
-          value={{
-            session: { ...session, role: "client" },
-            status: "authenticated",
-            error: "",
-            refresh: vi.fn(),
-            logout: vi.fn(),
-            clear: vi.fn(),
-          }}
-        >
-          <OwnerPage />
-        </OwnerContext.Provider>
-      </MemoryRouter>
-    );
-    expect(
-      screen.getByRole("heading", { name: "Hello, Serge" })
-    ).toBeInTheDocument();
-    expect(
-      screen.queryByRole("link", { name: "Administration" })
-    ).not.toBeInTheDocument();
-    expect(screen.queryByText("QR-link visits")).not.toBeInTheDocument();
-    expect(fetcher).not.toHaveBeenCalled();
-  });
+  it.each(["client", "admin"] as const)(
+    "shows the same personal overview without report requests for %s",
+    (role) => {
+      const fetcher = vi.fn();
+      vi.stubGlobal("fetch", fetcher);
+      render(
+        <MemoryRouter initialEntries={["/account/overview"]}>
+          <OwnerContext.Provider
+            value={{
+              session: { ...session, role },
+              status: "authenticated",
+              error: "",
+              refresh: vi.fn(),
+              logout: vi.fn(),
+              clear: vi.fn(),
+            }}
+          >
+            <OwnerPage />
+          </OwnerContext.Provider>
+        </MemoryRouter>
+      );
+      expect(
+        screen.getByRole("heading", { name: "Hello, Serge" })
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole("heading", { name: "Your profile" })
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole("heading", { name: "Sign-in & protection" })
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole("heading", { name: "Current session" })
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole("heading", { name: "Your preferences" })
+      ).toBeInTheDocument();
+      expect(screen.getByText("serge@example.test")).toBeInTheDocument();
+      expect(
+        screen.getByRole("link", { name: "Manage active sessions" })
+      ).toHaveAttribute("href", "/account/security#sessions");
+      if (role === "client") {
+        expect(
+          screen.queryByRole("link", { name: "Administration" })
+        ).not.toBeInTheDocument();
+      } else {
+        expect(
+          screen.getByRole("link", { name: "Administration" })
+        ).toBeInTheDocument();
+      }
+      expect(screen.queryByText("QR-link visits")).not.toBeInTheDocument();
+      expect(screen.queryByText("Security activity")).not.toBeInTheDocument();
+      expect(screen.queryByLabelText("Report period")).not.toBeInTheDocument();
+      expect(fetcher).not.toHaveBeenCalled();
+    }
+  );
   it("waits for an explicit email confirmation click instead of consuming links on load", async () => {
     const fetcher = vi
       .fn()

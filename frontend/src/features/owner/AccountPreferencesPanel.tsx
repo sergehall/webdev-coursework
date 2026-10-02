@@ -184,7 +184,7 @@ export default function AccountPreferencesPanel({
             <section className="owner-card" aria-labelledby="report-title">
               <h2 id="report-title">QR analytics</h2>
               <p className="owner-muted">
-                The initial period when you open Overview or Administration.
+                The initial period when you open Administration.
               </p>
               <label>
                 Default report period

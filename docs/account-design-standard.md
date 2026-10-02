@@ -53,8 +53,14 @@ and dark modules for scanning.
 - Account navigation starts at the same left edge as the page header and cards,
   with no extra horizontal padding around the tab row. Overview uses the main
   account tabs without a second row of duplicate navigation links.
+- Overview uses the same personal account summary for clients and administrators:
+  profile and recovery contact, sign-in protection, current session and saved
+  display preferences. Use existing session data; missing security fields must
+  say unavailable. Keep the four cards equal in height on desktop, with actions
+  aligned at the bottom; stack them naturally on mobile. QR reports, audit history
+  and role management belong only to Administration.
 - Keep QR-report methodology and source metadata in Administration, in one
-  dedicated card. Overview shows the visit summary without repeating that copy.
+  dedicated card alongside the visit summary.
   Use the report's campaign identifier to distinguish QR sources; do not label
   unknown campaigns as the presentation or mix their counts. The current API
   reports only `esl10g-presentation-1`; adding collection or selection for more
