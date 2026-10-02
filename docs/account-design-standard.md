@@ -43,9 +43,10 @@ and dark modules for scanning.
   restore a large account background rectangle.
 - Navigation, full-width panels and grid rows share the same outer edges.
   Profile panels have no independent narrow-width cap.
-- Profile keeps account identity inside the main form card, before its save
-  action. Registration and sign-in facts use three columns on desktop and stack
-  on mobile, with a quiet divider instead of another outer card.
+- Profile keeps editable fields and sign-in details in the left two-thirds of
+  its main card, with Account identity in the right third. Stack both areas on
+  narrow screens. Keep Save profile in a shared footer aligned to the right;
+  quiet dividers separate these areas without adding another outer card.
 - The navigation row is transparent. Only selected items have a filled surface.
 - Keep summary tiles and related settings in responsive equal-width grids.
   On small screens, stack forms and scroll navigation within its own row.
