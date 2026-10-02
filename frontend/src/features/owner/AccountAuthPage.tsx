@@ -49,6 +49,7 @@ export default function AccountAuthPage({ mode }: { mode: Mode }) {
     [busy, setBusy] = useState(false),
     [done, setDone] = useState(false),
     [error, setError] = useState("");
+  const [showVerificationHelp, setShowVerificationHelp] = useState(false);
   const [token] = useState(
     () => new URLSearchParams(location.hash.slice(1)).get("token") ?? ""
   );
@@ -75,6 +76,7 @@ export default function AccountAuthPage({ mode }: { mode: Mode }) {
   async function submit(e: FormEvent) {
     e.preventDefault();
     setError("");
+    setShowVerificationHelp(false);
     if (!isLogin && hasPassword && password !== confirmation) {
       setError("Passwords do not match.");
       return;
@@ -105,6 +107,9 @@ export default function AccountAuthPage({ mode }: { mode: Mode }) {
           navigate("/account/security#mfa", { replace: true });
       } else setDone(true);
     } catch (err) {
+      const signInRejected =
+        isLogin && err instanceof OwnerApiError && err.status === 401;
+      setShowVerificationHelp(signInRejected);
       setError(
         err instanceof OwnerApiError && err.status === 401
           ? "Unable to sign in. Check your username/email and password, and confirm your email first."
@@ -216,9 +221,19 @@ export default function AccountAuthPage({ mode }: { mode: Mode }) {
             )}
             {hasPassword && (
               <>
-                <label htmlFor="account-password">
-                  {mode === "reset-password" ? "New password" : "Password"}
-                </label>
+                <div className="owner-password-heading">
+                  <label htmlFor="account-password">
+                    {mode === "reset-password" ? "New password" : "Password"}
+                  </label>
+                  {isLogin && (
+                    <Link
+                      className="owner-text-link owner-password-help"
+                      to="/account/forgot-password"
+                    >
+                      Forgot password?
+                    </Link>
+                  )}
+                </div>
                 <div className="owner-password-field">
                   <input
                     id="account-password"
@@ -292,6 +307,16 @@ export default function AccountAuthPage({ mode }: { mode: Mode }) {
             {error || owner.error}
           </p>
         )}
+        {(showVerificationHelp ||
+          (mode === "register" && done) ||
+          (mode === "verify-email" && !done)) && (
+          <p className="owner-auth-verification">
+            Need to confirm your email?{" "}
+            <Link className="owner-text-link" to="/account/resend-verification">
+              Resend confirmation email
+            </Link>
+          </p>
+        )}
         <div className="owner-auth-links">
           {mode !== "login" && (
             <Link className="owner-text-link" to="/account/login">
@@ -299,26 +324,18 @@ export default function AccountAuthPage({ mode }: { mode: Mode }) {
             </Link>
           )}
           {mode === "login" && (
-            <>
+            <p className="owner-auth-signup">
+              New here?{" "}
               <Link className="owner-text-link" to="/account/register">
                 Create an account
               </Link>
-              <Link className="owner-text-link" to="/account/forgot-password">
-                Forgot password?
-              </Link>
-              <Link
-                className="owner-text-link"
-                to="/account/resend-verification"
-              >
-                Resend confirmation email
-              </Link>
-            </>
+            </p>
           )}
-          <Link className="owner-text-link" to="/">
-            Back to the portfolio
-          </Link>
         </div>
       </section>
+      <Link className="owner-auth-back" to="/">
+        <span aria-hidden="true">←</span> Back to the portfolio
+      </Link>
     </div>
   );
 }

@@ -198,6 +198,54 @@ describe("Owner account", () => {
 });
 
 describe("Public accounts", () => {
+  it("keeps confirmation help contextual and offers it after rejected sign-in", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi
+        .fn()
+        .mockImplementation((url) =>
+          Promise.resolve(
+            String(url).endsWith("/login")
+              ? new Response("{}", { status: 401 })
+              : new Response(JSON.stringify({ githubEnabled: false }))
+          )
+        )
+    );
+    show("/account/login", false);
+    expect(
+      screen.queryByRole("link", { name: "Resend confirmation email" })
+    ).not.toBeInTheDocument();
+    expect(screen.getByText("New here?")).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: "Create an account" })
+    ).toHaveAttribute("href", "/account/register");
+    expect(
+      screen.getByRole("link", { name: "Forgot password?" })
+    ).toHaveAttribute("href", "/account/forgot-password");
+    expect(
+      screen.getByRole("link", { name: "Back to the portfolio" })
+    ).toHaveAttribute("href", "/");
+    fireEvent.change(screen.getByLabelText("Username or email"), {
+      target: { value: "student" },
+    });
+    fireEvent.change(screen.getByLabelText("Password"), {
+      target: { value: "student private password" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Log in" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "confirm your email first"
+    );
+    expect(
+      screen.getByRole("link", { name: "Resend confirmation email" })
+    ).toHaveAttribute("href", "/account/resend-verification");
+    fireEvent.click(
+      screen.getByRole("link", { name: "Resend confirmation email" })
+    );
+    expect(
+      await screen.findByRole("heading", { name: "Resend confirmation" })
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText("Email")).toBeInTheDocument();
+  });
   it("registers only after matching confirmation, without choosing a role", async () => {
     const fetcher = vi
       .fn()
@@ -209,6 +257,9 @@ describe("Public accounts", () => {
     vi.stubGlobal("fetch", fetcher);
     show("/account/register", false);
     await screen.findByRole("link", { name: "Continue with GitHub" });
+    expect(
+      screen.queryByRole("link", { name: "Resend confirmation email" })
+    ).not.toBeInTheDocument();
     fireEvent.change(screen.getByLabelText("Username"), {
       target: { value: "student" },
     });
@@ -233,6 +284,9 @@ describe("Public accounts", () => {
     expect(await screen.findByRole("status")).toHaveTextContent(
       "Check your inbox"
     );
+    expect(
+      screen.getByRole("link", { name: "Resend confirmation email" })
+    ).toHaveAttribute("href", "/account/resend-verification");
     const [, options] = fetcher.mock.calls.find(([url]) =>
       String(url).endsWith("/register")
     )!;
@@ -280,10 +334,16 @@ describe("Public accounts", () => {
     show(`/account/verify-email#token=${"t".repeat(43)}`, false);
     await waitFor(() => expect(fetcher).toHaveBeenCalledTimes(1));
     expect(screen.getByRole("button", { name: "Confirm email" })).toBeEnabled();
+    expect(
+      screen.getByRole("link", { name: "Resend confirmation email" })
+    ).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Confirm email" }));
     expect(await screen.findByRole("status")).toHaveTextContent(
       "Email confirmed"
     );
+    expect(
+      screen.queryByRole("link", { name: "Resend confirmation email" })
+    ).not.toBeInTheDocument();
     expect(fetcher.mock.calls[1][1].method).toBe("POST");
   });
 });

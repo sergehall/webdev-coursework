@@ -390,7 +390,32 @@
 .owner-login {
   display: grid;
   place-items: center;
+  gap: 1rem;
   padding: clamp(1rem, 5vw, 4rem);
+}
+.owner-auth-back {
+  color: var(--owner-muted);
+  font-size: 0.8rem;
+}
+.owner-auth-back:hover {
+  text-decoration: underline;
+}
+.owner-auth-signup,
+.owner-auth-verification {
+  color: var(--owner-muted);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+.owner-password-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.35rem 0.75rem;
+}
+.owner-password-heading .owner-password-help {
+  font-size: 0.75rem;
+  font-weight: 500;
 }
 .owner-login-card {
   width: 100%;
