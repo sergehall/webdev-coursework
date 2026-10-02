@@ -6,6 +6,7 @@ import { AppMethods } from "./enums/app-methods.enum";
 export const appApiDocRegistry = {
   [AppMethods.GetHello]: (description?: string) =>
     ApiDoc({
+      rateLimited: false,
       summary: "API landing page (HTML)",
       description,
       ok: {
@@ -17,6 +18,7 @@ export const appApiDocRegistry = {
     }),
   [AppMethods.Health]: (description?: string) =>
     ApiDoc({
+      rateLimited: false,
       summary: "Service health check",
       description,
       ok: { type: AppHealthDto },
@@ -30,12 +32,14 @@ export const appApiDocRegistry = {
     }),
   [AppMethods.Info]: (description?: string) =>
     ApiDoc({
+      rateLimited: false,
       summary: "Service info",
       description,
       ok: { type: AppInfoDto },
     }),
   [AppMethods.Robots]: (description?: string) =>
     ApiDoc({
+      rateLimited: false,
       summary: "Robots directives for crawlers",
       description,
       ok: {

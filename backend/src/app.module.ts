@@ -16,6 +16,7 @@ import { HttpLoggingMiddleware } from "./middlewares/http-logging.middleware";
 import { QuizModule } from "./quiz/quiz.module";
 import { TokensModule } from "./tokens/tokens.module";
 import { AnalyticsModule } from "./analytics/analytics.module";
+import { SecurityModule } from "./security/security.module";
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { AnalyticsModule } from "./analytics/analytics.module";
     TypeOrmModule.forRootAsync({
       useClass: TypeOrmPostgresOptions,
     }),
+    SecurityModule,
     QuizModule,
     TokensModule,
     AnalyticsModule,

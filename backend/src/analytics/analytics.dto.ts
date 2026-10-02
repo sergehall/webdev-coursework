@@ -1,3 +1,4 @@
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import {
   Equals,
@@ -14,9 +15,15 @@ import { QR_CAMPAIGN } from "./analytics.types";
 
 export class QrEventDto {
   @IsUUID("4")
+  @ApiProperty({
+    example: "ae2d9934-cf98-4d1a-9ce8-5150978b0b9c",
+    format: "uuid",
+    description: "UUID v4; repeated IDs are deduplicated.",
+  })
   eventId!: string;
 
   @Equals(QR_CAMPAIGN)
+  @ApiProperty({ enum: [QR_CAMPAIGN], example: QR_CAMPAIGN })
   campaign!: typeof QR_CAMPAIGN;
 }
 
@@ -25,11 +32,24 @@ export class OwnerLoginDto {
   @IsString()
   @MinLength(3)
   @MaxLength(254)
+  @ApiPropertyOptional({
+    example: "learner_01",
+    minLength: 3,
+    maxLength: 254,
+    nullable: true,
+    description: "Username or email. Omit for the primary administrator.",
+  })
   identity?: string;
 
   @IsString()
   @MinLength(12)
   @MaxLength(128)
+  @ApiProperty({
+    example: "example-passphrase-2026",
+    minLength: 12,
+    maxLength: 128,
+    writeOnly: true,
+  })
   password!: string;
 }
 
@@ -38,39 +58,67 @@ export class OwnerProfileDto {
   @MinLength(1)
   @MaxLength(80)
   @Matches(/^[\p{L}\p{N} .'-]+$/u)
+  @ApiProperty({
+    example: "Alex Learner",
+    minLength: 1,
+    maxLength: 80,
+    pattern: "^[\\p{L}\\p{N} .'-]+$",
+    description:
+      "Letters, numbers, spaces and punctuation . apostrophe or hyphen; whitespace-only values are rejected.",
+  })
   displayName!: string;
 
   @ValidateIf((_object, value: unknown) => value !== undefined)
   @IsString()
   @Matches(/^[a-zA-Z0-9_-]{3,40}$/)
+  @ApiPropertyOptional({
+    example: "learner_01",
+    pattern: "^[a-zA-Z0-9_-]{3,40}$",
+    minLength: 3,
+    maxLength: 40,
+  })
   username?: string;
 }
 
 export class OwnerPreferencesDto {
   @IsIn([7, 30, 90])
+  @ApiProperty({ enum: [7, 30, 90], example: 30 })
   reportDays!: number;
 
   @IsIn(["system", "light", "dark"])
+  @ApiProperty({ enum: ["system", "light", "dark"], example: "system" })
   theme!: "system" | "light" | "dark";
 
   @IsString()
   @MaxLength(64)
+  @ApiProperty({
+    example: "America/Los_Angeles",
+    maxLength: 64,
+    description: "Time zone recognized by Intl.DateTimeFormat.",
+  })
   timeZone!: string;
 
   @ValidateIf((_object, value: unknown) => value !== undefined)
   @IsIn(["medium", "day-first", "iso"])
+  @ApiPropertyOptional({
+    enum: ["medium", "day-first", "iso"],
+    example: "medium",
+  })
   dateFormat?: "medium" | "day-first" | "iso";
 
   @ValidateIf((_object, value: unknown) => value !== undefined)
   @IsIn(["12h", "24h"])
+  @ApiPropertyOptional({ enum: ["12h", "24h"], example: "12h" })
   clockFormat?: "12h" | "24h";
 
   @ValidateIf((_object, value: unknown) => value !== undefined)
   @IsIn([1, 7, 30, 365])
+  @ApiPropertyOptional({ enum: [1, 7, 30, 365], example: 7 })
   activityDays?: number;
 
   @ValidateIf((_object, value: unknown) => value !== undefined)
   @IsIn([10, 25, 50])
+  @ApiPropertyOptional({ enum: [10, 25, 50], example: 10 })
   activityPageSize?: number;
 }
 
@@ -78,11 +126,18 @@ export class OwnerPasswordDto extends OwnerLoginDto {
   @IsString()
   @MinLength(12)
   @MaxLength(128)
+  @ApiProperty({
+    example: "new-example-passphrase",
+    minLength: 12,
+    maxLength: 128,
+    writeOnly: true,
+  })
   newPassword!: string;
 }
 
 export class AccountRoleDto {
   @IsIn(["admin", "client"])
+  @ApiProperty({ enum: ["admin", "client"], example: "client" })
   role!: "admin" | "client";
 }
 
@@ -90,13 +145,20 @@ export class AuditQueryDto {
   @IsOptional()
   @Type(() => Number)
   @IsIn([10, 25, 50])
+  @ApiPropertyOptional({ enum: [10, 25, 50], default: 10, example: 10 })
   limit: number = 10;
   @IsOptional()
   @Type(() => Number)
   @IsIn([1, 7, 30, 365])
+  @ApiPropertyOptional({ enum: [1, 7, 30, 365], default: 7, example: 7 })
   days: number = 7;
   @IsOptional()
   @IsIn(["all", "allowed", "denied"])
+  @ApiPropertyOptional({
+    enum: ["all", "allowed", "denied"],
+    default: "all",
+    example: "all",
+  })
   result: "all" | "allowed" | "denied" = "all";
   @IsOptional()
   @IsIn([
@@ -109,10 +171,31 @@ export class AuditQueryDto {
     "analytics",
     "limits",
   ])
+  @ApiPropertyOptional({
+    enum: [
+      "all",
+      "sign-in",
+      "sessions",
+      "profile",
+      "security",
+      "administration",
+      "analytics",
+      "limits",
+    ],
+    default: "all",
+    example: "all",
+  })
   group: string = "all";
   @IsOptional()
   @IsString()
   @MaxLength(300)
+  @ApiPropertyOptional({
+    maxLength: 300,
+    example:
+      "eyJhdCI6IjIwMjYtMTAtMDJUMDA6MDA6MDAuMDAwWiIsImlkIjoiYWUyZDk5MzQtY2Y5OC00ZDFhLTljZTgtNTE1MDk3OGIwYjljIn0",
+    description:
+      "Opaque nextCursor from the previous response; results ordered newest first.",
+  })
   cursor?: string;
 }
 
@@ -120,5 +203,12 @@ export class SessionQueryDto {
   @IsOptional()
   @IsString()
   @MaxLength(300)
+  @ApiPropertyOptional({
+    maxLength: 300,
+    description:
+      "Opaque nextCursor from the previous response; newest first, up to five records per page.",
+    example:
+      "eyJhdCI6IjIwMjYtMTAtMDJUMDA6MDA6MDAuMDAwWiIsImlkIjoiYWUyZDk5MzQtY2Y5OC00ZDFhLTljZTgtNTE1MDk3OGIwYjljIn0",
+  })
   cursor?: string;
 }

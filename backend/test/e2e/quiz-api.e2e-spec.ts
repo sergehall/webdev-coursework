@@ -14,6 +14,7 @@ import { AnswersTokenGuard } from "../../src/guards/answers-token.guard";
 import { QuizController } from "../../src/quiz/api/quiz.controller";
 import { QuizService } from "../../src/quiz/service/quiz.service";
 import { TokensModule } from "../../src/tokens/tokens.module";
+import { ApiAbuseGuard } from "../../src/security/api-abuse.guard";
 
 type QuizServiceReadContract = jest.Mocked<
   Pick<QuizService, "getQuizWithQuestions" | "getCorrectAnswers">
@@ -68,6 +69,8 @@ const circuitBreaker = {
   ],
   controllers: [AppController, QuizController],
   providers: [
+    // These tests isolate quiz contracts; global protection has its own HTTP suite.
+    { provide: ApiAbuseGuard, useValue: { protect: async () => true } },
     {
       provide: CircuitBreakerService,
       useValue: circuitBreaker,

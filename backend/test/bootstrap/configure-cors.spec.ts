@@ -74,14 +74,10 @@ describe("configureCors", () => {
     );
   });
 
-  it("should emit a production warning when no allowlist is configured", () => {
+  it("should reject production startup without an allowlist", () => {
     process.env.NODE_ENV = "production";
-    const warning = jest.spyOn(Logger.prototype, "warn");
-
-    configureAndCaptureOptions();
-
-    expect(warning).toHaveBeenCalledWith(
-      expect.stringContaining("ALLOWED_ORIGINS is not set")
+    expect(() => configureAndCaptureOptions()).toThrow(
+      "ALLOWED_ORIGINS must be configured"
     );
   });
 });

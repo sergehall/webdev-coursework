@@ -6,6 +6,9 @@ export class VerifyTokenDto {
   @ApiProperty({
     description: "Token previously issued by /tokens/:quizId/answers-token",
     example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    minLength: 1,
+    maxLength: 4096,
+    writeOnly: true,
   })
   @IsString()
   @IsNotEmpty()

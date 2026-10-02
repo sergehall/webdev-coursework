@@ -1,3 +1,13 @@
+import { ApiTags } from "@nestjs/swagger";
+import { ApiContract } from "../../swagger/api-contract.decorator";
+import { SignedInDto, SignedOutDto } from "../account-response.dto";
+import {
+  MfaStatusDto,
+  MfaEnrollmentResponseDto,
+  MfaResponseDto,
+  MfaRecoveryResponseDto,
+  MfaChallengeResponseDto,
+} from "./mfa-response.dto";
 import {
   Body,
   Controller,
@@ -17,6 +27,7 @@ import { MfaEnrollmentDto, MfaProofDto } from "./mfa.dto";
 import { MfaService } from "./mfa.service";
 
 @UseFilters(AccountErrorFilter)
+@ApiTags("Account MFA")
 @Controller(["api/account/mfa", "api/owner/mfa"])
 export class MfaController {
   constructor(
@@ -48,18 +59,36 @@ export class MfaController {
     return { session, account };
   }
   @Get("status")
+  @ApiContract(
+    "Get authenticator status",
+    "Requires an active account session. Returns enrollment state and remaining recovery-code count, never stored secrets.",
+    MfaStatusDto,
+    { auth: "session" }
+  )
   async status(@Req() req: Request) {
     const session = await this.auth.authorize(req, "account.mfa.status", false);
     return this.mfa.status(session.accountId, session.mfaVerifiedAt);
   }
   @Post("enroll")
   @HttpCode(200)
+  @ApiContract(
+    "Start authenticator enrollment",
+    "Requires an active session, trusted Origin and recent sign-in. Returns a private enrollment secret/URI valid for ten minutes. Render QR locally and never log enrollment data.",
+    MfaEnrollmentResponseDto,
+    { auth: "session", conflict: true }
+  )
   async enroll(@Req() req: Request) {
     const { session, account } = await this.signed(req, "enroll");
     return this.mfa.enroll(account, session.issuedAt);
   }
   @Post("cancel")
   @HttpCode(200)
+  @ApiContract(
+    "Cancel pending authenticator enrollment",
+    "Requires an active session and trusted Origin. Cancels a pending enrollment without disabling a verified authenticator.",
+    MfaResponseDto,
+    { auth: "session" }
+  )
   async cancel(@Req() req: Request) {
     const { account } = await this.signed(req, "cancel");
     await this.mfa.cancel(account);
@@ -67,6 +96,12 @@ export class MfaController {
   }
   @Post("verify-enrollment")
   @HttpCode(200)
+  @ApiContract(
+    "Verify authenticator enrollment",
+    "Requires an active session, trusted Origin and a six-digit authenticator code. Returns recovery codes once and replaces the session cookie; existing sessions are invalidated.",
+    MfaRecoveryResponseDto,
+    { auth: "session" }
+  )
   async verifyEnrollment(
     @Req() req: Request,
     @Body() dto: MfaEnrollmentDto,
@@ -97,6 +132,12 @@ export class MfaController {
   }
   @Post("disable")
   @HttpCode(200)
+  @ApiContract(
+    "Disable authenticator verification",
+    "Requires an active session, trusted Origin and valid authenticator/recovery proof. Revokes sessions and clears authentication cookies.",
+    SignedOutDto,
+    { auth: "session" }
+  )
   async disable(
     @Req() req: Request,
     @Body() dto: MfaProofDto,
@@ -110,6 +151,12 @@ export class MfaController {
   }
   @Post("recovery-codes")
   @HttpCode(200)
+  @ApiContract(
+    "Replace recovery codes",
+    "Requires an active session, trusted Origin and valid proof. Returns new codes once, invalidates old codes and refreshes MFA verification.",
+    MfaRecoveryResponseDto,
+    { auth: "session" }
+  )
   async regenerate(@Req() req: Request, @Body() dto: MfaProofDto) {
     const { account } = await this.signed(req, "recovery-codes");
     const result = await this.mfa.action(account, dto.code, "regenerate");
@@ -121,6 +168,12 @@ export class MfaController {
   }
   @Post("step-up")
   @HttpCode(200)
+  @ApiContract(
+    "Refresh MFA verification for sensitive actions",
+    "Requires an active session, trusted Origin and valid proof. Refreshes the five-minute verification window.",
+    MfaResponseDto,
+    { auth: "session" }
+  )
   async stepUp(@Req() req: Request, @Body() dto: MfaProofDto) {
     const { account } = await this.signed(req, "step-up");
     const result = await this.mfa.action(account, dto.code, "step-up");
@@ -128,12 +181,24 @@ export class MfaController {
     return { mfa: await this.mfa.status(account.id, result.verifiedAt) };
   }
   @Get("challenge")
+  @ApiContract(
+    "Get pending sign-in challenge expiry",
+    "Requires the short-lived MFA challenge cookie, not a full account session. Challenge expires after five minutes.",
+    MfaChallengeResponseDto,
+    { auth: "challenge" }
+  )
   async challenge(@Req() req: Request) {
     await this.auth.rateLimit(`mfa-pending:${this.address(req)}`, 30, 60);
     return this.mfa.challengeStatus(req.cookies?.[this.auth.mfaCookieName]);
   }
   @Post("challenge")
   @HttpCode(200)
+  @ApiContract(
+    "Complete an MFA sign-in challenge",
+    "Requires the challenge cookie, trusted Origin and valid proof. At most five failed proofs per challenge. Consumes the challenge and establishes the account session.",
+    SignedInDto,
+    { auth: "challenge" }
+  )
   async verifyChallenge(
     @Req() req: Request,
     @Body() dto: MfaProofDto,
@@ -161,6 +226,12 @@ export class MfaController {
   }
   @Post("cancel-challenge")
   @HttpCode(200)
+  @ApiContract(
+    "Cancel an MFA sign-in challenge",
+    "Requires a trusted Origin. Idempotently consumes any pending challenge and clears its cookie; no challenge cookie is required.",
+    SignedOutDto,
+    {}
+  )
   async cancelChallenge(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response

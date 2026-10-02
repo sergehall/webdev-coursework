@@ -28,6 +28,7 @@ import { AddAccountSessions1790920800000 } from "../db/migrations/2026/10/179092
 import { AddAccountProviders1790924400000 } from "../db/migrations/2026/10/1790924400000-AddAccountProviders";
 import { AccountProvidersController } from "../accounts/account-providers.controller";
 import { AccountProvidersService } from "../accounts/account-providers.service";
+import { ApiAbuseGuard } from "../security/api-abuse.guard";
 
 const run =
   process.env.OWNER_INTEGRATION_TEST === "true" ? describe : describe.skip;
@@ -79,6 +80,8 @@ run("Owner HTTP and PostgreSQL integration", () => {
         AccountProvidersController,
       ],
       providers: [
+        // Account-service limits are exercised here; global budgets have a separate HTTP/storage suite.
+        { provide: ApiAbuseGuard, useValue: { protect: async () => true } },
         AnalyticsService,
         AnalyticsStore,
         AccountService,

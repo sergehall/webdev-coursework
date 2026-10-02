@@ -80,6 +80,7 @@
   };
 
   const setSwaggerLink = (infoValue) => {
+    swaggerLinkNode.hidden = !infoValue || infoValue.docsEnabled !== true;
     const docsPath =
       infoValue &&
       typeof infoValue === "object" &&

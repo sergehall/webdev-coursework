@@ -7,6 +7,7 @@ import { AppMethods } from "./swagger/enums/app-methods.enum";
 import { EndpointKeys } from "./swagger/enums/endpoint-keys.enum";
 import { getReleaseIdentifier } from "./app/release.utils";
 import { CircuitBreakerService } from "./app/circuit-breaker.service";
+import { isSwaggerEnabled } from "./bootstrap/configure-swagger";
 
 @Controller()
 @ApiTags("System")
@@ -48,7 +49,7 @@ export class AppController {
     return {
       name: "Webdev Coursework API",
       version: "1.0.0",
-      docsEnabled: true,
+      docsEnabled: isSwaggerEnabled(),
       endpoints: {
         docs: "/docs",
         health: "/health",

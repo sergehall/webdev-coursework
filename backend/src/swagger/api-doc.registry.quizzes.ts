@@ -1,5 +1,10 @@
 import { applyDecorators } from "@nestjs/common";
-import { ApiBody, ApiConsumes } from "@nestjs/swagger";
+import {
+  ApiBody,
+  ApiConsumes,
+  ApiExtraModels,
+  getSchemaPath,
+} from "@nestjs/swagger";
 import { CorrectAnswerDto } from "../quiz/dto/correct-answer.dto";
 import { CreatedQuizQuestionDto } from "../quiz/dto/created-quiz-question.dto";
 import { QuizQuestionDto } from "../quiz/dto/quiz-question.dto";
@@ -9,6 +14,10 @@ import { IssueAnswersTokenResponseDto } from "../tokens/dto/issue-answers-token-
 import { ApiDoc } from "./api-doc.builder";
 import { QuizzesMethods } from "./enums/quizzes-methods.enum";
 import { SWAGGER_SECURITY } from "./security.constants";
+import {
+  VerifiedAnswersTokenDto,
+  InvalidAnswersTokenDto,
+} from "../tokens/dto/verify-token-response.dto";
 
 export const quizzesApiDocRegistry = {
   [QuizzesMethods.GetQuizAnswers]: (description?: string) =>
@@ -67,7 +76,7 @@ export const quizzesApiDocRegistry = {
             schema: { type: "string" },
             example: "QuizModule1",
             description:
-              "Quiz identifier in route. Must match body.quizId if provided.",
+              "Quiz identifier in route; the route value overrides body.quizId.",
           },
         ],
         responses: [
@@ -81,7 +90,7 @@ export const quizzesApiDocRegistry = {
       ApiConsumes("multipart/form-data"),
       ApiBody({
         description:
-          "Question payload with optional images[]. Current validation expects quizId and questionId in body.",
+          "Question payload with optional images[]. Runtime validation requires body.quizId; the route quizId is authoritative. Up to five images, 5 MiB each; accepted MIME types: image/png, image/jpeg, image/webp, image/gif. Unsupported MIME types are ignored. Local upload URLs depend on configured storage; ephemeral files are not durable.",
         schema: {
           type: "object",
           properties: {
@@ -99,6 +108,7 @@ export const quizzesApiDocRegistry = {
             images: {
               type: "array",
               items: { type: "string", format: "binary" },
+              maxItems: 5,
             },
           },
           required: ["quizId", "questionId", "questionText", "options"],
@@ -109,7 +119,9 @@ export const quizzesApiDocRegistry = {
   [QuizzesMethods.IssueAnswersToken]: (description?: string) =>
     ApiDoc({
       summary: "Issue a short-lived answers token for quizId",
-      description,
+      description:
+        description ??
+        "Public issuance for client-practice answer access. This is not an authorization boundary for a protected graded exam. The token is bound to quizId and expires according to the server-configured TTL.",
       ok: { type: IssueAnswersTokenResponseDto, status: 201 },
       params: [
         {
@@ -149,7 +161,13 @@ export const quizzesApiDocRegistry = {
           description: "Course identifier.",
         },
       ],
-      ok: { schema: { example: [1, 2, 5] } },
+      ok: {
+        schema: {
+          type: "array",
+          items: { type: "integer" },
+          example: [1, 2, 5],
+        },
+      },
       responses: [
         {
           status: 400,
@@ -167,7 +185,6 @@ export const quizzesApiDocRegistry = {
         ok: {
           status: 201,
           description: "Progress marked successfully.",
-          schema: { example: {} },
         },
         responses: [
           { status: 400, description: "Bad Request — validation failed" },
@@ -185,7 +202,6 @@ export const quizzesApiDocRegistry = {
         ok: {
           status: 200,
           description: "Progress unmarked successfully.",
-          schema: { example: {} },
         },
         responses: [
           { status: 400, description: "Bad Request — validation failed" },
@@ -203,7 +219,6 @@ export const quizzesApiDocRegistry = {
         ok: {
           status: 201,
           description: "Progress reset successfully.",
-          schema: { example: {} },
         },
         responses: [
           { status: 400, description: "Bad Request — validation failed" },
@@ -214,55 +229,35 @@ export const quizzesApiDocRegistry = {
     ),
 
   [QuizzesMethods.VerifyAnswersToken]: (description?: string) =>
-    ApiDoc({
-      summary: "Verify a previously issued answers token (admin only)",
-      description,
-      security: [{ type: "apiKey", name: "adminKey" }],
-      params: [
-        {
-          name: "quizId",
-          required: true,
-          schema: { type: "string" },
-          example: "QuizModule1",
-          description: "Quiz identifier expected inside token payload.",
+    applyDecorators(
+      ApiExtraModels(VerifiedAnswersTokenDto, InvalidAnswersTokenDto),
+      ApiDoc({
+        summary: "Verify a previously issued answers token (admin only)",
+        description,
+        security: [{ type: "apiKey", name: "adminKey" }],
+        params: [
+          {
+            name: "quizId",
+            required: true,
+            schema: { type: "string" },
+            example: "QuizModule1",
+            description: "Quiz identifier expected inside token payload.",
+          },
+        ],
+        ok: {
+          status: 201,
+          schema: {
+            oneOf: [
+              { $ref: getSchemaPath(VerifiedAnswersTokenDto) },
+              { $ref: getSchemaPath(InvalidAnswersTokenDto) },
+            ],
+          },
         },
-      ],
-      ok: {
-        status: 201,
-        schema: {
-          oneOf: [
-            {
-              type: "object",
-              properties: {
-                ok: { type: "boolean", example: true },
-                payload: {
-                  type: "object",
-                  properties: {
-                    quizId: { type: "string", example: "QuizModule1" },
-                  },
-                  required: ["quizId"],
-                },
-              },
-              required: ["ok", "payload"],
-            },
-            {
-              type: "object",
-              properties: {
-                ok: { type: "boolean", example: false },
-                error: {
-                  type: "string",
-                  example: "Invalid or expired token",
-                },
-              },
-              required: ["ok", "error"],
-            },
-          ],
-        },
-      },
-      responses: [
-        { status: 400, description: "token is required" },
-        { status: 403, description: "Forbidden — admin key required" },
-        { status: 500, description: "Internal server error" },
-      ],
-    }),
+        responses: [
+          { status: 400, description: "token is required" },
+          { status: 403, description: "Forbidden — admin key required" },
+          { status: 500, description: "Internal server error" },
+        ],
+      })
+    ),
 } as const;

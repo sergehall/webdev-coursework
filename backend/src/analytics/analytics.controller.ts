@@ -1,3 +1,23 @@
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+  ApiQuery,
+} from "@nestjs/swagger";
+import { ApiContract, ApiErrors } from "../swagger/api-contract.decorator";
+import {
+  AcceptedDto,
+  SavedDto,
+  LoginOptionsDto,
+  ProviderRedirectDto,
+  AdminAccountDto,
+  LoginResponseDto,
+  AccountSessionResponseDto,
+  SessionsPageDto,
+  SignedOutDto,
+} from "../accounts/account-response.dto";
+import { AnalyticsDashboardDto, AuditPageDto } from "./analytics-response.dto";
 import { AccountErrorFilter } from "../accounts/account-error.filter";
 import { UseFilters } from "@nestjs/common";
 import {
@@ -30,12 +50,19 @@ import {
 } from "./analytics.dto";
 
 @UseFilters(AccountErrorFilter)
+@ApiTags("Analytics — public")
 @Controller("api/analytics")
 export class AnalyticsController {
   constructor(private readonly analytics: AnalyticsService) {}
 
   @Post("qr-events")
   @HttpCode(202)
+  @ApiContract(
+    "Record an anonymous QR visit",
+    "Accepts a business event for asynchronous aggregation. Duplicate event IDs are deduplicated. No account is required. IP/global ingestion limits apply; 202 confirms acceptance, not persistence.",
+    AcceptedDto,
+    { status: 202 }
+  )
   async ingest(@Req() req: Request, @Body() dto: QrEventDto) {
     await this.analytics.ingest(req, dto);
     return { accepted: true };
@@ -43,6 +70,7 @@ export class AnalyticsController {
 }
 
 @UseFilters(AccountErrorFilter)
+@ApiTags("Account sessions")
 @Controller(["api/owner", "api/account"])
 export class OwnerController {
   constructor(private readonly analytics: AnalyticsService) {}
@@ -57,6 +85,12 @@ export class OwnerController {
   }
 
   @Get("login-options")
+  @ApiContract(
+    "Get available sign-in methods",
+    "Public configuration for email registration and GitHub sign-in. Returns availability only.",
+    LoginOptionsDto,
+    {}
+  )
   loginOptions() {
     return this.analytics.loginOptions();
   }
@@ -71,6 +105,22 @@ export class OwnerController {
   }
 
   @Get("github/start")
+  @ApiOperation({
+    summary: "Start GitHub sign-in",
+    description:
+      "Public browser navigation. Sets a ten-minute HttpOnly OAuth state cookie and redirects to GitHub. Disabled providers return 503.",
+  })
+  @ApiResponse({
+    status: 303,
+    description: "Browser redirect.",
+    headers: {
+      Location: {
+        description: "Provider authorization or frontend account page.",
+        schema: { type: "string", format: "uri" },
+      },
+    },
+  })
+  @ApiErrors(400, 403, 429, 503)
   async githubStart(@Req() req: Request, @Res() res: Response) {
     const { state, url } = await this.analytics.githubStart(req);
     res.cookie(this.analytics.githubCookieName, state, {
@@ -82,6 +132,12 @@ export class OwnerController {
 
   @Post("providers/github/connect")
   @HttpCode(200)
+  @ApiContract(
+    "Start connecting GitHub to this account",
+    "Requires an active session, recent sign-in, fresh MFA when enabled and trusted Origin. Returns provider URL and sets an HttpOnly OAuth state cookie. Connection is bound to the originating session.",
+    ProviderRedirectDto,
+    { auth: "session" }
+  )
   async githubConnect(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response
@@ -95,6 +151,41 @@ export class OwnerController {
   }
 
   @Get("github/callback")
+  @ApiOperation({
+    summary: "Complete GitHub authorization",
+    description:
+      "Validates and consumes OAuth state once. Establishes a session, starts MFA, completes provider linking or redirects to a safe error page. Browser navigation only.",
+  })
+  @ApiResponse({
+    status: 303,
+    description: "Browser redirect.",
+    headers: {
+      Location: {
+        description: "Provider authorization or frontend account page.",
+        schema: { type: "string", format: "uri" },
+      },
+    },
+  })
+  @ApiErrors(400, 403, 429, 503)
+  @ApiQuery({
+    name: "code",
+    required: false,
+    type: String,
+    description: "OAuth authorization code supplied by GitHub.",
+  })
+  @ApiQuery({
+    name: "state",
+    required: false,
+    type: String,
+    description:
+      "Single-use state supplied by GitHub; must match the OAuth state cookie.",
+  })
+  @ApiQuery({
+    name: "error",
+    required: false,
+    type: String,
+    description: "Provider authorization failure.",
+  })
   async githubCallback(@Req() req: Request, @Res() res: Response) {
     if (!this.analytics.loginOptions().githubEnabled)
       throw new ServiceUnavailableException("GitHub sign-in is not configured");
@@ -151,10 +242,30 @@ export class OwnerController {
   }
 
   @Get("accounts")
+  @ApiContract(
+    "List accounts for primary administration",
+    "Only the primary administrator with fresh MFA when enabled. Returns at most 100 accounts, newest first, with public administrative fields.",
+    AdminAccountDto,
+    { auth: "session", isArray: true }
+  )
+  @ApiTags("Administration")
   accounts(@Req() req: Request) {
     return this.analytics.accounts(req);
   }
   @Put("accounts/:id/role")
+  @ApiContract(
+    "Change an account role",
+    "Only the primary administrator with fresh MFA when enabled. Requires trusted Origin. The primary administrator role is protected; role changes invalidate account sessions.",
+    SavedDto,
+    { auth: "session" }
+  )
+  @ApiParam({
+    name: "id",
+    format: "uuid",
+    description: "Account UUID v4.",
+    example: "ae2d9934-cf98-4d1a-9ce8-5150978b0b9c",
+  })
+  @ApiTags("Administration")
   async accountRole(
     @Req() req: Request,
     @Param("id", new ParseUUIDPipe({ version: "4" })) id: string,
@@ -165,12 +276,25 @@ export class OwnerController {
   }
 
   @Get("audit")
+  @ApiContract(
+    "Read administrative security activity",
+    "Administrator session and fresh MFA when enabled required. Cursor pagination with allowed group/result filters, ordered newest first.",
+    AuditPageDto,
+    { auth: "session" }
+  )
+  @ApiTags("Administration")
   audit(@Req() req: Request, @Query() query: AuditQueryDto) {
     return this.analytics.audits(req, query);
   }
 
   @Post("login")
   @HttpCode(200)
+  @ApiContract(
+    "Sign in with password",
+    "Requires trusted Origin. Password login is limited to five attempts per IP per 15 minutes plus a global budget. Sets an HttpOnly session cookie or a five-minute MFA challenge cookie.",
+    LoginResponseDto,
+    {}
+  )
   async login(
     @Req() req: Request,
     @Body() dto: OwnerLoginDto,
@@ -194,17 +318,35 @@ export class OwnerController {
   }
 
   @Get("session")
+  @ApiContract(
+    "Get the current account profile and session",
+    "Requires an active admin/client session. Returns safe profile and permission flags without the session token or internal account revision.",
+    AccountSessionResponseDto,
+    { auth: "session" }
+  )
   session(@Req() req: Request) {
     return this.analytics.session(req);
   }
 
   @Get("sessions")
+  @ApiContract(
+    "List active sessions",
+    "Requires an active account session. Returns up to five active sessions per page, newest first, and identifies the current session without token hashes.",
+    SessionsPageDto,
+    { auth: "session" }
+  )
   sessions(@Req() req: Request, @Query() query: SessionQueryDto) {
     return this.analytics.sessions(req, query.cursor);
   }
 
   @Post("logout")
   @HttpCode(200)
+  @ApiContract(
+    "Sign out the current session",
+    "Requires an active account session and trusted Origin. Revokes the current session and clears the session cookie.",
+    SignedOutDto,
+    { auth: "session" }
+  )
   async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     await this.analytics.logout(req);
     res.clearCookie(this.analytics.cookieName, this.cookieOptions());
@@ -212,6 +354,19 @@ export class OwnerController {
   }
 
   @Get("analytics")
+  @ApiContract(
+    "Get aggregated anonymous QR reports",
+    "Administrator session and fresh MFA when enabled required. Select 7, 30 or 90 UTC days; defaults to 30.",
+    AnalyticsDashboardDto,
+    { auth: "session" }
+  )
+  @ApiQuery({
+    name: "days",
+    required: false,
+    enum: [7, 30, 90],
+    schema: { type: "integer", enum: [7, 30, 90], default: 30 },
+  })
+  @ApiTags("Administration")
   dashboard(@Req() req: Request, @Query("days") raw?: string) {
     const days = raw === undefined ? 30 : Number(raw);
     if (![7, 30, 90].includes(days))
@@ -220,12 +375,24 @@ export class OwnerController {
   }
 
   @Put("profile")
+  @ApiContract(
+    "Update the current profile",
+    "Requires an active session and trusted Origin. Username changes require fresh MFA when enabled.",
+    SavedDto,
+    { auth: "session", conflict: true }
+  )
   async profile(@Req() req: Request, @Body() dto: OwnerProfileDto) {
     await this.analytics.profile(req, dto);
     return { saved: true };
   }
 
   @Put("preferences")
+  @ApiContract(
+    "Update account preferences",
+    "Requires an active session and trusted Origin. Clients may change display preferences; report/activity defaults are administrator-only.",
+    SavedDto,
+    { auth: "session" }
+  )
   async preferences(@Req() req: Request, @Body() dto: OwnerPreferencesDto) {
     await this.analytics.preferences(req, dto);
     return { saved: true };
@@ -233,6 +400,12 @@ export class OwnerController {
 
   @Post("password")
   @HttpCode(200)
+  @ApiContract(
+    "Change the current account password",
+    "Requires an active session, current password, trusted Origin and fresh MFA when enabled. Revokes all sessions and clears the session cookie.",
+    SignedOutDto,
+    { auth: "session" }
+  )
   async password(
     @Req() req: Request,
     @Body() dto: OwnerPasswordDto,
@@ -245,6 +418,12 @@ export class OwnerController {
 
   @Post("revoke-sessions")
   @HttpCode(200)
+  @ApiContract(
+    "Revoke all account sessions",
+    "Requires an active session, trusted Origin and fresh MFA when enabled. Revokes all account sessions including the current one and clears its cookie.",
+    SignedOutDto,
+    { auth: "session" }
+  )
   async revokeSessions(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response

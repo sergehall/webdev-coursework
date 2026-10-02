@@ -1,5 +1,5 @@
 import type { INestApplication } from "@nestjs/common";
-import { Logger } from "@nestjs/common";
+import { ForbiddenException, Logger } from "@nestjs/common";
 
 const logger = new Logger("CORS");
 
@@ -20,7 +20,9 @@ export function configureCors(app: INestApplication): void {
       "ALLOWED_ORIGINS is not set — all origins are permitted. " +
       "Set ALLOWED_ORIGINS to a comma-separated list of trusted origins in production.";
     if (isProduction) {
-      logger.warn(msg);
+      throw new Error(
+        "ALLOWED_ORIGINS must be configured in production; credentialed wildcard CORS is prohibited"
+      );
     } else {
       logger.log(msg);
     }
@@ -45,8 +47,9 @@ export function configureCors(app: INestApplication): void {
         return;
       }
 
-      callback(new Error("Not allowed by CORS"), false);
+      callback(new ForbiddenException("Not allowed by CORS"), false);
     },
     credentials: true,
+    exposedHeaders: ["Retry-After"],
   });
 }

@@ -342,15 +342,16 @@ Use `yarn workspace backend migration:create AddUserPreferences` for an empty
 migration or `yarn workspace backend migration:generate AddUserPreferences` for
 an entity/schema diff. Both commands select the date and folder automatically.
 
-| Guide                                                                  | Contents                                                                     |
-| ---------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| [Accounts and analytics](docs/owner-account-analytics.md)              | Roles, authentication, email delivery, local setup, and QR reporting         |
-| [Connected providers](docs/account-providers.md)                       | GitHub linking, verified email addition, and provider lifecycle              |
-| [Multi-factor authentication](docs/account-mfa.md)                     | Authenticator setup, recovery codes, encryption keys, and rollout procedures |
-| [Account implementation plan](docs/account-plan.md)                    | Account design and implementation notes                                      |
-| [Database migrations](docs/database-migrations.md)                     | UTC year/month folders, creation commands, validation, and release allowlist |
-| [Assessment standard](docs/quiz-assessment-standard.md)                | Canonical requirements for quizzes, practice assessments, and migrations     |
-| [Shared assessment module](frontend/src/features/assessment/README.md) | Assessment integration and frontend architecture                             |
+| Guide                                                                  | Contents                                                                                              |
+| ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| [API contracts and security](docs/api-contract-and-security.md)        | Swagger access, endpoint groups, DTOs, shared throttling, bot abuse controls and frontend integration |
+| [Accounts and analytics](docs/owner-account-analytics.md)              | Roles, authentication, email delivery, local setup, and QR reporting                                  |
+| [Connected providers](docs/account-providers.md)                       | GitHub linking, verified email addition, and provider lifecycle                                       |
+| [Multi-factor authentication](docs/account-mfa.md)                     | Authenticator setup, recovery codes, encryption keys, and rollout procedures                          |
+| [Account implementation plan](docs/account-plan.md)                    | Account design and implementation notes                                                               |
+| [Database migrations](docs/database-migrations.md)                     | UTC year/month folders, creation commands, validation, and release allowlist                          |
+| [Assessment standard](docs/quiz-assessment-standard.md)                | Canonical requirements for quizzes, practice assessments, and migrations                              |
+| [Shared assessment module](frontend/src/features/assessment/README.md) | Assessment integration and frontend architecture                                                      |
 
 ## Deployment
 

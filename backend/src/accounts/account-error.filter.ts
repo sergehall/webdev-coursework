@@ -18,7 +18,7 @@ export class AccountErrorFilter implements ExceptionFilter {
         .json(
           typeof body === "string"
             ? { message: body, statusCode: error.getStatus() }
-            : body
+            : { ...body, statusCode: error.getStatus() }
         );
       return;
     }

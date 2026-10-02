@@ -23,13 +23,16 @@ export const securityHeaders = {
   "Cross-Origin-Resource-Policy": "same-origin",
   "X-Content-Type-Options": "nosniff",
   "X-Frame-Options": "SAMEORIGIN",
+  "Referrer-Policy": "no-referrer",
 } as const;
 
 export function configureSecurityHeaders(app: INestApplication): void {
-  app.use((_req: Request, res: Response, next: NextFunction) => {
+  app.use((req: Request, res: Response, next: NextFunction) => {
     for (const [header, value] of Object.entries(securityHeaders)) {
       res.setHeader(header, value);
     }
+    if (req.secure)
+      res.setHeader("Strict-Transport-Security", "max-age=31536000");
     next();
   });
 }

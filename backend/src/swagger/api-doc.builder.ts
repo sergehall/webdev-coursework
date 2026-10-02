@@ -12,6 +12,8 @@ import {
 } from "@nestjs/swagger";
 import type { SecuritySchemeName } from "./security.constants";
 import { SWAGGER_SECURITY } from "./security.constants";
+import { ApiErrors } from "./api-contract.decorator";
+import { ApiErrorDto } from "./api-error.dto";
 
 type SecurityItem =
   | { type: "bearer"; name?: SecuritySchemeName }
@@ -45,6 +47,7 @@ export interface ApiDocOptions {
   addUnauthorizedByDefault?: boolean;
   /** Default bearer name if not provided in a security item. */
   defaultBearerName?: SecuritySchemeName; // defaults to SWAGGER_SECURITY.ANSWERS_TOKEN
+  rateLimited?: boolean;
 }
 
 export function ApiDoc(opts: ApiDocOptions = {}) {
@@ -63,7 +66,7 @@ export function ApiDoc(opts: ApiDocOptions = {}) {
   const ds: Parameters<typeof applyDecorators> = [];
 
   if (summary || description) {
-    ds.push(ApiOperation({ summary, description }));
+    ds.push(ApiOperation({ summary, description: description ?? summary }));
   }
 
   // Attach bearer only if security is provided
@@ -78,7 +81,7 @@ export function ApiDoc(opts: ApiDocOptions = {}) {
   }
 
   // Main successful response (default 200 OK).
-  if (ok?.type || ok?.schema) {
+  if (ok) {
     ds.push(
       ApiResponse({
         status: ok.status ?? 200,
@@ -91,7 +94,11 @@ export function ApiDoc(opts: ApiDocOptions = {}) {
   }
 
   // Additional responses
-  for (const r of responses) ds.push(ApiResponse(r));
+  for (const r of responses)
+    ds.push(
+      ApiResponse({ ...(r.status >= 400 ? { type: ApiErrorDto } : {}), ...r })
+    );
+  if (opts.rateLimited !== false) ds.push(ApiErrors(429, 503));
 
   // Query parameters
   for (const q of queries) ds.push(ApiQuery(q));
@@ -100,8 +107,17 @@ export function ApiDoc(opts: ApiDocOptions = {}) {
   for (const p of params) ds.push(ApiParam(p));
 
   // Add 401 only for secured operations
-  if (security.length > 0 && addUnauthorizedByDefault) {
-    ds.push(ApiUnauthorizedResponse({ description: "Unauthorized" }));
+  if (
+    security.length > 0 &&
+    addUnauthorizedByDefault &&
+    !responses.some((response) => response.status === 401)
+  ) {
+    ds.push(
+      ApiUnauthorizedResponse({
+        description: "Unauthorized",
+        type: ApiErrorDto,
+      })
+    );
   }
 
   return applyDecorators(...ds);
