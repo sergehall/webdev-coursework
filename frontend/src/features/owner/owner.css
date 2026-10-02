@@ -217,13 +217,13 @@
 .owner-security-signals .owner-button {
   justify-self: end;
   max-width: 100%;
-  border-color: var(--owner-accent);
+  border-color: transparent;
   background: var(--owner-soft);
   text-align: center;
 }
 .owner-security-signals .owner-button:hover {
-  background: var(--owner-primary);
-  color: var(--owner-primary-text);
+  border-color: var(--owner-accent);
+  background: var(--owner-soft);
 }
 .owner-providers > h2 {
   font-size: 0.95rem;
