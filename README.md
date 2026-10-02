@@ -1,349 +1,367 @@
 # WebDev Coursework Platform
 
-A full-stack academic portfolio and learning platform built around my Santa
-Monica College Web Development coursework.
+**An academic portfolio and full-stack learning platform with personal accounts
+and role-based administration.**
 
-This project is both:
+Built by **Serge Hall** around Santa Monica College Web Development coursework,
+this project brings course materials, assignments, coding practice, and account
+management into one application. It documents an educational journey while
+putting frontend, backend, database, cloud, and security concepts into practice.
 
-- a working full-stack platform with frontend and backend applications
-- a documented record of coursework, assignments, and applied technical growth
+[Visit the platform](https://webdev-coursework.com) ·
+[Backend API](https://api.webdev-coursework.com) ·
+[Local setup](#getting-started) · [Account documentation](#documentation)
 
----
+## Platform Highlights
 
-## Project Purpose
+| Area                     | What it includes                                                                                        |
+| ------------------------ | ------------------------------------------------------------------------------------------------------- |
+| **Coursework**           | Course navigation, module materials, assignments, learning resources, and completion pages              |
+| **Coding practice**      | Sandboxed Code Playground for JavaScript and Python                                                     |
+| **Assessments**          | Shared assessment UI, quiz APIs, answer-token flows, and progress tracking                              |
+| **Personal account**     | Overview, profile, preferences, sign-in settings, and active sessions                                   |
+| **Administration**       | Presentation QR analytics, security activity, and account role management for the primary administrator |
+| **Responsive interface** | Desktop and mobile navigation, light and dark themes, and account-aware menus                           |
 
-This repository serves as a structured academic portfolio documenting my
-progress through Santa Monica College Web Development coursework.
+## Personal Accounts and Roles
 
-It brings together the knowledge, assignments, and practical outcomes from the
-classes I have completed, while showing how that learning was applied in a real
-project environment. The platform is designed to capture both the educational
-journey and the hands-on implementation work behind it.
+The platform now includes a dedicated account workspace at `/account/overview`.
+Visitors can explore the public coursework, while registered users get access to
+their own profile, preferences, and security settings.
 
-Through this project, I use a single application to:
+### Account experience
 
-- document coursework, assignments, and learning progress
-- reinforce new concepts through practical implementation
-- apply classroom knowledge across frontend, backend, databases, cloud,
-  networking, and security
-- organize academic work inside a production-style monorepo
-- build a portfolio project that reflects both training and real development
-  practice
+- **Registration and sign-in:** username/email and password, or GitHub OAuth
+  when configured. Email registration requires confirmation; confirmation
+  resending, forgotten-password recovery, and password reset have dedicated
+  screens. Accounts with MFA complete a separate verification step before access.
+- **Overview:** personal shortcuts for regular users; presentation statistics
+  and account shortcuts for administrators. The header menu provides account
+  navigation and sign-out.
+- **Profile:** editable display name and unique site username. The page shows
+  registration source, GitHub connection, password sign-in availability, and
+  email confirmation status. A stored email cannot be edited here; changing a
+  site username does not change the GitHub identity.
+- **Preferences:** portfolio/light/dark theme, time zone with device detection,
+  three date formats, 12- or 24-hour clock, and a timestamp preview. Administrators
+  can also save default QR report periods and security activity periods/page sizes.
+- **Password:** change an existing password or create a site password after
+  confirming an email on a GitHub-only account. New passwords require 12–128
+  characters. Password changes and resets end existing account sessions.
+- **Providers:** explicitly connect GitHub, or disconnect it when password
+  sign-in remains available. Accounts without an email can add one through a
+  confirmation link, resend the link, or cancel the pending request. Provider
+  actions that change sign-in methods require a recent sign-in and fresh MFA proof when MFA
+  is enabled; completed identity changes end existing sessions.
+- **Two-factor authentication:** QR code or manual authenticator setup with a
+  ten-minute enrollment window, setup cancellation, and code verification.
+  Recovery codes appear once and can be copied or downloaded; the UI shows the
+  remaining count and supports replacing the set, verifying the current session,
+  and disabling MFA after confirmation. Authenticator or recovery codes protect
+  both password and GitHub sign-in.
+- **Sessions:** browser, operating system, coarse device category, sign-in method,
+  sign-in time, last activity, and expiry, with the current session identified.
+  Sessions load five at a time and can be refreshed. A confirmation dialog lets
+  the user end all sessions, including the current one.
 
-Although this is an educational project, it is intentionally developed with
-professional engineering structure and workflows so that it functions both as a
-learning tool and as a long-term portfolio artifact.
+Feature availability depends on server configuration and deployment. The
+[provider guide](docs/account-providers.md) and [MFA guide](docs/account-mfa.md)
+describe prerequisites, validation, and rollout status.
 
----
+### Access model
 
-## Current Course Track
+The application uses two roles: **`client`** for a regular user and **`admin`**
+for an administrator. The primary administrator has additional role-management
+permissions within the `admin` role.
 
-The platform currently reflects this active SMC pathway:
+| Capability                                              | Regular user (`client`) | Administrator (`admin`) | Primary administrator (`admin`) |
+| ------------------------------------------------------- | ----------------------- | ----------------------- | ------------------------------- |
+| Explore public coursework and resources                 | Yes                     | Yes                     | Yes                             |
+| Manage own profile, preferences, and security           | Yes                     | Yes                     | Yes                             |
+| View presentation QR reports                            | —                       | Yes                     | Yes                             |
+| View administration security activity                   | —                       | Yes                     | Yes                             |
+| List accounts and assign or remove administrator access | —                       | —                       | Yes                             |
 
-- **CS 56** - Advanced Java Programming
-- **CS 60** - Database Concepts & Applications
-- **CS 70** - Network Fundamentals and Architecture
-- **CS 79A** - Introduction to Cloud Computing
-- **CS 80** - Internet Programming
-- **CS 81** - JavaScript Programming
-- **CS 85** - PHP Programming
-- **CS 79D** - Security in Amazon Web Services
-- **CS 79C** - Compute Engines in Amazon Web Services
-- **CS 87A** - Python Programming
+New registrations always receive the `client` role; users cannot select their
+own permissions. Only the primary administrator can change another account's
+role, and the primary administrator cannot be demoted. Role changes invalidate
+the affected account's existing sessions.
 
----
+Authorization is enforced by the backend using the stored account role and
+session revision. Account sessions last one hour and use opaque HttpOnly,
+SameSite=Strict cookies with Secure enabled in production. Account mutations
+require a trusted origin; sensitive actions also check recent authentication
+and MFA where applicable. Authentication responses use `Cache-Control: no-store`,
+and rate limits apply to account access and authentication flows.
 
-## What The Platform Includes
+Coursework progress currently uses a browser client ID stored in `localStorage`.
+It is independent of the account session; account registration does not provide
+account-based progress synchronization across devices. The administrative API
+key used by coursework endpoints is also separate from account roles.
 
-- Course-centered navigation with home, pathway, coursework, and resources views
-- Per-course assignment and module organization with route-based loading
-- Sandboxed Code Playground for JavaScript and Python practice
-- Progress tracking, module completion flows, and end-of-course completion pages
-- Backend API for coursework metadata, quiz delivery, answer-token flows, and progress persistence
-- Responsive layout that adapts across desktop and mobile navigation patterns
+### Account navigation
 
----
+| Route                          | Purpose                                                                                     |
+| ------------------------------ | ------------------------------------------------------------------------------------------- |
+| `/account/register`            | Create an account                                                                           |
+| `/account/login`               | Sign in with an available method                                                            |
+| `/account/verify-email`        | Confirm registration or a newly added email                                                 |
+| `/account/resend-verification` | Request another registration confirmation link                                              |
+| `/account/forgot-password`     | Request a password reset email                                                              |
+| `/account/reset-password`      | Set a new password through a valid reset link                                               |
+| `/account/reauthenticate`      | Confirm sign-in again before a sensitive action                                             |
+| `/account/mfa`                 | Complete a pending sign-in with an authenticator or recovery code                           |
+| `/account/overview`            | Open the personal workspace                                                                 |
+| `/account/profile`             | Update profile details                                                                      |
+| `/account/preferences`         | Configure appearance and date/time preferences                                              |
+| `/account/security`            | Manage passwords, providers, MFA, and sessions                                              |
+| `/account/administration`      | View administrator reports and security activity; manage roles as the primary administrator |
 
-## Tech Stack
+Legacy `/owner/*` routes remain compatibility aliases. Account API requests use
+`/api/account/*`.
 
-### Frontend App
+Security has four directly addressable windows:
+`/account/security#password`, `/account/security#providers`,
+`/account/security#mfa`, and `/account/security#sessions`.
 
-- React 19 + React DOM 19
-- TypeScript 5
-- Vite 7
-- React Router 7
-- Tailwind CSS 3 + PostCSS + Autoprefixer
-- Framer Motion
-- Lucide React + React Icons
-- Zod environment validation
-- Sentry browser instrumentation
-- Vitest 3 + Testing Library + JSDOM
+### Administrator workspace
 
-### Backend API
+Overview and Administration offer presentation QR-link reports for the last
+**7, 30, or 90 days**, including totals, device/OS/browser breakdowns, and daily
+counts grouped in UTC. These are anonymous visits through the marked presentation
+link; shared links also count, and totals do not identify unique people or prove
+a physical QR scan.
 
-- NestJS 11
-- TypeScript 5
-- TypeORM 0.3
-- PostgreSQL via `pg`
-- JWT-based quiz token flows with `@nestjs/jwt`
-- Swagger/OpenAPI via `@nestjs/swagger`
-- `class-validator` + `class-transformer`
-- Jest 29 + Supertest
+Administration also includes a security activity journal with **1-, 7-, 30-, or
+365-day** periods, allowed/denied results, action-group filters, and **10, 25, or
+50 records per page**. Reports and activity can be refreshed. The primary
+administrator additionally sees the account list and role-change confirmation
+controls.
 
-### Tooling and Monorepo
+## Coursework
 
-- Yarn 4 workspaces with Plug'n'Play
-- ESLint 9
-- Prettier 3
-- Concurrent frontend/backend local dev workflow
-- Vercel frontend deployment and Heroku-oriented backend build flow
+The portfolio covers the following Santa Monica College course track:
 
----
+| Course     | Subject                                |
+| ---------- | -------------------------------------- |
+| **CS 56**  | Advanced Java Programming              |
+| **CS 60**  | Database Concepts & Applications       |
+| **CS 70**  | Network Fundamentals and Architecture  |
+| **CS 79A** | Introduction to Cloud Computing        |
+| **CS 79C** | Compute Engines in Amazon Web Services |
+| **CS 79D** | Security in Amazon Web Services        |
+| **CS 80**  | Internet Programming                   |
+| **CS 81**  | JavaScript Programming                 |
+| **CS 85**  | PHP Programming                        |
+| **CS 87A** | Python Programming                     |
 
-## Monorepo Layout
+## Technology Stack
 
-<details>
-<summary><strong>Show monorepo layout</strong></summary>
+Dependency snapshot: **October 2, 2026**, from the resolved Yarn dependencies. Workspace
+`package.json` files declare dependency ranges; `yarn.lock` pins resolutions.
+
+| Layer                                  | Technologies                                                                                                        |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| **Frontend**                           | React 19.2.6, React Router 7.15.1, TypeScript 6.0.3, Vite 8.0.14                                                    |
+| **Interface**                          | Tailwind CSS 4.3.0 via PostCSS 8.5.15, Framer Motion 12.40.0, Lucide React, React Icons                             |
+| **Frontend validation and monitoring** | Zod 4.4.3, Sentry React 10.54.0                                                                                     |
+| **Backend**                            | NestJS core 11.1.18 with Express 5.2.1, TypeScript 5.9.3, TypeORM 0.3.30, PostgreSQL (`pg` 8.21.0)                  |
+| **Identity and delivery**              | GitHub OAuth with PKCE, opaque cookie sessions, TOTP MFA with QR setup, SMTP via Nodemailer 10.0.13                 |
+| **API contracts**                      | Swagger/OpenAPI, class-validator, class-transformer; JWT for quiz answer tokens                                     |
+| **Background processing**              | PostgreSQL-backed runtime state and transactional mail outbox; optional Redis with ioredis 5.11.1 and BullMQ 6.3.11 |
+| **Frontend testing**                   | Vitest 4.1.7, Testing Library, JSDOM 29.1.1                                                                         |
+| **Backend testing**                    | Jest 29.7.0, Supertest 7.2.2, disposable PostgreSQL integration database                                            |
+| **Runtime and tooling**                | Node.js 24.15.0, Yarn 4.14.1 workspaces with Plug'n'Play, ESLint 9.39.4, Prettier 3.8.3                             |
+| **Local services and deployment**      | Docker Compose with PostgreSQL 17 and Redis 7; GitHub Actions, Vercel frontend, Heroku backend                      |
+
+## Repository Structure
 
 ```text
 webdev-coursework/
-├── .github/workflows/         # CI and deployment automation
-├── docs/                      # Retrospectives and project notes
-├── frontend/                  # React + Vite learning platform
-│   ├── public/                # Static assets, icons, course materials
-│   ├── assets/                # Local design/source assets
+├── .github/workflows/         # CI and frontend deployment
+├── docs/                      # Architecture, account guides, and retrospectives
+├── frontend/                  # React + Vite application
+│   ├── public/                # Static assets and course materials
+│   └── src/
+│       ├── api/               # API clients and course configuration
+│       ├── components/        # Shared interface components
+│       ├── context/           # Theme and coursework progress
+│       ├── courses/           # Course modules and assignments
+│       ├── features/
+│       │   ├── assessment/    # Shared assessment experience
+│       │   └── owner/         # Accounts, security, and administration
+│       ├── pages/             # Public screens
+│       └── routes/            # Routing and lazy loading
+├── backend/                   # NestJS API
+│   ├── scripts/               # Configuration and migration tools
 │   ├── src/
-│   │   ├── api/               # Frontend API clients and config
-│   │   ├── components/        # Shared UI components and buttons
-│   │   ├── config/            # Environment validation and app config
-│   │   ├── context/           # Theme and progress providers
-│   │   ├── courses/           # Course/module content and assignment scaffolds
-│   │   ├── data/              # Course metadata and static datasets
-│   │   ├── hooks/             # Reusable React hooks
-│   │   ├── layout/            # App shell layout
-│   │   ├── pages/             # Route-level screens
-│   │   ├── routes/            # Router wiring and lazy screen loading
-│   │   ├── styles/            # Global CSS layers and resets
-│   │   ├── test/              # Shared frontend test helpers
-│   │   ├── ui/                # UI utilities, icons, theme helpers
-│   │   └── utils/             # Sandbox, security, and helper utilities
-│   ├── vite.config.ts
-│   └── setupTests.ts
-├── backend/                   # NestJS API and quiz/progress services
-│   ├── public/                # Static assets served by Nest
-│   ├── uploads/               # Uploaded/generated backend files
-│   ├── src/
-│   │   ├── app/               # Health/info endpoints and app DTOs
-│   │   ├── bootstrap/         # CORS, Swagger, validation bootstrap helpers
-│   │   ├── db/                # TypeORM/Postgres configuration
-│   │   ├── guards/            # Admin and quiz auth guards
-│   │   ├── middlewares/       # Request logging middleware
-│   │   ├── quiz/              # Quiz API, DTOs, entities, repositories, service
-│   │   ├── swagger/           # API documentation registry/builders
-│   │   └── tokens/            # JWT answer-token issuance flow
-│   ├── test/                  # Backend unit and e2e tests
-│   ├── nest-cli.json
-│   └── tsconfig*.json
-├── package.json               # Root workspace orchestration scripts
-├── yarn.lock
-└── README.md
+│   │   ├── accounts/          # Registration, email, providers, and MFA
+│   │   ├── analytics/         # Sessions, roles, QR reports, and security activity
+│   │   ├── db/                # PostgreSQL configuration and migrations
+│   │   ├── guards/            # Coursework API authorization
+│   │   ├── quiz/              # Assessments and progress services
+│   │   └── tokens/            # Quiz answer-token issuance
+│   └── test/                  # Backend unit and end-to-end tests
+├── compose.local.yml          # Dedicated local PostgreSQL and Redis
+├── package.json               # Workspace scripts
+└── yarn.lock
 ```
 
-</details>
-
----
+The account implementation retains the internal `owner` naming for compatibility;
+the public interface supports both regular users and administrators.
 
 ## Getting Started
 
-<details>
-<summary><strong>Show getting started</strong></summary>
+### 1. Install prerequisites
 
-### 1. Prerequisites
-
-- **Node.js**: `24.15.0`
-- **Yarn**: `4.14.1` (via Corepack)
-
-```bash
-nvm use
-node -v
-yarn -v
-yarn runtime:check
-```
-
-### 2. Clone and install
+- **Node.js 24.15.0**, matching `.nvmrc`.
+- **Yarn 4.14.1**, managed through Corepack.
+- **PostgreSQL** for the backend; Docker Compose for the dedicated local account
+  environment described below.
 
 ```bash
 git clone https://github.com/sergehall/webdev-coursework
 cd webdev-coursework
+nvm use
 corepack enable
 corepack prepare yarn@4.14.1 --activate
+yarn runtime:check
 yarn install:strict
 ```
 
-If needed, you can use:
-
-```bash
-yarn install:fresh
-```
-
-### 3. Configure environment files
-
-This repo does not currently include committed `.env.example` files, so create
-the local env files manually.
-
-<details>
-<summary><strong>Show frontend/.env.local example</strong></summary>
+### 2. Configure the applications
 
 Create `frontend/.env.local`:
 
 ```dotenv
 VITE_ENVIRONMENT=development
-VITE_API_URL=http://localhost:5050
+VITE_API_URL=
 VITE_QUIZ_SECRET=dev-quiz-secret
-# Optional:
+VITE_OWNER_API_URL=
+# Optional: collect marked presentation QR-link visits:
+VITE_QR_ANALYTICS_ENABLED=true
+# Optional monitoring:
 # VITE_SENTRY_DSN=https://examplePublicKey@o0.ingest.sentry.io/0
 ```
 
-</details>
+Empty API URLs use Vite's local proxy to `http://localhost:5050`. The root
+`dev:frontend` script also clears `VITE_API_URL` for local development.
 
-<details>
-<summary><strong>Show backend/.env example</strong></summary>
+Create the backend configuration from the committed template:
 
-Create `backend/.env`:
-
-```dotenv
-PORT=5050
-DATABASE_URL=postgres://postgres:postgres@localhost:5432/webdev_coursework
-QUIZ_SECRET_KEY=dev-quiz-secret
-QUIZ_ANSWERS_JWT_SECRET=replace-with-a-long-random-string
-QUIZ_ANSWERS_JWT_TTL=1h
-QUIZ_JWT_ISSUER=webdev-coursework
-QUIZ_JWT_AUDIENCE=webdev-coursework-frontend
-ADMIN_API_KEY=dev-admin-key
-ALLOWED_ORIGINS=http://localhost:3000
-POSTGRES_SSL=false
-TYPEORM_SYNCHRONIZE=false
+```bash
+cp backend/.env.example backend/.env
 ```
 
-</details>
+Set `DATABASE_URL` to your local PostgreSQL database, replace the placeholder
+quiz/JWT/admin-key values, and keep `TYPEORM_SYNCHRONIZE=false`. Use
+`POSTGRES_SSL=false` locally. `QUIZ_SECRET_KEY` must match `VITE_QUIZ_SECRET`.
+Vite variables are included in the browser bundle; account, SMTP, OAuth, and MFA
+secrets belong only in backend configuration.
 
-Notes:
+### 3. Configure accounts locally
 
-- `VITE_API_URL` should point to the backend server.
-- `VITE_QUIZ_SECRET` and `QUIZ_SECRET_KEY` should match.
-- `DATABASE_URL` must be valid or the Nest app will fail during startup.
-- `POSTGRES_SSL=false` is the typical local setting.
+For the dedicated local account environment:
 
-### 4. Run locally
+```bash
+yarn workspace backend owner:configure:local
+docker compose --env-file backend/.env.local -f compose.local.yml up -d --wait
+yarn workspace backend migration:run:local
+```
 
-Start both workspaces:
+The configuration helper creates ignored `backend/.env.local`, generates missing
+local credentials and an MFA key, and targets PostgreSQL on port `55432` and
+Redis on port `56379`. Development loads this file before `backend/.env`.
+
+Account activation requires `QR_ANALYTICS_ENABLED=true`, a valid
+`OWNER_PASSWORD_HASH`, `OWNER_SESSION_SECRET`, and exact `OWNER_ALLOWED_ORIGINS`.
+The backend flag currently gates both account services and QR analytics; the
+frontend `VITE_QR_ANALYTICS_ENABLED` flag only controls QR event collection.
+The helper leaves account activation disabled until a GitHub secret is present;
+its GitHub settings are specific to this portfolio. Configure all four GitHub
+OAuth variables for your own application, or clear all four for password-only
+operation before enabling accounts. Email registration and password recovery
+also require SMTP configuration.
+
+Use `http://127.0.0.1:3000` with the helper's origin settings. Follow the
+[account setup guide](docs/owner-account-analytics.md) for configuration details
+and the [MFA guide](docs/account-mfa.md) for key management. Local database volumes
+persist between runs.
+
+### 4. Start development
 
 ```bash
 yarn dev
 ```
 
-Or start each app independently:
+To start the applications separately:
 
 ```bash
 yarn dev:frontend
 yarn dev:backend
 ```
 
-Default local endpoints:
+| Service          | Local address           |
+| ---------------- | ----------------------- |
+| Frontend         | `http://127.0.0.1:3000` |
+| Backend API      | `http://localhost:5050` |
+| Frontend preview | `http://localhost:4173` |
 
-- Frontend dev: `http://localhost:3000`
-- Frontend preview: `http://localhost:4173`
-- Backend API: `http://localhost:5050`
-
-### 5. Quality checks
+### 5. Validate and build
 
 ```bash
 yarn lint
 yarn typecheck
 yarn test:frontend
 yarn test:backend
-```
-
-For workspace-specific verification, you can also run:
-
-```bash
-yarn check:frontend
-yarn check:backend
-```
-
-### 6. Production build
-
-```bash
 yarn build
 ```
 
-</details>
-
----
-
-## Root Scripts
+Account HTTP integration tests use a separate disposable PostgreSQL database;
+setup and execution are documented in the account guides.
 
 <details>
-<summary><strong>Show root scripts</strong></summary>
+<summary><strong>Additional workspace commands</strong></summary>
 
-| Script                  | Description                                    |
-| ----------------------- | ---------------------------------------------- |
-| `yarn install:strict`   | Install with immutable lockfile enforcement    |
-| `yarn install:fresh`    | Standard workspace install                     |
-| `yarn dev`              | Run frontend and backend together              |
-| `yarn dev:frontend`     | Start only the frontend workspace              |
-| `yarn dev:backend`      | Start only the backend workspace               |
-| `yarn test:frontend`    | Run frontend tests from the root               |
-| `yarn test:backend`     | Run backend tests from the root                |
-| `yarn typecheck`        | Run frontend and backend TypeScript checks     |
-| `yarn lint`             | Lint JS/TS in the root and both workspaces     |
-| `yarn lint:fix`         | Auto-fix JS/TS in the root and both workspaces |
-| `yarn format`           | Format supported files across the repository   |
-| `yarn format:check`     | Check formatting across the repository         |
-| `yarn check:frontend`   | Run frontend combined checks                   |
-| `yarn check:backend`    | Run backend combined checks                    |
-| `yarn clean:meta`       | Remove cache, lock metadata, and build outputs |
-| `yarn clean:full`       | Run full cleanup for generated artifacts       |
-| `yarn build:fast`       | Build frontend fast path + backend build       |
-| `yarn build`            | Full frontend build + backend build            |
-| `yarn heroku-postbuild` | Build the backend for Heroku-style deploys     |
+| Command                 | Purpose                                                         |
+| ----------------------- | --------------------------------------------------------------- |
+| `yarn check:frontend`   | Frontend TypeScript and lint checks                             |
+| `yarn check:backend`    | Backend TypeScript and lint checks                              |
+| `yarn lint:fix`         | Apply available ESLint fixes                                    |
+| `yarn format`           | Format supported repository files                               |
+| `yarn format:check`     | Check repository formatting                                     |
+| `yarn build:fast`       | Frontend bundle without its TypeScript gate, plus backend build |
+| `yarn heroku-postbuild` | Build the backend for Heroku deployment                         |
 
 </details>
 
-ESLint checks JavaScript and TypeScript, including configuration files, scripts,
-tests, mocks, and browser workers. The root lint commands visit all three scopes
-even if an earlier scope reports lint errors. Workspace lint commands use the
-same file coverage within their own workspace.
+## Documentation
 
-Prettier owns formatting; ESLint owns code-quality rules. Both workspaces inherit
-the root `prettier.config.cjs`, with Tailwind class sorting enabled on the
-frontend. Run `yarn lint:fix` followed by `yarn format`, then `yarn lint` and
-`yarn format:check` to verify the result. Generated output, dependencies, caches,
-lockfiles, supplied course materials, and copied assets are excluded; Prettier
-also respects `.gitignore`. Workspace format commands load the shared ignore
-files explicitly so they have the same exclusions when run from a subdirectory.
-
----
-
-## Learning Focus Areas
-
-This project is designed to show growth across:
-
-- full-stack application architecture
-- code organization and maintainability
-- safe defaults in frontend sandbox features
-- test coverage and developer workflow quality
-- practical cloud/security/database literacy for web development
-
----
+| Guide                                                                  | Contents                                                                     |
+| ---------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| [Accounts and analytics](docs/owner-account-analytics.md)              | Roles, authentication, email delivery, local setup, and QR reporting         |
+| [Connected providers](docs/account-providers.md)                       | GitHub linking, verified email addition, and provider lifecycle              |
+| [Multi-factor authentication](docs/account-mfa.md)                     | Authenticator setup, recovery codes, encryption keys, and rollout procedures |
+| [Account implementation plan](docs/account-plan.md)                    | Account design and implementation notes                                      |
+| [Assessment standard](docs/quiz-assessment-standard.md)                | Canonical requirements for quizzes, practice assessments, and migrations     |
+| [Shared assessment module](frontend/src/features/assessment/README.md) | Assessment integration and frontend architecture                             |
 
 ## Deployment
 
-- Frontend: [webdev-coursework.com](https://webdev-coursework.com)
-- Backend API: [api.webdev-coursework.com](https://api.webdev-coursework.com)
+The frontend is deployed through **Vercel** and the backend through **Heroku**.
+The backend release process applies the explicit account migration set before
+starting the application. Frontend and backend account configuration must use
+compatible site origins for cookie sessions.
 
----
+- **Platform:** [webdev-coursework.com](https://webdev-coursework.com)
+- **API:** [api.webdev-coursework.com](https://api.webdev-coursework.com)
 
-## License
+Deployment and feature activation are separate steps. Consult the account guides
+for the rollout status of MFA and connected-provider features.
 
-Educational use only. Created as coursework and learning portfolio content for Santa Monica College.
+## Educational Use
+
+Created as coursework and learning portfolio content for Santa Monica College.
+The project demonstrates applied web engineering across application architecture,
+account security, databases, cloud infrastructure, and developer workflows.
+Educational use only.
