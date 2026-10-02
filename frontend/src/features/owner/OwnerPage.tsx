@@ -143,7 +143,7 @@ function ProfilePanel({ profile }: { profile: OwnerProfile }) {
         title="Profile"
         description="Manage your display name and site username."
       />
-      <section className="owner-card owner-narrow">
+      <section className="owner-card">
         <form className="owner-form" onSubmit={(e) => void save(e)}>
           <div className="owner-profile-fields">
             <label>
@@ -223,7 +223,7 @@ function ProfilePanel({ profile }: { profile: OwnerProfile }) {
           {error && <Message error>{error}</Message>}
         </form>
       </section>
-      <section className="owner-card owner-narrow owner-profile-identity">
+      <section className="owner-card owner-profile-identity">
         <h2>Account identity</h2>
         <dl className="owner-details">
           <div>

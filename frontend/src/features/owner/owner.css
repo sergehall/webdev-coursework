@@ -1,6 +1,7 @@
 .owner-workspace {
   --owner-bg: #f6f8f7;
   --owner-card: #fff;
+  --owner-panel: #f0f4f2;
   --owner-text: #1c2923;
   --owner-muted: #59685f;
   --owner-border: #dce5df;
@@ -20,6 +21,7 @@
 .dark .owner-workspace {
   --owner-bg: #111827;
   --owner-card: #1b2432;
+  --owner-panel: #101724;
   --owner-text: #f4fff8;
   --owner-muted: #c0d0c7;
   --owner-border: #365044;
@@ -28,7 +30,7 @@
   --owner-soft: #133d29;
 }
 .owner-content {
-  padding: clamp(0.8rem, 1.6vw, 1.25rem);
+  padding-block: clamp(0.8rem, 1.6vw, 1.25rem);
   display: grid;
   gap: 0.85rem;
 }
@@ -88,7 +90,7 @@
   border: 1px solid var(--owner-border);
   border-radius: 0.65rem;
   padding: 0.85rem 1rem;
-  background: var(--owner-card);
+  background: var(--owner-panel);
   box-shadow: none;
 }
 .owner-card h2 {
@@ -120,9 +122,6 @@
   color: var(--owner-muted);
   font-size: 0.75rem;
   line-height: 1.5;
-}
-.owner-narrow {
-  max-width: 38rem;
 }
 .owner-form {
   display: grid;
