@@ -6,8 +6,13 @@ const {
 } = require("node:fs");
 const { randomBytes, scryptSync } = require("node:crypto");
 const { resolve } = require("node:path");
+// The local runtime uses the same PostgreSQL infrastructure as Heroku.
 const file = resolve(__dirname, "../.env.local");
-const original = existsSync(file) ? readFileSync(file, "utf8") : "";
+// Drop retired state-store credentials while preserving existing account/mail secrets.
+const original = (existsSync(file) ? readFileSync(file, "utf8") : "").replace(
+  /^(?:REDIS_URL|LOCAL_REDIS_PASSWORD)=.*\r?\n?/gm,
+  ""
+);
 const settings = Object.fromEntries(
   original
     .split(/\r?\n/)
@@ -19,7 +24,6 @@ const settings = Object.fromEntries(
 );
 const random = () => randomBytes(32).toString("base64url");
 settings.LOCAL_POSTGRES_PASSWORD ||= random();
-settings.LOCAL_REDIS_PASSWORD ||= random();
 settings.OWNER_SESSION_SECRET ||= random();
 settings.MFA_ENCRYPTION_KEY ||= randomBytes(32).toString("base64");
 settings.MFA_ENCRYPTION_KEY_ID ||= "v1";
@@ -33,7 +37,6 @@ Object.assign(settings, {
   PORT: "5050",
   POSTGRES_SSL: "false",
   DATABASE_URL: `postgres://webdev_local:${settings.LOCAL_POSTGRES_PASSWORD}@127.0.0.1:55432/webdev_coursework_local`,
-  REDIS_URL: `redis://:${settings.LOCAL_REDIS_PASSWORD}@127.0.0.1:56379/0`,
   OWNER_ALLOWED_ORIGINS: "http://127.0.0.1:3000",
   ALLOWED_ORIGINS: "http://127.0.0.1:3000",
   GITHUB_CLIENT_ID: "Ov23liKJ9hxIL0RaveDO",
@@ -52,5 +55,7 @@ if (existsSync(file)) chmodSync(file, 0o600);
 writeFileSync(file, output, { mode: 0o600 });
 console.log(
   "Local owner configuration saved (values hidden). OAuth enabled:",
-  settings.QR_ANALYTICS_ENABLED === "true"
+  settings.QR_ANALYTICS_ENABLED === "true",
+  "State storage:",
+  "PostgreSQL"
 );

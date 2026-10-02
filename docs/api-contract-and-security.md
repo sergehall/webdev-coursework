@@ -100,11 +100,10 @@ no-store`. Existing account-specific limit errors also return 429 but may omit
 Retry-After. CORS exposes this header to trusted frontend origins. Clients must
 back off and should not automatically repeat email/password/provider mutations.
 
-Counters use Redis when `REDIS_URL` is configured, otherwise atomic PostgreSQL
-upserts in the existing `webdev_runtime_state` table. They do not depend on
+Counters use atomic PostgreSQL upserts in the existing `webdev_runtime_state` table. They do not depend on
 `QR_ANALYTICS_ENABLED`. No process-local production counters or per-process
 fallbacks are used. Replicas must share storage and the same HMAC secret.
-Redis commands have bounded timeouts; storage failure returns 503 instead of
+Storage failure returns 503 instead of
 allowing unmetered requests. PostgreSQL counters cap denied counts to prevent
 integer overflow; bounded expiration cleanup runs every minute even when QR
 analytics is disabled. Counter keys contain HMAC address digests, never raw IPs.
@@ -217,14 +216,14 @@ environment variables. Do not cache account, MFA enrollment or recovery output.
 ## Verification and production checklist
 
 - Configure trusted CORS/account origins and infrastructure-only proxy trust.
-- Apply account/runtime-state migrations; configure shared Redis or PostgreSQL.
+- Apply account/runtime-state migrations; configure shared PostgreSQL.
 - Keep HMAC secrets identical across replicas and private on the server.
 - Keep production Swagger disabled, or configure dedicated Basic credentials
   and HTTPS before explicitly enabling it.
 - Inspect the generated document and verify protected UI/assets/JSON/YAML.
 - Verify 429/backoff, invalid requests counting, alias sharing, IPv6 grouping,
   spoofed forwarding headers, origin rejection and 503 storage failure.
-- Verify counters atomically across replicas on PostgreSQL and Redis.
+- Verify counters atomically across replicas on PostgreSQL.
 - Run account/MFA/provider regressions to preserve existing authorization.
 
 Focused checks:
@@ -237,7 +236,7 @@ yarn workspace backend check
 
 The existing account integration suite and the new storage suite use disposable
 test services only. Start PostgreSQL on `127.0.0.1:55439` with database
-`owner_test` and password `test-local-only`, and Redis on `127.0.0.1:56380`:
+`owner_test` and password `test-local-only`:
 
 ```sh
 API_SECURITY_INTEGRATION_TEST=true OWNER_INTEGRATION_TEST=true \

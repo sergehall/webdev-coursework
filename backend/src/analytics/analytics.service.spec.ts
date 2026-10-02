@@ -33,12 +33,13 @@ function fixture() {
         role: identity.id === 42 ? "admin" : "client",
       })),
   });
-  const redis = {
-    status: "ready",
+  const runtimeState = {
     get: jest.fn(),
     set: jest.fn(),
-    eval: jest.fn().mockResolvedValue(1),
-    del: jest.fn(),
+    increment: jest.fn().mockResolvedValue(1),
+    enqueue: jest.fn().mockResolvedValue(1),
+    take: jest.fn(),
+    remove: jest.fn(),
   };
   const mfa = {
     enabled: jest.fn().mockResolvedValue(false),
@@ -57,7 +58,7 @@ function fixture() {
     )
   );
   Object.assign(service, {
-    redis,
+    runtimeState,
     secret: "a".repeat(40),
     origins: ["http://localhost:3000"],
     github: {
@@ -73,26 +74,28 @@ function fixture() {
     query: {},
     get: jest.fn().mockReturnValue("http://localhost:3000"),
   } as unknown as Request;
-  return { service, store, redis, req, mfa };
+  return { service, store, runtimeState, req, mfa };
 }
 
 describe("Owner access and anonymous analytics", () => {
   it("removes a newly issued cache token if registering its session fails", async () => {
-    const { service, store, redis } = fixture();
+    const { service, store, runtimeState } = fixture();
     store.recordSession.mockRejectedValueOnce(
       new Error("database unavailable")
     );
     await expect(service.createSession(await store.owner())).rejects.toThrow(
       "database unavailable"
     );
-    expect(redis.del).toHaveBeenCalledWith(redis.set.mock.calls[0][0]);
+    expect(runtimeState.remove).toHaveBeenCalledWith(
+      runtimeState.set.mock.calls[0][0]
+    );
     expect(store.recordSession.mock.calls[0][0]).not.toHaveProperty("token");
     expect(store.recordSession.mock.calls[0][0].tokenHash).toMatch(
       /^[0-9a-f]{64}$/
     );
   });
   it("blocks password login and owner aliases before looking up credentials when Turnstile is required", async () => {
-    const { service, req, store, redis } = fixture();
+    const { service, req, store, runtimeState } = fixture();
     Object.assign(service, {
       turnstile: new TurnstileService(
         new ConfigService({
@@ -106,7 +109,7 @@ describe("Owner access and anonymous analytics", () => {
       service.login(req, "a long private password")
     ).rejects.toMatchObject({ response: { code: "TURNSTILE_REJECTED" } });
     expect(store.owner).not.toHaveBeenCalled();
-    expect(redis.eval).toHaveBeenCalledTimes(2);
+    expect(runtimeState.increment).toHaveBeenCalledTimes(2);
   });
   it("hashes passwords and rejects incorrect or malformed hashes", async () => {
     const hash = await hashOwnerPassword("a long private password");
@@ -119,9 +122,9 @@ describe("Owner access and anonymous analytics", () => {
   it.each(["root_owner", "client", "support", "owner"])(
     "denies a %s session",
     async (role) => {
-      const { service, req, redis, store } = fixture();
+      const { service, req, runtimeState, store } = fixture();
       req.cookies.webdev_owner = "x".repeat(43);
-      redis.get.mockResolvedValue(
+      runtimeState.get.mockResolvedValue(
         JSON.stringify({
           accountId: "00000000-0000-4000-8000-000000000001",
           role,
@@ -136,9 +139,9 @@ describe("Owner access and anonymous analytics", () => {
     }
   );
   it.each(["expired", "revoked"])("denies %s root sessions", async (reason) => {
-    const { service, req, redis } = fixture();
+    const { service, req, runtimeState } = fixture();
     req.cookies.webdev_owner = "x".repeat(43);
-    redis.get.mockResolvedValue(
+    runtimeState.get.mockResolvedValue(
       JSON.stringify({
         accountId: "00000000-0000-4000-8000-000000000001",
         role: "admin",
@@ -151,9 +154,9 @@ describe("Owner access and anonymous analytics", () => {
     await expect(service.session(req)).rejects.toThrow();
   });
   it("returns only safe session fields to the browser", async () => {
-    const { service, req, redis } = fixture();
+    const { service, req, runtimeState } = fixture();
     req.cookies.webdev_owner = "x".repeat(43);
-    redis.get.mockResolvedValue(
+    runtimeState.get.mockResolvedValue(
       JSON.stringify({
         accountId: "00000000-0000-4000-8000-000000000001",
         role: "admin",
@@ -176,18 +179,17 @@ describe("Owner access and anonymous analytics", () => {
     expect(store.owner).not.toHaveBeenCalled();
   });
   it("creates PKCE challenge and ten-minute one-time OAuth state", async () => {
-    const { service, req, redis } = fixture();
+    const { service, req, runtimeState } = fixture();
     const result = await service.githubStart(req);
     const url = new URL(result.url);
     expect(url.origin).toBe("https://github.com");
     expect(url.searchParams.get("code_challenge_method")).toBe("S256");
     expect(url.searchParams.has("scope")).toBe(false);
-    expect(redis.set).toHaveBeenCalledWith(
+    expect(runtimeState.set).toHaveBeenCalledWith(
       expect.stringContaining(":oauth:"),
       expect.any(String),
-      "EX",
       600,
-      "NX"
+      true
     );
     expect(result.state).toHaveLength(43);
   });
@@ -203,12 +205,10 @@ describe("Owner access and anonymous analytics", () => {
   it.each([42, 999])(
     "creates a correctly scoped GitHub session for ID %s",
     async (id) => {
-      const { service, req, redis } = fixture();
+      const { service, req, runtimeState } = fixture();
       req.query = { code: "code", state: "x".repeat(43) };
       req.cookies.webdev_github_state = req.query.state;
-      redis.eval.mockImplementation(async (script: string) =>
-        script.includes("local v=") ? "verifier" : 1
-      );
+      runtimeState.take.mockResolvedValue("verifier");
       jest
         .spyOn(global, "fetch")
         .mockResolvedValueOnce(
@@ -225,20 +225,18 @@ describe("Owner access and anonymous analytics", () => {
       expect(await service.githubCallback(req)).toEqual({
         token: expect.stringMatching(/^[A-Za-z0-9_-]{43}$/),
       });
-      expect(JSON.parse(redis.set.mock.calls[0][1]).role).toBe(
+      expect(JSON.parse(runtimeState.set.mock.calls[0][1]).role).toBe(
         id === 42 ? "admin" : "client"
       );
     }
   );
   it("rejects consumed OAuth states", async () => {
-    const { service, req, redis } = fixture();
+    const { service, req, runtimeState } = fixture();
     req.query = { code: "code", state: "x".repeat(43) };
     req.cookies.webdev_github_state = req.query.state;
-    redis.eval.mockImplementation(async (script: string) =>
-      script.includes("local v=") ? null : 1
-    );
+    runtimeState.take.mockResolvedValue(null);
     await expect(service.githubCallback(req)).rejects.toThrow();
-    expect(redis.set).not.toHaveBeenCalled();
+    expect(runtimeState.set).not.toHaveBeenCalled();
   });
   it("normalizes devices without retaining raw UA or identifying models", () => {
     expect(
@@ -248,7 +246,7 @@ describe("Owner access and anonymous analytics", () => {
     ).toEqual({ device: "phone", os: "iOS", browser: "Safari" });
   });
   it("buffers only anonymous categories and server time", async () => {
-    const { service, req, redis } = fixture();
+    const { service, req, runtimeState } = fixture();
     (req.get as jest.Mock).mockReturnValue(
       "Mozilla/5.0 Android Chrome/100 Mobile"
     );
@@ -256,10 +254,7 @@ describe("Owner access and anonymous analytics", () => {
       eventId: "b884fa37-6fab-4a47-8da9-b195c9d9af5a",
       campaign: "esl10g-presentation-1",
     });
-    const call = redis.eval.mock.calls.find((call) =>
-      String(call[0]).includes("RPUSH")
-    );
-    const event = JSON.parse(call![3] as string);
+    const event = JSON.parse(runtimeState.enqueue.mock.calls[0][1] as string);
     expect(Object.keys(event).sort()).toEqual([
       "browser",
       "campaign",

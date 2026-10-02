@@ -75,6 +75,14 @@ and does not log secrets, tokens or provider error details. Forms clear tokens o
 expiry and refresh verification after each submitted attempt. Narrow forms use
 the compact widget. Production CSP allows Cloudflare's official script and frame.
 
+## Runtime storage
+
+The verifier calls Cloudflare directly. OAuth state, sessions and request budgets
+use one shared PostgreSQL implementation in local development and Heroku. OAuth
+state is atomically deleted on consumption and retains its ten-minute expiry,
+so replicas share the same one-time proof. No Redis service or credentials are
+required.
+
 ## API documentation
 
 When Swagger is enabled, existing documentation Basic Auth is checked first.

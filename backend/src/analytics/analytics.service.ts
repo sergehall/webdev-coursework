@@ -12,8 +12,6 @@ import {
 import { ConfigService } from "@nestjs/config";
 import { TurnstileService } from "../security/turnstile/turnstile.service";
 import { createHash, createHmac, randomBytes, randomUUID } from "crypto";
-import { Queue, Worker } from "bullmq";
-import Redis from "ioredis";
 import { PostgresState } from "./postgres-state";
 import { MfaService, type LoginResult } from "../accounts/mfa/mfa.service";
 import type { Request } from "express";
@@ -50,18 +48,13 @@ type OwnerSession = {
 const PREFIX = "webdev:qr";
 const SESSION_SECONDS = 60 * 60;
 const MAX_BUFFER = 10_000;
-const RATE_LIMIT = `local n = redis.call('INCR', KEYS[1]); if n == 1 then redis.call('EXPIRE', KEYS[1], ARGV[1]) end; return n`;
-const BUFFER = `if redis.call('LLEN', KEYS[1]) >= tonumber(ARGV[2]) then return 0 end; redis.call('RPUSH', KEYS[1], ARGV[1]); return 1`;
-const STAGE = `if redis.call('LLEN', KEYS[2]) == 0 then for i=1,500 do local v=redis.call('LPOP', KEYS[1]); if not v then break end; redis.call('RPUSH', KEYS[2], v) end end; return redis.call('LRANGE', KEYS[2], 0, -1)`;
 
 @Injectable()
 export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(AnalyticsService.name);
-  private redis?: Redis | PostgresState;
+  private runtimeState?: PostgresState;
   private timer?: ReturnType<typeof setInterval>;
   private flushing = false;
-  private queue?: Queue;
-  private worker?: Worker;
   private secret = "";
   private passwordHash = "";
   private origins: string[] = [];
@@ -88,9 +81,8 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
       // The frontend reads verification settings here; no build-time secret is needed.
       ...this.turnstile.publicOptions(),
       registrationEnabled:
-        !!this.config.get<string>("SMTP_HOST") &&
-        this.redis?.status === "ready",
-      githubEnabled: !!this.github && this.redis?.status === "ready",
+        !!this.config.get<string>("SMTP_HOST") && !!this.runtimeState,
+      githubEnabled: !!this.github && !!this.runtimeState,
     };
   }
 
@@ -113,7 +105,6 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
     if (this.config.get<string>("QR_ANALYTICS_ENABLED") !== "true") return;
     this.secret = this.config.get<string>("OWNER_SESSION_SECRET") ?? "";
     this.passwordHash = this.config.get<string>("OWNER_PASSWORD_HASH") ?? "";
-    const redisUrl = this.config.get<string>("REDIS_URL");
     this.origins = (this.config.get<string>("OWNER_ALLOWED_ORIGINS") ?? "")
       .split(",")
       .map((x) => x.trim())
@@ -173,90 +164,30 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
         "Account storage initialization failed; apply account migrations first"
       );
     }
-    if (!redisUrl) {
-      this.redis = new PostgresState(this.store.db);
-      this.timer = setInterval(() => {
-        if (this.flushing) return;
-        this.flushing = true;
-        void this.flush()
-          .catch(() =>
-            this.logger.warn("Persistence deferred; buffered events retained")
-          )
-          .finally(() => {
-            this.flushing = false;
-          });
-      }, 10_000);
-      this.timer.unref();
-      return;
-    }
-    const redis = new Redis(redisUrl, {
-      maxRetriesPerRequest: 1,
-      connectTimeout: 5000,
-      enableOfflineQueue: false,
-      lazyConnect: true,
-    });
-    this.redis = redis;
-    redis.on("error", () => this.logger.warn("Account state unavailable"));
-    await redis.connect();
-    const address = new URL(redisUrl);
-    const connection = {
-      host: address.hostname,
-      port: Number(address.port || 6379),
-      username: address.username
-        ? decodeURIComponent(address.username)
-        : undefined,
-      password: address.password
-        ? decodeURIComponent(address.password)
-        : undefined,
-      db: Number(address.pathname.slice(1) || 0),
-      maxRetriesPerRequest: null,
-      ...(address.protocol === "rediss:"
-        ? { tls: { servername: address.hostname } }
-        : {}),
-    };
-    this.queue = new Queue("webdev-qr-flush", { connection });
-    this.queue.on("error", () =>
-      this.logger.warn("QR analytics scheduler unavailable")
-    );
-    await this.queue.setGlobalConcurrency(1);
-    this.worker = new Worker("webdev-qr-flush", () => this.flush(), {
-      connection,
-      concurrency: 1,
-    });
-    this.worker.on("failed", () =>
-      this.logger.warn(
-        "QR analytics persistence deferred; buffered events retained"
-      )
-    );
-    this.worker.on("error", () =>
-      this.logger.warn("QR analytics worker unavailable")
-    );
-    await this.queue.upsertJobScheduler(
-      "flush-every-ten-seconds",
-      { every: 10_000 },
-      {
-        name: "flush",
-        opts: {
-          attempts: 3,
-          backoff: { type: "exponential", delay: 1000 },
-          removeOnComplete: 10,
-          removeOnFail: 20,
-        },
-      }
-    );
+    // One shared durable state and queue implementation for local and Heroku deployments.
+    this.runtimeState = new PostgresState(this.store.db);
+    this.timer = setInterval(() => {
+      if (this.flushing) return;
+      this.flushing = true;
+      void this.flush()
+        .catch(() =>
+          this.logger.warn("Persistence deferred; buffered events retained")
+        )
+        .finally(() => {
+          this.flushing = false;
+        });
+    }, 10_000);
+    this.timer.unref();
   }
 
-  async onModuleDestroy(): Promise<void> {
+  onModuleDestroy(): void {
     if (this.timer) clearInterval(this.timer);
-    await this.worker?.close();
-    await this.queue?.close();
-    this.redis?.disconnect();
   }
 
-  private connection(): Redis | PostgresState {
-    if (!this.redis || this.redis.status !== "ready")
+  private stateStore(): PostgresState {
+    if (!this.runtimeState)
       throw new ServiceUnavailableException("Owner statistics are unavailable");
-    return this.redis;
+    return this.runtimeState;
   }
 
   digest(value: string): string {
@@ -264,19 +195,14 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
   }
 
   assertOrigin(req: Request): void {
-    this.connection();
+    this.stateStore();
     if (!this.origins.includes(req.get("origin") ?? ""))
       throw new ForbiddenException("Untrusted origin");
   }
 
   async rateLimit(key: string, limit: number, seconds: number): Promise<void> {
     const count = Number(
-      await this.connection().eval(
-        RATE_LIMIT,
-        1,
-        `${PREFIX}:rate:${key}`,
-        seconds
-      )
+      await this.stateStore().increment(`${PREFIX}:rate:${key}`, seconds)
     );
     if (count > limit) {
       await this.audit("rate.limit", false, false);
@@ -288,9 +214,7 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
     kind: "events" | "audit",
     value: QrEvent | AccessAudit
   ): Promise<void> {
-    const accepted = await this.connection().eval(
-      BUFFER,
-      1,
+    const accepted = await this.stateStore().enqueue(
       `${PREFIX}:${kind}:pending`,
       JSON.stringify(value),
       MAX_BUFFER
@@ -318,7 +242,7 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
     try {
       this.assertOrigin(req);
     } catch (error) {
-      if (this.redis?.status === "ready")
+      if (this.runtimeState)
         await this.audit("owner.login.origin", false, false);
       throw error;
     }
@@ -380,16 +304,15 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
       expiresAt: new Date(Date.now() + SESSION_SECONDS * 1000).toISOString(),
       ...(mfaVerifiedAt ? { mfaVerifiedAt } : {}),
     };
-    await this.connection().set(
+    await this.stateStore().set(
       `${PREFIX}:session:${this.digest(token)}`,
       JSON.stringify(session),
-      "EX",
       SESSION_SECONDS
     );
     try {
       await this.registerSession(session, token, context?.req);
     } catch (error) {
-      await this.connection().del(`${PREFIX}:session:${this.digest(token)}`);
+      await this.stateStore().remove(`${PREFIX}:session:${this.digest(token)}`);
       throw error;
     }
     return token;
@@ -415,7 +338,7 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
     const page = await this.store.sessions(account.id, account.revision, query);
     const entries = await Promise.all(
       page.entries.map(async (entry) => {
-        const raw = await this.connection().get(
+        const raw = await this.stateStore().get(
           `${PREFIX}:session:${entry.tokenHash}`
         );
         let cached: OwnerSession | null = null;
@@ -450,7 +373,7 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
       this.assertRecentMfa(session);
     }
     await this.rateLimit(`identity:${session.accountId}`, 10, 900);
-    const raw = await this.connection().get(
+    const raw = await this.stateStore().get(
       `${PREFIX}:session:${this.digest(session.token)}`
     );
     if (!raw) throw new UnauthorizedException("Sign in again");
@@ -459,7 +382,7 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
   }
 
   async githubStart(req: Request, linking = false) {
-    this.connection();
+    this.stateStore();
     if (!this.github)
       throw new ServiceUnavailableException("GitHub sign-in is not configured");
     await this.rateLimit(`github:${this.digest(req.ip ?? "unknown")}`, 10, 900);
@@ -470,7 +393,7 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
       : null;
     if (session?.profile.githubLinked)
       throw new BadRequestException("GitHub is already connected");
-    await this.connection().set(
+    await this.stateStore().set(
       `${PREFIX}:oauth:${this.digest(state)}`,
       session
         ? JSON.stringify({
@@ -480,9 +403,8 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
             sessionHash: this.digest(session.token),
           })
         : verifier,
-      "EX",
       600,
-      "NX"
+      true
     );
     const url = new URL("https://github.com/login/oauth/authorize");
     url.search = new URLSearchParams({
@@ -510,9 +432,7 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
         req.cookies?.[this.githubCookieName] !== state
       )
         throw new UnauthorizedException();
-      const stored = await this.connection().eval(
-        "local v=redis.call('GET',KEYS[1]); redis.call('DEL',KEYS[1]); return v",
-        1,
+      const stored = await this.stateStore().take(
         `${PREFIX}:oauth:${this.digest(state)}`
       );
       if (typeof stored !== "string") throw new UnauthorizedException();
@@ -578,7 +498,7 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
       if (linking) {
         if (!intent.sessionHash || !intent.revision || !intent.accountId)
           throw new UnauthorizedException();
-        const raw = await this.connection().get(
+        const raw = await this.stateStore().get(
           `${PREFIX}:session:${intent.sessionHash}`
         );
         if (!raw) throw new UnauthorizedException();
@@ -609,7 +529,7 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
       await this.audit("account.github.login", true, account.role === "admin");
       return await this.authenticate(account, "github", req);
     } catch {
-      if (this.redis?.status === "ready")
+      if (this.runtimeState)
         await this.audit("owner.github.login", false, false);
       throw new UnauthorizedException({
         code: linking ? "GITHUB_LINK_FAILED" : "GITHUB_LOGIN_FAILED",
@@ -665,7 +585,7 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
     const valid =
       typeof token === "string" && /^[A-Za-z0-9_-]{43}$/.test(token);
     const raw = valid
-      ? await this.connection().get(`${PREFIX}:session:${this.digest(token)}`)
+      ? await this.stateStore().get(`${PREFIX}:session:${this.digest(token)}`)
       : null;
     let session: OwnerSession | null = null;
     try {
@@ -774,15 +694,14 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
   async markMfaVerified(req: Request, verifiedAt: string) {
     const session = await this.authorize(req, "account.mfa.session", false);
     const key = `${PREFIX}:session:${this.digest(session.token)}`;
-    const raw = await this.connection().get(key);
+    const raw = await this.stateStore().get(key);
     if (!raw) throw new UnauthorizedException("Sign in again");
     const stored = JSON.parse(raw) as OwnerSession;
     const ttl = Math.floor((Date.parse(stored.expiresAt) - Date.now()) / 1000);
     if (ttl <= 0) throw new UnauthorizedException("Sign in again");
-    await this.connection().set(
+    await this.stateStore().set(
       key,
       JSON.stringify({ ...stored, mfaVerifiedAt: verifiedAt }),
-      "EX",
       ttl
     );
   }
@@ -790,7 +709,7 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
   async logout(req: Request): Promise<void> {
     this.assertOrigin(req);
     const session = await this.authorize(req, "owner.logout", false);
-    await this.connection().del(
+    await this.stateStore().remove(
       `${PREFIX}:session:${this.digest(session.token)}`
     );
     await this.store.forgetSession(
@@ -873,7 +792,7 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
   }
 
   async ingest(req: Request, dto: QrEventDto): Promise<void> {
-    this.connection();
+    this.stateStore();
     await this.rateLimit(
       `ingest:${this.digest(req.ip ?? req.socket.remoteAddress ?? "unknown")}`,
       120,
@@ -891,34 +810,27 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
   }
 
   private async flush(): Promise<void> {
-    if (this.redis instanceof PostgresState) {
-      const runner = this.store.db.createQueryRunner();
-      await runner.connect();
-      let locked = false;
-      try {
-        const [row] = await runner.query(
-          "SELECT pg_try_advisory_lock(1790902800) AS locked"
-        );
-        locked = row.locked;
-        if (locked) await this.flushBatch();
-      } finally {
-        if (locked) await runner.query("SELECT pg_advisory_unlock(1790902800)");
-        await runner.release();
-      }
-    } else await this.flushBatch();
+    // The connection-scoped lock serializes flushes across all application replicas.
+    const runner = this.store.db.createQueryRunner();
+    await runner.connect();
+    let locked = false;
+    try {
+      const [row] = await runner.query(
+        "SELECT pg_try_advisory_lock(1790902800) AS locked"
+      );
+      locked = row.locked;
+      if (locked) await this.flushBatch();
+    } finally {
+      if (locked) await runner.query("SELECT pg_advisory_unlock(1790902800)");
+      await runner.release();
+    }
   }
 
   private async flushBatch(): Promise<void> {
-    const redis = this.connection();
+    const state = this.stateStore();
     for (const kind of ["events", "audit"] as const) {
       const pending = `${PREFIX}:${kind}:pending`;
-      const processing = `${PREFIX}:${kind}:processing`;
-      const values = (await redis.eval(
-        STAGE,
-        2,
-        pending,
-        processing
-      )) as string[];
+      const values = await state.stage(pending);
       if (!values.length) continue;
       if (kind === "events")
         await this.store.persistEvents(
@@ -928,7 +840,7 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
         await this.store.persistAudits(
           values.map((x) => JSON.parse(x) as AccessAudit)
         );
-      await redis.del(processing);
+      await state.acknowledge(pending);
     }
     if (Date.now() >= this.nextRetention) {
       await this.store.retain();

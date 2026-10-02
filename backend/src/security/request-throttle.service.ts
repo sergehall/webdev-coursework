@@ -8,7 +8,6 @@ import {
 import { ConfigService } from "@nestjs/config";
 import { createHmac } from "crypto";
 import { isIP } from "net";
-import Redis from "ioredis";
 import { DataSource } from "typeorm";
 
 // Aggregate IPv6 privacy addresses within a /64; mapped IPv4 shares its IPv4 bucket.
@@ -45,22 +44,15 @@ export function throttleAddress(address: string): string {
   );
 }
 
-const INCREMENT = `
-local n = tonumber(redis.call('GET', KEYS[1]) or '0')
-if n == 0 then redis.call('SET', KEYS[1], 1, 'EX', ARGV[1]); n = 1
-elseif n <= tonumber(ARGV[2]) then n = redis.call('INCR', KEYS[1]) end
-return {n, math.max(1, redis.call('TTL', KEYS[1]))}`;
-
 @Injectable()
 export class RequestThrottleService implements OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(RequestThrottleService.name);
   private readonly secret: string;
-  private redis?: Redis;
   private cleanup?: ReturnType<typeof setInterval>;
   private cleaning = false;
 
   constructor(
-    private readonly config: ConfigService,
+    config: ConfigService,
     private readonly db: DataSource
   ) {
     this.secret =
@@ -80,32 +72,14 @@ export class RequestThrottleService implements OnModuleInit, OnModuleDestroy {
   }
 
   async onModuleInit(): Promise<void> {
-    const url = this.config.get<string>("REDIS_URL");
-    if (url) {
-      this.redis = new Redis(url, {
-        lazyConnect: true,
-        enableOfflineQueue: false,
-        maxRetriesPerRequest: 1,
-        connectTimeout: 3000,
-        commandTimeout: 1500,
-      });
-      this.redis.on("error", () =>
-        this.logger.warn(
-          "API throttle storage unavailable; requests fail closed"
-        )
-      );
-      await this.redis.connect();
-    } else {
-      // Also verifies that required account/runtime-state migrations were applied.
-      await this.db.query("SELECT key FROM webdev_runtime_state LIMIT 0");
-      this.cleanup = setInterval(() => void this.retain(), 60000);
-      this.cleanup.unref();
-    }
+    // All environments use the same shared PostgreSQL counters, independently of analytics.
+    await this.db.query("SELECT key FROM webdev_runtime_state LIMIT 0");
+    this.cleanup = setInterval(() => void this.retain(), 60000);
+    this.cleanup.unref();
   }
 
   onModuleDestroy(): void {
     if (this.cleanup) clearInterval(this.cleanup);
-    this.redis?.disconnect();
   }
 
   private async retain(): Promise<void> {
@@ -133,16 +107,6 @@ export class RequestThrottleService implements OnModuleInit, OnModuleDestroy {
       .digest("hex");
     const key = `webdev:api-throttle:${bucket}:${digest}`;
     try {
-      if (this.redis) {
-        const [count, retryAfter] = (await this.redis.eval(
-          INCREMENT,
-          1,
-          key,
-          seconds,
-          limit
-        )) as [number, number];
-        return { count, retryAfter };
-      }
       const [row]: { count: number; retryAfter: number }[] =
         await this.db.query(
           `

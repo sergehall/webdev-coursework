@@ -42,7 +42,7 @@ run("Owner HTTP and PostgreSQL integration", () => {
   beforeAll(async () => {
     db = new DataSource({
       type: "postgres",
-      url: "postgres://postgres:test-local-only@127.0.0.1:55439/owner_test",
+      url: `postgres://postgres:test-local-only@127.0.0.1:${Number(process.env.OWNER_INTEGRATION_PORT ?? 55439)}/owner_test`,
       migrations: [
         AddQrAnalytics1790899200000,
         AddPublicAccounts1790902800000,
@@ -571,9 +571,9 @@ run("Owner HTTP and PostgreSQL integration", () => {
     );
     await (
       service as unknown as {
-        redis: { del: (key: string) => Promise<unknown> };
+        runtimeState: { remove: (key: string) => Promise<unknown> };
       }
-    ).redis.del(`webdev:qr:session:${service.digest(tokens[5])}`);
+    ).runtimeState.remove(`webdev:qr:session:${service.digest(tokens[5])}`);
     let page = await list().expect(200);
     const ids: string[] = [];
     while (true) {
@@ -1196,20 +1196,12 @@ run("Owner HTTP and PostgreSQL integration", () => {
       .get("/api/account/session")
       .set("Cookie", adminCookie)
       .expect(401);
-    // OAuth state is atomically consumed once in the PostgreSQL fallback.
+    // OAuth state is atomically consumed once in the shared PostgreSQL store.
     const state = new (await import("./postgres-state")).PostgresState(db);
-    await state.set("test-oauth", "private-verifier", "EX", 60, "NX");
+    await state.set("test-oauth", "private-verifier", 60, true);
     const results = await Promise.all([
-      state.eval(
-        "local v=redis.call('GET',KEYS[1]); redis.call('DEL',KEYS[1]); return v",
-        1,
-        "test-oauth"
-      ),
-      state.eval(
-        "local v=redis.call('GET',KEYS[1]); redis.call('DEL',KEYS[1]); return v",
-        1,
-        "test-oauth"
-      ),
+      state.take("test-oauth"),
+      state.take("test-oauth"),
     ]);
     expect(results.sort()).toEqual(["private-verifier", null].sort());
   });
@@ -1506,29 +1498,28 @@ run("Owner HTTP and PostgreSQL integration", () => {
       email: "gates@example.test",
       accountId: AnalyticsStore.ROOT_ID,
     }).expect(400);
-    const redis = (
+    const runtimeState = (
       service as unknown as {
-        redis: {
+        runtimeState: {
           get: (k: string) => Promise<string>;
           set: (...args: unknown[]) => Promise<unknown>;
         };
       }
-    ).redis;
+    ).runtimeState;
     const key = `webdev:qr:session:${service.digest(token)}`;
-    const cached = JSON.parse(await redis.get(key));
-    await redis.set(
+    const cached = JSON.parse(await runtimeState.get(key));
+    await runtimeState.set(
       key,
       JSON.stringify({
         ...cached,
         issuedAt: new Date(Date.now() - 901000).toISOString(),
       }),
-      "EX",
       3600
     );
     await providerPost("email", cookie, { email: "gates@example.test" })
       .expect(403)
       .expect(({ body }) => expect(body.code).toBe("RECENT_SIGN_IN_REQUIRED"));
-    await redis.set(key, JSON.stringify(cached), "EX", 3600);
+    await runtimeState.set(key, JSON.stringify(cached), 3600);
     await db.query(
       "INSERT INTO webdev_mfa_methods(account_id,method_id,status,secret_encrypted,verified_at) VALUES($1,$2,'verified',$3,now())",
       [

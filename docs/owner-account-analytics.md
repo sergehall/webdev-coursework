@@ -42,12 +42,12 @@ change `usacosmetologist` data. `synchronize` stays disabled. The old singleton
 owner table is preserved and its profile/password is copied into the new account.
 A follow-up migration converts legacy role labels to `admin`/`client`.
 
-Leave `REDIS_URL` empty to use the existing PostgreSQL for durable sessions, TTL
-rate limits and bounded event batches. A PostgreSQL advisory lock serializes
-flush workers across instances. Redis/BullMQ remains an optional local setup.
-PostgreSQL is the documented exception to the analytics skill's default Redis
-runtime, required by the user's instruction not to buy additional services.
-This adds small transient runtime writes to the existing database.
+Local development and Heroku use the same PostgreSQL infrastructure for durable
+sessions, single-use OAuth state, TTL rate limits and bounded event batches.
+PostgreSQL advisory locks serialize capacity checks and flush workers across
+instances. The backend has one storage implementation and no Redis/BullMQ runtime
+dependency. This reuses the existing database without requiring additional paid
+services. Runtime writes stay in the `webdev_` tables.
 
 ## Email security and delivery
 
@@ -129,15 +129,22 @@ an email.
 `yarn workspace backend owner:configure:local` creates ignored local config.
 Start `docker compose --env-file backend/.env.local -f compose.local.yml up -d --wait`,
 run `yarn workspace backend migration:run:local`, then start backend and Vite.
-Dedicated local PostgreSQL uses port 55432. Account requests go through Vite's
+The generator and Compose configure PostgreSQL as the only runtime state store. Dedicated local PostgreSQL uses port 55432. Account requests go through Vite's
 local `/api` proxy using `VITE_OWNER_API_URL=`; course API configuration stays intact.
 Local volumes persist; do not erase them with `down -v`.
+
+The generator removes obsolete Redis settings from older ignored `.env.local`
+files. Restart the backend after changing storage configuration. Existing local
+Redis sessions are not copied; sign in again if needed. PostgreSQL application
+records and its Docker volume remain intact.
 
 Unit tests: `yarn workspace backend test --runInBand --testPathPattern='analytics.service.spec.ts|auth-mail.spec.ts'`.
 The integration suite uses only a disposable PostgreSQL container at port 55439,
 database `owner_test`, password `test-local-only`. It truncates its own test tables;
 never point it at local application data or production. Run with
 `OWNER_INTEGRATION_TEST=true yarn workspace backend test --runInBand --testPathPattern=analytics.integration.spec.ts`.
+For concurrent test work, `OWNER_INTEGRATION_PORT` selects a separate disposable
+PostgreSQL container; the host, test database and credentials remain fixed.
 It checks registration/confirmation/reset, replay, transactional rollback, SMTP
 retry/claims, account isolation, role restrictions, session invalidation, anonymous
 QR deduplication and preservation of another application's sentinel table.
