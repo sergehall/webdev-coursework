@@ -29,6 +29,22 @@ export default function MfaSettingsPanel({
   const [recentRequired, setRecentRequired] = useState(false),
     [confirmDisable, setConfirmDisable] = useState(false);
   useEffect(() => {
+    if (!setup) return;
+    const timer = window.setTimeout(
+      () => {
+        setSetup(null);
+        setQr("");
+        setCode("");
+        setError("Authenticator setup expired. Start again.");
+        void ownerRequest<MfaStatus>("mfa/status")
+          .then(onChange)
+          .catch(() => {});
+      },
+      Math.max(0, Date.parse(setup.expiresAt) - Date.now())
+    );
+    return () => window.clearTimeout(timer);
+  }, [setup, onChange]);
+  useEffect(() => {
     let active = true;
     setQr("");
     if (setup)
@@ -41,12 +57,18 @@ export default function MfaSettingsPanel({
         .then((value) => {
           if (active) setQr(value);
         })
-        .catch(() => {});
+        .catch(() => {
+          if (active)
+            setError(
+              "Unable to prepare the QR code. Use the secret key instead."
+            );
+        });
     return () => {
       active = false;
     };
   }, [setup]);
   async function run(path: string, body?: unknown) {
+    if (busy) return;
     setBusy(true);
     setError("");
     setMessage("");
@@ -92,6 +114,14 @@ export default function MfaSettingsPanel({
         );
       }
     } catch (err) {
+      if (
+        err instanceof OwnerApiError &&
+        err.code === "MFA_ENROLLMENT_EXPIRED"
+      ) {
+        setSetup(null);
+        setQr("");
+        setCode("");
+      }
       if (err instanceof OwnerApiError && err.status === 401) {
         owner.clear();
         navigate("/account/login", { replace: true });
@@ -122,6 +152,35 @@ export default function MfaSettingsPanel({
     e.preventDefault();
     if (setup)
       void run("verify-enrollment", { enrollmentId: setup.enrollmentId, code });
+  }
+  async function copyCodes() {
+    try {
+      await navigator.clipboard.writeText(codes.join("\n"));
+      setMessage(
+        "Recovery codes copied. Store them privately and clear your clipboard when finished."
+      );
+    } catch {
+      setError(
+        "Unable to copy recovery codes. Download them or save them manually."
+      );
+    }
+  }
+  function downloadCodes() {
+    const url = URL.createObjectURL(
+      new Blob(
+        [
+          "Web Engineering Portfolio recovery codes\nEach code works once. Keep this file private.\n\n",
+          codes.join("\n"),
+          "\n",
+        ],
+        { type: "text/plain;charset=utf-8" }
+      )
+    );
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "webdev-recovery-codes.txt";
+    link.click();
+    window.setTimeout(() => URL.revokeObjectURL(url), 0);
   }
   return (
     <section
@@ -315,6 +374,14 @@ export default function MfaSettingsPanel({
               </li>
             ))}
           </ul>
+          <div className="owner-actions">
+            <button className="owner-button" onClick={() => void copyCodes()}>
+              Copy codes
+            </button>
+            <button className="owner-button" onClick={downloadCodes}>
+              Download codes
+            </button>
+          </div>
           <label className="owner-confirmation">
             <input
               type="checkbox"

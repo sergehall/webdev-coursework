@@ -8,6 +8,7 @@ export type MfaStatus = {
 };
 export type MfaSetup = {
   enrollmentId: string;
+  expiresAt: string;
   issuer: string;
   accountName: string;
   secret: string;

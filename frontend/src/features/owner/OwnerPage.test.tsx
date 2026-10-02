@@ -223,8 +223,8 @@ describe("Public accounts", () => {
       screen.getByRole("link", { name: "Forgot password?" })
     ).toHaveAttribute("href", "/account/forgot-password");
     expect(
-      screen.getByRole("link", { name: "Back to the portfolio" })
-    ).toHaveAttribute("href", "/");
+      screen.queryByRole("link", { name: "Back to the portfolio" })
+    ).not.toBeInTheDocument();
     fireEvent.change(screen.getByLabelText("Username or email"), {
       target: { value: "student" },
     });

@@ -15,28 +15,43 @@ export default function MfaChallengePage() {
   const [expired, setExpired] = useState(false),
     [busy, setBusy] = useState(false),
     [error, setError] = useState("");
+  const [loadFailed, setLoadFailed] = useState(false),
+    [loadAttempt, setLoadAttempt] = useState(0);
   useEffect(() => {
     let active = true;
+    setLoadFailed(false);
+    setError("");
     void ownerRequest<{ expiresAt: string }>("mfa/challenge")
       .then((value) => {
-        if (active) setExpiresAt(Date.parse(value.expiresAt));
+        const deadline = Date.parse(value.expiresAt);
+        if (!Number.isFinite(deadline))
+          throw new Error("Invalid challenge response");
+        if (active) setExpiresAt(deadline);
       })
-      .catch(() => {
-        if (active) setExpired(true);
+      .catch((err: unknown) => {
+        if (!active) return;
+        if (err instanceof OwnerApiError && err.status === 401)
+          setExpired(true);
+        else {
+          setLoadFailed(true);
+          setError(
+            "Unable to load verification. Check your connection and try again."
+          );
+        }
       });
     const timer = window.setInterval(() => setNow(Date.now()), 1000);
     return () => {
       active = false;
       window.clearInterval(timer);
     };
-  }, []);
+  }, [loadAttempt]);
   const isExpired = expired || (expiresAt !== null && expiresAt <= now);
   const valid = recovery
     ? /^[A-F0-9]{5}(?:-[A-F0-9]{5}){3}$/.test(code)
     : /^\d{6}$/.test(code);
   async function submit(e: FormEvent) {
     e.preventDefault();
-    if (!valid || isExpired || busy) return;
+    if (!valid || isExpired || busy || expiresAt === null || loadFailed) return;
     setBusy(true);
     setError("");
     try {
@@ -55,10 +70,19 @@ export default function MfaChallengePage() {
     }
   }
   async function restart() {
-    await ownerRequest("mfa/cancel-challenge", { method: "POST" }).catch(
-      () => {}
-    );
-    navigate("/account/login", { replace: true });
+    if (busy) return;
+    setBusy(true);
+    setError("");
+    try {
+      await ownerRequest("mfa/cancel-challenge", { method: "POST" });
+      navigate("/account/login", { replace: true });
+    } catch {
+      setError(
+        "Unable to end verification. Check your connection and try again."
+      );
+    } finally {
+      setBusy(false);
+    }
   }
   return (
     <div className="owner-login">
@@ -134,7 +158,7 @@ export default function MfaChallengePage() {
               </label>
               <button
                 className="owner-button owner-button--primary owner-button--wide"
-                disabled={busy || !valid || expiresAt === null}
+                disabled={busy || !valid || expiresAt === null || loadFailed}
               >
                 {busy ? "Verifying…" : "Finish sign-in"}
               </button>
@@ -150,6 +174,15 @@ export default function MfaChallengePage() {
           <p role="alert" className="owner-message owner-message--error">
             {error}
           </p>
+        )}
+        {loadFailed && !isExpired && (
+          <button
+            className="owner-button"
+            disabled={busy}
+            onClick={() => setLoadAttempt((value) => value + 1)}
+          >
+            Retry verification
+          </button>
         )}
         <button
           className="owner-button"

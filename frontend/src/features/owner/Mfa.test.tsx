@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from "react";
 import {
   cleanup,
+  act,
   fireEvent,
   render,
   screen,
@@ -80,6 +81,7 @@ function show(
 }
 afterEach(() => {
   cleanup();
+  vi.useRealTimers();
   vi.unstubAllGlobals();
   vi.clearAllMocks();
 });
@@ -106,6 +108,7 @@ describe("Two-factor account flows", () => {
   it("confirms enrollment and shows recovery codes only once", async () => {
     const setup = {
       enrollmentId: "test-enrollment",
+      expiresAt: new Date(Date.now() + 600000).toISOString(),
       issuer: "Web Engineering Portfolio",
       accountName: "student",
       secret: "TEST-SECRET",
@@ -142,12 +145,100 @@ describe("Two-factor account flows", () => {
     ).not.toBeInTheDocument();
     expect(screen.queryByDisplayValue("TEST-SECRET")).not.toBeInTheDocument();
     expect(state.refresh).toHaveBeenCalledOnce();
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: { writeText },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Copy codes" }));
+    await waitFor(() =>
+      expect(writeText).toHaveBeenCalledWith("AAAAA-BBBBB-CCCCC-DDDDD")
+    );
+    const createObjectURL = vi.fn().mockReturnValue("blob:test-recovery");
+    vi.stubGlobal(
+      "URL",
+      class extends URL {
+        static createObjectURL = createObjectURL;
+        static revokeObjectURL = vi.fn();
+      }
+    );
+    const click = vi
+      .spyOn(HTMLAnchorElement.prototype, "click")
+      .mockImplementation(() => {});
+    fireEvent.click(screen.getByRole("button", { name: "Download codes" }));
+    expect(createObjectURL).toHaveBeenCalledWith(expect.any(Blob));
+    expect(click.mock.instances[0]).toHaveAttribute(
+      "download",
+      "webdev-recovery-codes.txt"
+    );
+    click.mockRestore();
     expect(screen.getByRole("button", { name: "Hide codes" })).toBeDisabled();
     fireEvent.click(screen.getByLabelText("I saved my recovery codes"));
     fireEvent.click(screen.getByRole("button", { name: "Hide codes" }));
     expect(
       screen.queryByText("AAAAA-BBBBB-CCCCC-DDDDD")
     ).not.toBeInTheDocument();
+  });
+  it("clears expired enrollment secrets and allows a fresh setup", async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal(
+      "fetch",
+      vi
+        .fn()
+        .mockResolvedValueOnce(
+          response({
+            mfa: { ...disabled, pendingEnrollment: true },
+            setup: {
+              enrollmentId: "test-enrollment",
+              expiresAt: new Date(Date.now() + 1000).toISOString(),
+              issuer: "Portfolio",
+              accountName: "student",
+              secret: "TEMPORARY-SECRET",
+              otpauthUri: "otpauth://totp/test?secret=TEST",
+            },
+          })
+        )
+        .mockResolvedValueOnce(response(disabled))
+    );
+    show(<Settings />);
+    await act(async () =>
+      fireEvent.click(screen.getByRole("button", { name: "Start 2FA setup" }))
+    );
+    expect(screen.getByDisplayValue("TEMPORARY-SECRET")).toBeInTheDocument();
+    await act(async () => vi.advanceTimersByTimeAsync(1001));
+    expect(
+      screen.queryByDisplayValue("TEMPORARY-SECRET")
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByAltText("Authenticator setup QR code")
+    ).not.toBeInTheDocument();
+    expect(screen.getByRole("alert")).toHaveTextContent("setup expired");
+    expect(
+      screen.getByRole("button", { name: "Start 2FA setup" })
+    ).toBeEnabled();
+  });
+  it("retries a network failure without treating the challenge as expired", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi
+        .fn()
+        .mockRejectedValueOnce(new Error("offline"))
+        .mockResolvedValueOnce(
+          response({ expiresAt: new Date(Date.now() + 300000).toISOString() })
+        )
+    );
+    show(<MfaChallengePage />, "/account/mfa", context(false));
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "Check your connection"
+    );
+    expect(
+      screen.queryByText(/Verification expired\./)
+    ).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Retry verification" }));
+    expect(
+      await screen.findByText(/Verification expires in/)
+    ).toBeInTheDocument();
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
   });
   it("requires a fresh proof and explicit confirmation before disabling", async () => {
     const fetcher = vi

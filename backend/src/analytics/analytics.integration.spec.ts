@@ -131,6 +131,10 @@ run("Owner HTTP and PostgreSQL integration", () => {
     expect(enrolled.body.mfa.enabled).toBe(false);
     expect(enrolled.body.mfa.pendingEnrollment).toBe(true);
     const setup = enrolled.body.setup;
+    expect(Date.parse(setup.expiresAt)).toBeGreaterThan(Date.now());
+    expect(Date.parse(setup.expiresAt)).toBeLessThanOrEqual(
+      Date.now() + 600000
+    );
     const [{ secret_encrypted: encrypted }] = await db.query(
       "SELECT secret_encrypted FROM webdev_mfa_methods WHERE account_id=$1",
       [id]
@@ -173,6 +177,25 @@ run("Owner HTTP and PostgreSQL integration", () => {
     let pending = await login().expect(200);
     expect(pending.body).toEqual({ authenticated: false, mfaRequired: true });
     let challengeCookie = cookieFrom(pending, "webdev_mfa");
+    await request(server)
+      .post("/api/account/mfa/challenge")
+      .set("Cookie", challengeCookie)
+      .set("Origin", "https://attacker.example")
+      .send({ code: codes[0] })
+      .expect(403);
+    await request(server)
+      .post("/api/account/mfa/challenge")
+      .set("Cookie", challengeCookie)
+      .send({ code: codes[0] })
+      .expect(403);
+    await post("challenge", challengeCookie, {
+      code: codes[0],
+      accountId: id,
+    }).expect(400);
+    await request(server)
+      .get("/api/account/mfa/status")
+      .set("Cookie", challengeCookie)
+      .expect(401);
     expect(
       (pending.headers["set-cookie"] as unknown as string[]).find((v) =>
         v.startsWith("webdev_mfa=")
@@ -380,6 +403,51 @@ run("Owner HTTP and PostgreSQL integration", () => {
         )
       )[0].secret_encrypted
     ).toBeNull();
+  });
+  it("fails closed without the encryption key and consumes recovery across distinct challenges once", async () => {
+    const store = app.get(AnalyticsStore),
+      mfa = app.get(MfaService);
+    const id = randomUUID();
+    await db.query(
+      "INSERT INTO webdev_accounts(id,role,username,revision,display_name) VALUES($1,'client',$2,$3,'MFA Key Test')",
+      [id, `key-${id.slice(0, 8)}`, randomUUID()]
+    );
+    let account = (await store.account(id))!;
+    const { setup } = await mfa.enroll(account, new Date().toISOString());
+    const step = Math.floor(Date.now() / 30000);
+    const { recoveryCodes } = await mfa.verifyEnrollment(
+      account,
+      setup.enrollmentId,
+      totp(setup.secret, step)
+    );
+    account = (await store.account(id))!;
+    await expect(service.createSession(account)).rejects.toMatchObject({
+      status: 401,
+    });
+    const unavailable = new MfaService(
+      store,
+      new MfaCrypto(new ConfigService({}))
+    );
+    const first = (await unavailable.challenge(account, "password"))!;
+    const second = (await unavailable.challenge(account, "github"))!;
+    await expect(
+      unavailable.verifyChallenge(
+        first.challengeToken,
+        totp(setup.secret, step + 1)
+      )
+    ).rejects.toMatchObject({ status: 503 });
+    expect((await unavailable.status(id)).enabled).toBe(true);
+    const results = await Promise.allSettled([
+      unavailable.verifyChallenge(first.challengeToken, recoveryCodes[0]),
+      unavailable.verifyChallenge(second.challengeToken, recoveryCodes[0]),
+    ]);
+    expect(
+      results.filter((value) => value.status === "fulfilled")
+    ).toHaveLength(1);
+    expect(results.filter((value) => value.status === "rejected")).toHaveLength(
+      1
+    );
+    expect((await unavailable.status(id)).recoveryCodesRemaining).toBe(9);
   });
   it("paginates only live sessions of the current account without leaking session credentials", async () => {
     const server = app.getHttpServer(),

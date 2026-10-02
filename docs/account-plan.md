@@ -47,8 +47,16 @@ Verification: frontend full suite (276 tests), backend unit suite (99 tests), an
 HTTP e2e suite (13 tests), and isolated PostgreSQL integration suite (9 tests). Desktop/mobile Security
 was reviewed with no live authenticator enrollment or recovery codes exposed.
 
-Production MFA rollout is pending. The previous authorization covered accounts,
-registration and roles, explicitly excluding the next MFA stage. Before rollout:
-create a separate production MFA key, apply only the account migration whitelist,
-release backend before frontend, and verify existing sign-in plus MFA availability.
-See [account-mfa.md](account-mfa.md) for configuration and rollout details.
+Production MFA activation is pending. A read-only check on 2026-10-01
+(America/Los_Angeles) confirmed Heroku v217 already includes the MFA migration
+and its three tables, but no MFA encryption key is configured and no accounts
+have verified MFA. The earlier migration-pending status was stale.
+
+The development key is preserved; an independent production key is staged in
+ignored mode-600 configuration. This review adds server enrollment deadlines,
+automatic UI secret removal on expiry, copy/download for recovery codes and
+network-error retry for pending login. It verifies 26 backend unit checks,
+12 HTTP/PostgreSQL integration checks, eight MFA UI checks, typechecks, focused
+lint, builds and desktop/mobile disabled-state UI. Production changes still
+require the user's separate confirmation. See [account-mfa.md](account-mfa.md)
+for the concrete release, migration, rollback and lost-device recovery procedure.

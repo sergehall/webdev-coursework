@@ -6,8 +6,13 @@ Open `/account/security#mfa`, then **Start 2FA setup** after a recent sign-in.
 Scan the QR in an authenticator app, enter its current six-digit code and save
 the ten recovery codes. The manual secret and QR are generated locally in the
 browser from the enrollment response; no external QR provider receives them.
-The secret disappears after confirmation/cancellation. Recovery codes are shown
-once and held only in component memory, never in browser storage.
+The secret disappears after confirmation, cancellation or the server's enrollment
+deadline. Expired setup can be restarted; the API returns `setup.expiresAt` and
+`MFA_ENROLLMENT_EXPIRED` for stale confirmation. Recovery codes are shown once and
+held only in component memory, never in browser storage. **Copy codes** writes them
+to the clipboard only on request; **Download codes** creates a private text file
+locally. Neither action uploads the codes. Save them securely and clear the
+clipboard after copying. The saved checkbox does not itself save or back up codes.
 
 Both password and GitHub login require the second factor once enabled. A pending
 HttpOnly cookie is valid for five minutes and grants no account access. Only a
@@ -103,15 +108,76 @@ step-up, disabling and old-session revocation, preserving another application's
 sentinel data. UI tests cover the actual security windows, enrollment, one-time
 code display, confirmation, pending login, recovery and expired challenges.
 
-Local migration and configuration are applied. Production MFA code, migration
-and dedicated key are **not deployed**. After explicit approval for this stage:
+### Read-only production verification — 2026-10-01 (America/Los_Angeles)
 
-1. Securely provision an independent production key and its version label on
-   the backend; synchronize only to the ignored production configuration file.
-2. Build the reviewed code and apply the account-only migration runner from its
-   Heroku release artifact before serving new backend requests.
-3. Release backend, then frontend. Confirm existing unenrolled sign-in still works,
-   MFA status is configured, and protected routes reject anonymous/pending access.
-4. Have the user enroll their own account and save their recovery codes privately.
+The live Heroku application `webdev-coursework` is at release **v217**. The MFA
+route rejects anonymous access with 401. Migration `AddAccountMfa1790913600000`
+is recorded and all three MFA tables exist. There are zero verified methods.
+The live configuration has no current or previous MFA encryption key and no key
+version label. This missing key prevents setup; the earlier statement that the
+MFA migration had not been deployed was stale.
+
+The existing local development key was preserved. An independent production key
+and `v1` label have been staged in ignored `backend/.env.production.local` (mode
+600). No remote configuration, schema or release was changed in this review.
+The new UI/API fixes remain in the working tree and are not published.
+
+### Approved rollout procedure
+
+Execute only after the user explicitly approves production changes:
+
+1. Record the current backend release and frontend deployment immediately before
+   release; retain the existing database backup and a secure key backup. Recheck
+   live key presence and enrollment count. If someone configured a key since this
+   review, preserve it and reconcile it with the staged key before proceeding.
+2. Release the reviewed backend to the existing Heroku application. Its existing
+   Procfile release hook runs `yarn --cwd backend migration:run:accounts`, using
+   only the explicit account migration whitelist. The MFA migration is already
+   applied; do not drop/recreate its tables or run the general migration runner.
+   The release must fail if any whitelisted migration remains pending.
+3. Provision the staged `MFA_ENCRYPTION_KEY` and `MFA_ENCRYPTION_KEY_ID` securely,
+   without putting values in terminal output, shell history or command arguments.
+   Verify availability and preserve an access-controlled backup. Do not set any
+   `VITE_` key variable. Key provisioning restarts the Heroku application.
+4. Release frontend after backend, because the UI now expects `setup.expiresAt`.
+   Verify ordinary sign-in, `configured: true` in an authenticated MFA status,
+   no-store responses, Secure/HttpOnly cookies and rejected pending-session access.
+5. The user enrolls their own authenticator and privately saves recovery codes.
+   Verify password and GitHub continuation, a recovery sign-in, recent step-up,
+   regeneration and session revocation using an authorized test account. Never
+   capture live setup secrets or recovery codes in screenshots or logs.
+
+### Rollback and lost-device recovery
+
+For a frontend failure, restore the recorded previous frontend deployment first.
+For a backend failure, roll back to the recorded MFA-capable Heroku release
+(**v217** at review time), then verify both ordinary and enrolled sign-in. Keep
+the MFA schema and encryption key: rolling code back must not remove protection
+or make enrolled secrets unreadable. Once any account enrolls, removing the key
+is not a safe rollback. Do not restore a shared database wholesale or run this
+migration's destructive `down` method as part of rollback.
+
+A lost authenticator can be recovered by signing in with an unused recovery code,
+then disabling MFA with another fresh recovery code and signing in again before
+enrolling a replacement device. Regeneration invalidates the previous set. A
+password reset never removes MFA. If both device and recovery codes are lost,
+there is no self-service bypass: arrange a separately reviewed identity-verification
+and audited recovery procedure. Do not change account rows or replace the key to
+bypass verification.
+
+### Evidence from this review
+
+- 26 backend crypto/session unit checks and 12 isolated HTTP/PostgreSQL integration
+  checks passed. Integration includes the complete MFA lifecycle, real HTTP GitHub
+  callback with a mocked provider, CSRF, invalid DTOs, expiry, concurrency, missing
+  encryption key, recovery, locks and session revocation. No live GitHub account
+  or authenticator app was used.
+- Eight focused UI tests passed, including expiry removal, network retry,
+  one-time code display, copy/download and explicit disable confirmation.
+- Both TypeScript checks, changed-file lint and backend/frontend production builds
+  passed. Desktop (1280 px) and mobile (390 px) disabled-state Security UI were
+  visually inspected on a disposable local account, with no horizontal overflow.
+  Enrollment/recovery UI behavior was verified by component tests; a physical
+  authenticator and live production enrollment remain for the approved rollout.
 
 Do not copy Lens Lounge's live credentials, secrets, codes, tables or MFA settings.

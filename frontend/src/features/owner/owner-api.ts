@@ -79,6 +79,7 @@ export async function ownerRequest<T>(
     const mfaMessages: Record<string, string> = {
       MFA_INVALID_CODE:
         "Invalid or already used code. Wait for a new authenticator code or use a recovery code.",
+      MFA_ENROLLMENT_EXPIRED: "Authenticator setup expired. Start again.",
       MFA_STEP_UP_REQUIRED:
         "Verify your authenticator in Security before retrying this action.",
       RECENT_SIGN_IN_REQUIRED:

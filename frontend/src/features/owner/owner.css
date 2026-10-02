@@ -390,15 +390,7 @@
 .owner-login {
   display: grid;
   place-items: center;
-  gap: 1rem;
   padding: clamp(1rem, 5vw, 4rem);
-}
-.owner-auth-back {
-  color: var(--owner-muted);
-  font-size: 0.8rem;
-}
-.owner-auth-back:hover {
-  text-decoration: underline;
 }
 .owner-auth-signup,
 .owner-auth-verification {

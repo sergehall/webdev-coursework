@@ -200,22 +200,23 @@ export class MfaService {
     this.assertRecentSignIn(issuedAt);
     const setup = this.crypto.enrollment(account.id, account.username),
       enrollmentId = randomUUID();
-    await this.store.db.transaction(async (q) => {
+    const expiresAt = await this.store.db.transaction(async (q) => {
       await this.accountLock(q, account.id, account.revision);
       const method = await this.methodLock(q, account.id);
       if (method?.status === "verified")
         throw new ConflictException(
           "Two-factor authentication is already enabled"
         );
-      await q.query(
-        "INSERT INTO webdev_mfa_methods(account_id,method_id,status,secret_encrypted,enrollment_expires_at) VALUES($1,$2,'pending',$3,now()+interval '10 minutes') ON CONFLICT(account_id) DO UPDATE SET method_id=$2,status='pending',secret_encrypted=$3,enrollment_expires_at=now()+interval '10 minutes',last_step=-1,attempts=0,locked_until=NULL,verified_at=NULL,disabled_at=NULL",
+      const [saved]: { enrollment_expires_at: Date }[] = await q.query(
+        "INSERT INTO webdev_mfa_methods(account_id,method_id,status,secret_encrypted,enrollment_expires_at) VALUES($1,$2,'pending',$3,now()+interval '10 minutes') ON CONFLICT(account_id) DO UPDATE SET method_id=$2,status='pending',secret_encrypted=$3,enrollment_expires_at=now()+interval '10 minutes',last_step=-1,attempts=0,locked_until=NULL,verified_at=NULL,disabled_at=NULL RETURNING enrollment_expires_at",
         [account.id, enrollmentId, setup.encrypted]
       );
       await this.audit(q, account.role, "account.mfa.enroll", true);
+      return saved.enrollment_expires_at.toISOString();
     });
     const { encrypted: _encrypted, ...publicSetup } = setup;
     return {
-      setup: { ...publicSetup, enrollmentId },
+      setup: { ...publicSetup, enrollmentId, expiresAt },
       mfa: await this.status(account.id),
     };
   }
@@ -244,9 +245,10 @@ export class MfaService {
         !method.enrollment_expires_at ||
         method.enrollment_expires_at.getTime() <= Date.now()
       )
-        throw new BadRequestException(
-          "Authenticator setup expired. Start again."
-        );
+        throw new BadRequestException({
+          code: "MFA_ENROLLMENT_EXPIRED",
+          message: "Authenticator setup expired. Start again.",
+        });
       if (!(await this.proof(q, account.id, method, code))) {
         await this.audit(q, account.role, "account.mfa.enable", false);
         return null;

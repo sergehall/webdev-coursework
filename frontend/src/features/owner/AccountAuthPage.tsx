@@ -333,9 +333,6 @@ export default function AccountAuthPage({ mode }: { mode: Mode }) {
           )}
         </div>
       </section>
-      <Link className="owner-auth-back" to="/">
-        <span aria-hidden="true">←</span> Back to the portfolio
-      </Link>
     </div>
   );
 }
