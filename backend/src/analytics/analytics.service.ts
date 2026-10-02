@@ -29,6 +29,7 @@ import type {
   OwnerPreferencesDto,
   OwnerProfileDto,
   QrEventDto,
+  SessionQueryDto,
 } from "./analytics.dto";
 import {
   hashOwnerPassword,
@@ -407,15 +408,11 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
     });
   }
 
-  async sessions(req: Request, cursor?: string) {
+  async sessions(req: Request, query: SessionQueryDto = {}) {
     const session = await this.authorize(req, "owner.sessions.view", false);
     const account = await this.store.account(session.accountId);
     if (!account) throw new UnauthorizedException("Sign in again");
-    const page = await this.store.sessions(
-      account.id,
-      account.revision,
-      cursor
-    );
+    const page = await this.store.sessions(account.id, account.revision, query);
     const entries = await Promise.all(
       page.entries.map(async (entry) => {
         const raw = await this.connection().get(

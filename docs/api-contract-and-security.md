@@ -183,8 +183,8 @@ revisions, encryption envelopes or queue internals. MFA enrollment secret and
 recovery codes are intentional one-time business outputs to the signed-in user:
 render/store them locally and never log them or send them to a remote QR service.
 
-Sessions use cursor pagination (up to five visible active records) and nullable
-`nextCursor`. Activity supports exact
+Sessions use cursor pagination (up to five visible active records), optional
+`device`/`authMethod` filters and nullable `nextCursor`. Activity supports exact
 `limit`, `days`, `result`, `group` and `cursor` query enums documented in Swagger.
 QR reports accept `days=7|30|90` (default 30) and return typed numeric maps.
 Quiz progress mutations have empty success bodies. Multipart quiz creation

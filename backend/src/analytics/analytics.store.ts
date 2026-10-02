@@ -7,7 +7,11 @@ import {
 } from "@nestjs/common";
 import { DataSource } from "typeorm";
 import { QR_CAMPAIGN, type QrEvent } from "./analytics.types";
-import type { AuditQueryDto, OwnerPreferencesDto } from "./analytics.dto";
+import type {
+  AuditQueryDto,
+  OwnerPreferencesDto,
+  SessionQueryDto,
+} from "./analytics.dto";
 
 export type OwnerAccount = {
   id: string;
@@ -240,13 +244,17 @@ export class AnalyticsStore {
       [tokenHash, accountId]
     );
   }
-  async sessions(accountId: string, revision: string, cursor?: string) {
+  async sessions(
+    accountId: string,
+    revision: string,
+    query: SessionQueryDto = {}
+  ) {
     let at: string | null = null,
       id: string | null = null;
-    if (cursor) {
+    if (query.cursor) {
       try {
         const parsed = JSON.parse(
-          Buffer.from(cursor, "base64url").toString("utf8")
+          Buffer.from(query.cursor, "base64url").toString("utf8")
         ) as { at: string; id: string };
         if (
           !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(parsed.at) ||
@@ -262,6 +270,7 @@ export class AnalyticsStore {
         throw new BadRequestException("Invalid sessions cursor");
       }
     }
+    // Apply account/revision isolation and filters before selecting a page.
     const rows: {
       id: string;
       tokenHash: string;
@@ -277,8 +286,17 @@ export class AnalyticsStore {
       SELECT id,token_hash AS "tokenHash",issued_at AS "issuedAt",expires_at AS "expiresAt",last_seen_at AS "lastSeenAt",device,os,browser,auth_method AS "authMethod"
       FROM webdev_account_sessions WHERE account_id=$1 AND revision=$2 AND expires_at>now()
         AND ($3::timestamptz IS NULL OR (issued_at,id)<($3::timestamptz,$4::uuid))
+        AND ($5::text IS NULL OR device=$5)
+        AND ($6::text IS NULL OR auth_method=$6)
       ORDER BY issued_at DESC,id DESC LIMIT 6`,
-      [accountId, revision, at, id]
+      [
+        accountId,
+        revision,
+        at,
+        id,
+        query.device ?? null,
+        query.authMethod ?? null,
+      ]
     );
     const entries = rows.slice(0, 5),
       last = entries.at(-1);

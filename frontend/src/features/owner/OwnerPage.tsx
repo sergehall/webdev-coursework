@@ -519,22 +519,12 @@ function SecurityPanel({ session }: { session: OwnerSession }) {
           {windowId === "sessions" && (
             <section className="owner-card">
               <h2>Account sessions</h2>
-              <ActiveSessionsPanel profile={session.profile} />
-              <p className="owner-muted">
-                Time zone: {session.profile.timeZone} · Access:{" "}
-                {session.role === "admin" ? "Administrator" : "Client"}
-              </p>
-              <p className="owner-muted">
-                End every session, including this one, if you no longer trust a
-                device.
-              </p>
-              <button
-                className="owner-button"
-                disabled={busy}
-                onClick={() => setConfirmRevoke(true)}
-              >
-                End all sessions
-              </button>
+              <ActiveSessionsPanel
+                profile={session.profile}
+                access={session.role}
+                ending={busy}
+                onEndSessions={() => setConfirmRevoke(true)}
+              />
             </section>
           )}
         </div>

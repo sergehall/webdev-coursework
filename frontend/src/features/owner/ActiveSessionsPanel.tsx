@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { ChevronDown, LogOut, RefreshCw } from "lucide-react";
 
 import { formatAccountTime } from "./account-time";
 import {
@@ -10,10 +11,24 @@ import {
 } from "./owner-api";
 import { useOwner } from "./owner-context";
 
+function sessionsPath(device: string, authMethod: string, cursor?: string) {
+  const query = new URLSearchParams();
+  if (device) query.set("device", device);
+  if (authMethod) query.set("authMethod", authMethod);
+  if (cursor) query.set("cursor", cursor);
+  return query.size ? `sessions?${query}` : "sessions";
+}
+
 export default function ActiveSessionsPanel({
   profile,
+  access,
+  onEndSessions,
+  ending = false,
 }: {
   profile: OwnerProfile;
+  access?: "admin" | "client";
+  onEndSessions?: () => void;
+  ending?: boolean;
 }) {
   const owner = useOwner();
   const clear = owner?.clear;
@@ -22,15 +37,23 @@ export default function ActiveSessionsPanel({
   const [busy, setBusy] = useState(true);
   const [error, setError] = useState("");
   const [revision, setRevision] = useState(0);
+  const [device, setDevice] = useState("");
+  const [authMethod, setAuthMethod] = useState("");
+  const filtered = Boolean(device || authMethod);
   const requestId = useRef({ value: 0 });
+  const pending = useRef(true);
+  const list = useRef<HTMLDivElement>(null);
   useEffect(() => {
+    // A new filter/refresh replaces the result set; stale pages cannot append to it.
     const requests = requestId.current;
     const id = ++requests.value;
+    pending.current = true;
+    if (list.current) list.current.scrollTop = 0;
     setBusy(true);
     setError("");
     setEntries([]);
     setCursor(null);
-    void ownerRequest<ActiveSessionsPage>("sessions")
+    void ownerRequest<ActiveSessionsPage>(sessionsPath(device, authMethod))
       .then((page) => {
         if (requests.value !== id) return;
         setEntries(page.entries);
@@ -45,20 +68,24 @@ export default function ActiveSessionsPanel({
           );
       })
       .finally(() => {
-        if (requests.value === id) setBusy(false);
+        if (requests.value === id) {
+          pending.current = false;
+          setBusy(false);
+        }
       });
     return () => {
       requests.value++;
     };
-  }, [revision, clear]);
+  }, [revision, clear, device, authMethod]);
   async function more() {
-    if (busy || !cursor) return;
+    if (pending.current || !cursor) return;
+    pending.current = true;
     const id = ++requestId.current.value;
     setBusy(true);
     setError("");
     try {
       const page = await ownerRequest<ActiveSessionsPage>(
-        `sessions?${new URLSearchParams({ cursor })}`
+        sessionsPath(device, authMethod, cursor)
       );
       if (requestId.current.value !== id) return;
       setEntries((old) => [
@@ -76,7 +103,10 @@ export default function ActiveSessionsPanel({
           err instanceof Error ? err.message : "Unable to load more sessions."
         );
     } finally {
-      if (requestId.current.value === id) setBusy(false);
+      if (requestId.current.value === id) {
+        pending.current = false;
+        setBusy(false);
+      }
     }
   }
   return (
@@ -85,20 +115,150 @@ export default function ActiveSessionsPanel({
         <div>
           <h3>Active sign-ins</h3>
           <p className="owner-muted">
-            Newest first. Five sessions are loaded at a time. Device details are
-            approximate; activity updates about once a minute.
+            Newest first. Five active sessions are loaded at a time. Device
+            details are approximate; activity updates about once a minute.
           </p>
         </div>
+      </div>
+      <section
+        className="owner-sessions-summary"
+        aria-label="Session information"
+      >
+        <section
+          className="owner-sessions-summary-card"
+          aria-labelledby="session-status-title"
+        >
+          <h4 id="session-status-title">Loaded sessions</h4>
+          <p className="owner-muted" aria-live="polite">
+            {entries.length} {filtered ? "matching active" : "active"}{" "}
+            {entries.length === 1 ? "session" : "sessions"} loaded
+          </p>
+          {!busy && !error && !cursor && entries.length > 0 && (
+            <p className="owner-muted">
+              {filtered
+                ? "All matching active sessions loaded"
+                : "All active sessions loaded"}
+            </p>
+          )}
+          <p className="owner-muted">
+            Earlier sign-ins appear when that device next accesses the account.
+          </p>
+        </section>
+        <section
+          className="owner-sessions-summary-card"
+          aria-labelledby="session-context-title"
+        >
+          <h4 id="session-context-title">Account context</h4>
+          <dl className="owner-sessions-facts">
+            <div>
+              <dt>Time zone</dt>
+              <dd>{profile.timeZone}</dd>
+            </div>
+            {access && (
+              <div>
+                <dt>Access</dt>
+                <dd>{access === "admin" ? "Administrator" : "Client"}</dd>
+              </div>
+            )}
+          </dl>
+        </section>
+        <section
+          className="owner-sessions-summary-card owner-sessions-action-card"
+          aria-labelledby="session-actions-title"
+        >
+          <h4 id="session-actions-title">Session actions</h4>
+          <div className="owner-sessions-actions">
+            <button
+              type="button"
+              className="owner-button owner-session-refresh"
+              disabled={busy}
+              onClick={() => setRevision((n) => n + 1)}
+            >
+              <RefreshCw size={16} aria-hidden="true" />
+              Refresh sessions
+            </button>
+            {onEndSessions && (
+              <button
+                type="button"
+                className="owner-button owner-button--danger owner-session-end"
+                disabled={ending}
+                onClick={onEndSessions}
+              >
+                <LogOut size={16} aria-hidden="true" />
+                End all sessions
+              </button>
+            )}
+          </div>
+          {onEndSessions && (
+            <p className="owner-muted">
+              End every session, including this one, if you no longer trust a
+              device.
+            </p>
+          )}
+        </section>
+      </section>
+      <div className="owner-sessions-filters">
+        <label>
+          Device
+          <span className="owner-session-filter-select">
+            <select value={device} onChange={(e) => setDevice(e.target.value)}>
+              <option value="">All devices</option>
+              <option value="desktop">Desktop</option>
+              <option value="phone">Phone</option>
+              <option value="tablet">Tablet</option>
+              <option value="unknown">Not recorded</option>
+            </select>
+            <ChevronDown size={16} aria-hidden="true" />
+          </span>
+        </label>
+        <label>
+          Sign-in method
+          <span className="owner-session-filter-select">
+            <select
+              value={authMethod}
+              onChange={(e) => setAuthMethod(e.target.value)}
+            >
+              <option value="">All methods</option>
+              <option value="github">GitHub</option>
+              <option value="password">Username / password</option>
+              <option value="unknown">Not recorded</option>
+            </select>
+            <ChevronDown size={16} aria-hidden="true" />
+          </span>
+        </label>
         <button
           type="button"
           className="owner-button"
-          disabled={busy}
-          onClick={() => setRevision((n) => n + 1)}
+          disabled={!filtered}
+          onClick={() => {
+            setDevice("");
+            setAuthMethod("");
+          }}
         >
-          Refresh sessions
+          Clear filters
         </button>
       </div>
-      <div className="owner-sessions-list" aria-busy={busy}>
+      <p id="sessions-scroll-help" className="owner-muted">
+        Scroll the list to load earlier active sign-ins, or use Load 5 more.
+      </p>
+      <div
+        ref={list}
+        className="owner-sessions-list"
+        role="region"
+        aria-label="Session list"
+        aria-describedby="sessions-scroll-help"
+        tabIndex={0}
+        aria-busy={busy}
+        onScroll={(e) => {
+          const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
+          if (
+            !error &&
+            scrollTop > 0 &&
+            scrollHeight - scrollTop - clientHeight <= 80
+          )
+            void more();
+        }}
+      >
         <ul aria-label="Active sessions">
           {entries.map((entry) => (
             <li key={entry.id} className="owner-session-row">
@@ -167,16 +327,13 @@ export default function ActiveSessionsPanel({
         </p>
       )}
       {!busy && !error && entries.length === 0 && (
-        <p className="owner-muted">No active sessions on this page.</p>
+        <p className="owner-muted">
+          {filtered
+            ? "No active sessions match these filters."
+            : "No active sessions on this page."}
+        </p>
       )}
-      <p className="owner-muted">
-        Earlier sign-ins appear when that device next accesses the account.
-      </p>
       <div className="owner-preferences-actions">
-        <span className="owner-muted">
-          {entries.length} active{" "}
-          {entries.length === 1 ? "session" : "sessions"} loaded
-        </span>
         {cursor && (
           <button
             type="button"
@@ -186,9 +343,6 @@ export default function ActiveSessionsPanel({
           >
             {busy ? "Loading…" : error ? "Retry loading more" : "Load 5 more"}
           </button>
-        )}
-        {!busy && !error && !cursor && entries.length > 0 && (
-          <span className="owner-muted">All active sessions loaded</span>
         )}
       </div>
     </div>

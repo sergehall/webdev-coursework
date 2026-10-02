@@ -76,6 +76,15 @@ and dark modules for scanning.
   and recovery-code controls belong to Two-factor; device controls belong to Sessions.
   Keep existing `#providers` links compatible with Overview. Signals reflect known
   account data; loading or unavailable status must not be shown as disabled or safe.
+- Sessions start with five newest active sign-ins and append older pages when
+  the scrollable list approaches its end. Keep Load 5 more as a keyboard and
+  error-retry alternative. Device and sign-in method filters apply on the server
+  before pagination and reset the loaded list; preserve account isolation and
+  exclude expired or revoked sessions. Put counts, timezone, access role and
+  session management above the list in separate status, account-context and
+  action blocks. Group Refresh sessions and End all sessions together; use sage
+  for refresh and muted danger colors for ending all sessions. Wide-screen rows use one line for
+  device/method and another for timestamps; allow natural wrapping on mobile.
 
 ## Color and interaction rules
 

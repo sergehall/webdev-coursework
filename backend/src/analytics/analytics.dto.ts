@@ -212,7 +212,26 @@ export class AuditQueryDto {
   cursor?: string;
 }
 
+// Accept only supported categories before they reach the parameterized session query.
 export class SessionQueryDto {
+  @IsOptional()
+  @IsIn(["desktop", "phone", "tablet", "unknown"])
+  @ApiPropertyOptional({
+    enum: ["desktop", "phone", "tablet", "unknown"],
+    example: "desktop",
+    description: "Optional device category filter.",
+  })
+  device?: "desktop" | "phone" | "tablet" | "unknown";
+
+  @IsOptional()
+  @IsIn(["github", "password", "unknown"])
+  @ApiPropertyOptional({
+    enum: ["github", "password", "unknown"],
+    example: "password",
+    description: "Optional sign-in method filter.",
+  })
+  authMethod?: "github" | "password" | "unknown";
+
   @IsOptional()
   @IsString()
   @MaxLength(300)

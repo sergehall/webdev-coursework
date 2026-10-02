@@ -338,12 +338,12 @@ export class OwnerController {
   @Get("sessions")
   @ApiContract(
     "List active sessions",
-    "Requires an active account session. Returns up to five active sessions per page, newest first, and identifies the current session without token hashes.",
+    "Requires an active account session. Returns up to five active sessions per page, newest first, with optional device and sign-in method filters. Identifies the current session without token hashes.",
     SessionsPageDto,
     { auth: "session" }
   )
   sessions(@Req() req: Request, @Query() query: SessionQueryDto) {
-    return this.analytics.sessions(req, query.cursor);
+    return this.analytics.sessions(req, query);
   }
 
   @Post("logout")

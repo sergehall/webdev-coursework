@@ -617,6 +617,85 @@ run("Owner HTTP and PostgreSQL integration", () => {
       .expect(200);
     expect(emptyOld.body.entries).toHaveLength(1);
   });
+  it("filters active sessions before pagination and keeps account isolation", async () => {
+    const server = app.getHttpServer(),
+      store = app.get(AnalyticsStore);
+    const id = randomUUID(),
+      otherId = randomUUID();
+    for (const [accountId, username] of [
+      [id, "filtered_sessions"],
+      [otherId, "filtered_other"],
+    ])
+      await db.query(
+        "INSERT INTO webdev_accounts(id,role,username,revision,display_name) VALUES($1,'client',$2,$3,'Filter Test')",
+        [accountId, username, randomUUID()]
+      );
+    const account = (await store.account(id))!;
+    let token = "";
+    for (let i = 0; i < 9; i++) {
+      token = await service.createSession(account, undefined, {
+        method: i < 7 ? "github" : "password",
+        req: {
+          get: () =>
+            i < 7
+              ? "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36"
+              : "Mozilla/5.0 (iPhone; CPU iPhone OS 17) AppleWebKit Safari/605.1 Mobile",
+        } as unknown as Request,
+      });
+      await db.query(
+        "UPDATE webdev_account_sessions SET issued_at=$1 WHERE token_hash=$2",
+        [new Date(Date.now() - 20000 + i * 1000), service.digest(token)]
+      );
+    }
+    await service.createSession((await store.account(otherId))!, undefined, {
+      method: "github",
+    });
+    const list = (query: Record<string, string>) =>
+      request(server)
+        .get("/api/account/sessions")
+        .set("Cookie", `webdev_owner=${token}`)
+        .query(query);
+    const first = await list({
+      device: "desktop",
+      authMethod: "github",
+    }).expect(200);
+    expect(first.body.entries).toHaveLength(5);
+    expect(
+      first.body.entries.every(
+        (entry: { device: string; authMethod: string; current: boolean }) =>
+          entry.device === "desktop" &&
+          entry.authMethod === "github" &&
+          !entry.current
+      )
+    ).toBe(true);
+    const second = await list({
+      device: "desktop",
+      authMethod: "github",
+      cursor: first.body.nextCursor,
+    }).expect(200);
+    expect(second.body.entries).toHaveLength(2);
+    expect(second.body.nextCursor).toBeNull();
+    expect(
+      new Set(
+        [...first.body.entries, ...second.body.entries].map(
+          (entry: { id: string }) => entry.id
+        )
+      ).size
+    ).toBe(7);
+    const phone = await list({
+      device: "phone",
+      authMethod: "password",
+    }).expect(200);
+    expect(phone.body.entries).toHaveLength(2);
+    expect(
+      phone.body.entries.filter((entry: { current: boolean }) => entry.current)
+    ).toHaveLength(1);
+    expect((await list({ device: "tablet" }).expect(200)).body.entries).toEqual(
+      []
+    );
+    await list({ device: "desktop OR 1=1" }).expect(400);
+    await list({ authMethod: "oauth" }).expect(400);
+  });
   it("persists validated preferences per account and restricts administration defaults", async () => {
     const server = app.getHttpServer(),
       store = app.get(AnalyticsStore);
