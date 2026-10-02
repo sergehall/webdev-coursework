@@ -11,6 +11,7 @@ import {
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { TurnstileService } from "../security/turnstile/turnstile.service";
+import type { GithubStartDto } from "../accounts/account.dto";
 import { createHash, createHmac, randomBytes, randomUUID } from "crypto";
 import { PostgresState } from "./postgres-state";
 import { MfaService, type LoginResult } from "../accounts/mfa/mfa.service";
@@ -381,11 +382,26 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
     return { ...session, revision: stored.revision };
   }
 
-  async githubStart(req: Request, linking = false) {
+  async githubStart(
+    req: Request,
+    linking = false,
+    verification: GithubStartDto = {}
+  ) {
+    // Browser POSTs must originate from our account UI. Legacy GETs cannot supply proof.
+    if (!linking && req.method === "POST") this.assertOrigin(req);
     this.stateStore();
     if (!this.github)
       throw new ServiceUnavailableException("GitHub sign-in is not configured");
     await this.rateLimit(`github:${this.digest(req.ip ?? "unknown")}`, 10, 900);
+    // Verify before issuing OAuth state/PKCE. The callback accepts only state created here.
+    // Authenticated provider linking retains its existing recent-sign-in and MFA boundary.
+    if (!linking)
+      await this.turnstile.verify(
+        verification.turnstileToken,
+        verification.intent === "register"
+          ? "account_register"
+          : "account_login"
+      );
     const state = randomBytes(32).toString("base64url");
     const verifier = randomBytes(32).toString("base64url");
     const session = linking

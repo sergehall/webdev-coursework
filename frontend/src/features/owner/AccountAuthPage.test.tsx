@@ -119,6 +119,91 @@ describe("Turnstile account integration", () => {
       expect(button).toBeDisabled();
     }
   );
+  it.each(["login", "reauthenticate", "register"] as const)(
+    "locks GitHub and password actions for %s until verification and sends proof before OAuth",
+    async (mode) => {
+      const fetcher = vi.fn((url: string) =>
+        Promise.resolve(
+          new Response(
+            JSON.stringify(
+              url.endsWith("/login-options")
+                ? {
+                    githubEnabled: true,
+                    turnstileRequired: true,
+                    turnstileSiteKey: "public-key",
+                  }
+                : { code: "TURNSTILE_REJECTED" }
+            ),
+            { status: url.endsWith("/login-options") ? 200 : 403 }
+          )
+        )
+      );
+      vi.stubGlobal("fetch", fetcher);
+      auth(mode);
+      const github = await screen.findByRole("button", {
+        name: "Continue with GitHub",
+      });
+      const password = screen.getByRole("button", {
+        name: mode === "register" ? "Create account" : "Log in",
+      });
+      expect(github).toBeDisabled();
+      expect(password).toBeDisabled();
+      expect(
+        screen.queryByRole("link", { name: "Continue with GitHub" })
+      ).not.toBeInTheDocument();
+      fireEvent.click(github);
+      expect(fetcher).toHaveBeenCalledOnce();
+      await waitFor(() => expect(renderWidget).toHaveBeenCalledOnce());
+      act(() => widgetOptions.callback("verified-token"));
+      expect(github).toBeEnabled();
+      expect(password).toBeEnabled();
+      act(() => widgetOptions["expired-callback"]());
+      expect(github).toBeDisabled();
+      act(() => widgetOptions.callback("fresh-token"));
+      // GitHub initiation does not require filling unrelated password fields.
+      fireEvent.click(github);
+      expect(github).toBeDisabled();
+      await screen.findByText("Complete human verification and try again.");
+      const post = (
+        fetcher.mock.calls as unknown as [string, RequestInit][]
+      ).find(([url]) => url.endsWith("/github/start"))!;
+      expect(post[1].method).toBe("POST");
+      expect(JSON.parse(post[1].body as string)).toEqual({
+        intent: mode === "register" ? "register" : "login",
+        turnstileToken: "fresh-token",
+      });
+      expect(post[0]).not.toContain("fresh-token");
+      await waitFor(() => expect(renderWidget).toHaveBeenCalledTimes(2));
+      expect(github).toBeDisabled();
+      expect(password).toBeDisabled();
+    }
+  );
+  it("supports unconfigured GitHub sign-in and refuses an unexpected redirect URL", async () => {
+    const fetcher = vi.fn((url: string) =>
+      Promise.resolve(
+        new Response(
+          JSON.stringify(
+            url.endsWith("/login-options")
+              ? { githubEnabled: true, turnstileRequired: false }
+              : { url: "https://attacker.example/login" }
+          )
+        )
+      )
+    );
+    vi.stubGlobal("fetch", fetcher);
+    auth();
+    const button = await screen.findByRole("button", {
+      name: "Continue with GitHub",
+    });
+    expect(button).toBeEnabled();
+    fireEvent.click(button);
+    await screen.findByText("Unable to start GitHub sign-in.");
+    const post = (
+      fetcher.mock.calls as unknown as [string, RequestInit][]
+    ).find(([url]) => url.endsWith("/github/start"))!;
+    expect(JSON.parse(post[1].body as string)).toEqual({ intent: "login" });
+    expect(renderWidget).not.toHaveBeenCalled();
+  });
   it("keeps protected submissions blocked when options fail and offers a configuration retry", async () => {
     vi.stubGlobal(
       "fetch",

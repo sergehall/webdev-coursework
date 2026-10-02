@@ -61,6 +61,46 @@ export default function AccountAuthPage({ mode }: { mode: Mode }) {
   const [optionsAttempt, setOptionsAttempt] = useState(0);
   const protectedForm = isLogin || mode === "register";
   const requiresTurnstile = protectedForm && !!options?.turnstileRequired;
+  const verificationPending =
+    protectedForm && (!options || (requiresTurnstile && !turnstileToken));
+  function refreshVerification() {
+    if (requiresTurnstile) {
+      setTurnstileToken("");
+      setTurnstileAttempt((value) => value + 1);
+    }
+  }
+  async function startGithub() {
+    if (busy || verificationPending) return;
+    setError("");
+    setShowVerificationHelp(false);
+    setBusy(true);
+    try {
+      // Redeem proof server-side before navigating; a disabled button alone cannot protect OAuth.
+      const result = await ownerRequest<{ url: string }>("github/start", {
+        method: "POST",
+        body: {
+          intent: mode === "register" ? "register" : "login",
+          ...(requiresTurnstile ? { turnstileToken } : {}),
+        },
+      });
+      const url = new URL(result.url);
+      if (
+        url.origin !== "https://github.com" ||
+        url.pathname !== "/login/oauth/authorize"
+      )
+        throw new Error("Unable to start GitHub sign-in.");
+      window.location.assign(url.href);
+    } catch (failure) {
+      setError(
+        failure instanceof Error
+          ? failure.message
+          : "Unable to start GitHub sign-in."
+      );
+    } finally {
+      refreshVerification();
+      setBusy(false);
+    }
+  }
   const [token] = useState(
     () => new URLSearchParams(location.hash.slice(1)).get("token") ?? ""
   );
@@ -118,7 +158,7 @@ export default function AccountAuthPage({ mode }: { mode: Mode }) {
       return;
     }
     // Missing configuration or an expired challenge must block submission, including Enter.
-    if (protectedForm && (!options || (requiresTurnstile && !turnstileToken))) {
+    if (verificationPending) {
       setError("Complete human verification before continuing.");
       return;
     }
@@ -172,10 +212,7 @@ export default function AccountAuthPage({ mode }: { mode: Mode }) {
       );
     } finally {
       // Siteverify consumes tokens once, including failed credential attempts. Mount a fresh widget.
-      if (requiresTurnstile) {
-        setTurnstileToken("");
-        setTurnstileAttempt((value) => value + 1);
-      }
+      refreshVerification();
       setBusy(false);
     }
   }
@@ -212,13 +249,30 @@ export default function AccountAuthPage({ mode }: { mode: Mode }) {
             GitHub sign-in failed. Please try again.
           </p>
         )}
-        {github && (
-          <a
+        {requiresTurnstile && options?.turnstileSiteKey && !done && (
+          <div className="owner-form">
+            <p className="owner-muted">
+              {github
+                ? "Complete human verification to continue with GitHub or password."
+                : "Complete human verification before continuing."}
+            </p>
+            <TurnstileWidget
+              key={`${mode}:${turnstileAttempt}`}
+              siteKey={options.turnstileSiteKey}
+              action={isLogin ? "account_login" : "account_register"}
+              onToken={setTurnstileToken}
+            />
+          </div>
+        )}
+        {github && !done && (
+          <button
+            type="button"
             className="owner-button owner-button--wide owner-github"
-            href={`${import.meta.env.VITE_OWNER_API_URL ?? import.meta.env.VITE_API_URL ?? ""}/api/account/github/start`}
+            disabled={busy || verificationPending}
+            onClick={() => void startGithub()}
           >
             Continue with GitHub
-          </a>
+          </button>
         )}
         {done ? (
           <div role="status" className="owner-message">
@@ -337,14 +391,6 @@ export default function AccountAuthPage({ mode }: { mode: Mode }) {
               !token && (
                 <p role="alert">Open the link from your email to continue.</p>
               )}
-            {requiresTurnstile && options?.turnstileSiteKey && (
-              <TurnstileWidget
-                key={`${mode}:${turnstileAttempt}`}
-                siteKey={options.turnstileSiteKey}
-                action={isLogin ? "account_login" : "account_register"}
-                onToken={setTurnstileToken}
-              />
-            )}
             {requiresTurnstile && !options?.turnstileSiteKey && (
               <p role="alert">
                 Human verification is unavailable. Please try again later.
@@ -370,8 +416,7 @@ export default function AccountAuthPage({ mode }: { mode: Mode }) {
               className="owner-button owner-button--primary owner-button--wide"
               disabled={
                 busy ||
-                (protectedForm &&
-                  (!options || (requiresTurnstile && !turnstileToken))) ||
+                verificationPending ||
                 ((mode === "verify-email" || mode === "reset-password") &&
                   !token)
               }

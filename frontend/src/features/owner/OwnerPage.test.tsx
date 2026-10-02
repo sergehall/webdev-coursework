@@ -136,11 +136,8 @@ describe("Owner account", () => {
     );
     show("/owner/login", false);
     expect(
-      await screen.findByRole("link", { name: "Continue with GitHub" })
-    ).toHaveAttribute(
-      "href",
-      expect.stringContaining("/api/account/github/start")
-    );
+      await screen.findByRole("button", { name: "Continue with GitHub" })
+    ).toBeEnabled();
     expect(screen.getByLabelText("Password")).toHaveAttribute(
       "autocomplete",
       "current-password"
@@ -265,7 +262,7 @@ describe("Public accounts", () => {
       );
     vi.stubGlobal("fetch", fetcher);
     show("/account/register", false);
-    await screen.findByRole("link", { name: "Continue with GitHub" });
+    await screen.findByRole("button", { name: "Continue with GitHub" });
     expect(
       screen.queryByRole("link", { name: "Resend confirmation email" })
     ).not.toBeInTheDocument();

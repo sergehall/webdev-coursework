@@ -1,6 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import {
   IsEmail,
+  IsIn,
+  IsOptional,
   IsString,
   Matches,
   MaxLength,
@@ -16,6 +18,30 @@ export class EmailDto {
     maxLength: 254,
   })
   email!: string;
+}
+/** Public OAuth initiation transports proof in a POST body, never in the redirect URL. */
+export class GithubStartDto {
+  @ValidateIf((_object, value: unknown) => value !== undefined)
+  @IsString()
+  @MinLength(1)
+  @MaxLength(2048)
+  @ApiPropertyOptional({
+    maxLength: 2048,
+    writeOnly: true,
+    description:
+      "Single-use Turnstile token; required when human verification is configured.",
+  })
+  turnstileToken?: string;
+
+  @IsOptional()
+  @IsIn(["login", "register"])
+  @ApiPropertyOptional({
+    enum: ["login", "register"],
+    default: "login",
+    description:
+      "Selects the account_login or account_register widget action; grants no account privileges.",
+  })
+  intent?: "login" | "register";
 }
 export class RegisterDto extends EmailDto {
   // Optional at the schema level for unconfigured environments; required by the verifier when enabled.

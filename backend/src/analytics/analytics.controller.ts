@@ -19,6 +19,7 @@ import {
 } from "../accounts/account-response.dto";
 import { AnalyticsDashboardDto, AuditPageDto } from "./analytics-response.dto";
 import { AccountErrorFilter } from "../accounts/account-error.filter";
+import { GithubStartDto } from "../accounts/account.dto";
 import { UseFilters } from "@nestjs/common";
 import {
   BadRequestException,
@@ -107,9 +108,10 @@ export class OwnerController {
 
   @Get("github/start")
   @ApiOperation({
-    summary: "Start GitHub sign-in",
+    summary: "Start GitHub sign-in (legacy navigation)",
+    deprecated: true,
     description:
-      "Public browser navigation. Sets a ten-minute HttpOnly OAuth state cookie and redirects to GitHub. Disabled providers return 503.",
+      "Available only when Turnstile is unconfigured. Configured environments reject direct navigation; use POST with a single-use token. Disabled providers return 503.",
   })
   @ApiResponse({
     status: 303,
@@ -129,6 +131,27 @@ export class OwnerController {
       maxAge: 600000,
     });
     res.redirect(303, url);
+  }
+
+  @Post("github/start")
+  @HttpCode(200)
+  @ApiContract(
+    "Start verified GitHub sign-in or registration",
+    "Requires trusted Origin and an action-bound Turnstile token when configured. Sets a ten-minute HttpOnly OAuth state cookie after verification and returns the GitHub authorization URL. Existing rate limits, PKCE and callback MFA remain enforced.",
+    ProviderRedirectDto,
+    {}
+  )
+  async githubStartVerified(
+    @Req() req: Request,
+    @Body() dto: GithubStartDto,
+    @Res({ passthrough: true }) res: Response
+  ) {
+    const { state, url } = await this.analytics.githubStart(req, false, dto);
+    res.cookie(this.analytics.githubCookieName, state, {
+      ...this.githubCookieOptions(),
+      maxAge: 600000,
+    });
+    return { url };
   }
 
   @Post("providers/github/connect")

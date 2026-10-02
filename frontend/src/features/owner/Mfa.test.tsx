@@ -309,7 +309,7 @@ describe("Two-factor account flows", () => {
       );
     vi.stubGlobal("fetch", fetcher);
     const state = show(<OwnerPage />, "/account/login", context(false));
-    await screen.findByRole("link", { name: "Continue with GitHub" });
+    await screen.findByRole("button", { name: "Continue with GitHub" });
     fireEvent.change(screen.getByLabelText("Username or email"), {
       target: { value: "student" },
     });

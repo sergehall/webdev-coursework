@@ -1,23 +1,24 @@
 # Cloudflare Turnstile
 
-Password login (including `/api/owner/login` and reauthentication) and email
-registration require a single-use Turnstile token when configured. Tokens are
+Password and GitHub sign-in (including owner aliases and reauthentication), email
+registration and GitHub sign-up require a single-use Turnstile token when configured. Tokens are
 verified by the backend before credential lookup, password hashing or account
-persistence. Existing origin checks, rate limits, GitHub OAuth and MFA remain in
-place. GitHub OAuth has its own existing provider flow.
+persistence, and before issuing GitHub OAuth state. Existing origin checks, rate
+limits, PKCE and MFA remain in place. Managed widgets may verify automatically;
+a valid server-verified token is mandatory, while a manual checkbox click is not.
 
 ## Code domains and ownership
 
-| Domain                            | Files                                                                                                              | Responsibility                                                                                                                                                |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Backend security                  | `backend/src/security/turnstile/turnstile.module.ts`, `turnstile.service.ts`                                       | Exports the shared verifier, validates provider configuration and calls Cloudflare Siteverify. No account persistence, UI or Swagger cookies.                 |
-| Backend accounts                  | `backend/src/accounts/account.dto.ts`, `account-response.dto.ts`, `account.service.ts`, `account.controller.ts`    | Receives registration tokens, exposes browser-safe settings, applies existing account budgets and verifies before hashing/persistence.                        |
-| Existing account/session adapter  | `backend/src/analytics/analytics.module.ts`, `analytics.service.ts`, `analytics.dto.ts`, `analytics.controller.ts` | Imports `TurnstileModule` and enforces password login for both account/owner aliases and reauthentication. Session handlers remain in their existing adapter. |
-| Backend API documentation         | `backend/src/swagger/turnstile/swagger-turnstile.middleware.ts`, `swagger-turnstile.view.ts`                       | Owns the documentation gate, short-lived clearance cookie and HTML/external JavaScript presentation.                                                          |
-| Backend bootstrap                 | `backend/src/bootstrap/configure-swagger.ts`, `configure-cors.ts`, `security-headers.ts`                           | Composes Basic Auth → request throttling → Turnstile, permits the same-origin verification POST, and publishes CSP.                                           |
-| Frontend account authentication   | `frontend/src/features/owner/auth/turnstile-client.ts`, `TurnstileWidget.tsx`                                      | Loads the official script once and manages each widget's callbacks, retries, theme, sizing and cleanup.                                                       |
-| Frontend account forms            | `frontend/src/features/owner/AccountAuthPage.tsx`, `owner-api.ts`                                                  | Owns the in-memory token, submission lock, fresh challenge per request, and stable user-facing error messages.                                                |
-| Frontend deployment configuration | `frontend/vite.config.ts`, `frontend/vercel.json`                                                                  | Allows the official Cloudflare script/frame in preview and deployed CSP.                                                                                      |
+| Domain                            | Files                                                                                                              | Responsibility                                                                                                                                                      |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Backend security                  | `backend/src/security/turnstile/turnstile.module.ts`, `turnstile.service.ts`                                       | Exports the shared verifier, validates provider configuration and calls Cloudflare Siteverify. No account persistence, UI or Swagger cookies.                       |
+| Backend accounts                  | `backend/src/accounts/account.dto.ts`, `account-response.dto.ts`, `account.service.ts`, `account.controller.ts`    | Defines registration/OAuth proof DTOs, exposes browser-safe settings, applies existing account budgets and verifies before hashing/persistence.                     |
+| Existing account/session adapter  | `backend/src/analytics/analytics.module.ts`, `analytics.service.ts`, `analytics.dto.ts`, `analytics.controller.ts` | Imports `TurnstileModule` and enforces password/OAuth login for both account/owner aliases and reauthentication. Session handlers remain in their existing adapter. |
+| Backend API documentation         | `backend/src/swagger/turnstile/swagger-turnstile.middleware.ts`, `swagger-turnstile.view.ts`                       | Owns the documentation gate, short-lived clearance cookie and HTML/external JavaScript presentation.                                                                |
+| Backend bootstrap                 | `backend/src/bootstrap/configure-swagger.ts`, `configure-cors.ts`, `security-headers.ts`                           | Composes Basic Auth → request throttling → Turnstile, permits the same-origin verification POST, and publishes CSP.                                                 |
+| Frontend account authentication   | `frontend/src/features/owner/auth/turnstile-client.ts`, `TurnstileWidget.tsx`                                      | Loads the official script once and manages each widget's callbacks, retries, theme, sizing and cleanup.                                                             |
+| Frontend account forms            | `frontend/src/features/owner/AccountAuthPage.tsx`, `owner-api.ts`                                                  | Owns the in-memory token, submission lock, fresh challenge per request, GitHub POST initiation, and stable user-facing error messages.                              |
+| Frontend deployment configuration | `frontend/vite.config.ts`, `frontend/vercel.json`                                                                  | Allows the official Cloudflare script/frame in preview and deployed CSP.                                                                                            |
 
 Security verification has no dependency on account or Swagger implementation.
 Account and Swagger callers share the exported provider; each owns its action and
@@ -74,6 +75,32 @@ The verifier checks `success`, the exact hostname and the action:
 and does not log secrets, tokens or provider error details. Forms clear tokens on
 expiry and refresh verification after each submitted attempt. Narrow forms use
 the compact widget. Production CSP allows Cloudflare's official script and frame.
+
+## GitHub OAuth initiation
+
+The same widget protects both password and GitHub actions on login,
+reauthentication and registration pages. GitHub initiation does not require
+filling password fields. Its button stays disabled until configuration loads and
+verification succeeds; expiry disables both actions again.
+
+The browser sends `POST /api/account/github/start` (owner alias also supported)
+with an in-memory `turnstileToken` and `intent: login|register`. The intent selects
+`account_login` or `account_register`; it grants no privileges. The backend checks
+Origin and existing request limits, then redeems proof before creating OAuth
+state/PKCE or setting its cookie. Tokens never enter authorization URLs. The
+response returns a validated GitHub authorization URL for browser navigation.
+
+The legacy `GET .../github/start` rejects requests when Turnstile is configured,
+even if a token is supplied in the query. With no Turnstile configuration it
+retains its previous navigation behavior. The callback consumes the existing
+one-time, cookie-bound state and retains MFA enforcement; it does not redeem the
+already consumed Turnstile token again. Connecting GitHub from an authenticated
+account keeps its existing recent-sign-in, session binding and MFA controls.
+
+HTTP regression coverage in `accounts/github-start.http.spec.ts` exercises both
+aliases, direct-navigation rejection, Origin/DTO/action/hostname checks, verified
+PKCE/cookie issuance and consumed-token rejection. Form tests cover the shared
+button lock, expiry and refreshing proof after failed initiation.
 
 ## Runtime storage
 
