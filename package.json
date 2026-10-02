@@ -17,7 +17,7 @@
     "dev:backend": "yarn workspace backend start:dev",
     "stop:port": "node scripts/stop-port.mjs",
     "stop:frontend": "node scripts/stop-port.mjs 3000",
-    "stop:dev": "node scripts/stop-port.mjs 3000 5050",
+    "stop:dev": "node scripts/stop-port.mjs 3000 5050 && docker compose --env-file backend/.env.local -f compose.local.yml stop postgres",
     "test:backend": "yarn workspace backend test:all",
     "test:frontend": "yarn workspace frontend test",
     "typecheck": "yarn workspace frontend typecheck && yarn workspace backend typecheck",

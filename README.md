@@ -301,6 +301,17 @@ yarn dev:frontend
 yarn dev:backend
 ```
 
+To stop both applications and the local PostgreSQL container:
+
+```bash
+yarn stop:dev
+```
+
+This frees ports `3000` and `5050` and stops the `postgres` service in
+`compose.local.yml`, preserving its container and database volume. Start the
+database again with the Docker Compose command from step 3 before running
+`yarn dev`.
+
 | Service          | Local address           |
 | ---------------- | ----------------------- |
 | Frontend         | `http://127.0.0.1:3000` |
