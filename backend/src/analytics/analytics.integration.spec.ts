@@ -1,6 +1,6 @@
 import { randomUUID } from "crypto";
-import { IndexSecurityActivity1790910000000 } from "../db/migrations/1790910000000-IndexSecurityActivity";
-import { UseAdminAndClientRoles1790906400000 } from "../db/migrations/1790906400000-UseAdminAndClientRoles";
+import { IndexSecurityActivity1790910000000 } from "../db/migrations/2026/10/1790910000000-IndexSecurityActivity";
+import { UseAdminAndClientRoles1790906400000 } from "../db/migrations/2026/10/1790906400000-UseAdminAndClientRoles";
 import type { Request } from "express";
 import { Test } from "@nestjs/testing";
 import { ConfigService } from "@nestjs/config";
@@ -9,23 +9,23 @@ import { DataSource } from "typeorm";
 import { AccountController } from "../accounts/account.controller";
 import { AccountService } from "../accounts/account.service";
 import { AuthMailService } from "../accounts/auth-mail";
-import { AddPublicAccounts1790902800000 } from "../db/migrations/1790902800000-AddPublicAccounts";
+import { AddPublicAccounts1790902800000 } from "../db/migrations/2026/10/1790902800000-AddPublicAccounts";
 import request = require("supertest");
 import { AnalyticsController, OwnerController } from "./analytics.controller";
 import { AnalyticsStore } from "./analytics.store";
 import { AnalyticsService } from "./analytics.service";
-import { AddQrAnalytics1790899200000 } from "../db/migrations/1790899200000-AddQrAnalytics";
+import { AddQrAnalytics1790899200000 } from "../db/migrations/2026/10/1790899200000-AddQrAnalytics";
 import { hashOwnerPassword } from "./owner-password";
 import { createApp } from "../create-app";
 import { MfaService } from "../accounts/mfa/mfa.service";
 import { MfaCrypto, totp } from "../accounts/mfa/mfa.crypto";
 import { MfaController } from "../accounts/mfa/mfa.controller";
-import { AddAccountMfa1790913600000 } from "../db/migrations/1790913600000-AddAccountMfa";
+import { AddAccountMfa1790913600000 } from "../db/migrations/2026/10/1790913600000-AddAccountMfa";
 
-import { AddAccountPreferences1790917200000 } from "../db/migrations/1790917200000-AddAccountPreferences";
+import { AddAccountPreferences1790917200000 } from "../db/migrations/2026/10/1790917200000-AddAccountPreferences";
 
-import { AddAccountSessions1790920800000 } from "../db/migrations/1790920800000-AddAccountSessions";
-import { AddAccountProviders1790924400000 } from "../db/migrations/1790924400000-AddAccountProviders";
+import { AddAccountSessions1790920800000 } from "../db/migrations/2026/10/1790920800000-AddAccountSessions";
+import { AddAccountProviders1790924400000 } from "../db/migrations/2026/10/1790924400000-AddAccountProviders";
 import { AccountProvidersController } from "../accounts/account-providers.controller";
 import { AccountProvidersService } from "../accounts/account-providers.service";
 

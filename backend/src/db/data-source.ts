@@ -2,7 +2,9 @@
 // TypeORM DataSource used by the TypeORM CLI for generating and running migrations.
 //
 // Usage:
-//   yarn migration:generate src/db/migrations/DescriptiveName
+//   yarn migration:create DescriptiveName
+//   yarn migration:generate DescriptiveName
+//   yarn migration:check
 //   yarn migration:run
 //   yarn migration:revert
 //
@@ -16,8 +18,8 @@ import { QuizQuestion } from "../quiz/entities/quiz-question.entity";
 import { QuizProgress } from "../quiz/entities/quiz-progress.entity";
 
 // The TypeORM CLI reads DATABASE_URL from the environment.
-// In local dev set it via:  export $(cat .env | xargs) && yarn migration:run
-// or use a tool like dotenv-cli:  npx dotenv -e .env -- yarn migration:run
+// For local development, load the dedicated environment with Node's --env-file
+// option, or use yarn migration:run:local.
 
 const databaseUrl = process.env.DATABASE_URL?.trim();
 if (!databaseUrl) {

@@ -4,25 +4,25 @@ const { DataSource } = require("typeorm");
 const { AppDataSource } = require("../dist/db/data-source");
 const {
   AddQrAnalytics1790899200000,
-} = require("../dist/db/migrations/1790899200000-AddQrAnalytics");
+} = require("../dist/db/migrations/2026/10/1790899200000-AddQrAnalytics");
 const {
   AddPublicAccounts1790902800000,
-} = require("../dist/db/migrations/1790902800000-AddPublicAccounts");
+} = require("../dist/db/migrations/2026/10/1790902800000-AddPublicAccounts");
 const {
   UseAdminAndClientRoles1790906400000,
-} = require("../dist/db/migrations/1790906400000-UseAdminAndClientRoles");
+} = require("../dist/db/migrations/2026/10/1790906400000-UseAdminAndClientRoles");
 const {
   IndexSecurityActivity1790910000000,
-} = require("../dist/db/migrations/1790910000000-IndexSecurityActivity");
+} = require("../dist/db/migrations/2026/10/1790910000000-IndexSecurityActivity");
 const {
   AddAccountMfa1790913600000,
-} = require("../dist/db/migrations/1790913600000-AddAccountMfa");
+} = require("../dist/db/migrations/2026/10/1790913600000-AddAccountMfa");
 const {
   AddAccountPreferences1790917200000,
-} = require("../dist/db/migrations/1790917200000-AddAccountPreferences");
+} = require("../dist/db/migrations/2026/10/1790917200000-AddAccountPreferences");
 const {
   AddAccountSessions1790920800000,
-} = require("../dist/db/migrations/1790920800000-AddAccountSessions");
+} = require("../dist/db/migrations/2026/10/1790920800000-AddAccountSessions");
 const db = new DataSource({
   ...AppDataSource.options,
   logging: false,
@@ -35,7 +35,7 @@ const db = new DataSource({
     AddAccountMfa1790913600000,
     AddAccountPreferences1790917200000,
     AddAccountSessions1790920800000,
-    require("../dist/db/migrations/1790924400000-AddAccountProviders")
+    require("../dist/db/migrations/2026/10/1790924400000-AddAccountProviders")
       .AddAccountProviders1790924400000,
   ],
 });
