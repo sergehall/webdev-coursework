@@ -1,13 +1,15 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ShieldCheck } from "lucide-react";
 
 import { ownerRequest, OwnerApiError } from "./owner-api";
 import { useOwner } from "./owner-context";
+import { securityReturn } from "./auth-return";
 
 export default function MfaChallengePage() {
   const owner = useOwner()!,
     navigate = useNavigate();
+  const location = useLocation();
   const [recovery, setRecovery] = useState(false),
     [code, setCode] = useState("");
   const [expiresAt, setExpiresAt] = useState<number | null>(null),
@@ -58,7 +60,12 @@ export default function MfaChallengePage() {
       await ownerRequest("mfa/challenge", { method: "POST", body: { code } });
       setCode("");
       await owner.refresh();
-      navigate("/account/security#mfa", { replace: true });
+      navigate(
+        securityReturn(
+          (location.state as { returnTo?: unknown } | null)?.returnTo
+        ) ?? "/account/security#mfa",
+        { replace: true }
+      );
     } catch (err) {
       if (err instanceof OwnerApiError && err.status === 401) setExpired(true);
       else

@@ -31,6 +31,7 @@ import SecurityActivityPanel from "./SecurityActivityPanel";
 import AccountRolesPanel from "./AccountRolesPanel";
 import AccountAuthPage, { authPages } from "./AccountAuthPage";
 import MfaSettingsPanel from "./MfaSettingsPanel";
+import AccountProvidersPanel from "./AccountProvidersPanel";
 import MfaChallengePage from "./MfaChallengePage";
 import type { MfaStatus } from "./mfa-api";
 import "./owner.css";
@@ -311,10 +312,18 @@ function SecurityPanel({ session }: { session: OwnerSession }) {
     }
     setBusy(true);
     try {
-      await ownerRequest("password", {
-        method: "POST",
-        body: { password, newPassword },
-      });
+      await ownerRequest(
+        session.profile.passwordEnabled === false
+          ? "providers/password"
+          : "password",
+        {
+          method: "POST",
+          body:
+            session.profile.passwordEnabled === false
+              ? { newPassword }
+              : { password, newPassword },
+        }
+      );
       owner.clear();
       navigate("/account/login", {
         replace: true,
@@ -445,35 +454,7 @@ function SecurityPanel({ session }: { session: OwnerSession }) {
         <MfaSettingsPanel status={mfaStatus} onChange={setMfaStatus} />
       )}
       {windowId === "providers" && (
-        <section className="owner-card" id="providers">
-          <h2>Sign-in providers</h2>
-          <dl className="owner-details">
-            <div>
-              <dt>GitHub</dt>
-              <dd>
-                {session.profile.githubLinked ? "Connected" : "Not connected"}
-              </dd>
-            </div>
-            <div>
-              <dt>Username / password</dt>
-              <dd>
-                {session.profile.passwordEnabled !== false
-                  ? "Enabled"
-                  : "Not configured"}
-              </dd>
-            </div>
-            <div>
-              <dt>Registration email</dt>
-              <dd>
-                {session.profile.email ?? "No email stored for this account"}
-              </dd>
-            </div>
-          </dl>
-          <p className="owner-muted">
-            Connected methods use the same account's two-factor protection. Your
-            email cannot be changed.
-          </p>
-        </section>
+        <AccountProvidersPanel session={session} mfa={mfaStatus} />
       )}
       {(windowId === "password" || windowId === "sessions") && (
         <div>
@@ -483,20 +464,23 @@ function SecurityPanel({ session }: { session: OwnerSession }) {
               <p className="owner-muted">
                 Changing your password signs you out on every device.
               </p>
-              {session.profile.passwordEnabled !== false ? (
+              {session.profile.passwordEnabled !== false ||
+              session.profile.emailVerified ? (
                 <form className="owner-form" onSubmit={(e) => void change(e)}>
-                  <label>
-                    Current password
-                    <input
-                      autoComplete="current-password"
-                      type="password"
-                      minLength={12}
-                      maxLength={128}
-                      required
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-                  </label>
+                  {session.profile.passwordEnabled !== false && (
+                    <label>
+                      Current password
+                      <input
+                        autoComplete="current-password"
+                        type="password"
+                        minLength={12}
+                        maxLength={128}
+                        required
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                      />
+                    </label>
+                  )}
                   <label>
                     New password
                     <input
@@ -529,13 +513,21 @@ function SecurityPanel({ session }: { session: OwnerSession }) {
                     disabled={busy}
                     className="owner-button owner-button--primary"
                   >
-                    {busy ? "Saving…" : "Change password"}
+                    {busy
+                      ? "Saving…"
+                      : session.profile.passwordEnabled === false
+                        ? "Set up password"
+                        : "Change password"}
                   </button>
                 </form>
               ) : (
                 <p className="owner-muted">
                   You sign in through GitHub. Your GitHub account manages your
-                  password.
+                  password. Add and confirm an email in Providers to set up a
+                  site password.
+                  <Link className="owner-text-link" to="#providers">
+                    Add recovery email
+                  </Link>
                 </p>
               )}
             </section>
@@ -563,7 +555,21 @@ function SecurityPanel({ session }: { session: OwnerSession }) {
           )}
         </div>
       )}
-      {error && <Message error>{error}</Message>}
+      {error && (
+        <>
+          <Message error>{error}</Message>
+          <Link
+            className="owner-text-link"
+            to="/account/reauthenticate"
+            state={{ returnTo: "/account/security#password" }}
+          >
+            Confirm your sign-in
+          </Link>
+          <Link className="owner-text-link" to="#mfa">
+            Verify your current session
+          </Link>
+        </>
+      )}
       {confirmRevoke && (
         <dialog
           ref={dialog}
@@ -791,7 +797,7 @@ export default function OwnerPage() {
     (owner.status === "loading" && !owner.session)
   )
     return (
-      <div className="owner-workspace owner-workspace--loading">
+      <div className="owner-workspace">
         <p role="status">Checking account access…</p>
       </div>
     );

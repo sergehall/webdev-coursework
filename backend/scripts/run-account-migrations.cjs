@@ -35,6 +35,8 @@ const db = new DataSource({
     AddAccountMfa1790913600000,
     AddAccountPreferences1790917200000,
     AddAccountSessions1790920800000,
+    require("../dist/db/migrations/1790924400000-AddAccountProviders")
+      .AddAccountProviders1790924400000,
   ],
 });
 (async () => {

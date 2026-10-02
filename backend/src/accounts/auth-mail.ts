@@ -1,5 +1,6 @@
 import {
   Injectable,
+  ServiceUnavailableException,
   Logger,
   type OnModuleDestroy,
   type OnModuleInit,
@@ -16,7 +17,7 @@ import { DataSource, type EntityManager } from "typeorm";
 import * as nodemailer from "nodemailer";
 import type { Transporter } from "nodemailer";
 
-type Purpose = "verify" | "reset";
+type Purpose = "verify" | "reset" | "add-email";
 export type AuthMail = {
   id: string;
   recipient: string;
@@ -53,12 +54,12 @@ const escapeHtml = (text: string) =>
   );
 export function renderAuthMail(purpose: Purpose, name: string, url: string) {
   const subject =
-    purpose === "verify"
+    purpose !== "reset"
       ? "Confirm your Web Engineering Portfolio account"
       : "Reset your portfolio password";
-  const action = purpose === "verify" ? "Confirm email" : "Reset password";
-  const text = `Hello ${name},\n\n${action}: ${url}\n\nThis link expires ${purpose === "verify" ? "in 24 hours" : "in one hour"}. If you did not request this, ignore this message.\n\nWeb Engineering Portfolio`;
-  const html = `<div style="font-family:Arial,sans-serif;max-width:560px;margin:auto;color:#102539"><h1>${subject}</h1><p>Hello ${escapeHtml(name)},</p><p><a href="${escapeHtml(url)}" style="display:inline-block;padding:14px 24px;background:#d9fa86;color:#102539;border-radius:24px;font-weight:bold">${action}</a></p><p>This link expires ${purpose === "verify" ? "in 24 hours" : "in one hour"}. If you did not request this, ignore this message.</p><p>Web Engineering Portfolio</p></div>`;
+  const action = purpose !== "reset" ? "Confirm email" : "Reset password";
+  const text = `Hello ${name},\n\n${action}: ${url}\n\nThis link expires ${purpose !== "reset" ? "in 24 hours" : "in one hour"}. If you did not request this, ignore this message.\n\nWeb Engineering Portfolio`;
+  const html = `<div style="font-family:Arial,sans-serif;max-width:560px;margin:auto;color:#102539"><h1>${subject}</h1><p>Hello ${escapeHtml(name)},</p><p><a href="${escapeHtml(url)}" style="display:inline-block;padding:14px 24px;background:#d9fa86;color:#102539;border-radius:24px;font-weight:bold">${action}</a></p><p>This link expires ${purpose !== "reset" ? "in 24 hours" : "in one hour"}. If you did not request this, ignore this message.</p><p>Web Engineering Portfolio</p></div>`;
   return { subject, text, html };
 }
 export function mailFailure(error: unknown): "transient" | "permanent" {
@@ -78,6 +79,10 @@ export class AuthMailService implements OnModuleInit, OnModuleDestroy {
   ) {}
   get enabled(): boolean {
     return !!this.provider;
+  }
+  assertAvailable(): void {
+    if (!this.enabled)
+      throw new ServiceUnavailableException("Email delivery is unavailable");
   }
   private key(): Buffer {
     const secret = this.config.get<string>("OWNER_SESSION_SECRET") ?? "";
@@ -158,25 +163,34 @@ export class AuthMailService implements OnModuleInit, OnModuleDestroy {
     q: EntityManager,
     accountId: string,
     revision: string,
-    purpose: Purpose
+    purpose: Purpose,
+    recipient?: string
   ): Promise<void> {
     const token = randomBytes(32).toString("base64url"),
       expires = new Date(
-        Date.now() + (purpose === "verify" ? 86400 : 3600) * 1000
+        Date.now() + (purpose !== "reset" ? 86400 : 3600) * 1000
       );
     await q.query(
-      "INSERT INTO webdev_account_tokens(token_hash,account_id,purpose,expires_at,revision) VALUES($1,$2,$3,$4,$5)",
+      "INSERT INTO webdev_account_tokens(token_hash,account_id,purpose,expires_at,revision,target_email) VALUES($1,$2,$3,$4,$5,$6)",
       [
         createHash("sha256").update(token).digest("hex"),
         accountId,
         purpose,
         expires,
         revision,
+        recipient ?? null,
       ]
     );
     await q.query(
-      "INSERT INTO webdev_mail_outbox(id,account_id,template,token_ciphertext,expires_at) VALUES($1,$2,$3,$4,$5)",
-      [randomUUID(), accountId, purpose, this.encrypt(token), expires]
+      "INSERT INTO webdev_mail_outbox(id,account_id,template,token_ciphertext,expires_at,recipient) VALUES($1,$2,$3,$4,$5,$6)",
+      [
+        randomUUID(),
+        accountId,
+        purpose,
+        this.encrypt(token),
+        expires,
+        recipient ?? null,
+      ]
     );
   }
   async deliverOne(): Promise<void> {
@@ -198,17 +212,33 @@ export class AuthMailService implements OnModuleInit, OnModuleDestroy {
         "SELECT email,display_name,revision FROM webdev_accounts WHERE id=$1",
         [mail.account_id]
       );
+      const token = this.decrypt(mail.token_ciphertext);
+      const active = await this.db.query(
+        "SELECT token_hash FROM webdev_account_tokens WHERE token_hash=$1 AND revision=$2 AND account_id=$3 AND used_at IS NULL AND expires_at>now()",
+        [
+          createHash("sha256").update(token).digest("hex"),
+          account?.revision,
+          mail.account_id,
+        ]
+      );
+      if (!account || !active.length || !(mail.recipient ?? account.email)) {
+        await this.db.query(
+          "UPDATE webdev_mail_outbox SET status='failed',failure_kind='stale',token_ciphertext=NULL,lease_until=NULL WHERE id=$1 AND attempts=$2",
+          [mail.id, mail.attempts]
+        );
+        return;
+      }
       const origin = (this.config.get<string>("OWNER_ALLOWED_ORIGINS") ?? "")
         .split(",")[0]
         .trim();
       const url = new URL(
-        `/account/${mail.template === "verify" ? "verify-email" : "reset-password"}`,
+        `/account/${mail.template !== "reset" ? "verify-email" : "reset-password"}`,
         origin
       );
-      url.hash = `token=${this.decrypt(mail.token_ciphertext)}`;
+      url.hash = `token=${token}`;
       await this.provider.send({
         id: mail.id,
-        recipient: account.email,
+        recipient: mail.recipient ?? account.email,
         ...renderAuthMail(mail.template, account.display_name, url.href),
       });
       await this.db.query(

@@ -78,7 +78,7 @@ export class AccountService {
     token: string,
     purpose: "verify" | "reset",
     password?: string
-  ): Promise<void> {
+  ): Promise<{ signInRequired: boolean }> {
     this.auth.assertOrigin(req);
     await this.auth.rateLimit(
       `token:${this.auth.digest(req.ip ?? "unknown")}`,
@@ -86,16 +86,44 @@ export class AccountService {
       900
     );
     const passwordHash = password ? await hashOwnerPassword(password) : null;
-    await this.store.db.transaction(async (q) => {
+    return this.store.db.transaction(async (q) => {
       const [row] = await q.query(
-        "SELECT t.account_id,t.revision,a.revision AS current_revision FROM webdev_account_tokens t JOIN webdev_accounts a ON a.id=t.account_id WHERE t.token_hash=$1 AND t.purpose=$2 AND t.used_at IS NULL AND t.expires_at>now() FOR UPDATE OF t,a",
-        [createHash("sha256").update(token).digest("hex"), purpose]
+        "SELECT t.account_id,t.revision,t.purpose,t.target_email,a.email,a.role,a.revision AS current_revision FROM webdev_account_tokens t JOIN webdev_accounts a ON a.id=t.account_id WHERE t.token_hash=$1 AND t.purpose=ANY($2::varchar[]) AND t.used_at IS NULL AND t.expires_at>now() FOR UPDATE OF a,t",
+        [
+          createHash("sha256").update(token).digest("hex"),
+          purpose === "verify" ? ["verify", "add-email"] : ["reset"],
+        ]
       );
       if (!row || row.revision !== row.current_revision)
         throw new BadRequestException(
           "This link expired or was already used. Request a new email."
         );
-      if (purpose === "verify")
+      if (row.purpose === "add-email") {
+        if (row.email || !row.target_email)
+          throw new BadRequestException("This link is no longer eligible");
+        try {
+          await q.query(
+            "UPDATE webdev_accounts SET email=$1,email_verified_at=now(),revision=$2,updated_at=now() WHERE id=$3",
+            [row.target_email, randomUUID(), row.account_id]
+          );
+        } catch (error) {
+          if ((error as { code?: string }).code === "23505")
+            throw new BadRequestException({
+              code: "EMAIL_UNAVAILABLE",
+              message:
+                "This email cannot be added. Request another confirmation.",
+            });
+          throw error;
+        }
+        await q.query(
+          "UPDATE webdev_account_tokens SET used_at=now() WHERE account_id=$1 AND purpose='add-email' AND used_at IS NULL",
+          [row.account_id]
+        );
+        await q.query(
+          "INSERT INTO webdev_analytics_access_audit(event_id,occurred_at,actor,action,allowed) VALUES($1,now(),$2,'account.providers.email.confirm',true)",
+          [randomUUID(), row.role === "admin" ? "site-owner" : "anonymous"]
+        );
+      } else if (purpose === "verify")
         await q.query(
           "UPDATE webdev_accounts SET email_verified_at=now(),updated_at=now() WHERE id=$1",
           [row.account_id]
@@ -109,6 +137,7 @@ export class AccountService {
         "UPDATE webdev_account_tokens SET used_at=now() WHERE token_hash=$1",
         [createHash("sha256").update(token).digest("hex")]
       );
+      return { signInRequired: row.purpose === "add-email" };
     });
   }
 }

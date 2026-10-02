@@ -29,8 +29,8 @@ export class AccountController {
   @Post("verify-email")
   @HttpCode(200)
   async verify(@Req() req: Request, @Body() dto: TokenDto) {
-    await this.accounts.consume(req, dto.token, "verify");
-    return { verified: true };
+    const result = await this.accounts.consume(req, dto.token, "verify");
+    return { verified: true, ...result };
   }
   @Post("reset-password")
   @HttpCode(200)

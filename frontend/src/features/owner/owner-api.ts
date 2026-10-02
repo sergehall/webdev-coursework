@@ -4,6 +4,7 @@ export type OwnerProfile = {
   emailVerified?: boolean;
   passwordEnabled?: boolean;
   githubLinked?: boolean;
+  githubUsername?: string | null;
   registrationMethod?: "administrator" | "github" | "email";
   displayName: string;
   timeZone: string;
@@ -19,6 +20,7 @@ export type OwnerSession = {
   canManageRoles?: boolean;
   mfaEnabled?: boolean;
   mfaVerifiedAt?: string;
+  authMethod?: "password" | "github" | "unknown";
   issuedAt: string;
   expiresAt: string;
   profile: OwnerProfile;
@@ -83,7 +85,15 @@ export async function ownerRequest<T>(
       MFA_STEP_UP_REQUIRED:
         "Verify your authenticator in Security before retrying this action.",
       RECENT_SIGN_IN_REQUIRED:
-        "Sign in again before starting authenticator setup.",
+        "Sign in again before changing your security settings.",
+      LAST_SIGN_IN_METHOD:
+        "Set up a verified email and password before disconnecting your last sign-in method.",
+      VERIFIED_EMAIL_REQUIRED:
+        "Confirm your email before setting up password sign-in.",
+      EMAIL_ALREADY_SET:
+        "This account already has an email address. It cannot be replaced here.",
+      EMAIL_UNAVAILABLE:
+        "This email cannot be added. Request another confirmation.",
     };
     if (body?.code && mfaMessages[body.code])
       throw new OwnerApiError(

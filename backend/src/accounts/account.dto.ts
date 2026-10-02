@@ -30,3 +30,9 @@ export class ResetDto extends TokenDto {
   @MaxLength(128)
   password!: string;
 }
+export class SetupPasswordDto {
+  @IsString()
+  @MinLength(12)
+  @MaxLength(128)
+  newPassword!: string;
+}

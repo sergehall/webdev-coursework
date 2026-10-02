@@ -8,11 +8,12 @@
   --owner-soft: #edf8ef;
   --owner-primary: #22c55e; /* Green used in the portfolio wave logo. */
   --owner-primary-text: #052e16;
-  max-width: 80rem;
+  width: calc(100% - 1rem);
+  max-width: 68.75rem;
   min-height: 65vh;
   margin: 0.5rem auto;
   color: var(--owner-text);
-  background: var(--owner-bg);
+  background: transparent;
   border-radius: 0.65rem;
   overflow: clip;
 }
@@ -25,10 +26,6 @@
   --owner-accent: #22e878;
   --owner-primary: #24e66f;
   --owner-soft: #133d29;
-}
-.owner-workspace:has(> .owner-login),
-.owner-workspace--loading {
-  background: transparent;
 }
 .owner-content {
   padding: clamp(0.8rem, 1.6vw, 1.25rem);
@@ -212,6 +209,41 @@
   display: flex;
   justify-content: space-between;
   gap: 1rem;
+}
+.owner-provider-grid {
+  margin-top: 0.8rem;
+  align-items: stretch;
+}
+.owner-provider-grid > .owner-card {
+  display: grid;
+  align-content: start;
+  gap: 0.65rem;
+}
+.owner-provider-heading {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.owner-provider-heading svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  color: var(--owner-accent);
+}
+.owner-provider-heading h3 {
+  font-size: 0.85rem;
+  font-weight: 750;
+}
+.owner-provider-status {
+  margin-left: auto;
+  font-size: 0.7rem;
+  font-weight: 650;
+  color: var(--owner-muted);
+}
+.owner-provider-email {
+  overflow-wrap: anywhere;
+  font-size: 0.85rem;
+  font-weight: 650;
 }
 .owner-mfa-heading svg {
   flex-shrink: 0;
@@ -633,7 +665,6 @@
     grid-template-columns: 1fr;
   }
   .owner-workspace {
-    margin: 0.5rem;
     border-radius: 0.5rem;
   }
   .owner-tabs {

@@ -4,6 +4,7 @@ import { LockKeyhole } from "lucide-react";
 
 import { ownerRequest, OwnerApiError } from "./owner-api";
 import { useOwner } from "./owner-context";
+import { securityReturn } from "./auth-return";
 
 type Mode =
   | "login"
@@ -61,7 +62,20 @@ export default function AccountAuthPage({ mode }: { mode: Mode }) {
         window.location.pathname + window.location.search
       );
   }, [token]);
-  const notice = (location.state as { notice?: string } | null)?.notice;
+  const navigationState = location.state as {
+    notice?: string;
+    returnTo?: unknown;
+  } | null;
+  const githubLinked =
+    new URLSearchParams(location.search).get("notice") === "github-linked";
+  const returnTo =
+    securityReturn(navigationState?.returnTo) ??
+    (githubLinked ? "/account/security#providers" : null);
+  const notice =
+    navigationState?.notice ??
+    (new URLSearchParams(location.search).get("notice") === "github-linked"
+      ? "GitHub connected. All previous sessions ended. Sign in again to continue."
+      : undefined);
   useEffect(() => {
     void ownerRequest<typeof options>("login-options")
       .then(setOptions)
@@ -92,20 +106,23 @@ export default function AccountAuthPage({ mode }: { mode: Mode }) {
             : mode === "reset-password"
               ? { token, password }
               : { email };
-      const response = await ownerRequest<{ mfaRequired?: boolean }>(
-        isLogin ? "login" : mode,
-        { method: "POST", body }
-      );
+      const response = await ownerRequest<{
+        mfaRequired?: boolean;
+        signInRequired?: boolean;
+      }>(isLogin ? "login" : mode, { method: "POST", body });
       setPassword("");
       setConfirmation("");
       if (isLogin && response.mfaRequired) {
         owner.clear();
-        navigate("/account/mfa", { replace: true });
+        navigate("/account/mfa", { replace: true, state: { returnTo } });
       } else if (isLogin) {
         await owner.refresh();
-        if (mode === "reauthenticate")
-          navigate("/account/security#mfa", { replace: true });
-      } else setDone(true);
+        if (returnTo || mode === "reauthenticate")
+          navigate(returnTo ?? "/account/security#mfa", { replace: true });
+      } else {
+        if (response.signInRequired) owner.clear();
+        setDone(true);
+      }
     } catch (err) {
       const signInRejected =
         isLogin && err instanceof OwnerApiError && err.status === 401;
@@ -141,7 +158,7 @@ export default function AccountAuthPage({ mode }: { mode: Mode }) {
             : mode === "register"
               ? "Join with GitHub, or create an account and confirm your email."
               : mode === "verify-email"
-                ? "Confirm your email to activate password sign-in."
+                ? "Confirm that this email address belongs to you."
                 : "Manage access to your account."}
         </p>
         {notice && (
@@ -165,7 +182,7 @@ export default function AccountAuthPage({ mode }: { mode: Mode }) {
         {done ? (
           <div role="status" className="owner-message">
             {mode === "verify-email"
-              ? "Email confirmed. You can now sign in."
+              ? "Email confirmed. Sign in again to see your updated account."
               : mode === "reset-password"
                 ? "Password saved. All previous sessions ended. Sign in with your new password."
                 : "If these details are eligible, an email will arrive shortly. Check your inbox and spam folder."}

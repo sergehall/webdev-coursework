@@ -438,16 +438,44 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
     };
   }
 
-  async githubStart(req: Request) {
+  async identitySession(req: Request, action: string, requireFresh = true) {
+    this.assertOrigin(req);
+    const session = await this.authorize(req, action, false);
+    if (requireFresh) {
+      this.mfa.assertRecentSignIn(session.issuedAt);
+      this.assertRecentMfa(session);
+    }
+    await this.rateLimit(`identity:${session.accountId}`, 10, 900);
+    const raw = await this.connection().get(
+      `${PREFIX}:session:${this.digest(session.token)}`
+    );
+    if (!raw) throw new UnauthorizedException("Sign in again");
+    const stored = JSON.parse(raw) as OwnerSession;
+    return { ...session, revision: stored.revision };
+  }
+
+  async githubStart(req: Request, linking = false) {
     this.connection();
     if (!this.github)
       throw new ServiceUnavailableException("GitHub sign-in is not configured");
     await this.rateLimit(`github:${this.digest(req.ip ?? "unknown")}`, 10, 900);
     const state = randomBytes(32).toString("base64url");
     const verifier = randomBytes(32).toString("base64url");
+    const session = linking
+      ? await this.identitySession(req, "account.providers.github.start")
+      : null;
+    if (session?.profile.githubLinked)
+      throw new BadRequestException("GitHub is already connected");
     await this.connection().set(
       `${PREFIX}:oauth:${this.digest(state)}`,
-      verifier,
+      session
+        ? JSON.stringify({
+            verifier,
+            accountId: session.accountId,
+            revision: session.revision,
+            sessionHash: this.digest(session.token),
+          })
+        : verifier,
       "EX",
       600,
       "NX"
@@ -459,12 +487,13 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
       state,
       code_challenge: createHash("sha256").update(verifier).digest("base64url"),
       code_challenge_method: "S256",
-      allow_signup: "true",
+      allow_signup: linking ? "false" : "true",
     }).toString();
     return { state, url: url.href };
   }
 
-  async githubCallback(req: Request): Promise<LoginResult> {
+  async githubCallback(req: Request): Promise<LoginResult | { linked: true }> {
+    let linking = false;
     try {
       const { code, state } = req.query;
       if (
@@ -477,12 +506,20 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
         req.cookies?.[this.githubCookieName] !== state
       )
         throw new UnauthorizedException();
-      const verifier = await this.connection().eval(
+      const stored = await this.connection().eval(
         "local v=redis.call('GET',KEYS[1]); redis.call('DEL',KEYS[1]); return v",
         1,
         `${PREFIX}:oauth:${this.digest(state)}`
       );
-      if (typeof verifier !== "string") throw new UnauthorizedException();
+      if (typeof stored !== "string") throw new UnauthorizedException();
+      const intent: {
+        verifier: string;
+        accountId?: string;
+        revision?: string;
+        sessionHash?: string;
+      } = stored.startsWith("{") ? JSON.parse(stored) : { verifier: stored };
+      const verifier = intent.verifier;
+      linking = !!intent.accountId;
       const exchange = await fetch(
         "https://github.com/login/oauth/access_token",
         {
@@ -534,6 +571,33 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
         !/^[a-zA-Z0-9-]{1,39}$/.test(identity.login)
       )
         throw new UnauthorizedException();
+      if (linking) {
+        if (!intent.sessionHash || !intent.revision || !intent.accountId)
+          throw new UnauthorizedException();
+        const raw = await this.connection().get(
+          `${PREFIX}:session:${intent.sessionHash}`
+        );
+        if (!raw) throw new UnauthorizedException();
+        const source = JSON.parse(raw) as OwnerSession;
+        if (
+          source.accountId !== intent.accountId ||
+          source.revision !== intent.revision ||
+          !(Date.parse(source.expiresAt) > Date.now())
+        )
+          throw new UnauthorizedException();
+        this.mfa.assertRecentSignIn(source.issuedAt);
+        this.assertRecentMfa({
+          mfaEnabled: await this.mfa.enabled(source.accountId),
+          mfaVerifiedAt: source.mfaVerifiedAt,
+        });
+        await this.store.linkGithub(
+          source.accountId,
+          source.revision,
+          identity,
+          this.github.ownerId
+        );
+        return { linked: true };
+      }
       const account = await this.store.githubAccount(
         identity,
         this.github.ownerId
@@ -543,7 +607,12 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
     } catch {
       if (this.redis?.status === "ready")
         await this.audit("owner.github.login", false, false);
-      throw new UnauthorizedException("Unable to sign in through GitHub");
+      throw new UnauthorizedException({
+        code: linking ? "GITHUB_LINK_FAILED" : "GITHUB_LOGIN_FAILED",
+        message: linking
+          ? "Unable to connect GitHub"
+          : "Unable to sign in through GitHub",
+      });
     }
   }
 
@@ -670,6 +739,7 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
         emailVerified: account.emailVerified,
         passwordEnabled: !!account.passwordHash,
         githubLinked: !!account.githubId,
+        githubUsername: account.githubUsername ?? null,
         registrationMethod:
           account.id === AnalyticsStore.ROOT_ID
             ? "administrator"
@@ -684,6 +754,7 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
     if (
       session.mfaEnabled &&
       (!session.mfaVerifiedAt ||
+        !Number.isFinite(Date.parse(session.mfaVerifiedAt)) ||
         Date.now() - Date.parse(session.mfaVerifiedAt) > 300000)
     )
       throw new HttpException(

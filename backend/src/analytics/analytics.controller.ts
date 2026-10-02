@@ -7,6 +7,7 @@ import {
   Controller,
   Get,
   HttpCode,
+  HttpException,
   Post,
   Put,
   Query,
@@ -79,6 +80,20 @@ export class OwnerController {
     res.redirect(303, url);
   }
 
+  @Post("providers/github/connect")
+  @HttpCode(200)
+  async githubConnect(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response
+  ) {
+    const { state, url } = await this.analytics.githubStart(req, true);
+    res.cookie(this.analytics.githubCookieName, state, {
+      ...this.githubCookieOptions(),
+      maxAge: 600000,
+    });
+    return { url };
+  }
+
   @Get("github/callback")
   async githubCallback(@Req() req: Request, @Res() res: Response) {
     if (!this.analytics.loginOptions().githubEnabled)
@@ -89,6 +104,15 @@ export class OwnerController {
     );
     try {
       const result = await this.analytics.githubCallback(req);
+      if ("linked" in result) {
+        res.clearCookie(this.analytics.cookieName, this.cookieOptions());
+        res.clearCookie(this.analytics.mfaCookieName, this.cookieOptions());
+        res.redirect(
+          303,
+          `${this.analytics.frontendOrigin}/account/login?notice=github-linked`
+        );
+        return;
+      }
       if (result.mfaRequired) {
         res.clearCookie(this.analytics.cookieName, this.cookieOptions());
         res.cookie(this.analytics.mfaCookieName, result.challengeToken, {
@@ -104,7 +128,21 @@ export class OwnerController {
         maxAge: 3600000,
       });
       res.redirect(303, `${this.analytics.frontendOrigin}/account/overview`);
-    } catch {
+    } catch (error) {
+      const response =
+        error instanceof HttpException ? error.getResponse() : null;
+      if (
+        typeof response === "object" &&
+        response &&
+        "code" in response &&
+        response.code === "GITHUB_LINK_FAILED"
+      ) {
+        res.redirect(
+          303,
+          `${this.analytics.frontendOrigin}/account/security?providerError=github#providers`
+        );
+        return;
+      }
       res.redirect(
         303,
         `${this.analytics.frontendOrigin}/account/login?error=github`

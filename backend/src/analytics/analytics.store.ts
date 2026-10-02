@@ -3,6 +3,7 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
+  UnauthorizedException,
 } from "@nestjs/common";
 import { DataSource } from "typeorm";
 import { QR_CAMPAIGN, type QrEvent } from "./analytics.types";
@@ -15,6 +16,7 @@ export type OwnerAccount = {
   email: string | null;
   emailVerified: boolean;
   githubId: string | null;
+  githubUsername?: string | null;
   passwordHash: string | null;
   revision: string;
   displayName: string;
@@ -40,7 +42,7 @@ export class AnalyticsStore {
   constructor(readonly db: DataSource) {}
 
   static readonly ROOT_ID = "00000000-0000-4000-8000-000000000001";
-  private readonly selectAccount = `SELECT id, role, username, email, email_verified_at IS NOT NULL AS "emailVerified", github_id AS "githubId", password_hash AS "passwordHash", revision, display_name AS "displayName", time_zone AS "timeZone", theme, report_days AS "reportDays", date_format AS "dateFormat", clock_format AS "clockFormat", activity_days AS "activityDays", activity_page_size AS "activityPageSize" FROM webdev_accounts`;
+  private readonly selectAccount = `SELECT id, role, username, email, email_verified_at IS NOT NULL AS "emailVerified", github_id AS "githubId", github_username AS "githubUsername", password_hash AS "passwordHash", revision, display_name AS "displayName", time_zone AS "timeZone", theme, report_days AS "reportDays", date_format AS "dateFormat", clock_format AS "clockFormat", activity_days AS "activityDays", activity_page_size AS "activityPageSize" FROM webdev_accounts`;
 
   async initializeOwner(hash: string, revision: string): Promise<void> {
     await this.db.query(
@@ -72,9 +74,14 @@ export class AnalyticsStore {
   ): Promise<OwnerAccount> {
     const githubId = String(identity.id);
     if (githubId === ownerId) {
+      const owner = await this.owner();
+      if (owner.githubId !== githubId)
+        throw new UnauthorizedException(
+          "GitHub is not connected to the administrator account"
+        );
       await this.db.query(
-        "UPDATE webdev_accounts SET github_id=$1 WHERE id=$2",
-        [githubId, AnalyticsStore.ROOT_ID]
+        "UPDATE webdev_accounts SET github_username=$1 WHERE id=$2",
+        [identity.login, AnalyticsStore.ROOT_ID]
       );
       return this.owner();
     }
@@ -82,7 +89,13 @@ export class AnalyticsStore {
       this.selectAccount + " WHERE github_id=$1",
       [githubId]
     );
-    if (existing[0]) return existing[0];
+    if (existing[0]) {
+      await this.db.query(
+        "UPDATE webdev_accounts SET github_username=$1 WHERE id=$2",
+        [identity.login, existing[0].id]
+      );
+      return { ...existing[0], githubUsername: identity.login };
+    }
     const id = randomUUID();
     // GitHub identities never auto-link to an email/password account.
     const username = `gh-${identity.login.slice(0, 20)}-${githubId}`.slice(
@@ -90,13 +103,14 @@ export class AnalyticsStore {
       40
     );
     await this.db.query(
-      "INSERT INTO webdev_accounts(id,role,username,github_id,revision,display_name) VALUES($1,'client',$2,$3,$4,$5) ON CONFLICT(github_id) WHERE github_id IS NOT NULL DO NOTHING",
+      "INSERT INTO webdev_accounts(id,role,username,github_id,revision,display_name,github_username) VALUES($1,'client',$2,$3,$4,$5,$6) ON CONFLICT(github_id) WHERE github_id IS NOT NULL DO NOTHING",
       [
         id,
         username,
         githubId,
         randomUUID(),
         (identity.name || identity.login).slice(0, 80),
+        identity.login,
       ]
     );
     const rows: OwnerAccount[] = await this.db.query(
@@ -104,6 +118,49 @@ export class AnalyticsStore {
       [githubId]
     );
     return rows[0];
+  }
+
+  async linkGithub(
+    id: string,
+    revision: string,
+    identity: { id: number; login: string },
+    ownerId: string
+  ) {
+    try {
+      await this.db.transaction(async (q) => {
+        const [account]: {
+          revision: string;
+          github_id: string | null;
+          role: string;
+        }[] = await q.query(
+          "SELECT revision,github_id,role FROM webdev_accounts WHERE id=$1 FOR UPDATE",
+          [id]
+        );
+        if (!account || account.revision !== revision)
+          throw new UnauthorizedException("Sign in again");
+        if (
+          account.github_id ||
+          (String(identity.id) === ownerId && id !== AnalyticsStore.ROOT_ID)
+        )
+          throw new ConflictException(
+            "GitHub cannot be connected to this account"
+          );
+        await q.query(
+          "UPDATE webdev_accounts SET github_id=$1,github_username=$2,revision=$3,updated_at=now() WHERE id=$4",
+          [String(identity.id), identity.login, randomUUID(), id]
+        );
+        await q.query(
+          "INSERT INTO webdev_analytics_access_audit(event_id,occurred_at,actor,action,allowed) VALUES($1,now(),$2,'account.providers.github.link',true)",
+          [randomUUID(), account.role === "admin" ? "site-owner" : "anonymous"]
+        );
+      });
+    } catch (error) {
+      if ((error as { code?: string }).code === "23505")
+        throw new ConflictException(
+          "GitHub cannot be connected to this account"
+        );
+      throw error;
+    }
   }
   async profile(
     displayName: string,

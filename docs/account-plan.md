@@ -60,3 +60,14 @@ network-error retry for pending login. It verifies 26 backend unit checks,
 lint, builds and desktop/mobile disabled-state UI. Production changes still
 require the user's separate confirmation. See [account-mfa.md](account-mfa.md)
 for the concrete release, migration, rollback and lost-device recovery procedure.
+
+## Current local stage: connected providers
+
+Security → Providers now supports explicit GitHub connection/disconnection,
+verified email addition, and backup password setup for GitHub accounts. Account
+revision changes invalidate earlier sessions while retaining MFA. The last
+working sign-in method cannot be disconnected. The local provider migration
+is applied; production deployment is pending.
+
+Configuration, validation evidence, deployment and rollback are recorded in
+[account-providers.md](account-providers.md).
