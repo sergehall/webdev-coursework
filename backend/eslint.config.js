@@ -1,27 +1,29 @@
-// backend/eslint.config.js
 const tseslint = require("typescript-eslint");
 const pluginTs = require("@typescript-eslint/eslint-plugin");
 const prettier = require("eslint-config-prettier");
 const importPlugin = require("eslint-plugin-import");
-const path = require("path");
+const path = require("node:path");
+
+const base = require("../scripts/eslint-base.cjs");
 
 module.exports = [
+  { ignores: base.generatedIgnores },
   {
-    ignores: ["dist/**", ".eslintrc.ts"],
+    files: base.codeFiles,
+    languageOptions: {
+      ecmaVersion: "latest",
+      globals: base.globals.node,
+    },
+    rules: base.js.configs.recommended.rules,
   },
   {
-    files: ["**/*.ts"],
+    files: base.typescriptFiles,
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
-        project: "./tsconfig.json",
         tsconfigRootDir: path.resolve(__dirname),
-        sourceType: "module",
-        ecmaVersion: 2020,
-        ecmaFeatures: {
-          jsx: false,
-        },
         experimentalDecorators: true,
+        emitDecoratorMetadata: true,
       },
     },
     plugins: {
@@ -29,9 +31,17 @@ module.exports = [
       import: importPlugin,
     },
     rules: {
-      "@typescript-eslint/interface-name-prefix": "off",
-      "@typescript-eslint/explicit-function-return-type": "off",
-      "@typescript-eslint/explicit-module-boundary-types": "off",
+      ...pluginTs.configs["eslint-recommended"].overrides[0].rules,
+      ...pluginTs.configs.recommended.rules,
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        { argsIgnorePattern: "^_", ignoreRestSiblings: true },
+      ],
+      // TypeScript import-equals preserves CommonJS callable exports (supertest).
+      "@typescript-eslint/no-require-imports": [
+        "error",
+        { allowAsImport: true },
+      ],
       "@typescript-eslint/no-explicit-any": "error",
       "@typescript-eslint/ban-ts-comment": [
         "error",
@@ -45,19 +55,21 @@ module.exports = [
       "import/extensions": [
         "error",
         "ignorePackages",
-        {
-          ts: "never",
-          js: "never",
-        },
+        { ts: "never", js: "never" },
       ],
-      ...prettier.rules,
     },
     settings: {
-      "import/resolver": {
-        node: {
-          extensions: [".js", ".ts"],
-        },
-      },
+      "import/resolver": { node: { extensions: [".js", ".ts"] } },
     },
   },
+  {
+    files: ["src/**/*.ts", "test/**/*.ts"],
+    languageOptions: { parserOptions: { project: "./tsconfig.json" } },
+  },
+  {
+    files: ["**/*.{spec,test}.{js,ts}", "test/**/*.{js,ts}"],
+    languageOptions: { globals: base.globals.jest },
+  },
+  // Keep formatting rules disabled after every other ruleset.
+  prettier,
 ];

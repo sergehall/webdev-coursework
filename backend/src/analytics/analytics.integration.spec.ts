@@ -569,8 +569,8 @@ run("Owner HTTP and PostgreSQL integration", () => {
         redis: { del: (key: string) => Promise<unknown> };
       }
     ).redis.del(`webdev:qr:session:${service.digest(tokens[5])}`);
-    let page = await list().expect(200),
-      ids: string[] = [];
+    let page = await list().expect(200);
+    const ids: string[] = [];
     while (true) {
       ids.push(...page.body.entries.map((entry: { id: string }) => entry.id));
       if (!page.body.nextCursor) break;

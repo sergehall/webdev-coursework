@@ -14927,6 +14927,7 @@ __metadata:
     cors: "npm:^2.8.5"
     cross-env: "npm:^7.0.3"
     eslint: "npm:^9.37.0"
+    eslint-config-prettier: "npm:^10.1.8"
     globals: "npm:^16.3.0"
     postcss: "npm:8.5.23"
     prettier: "npm:^3.6.2"

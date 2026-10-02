@@ -51,9 +51,9 @@ export default function OwnerAccountMenu() {
         aria-controls="owner-account-menu"
         aria-label={`Open account menu for ${name}`}
         onClick={() => setOpen(!open)}
-        className="flex min-h-10 items-center gap-2 rounded-full border border-green-500/40 bg-green-50 pr-3 pl-1 text-green-900 focus-visible:ring-2 focus-visible:ring-green-400 dark:bg-green-950 dark:text-green-100"
+        className="flex min-h-10 items-center gap-2 rounded-full border border-[#b7cfc0] bg-[#edf5ef] pr-3 pl-1 text-[#355b45] focus-visible:ring-2 focus-visible:ring-[#a8c7b4] dark:border-[#a8c7b4]/30 dark:bg-[#a8c7b4]/12 dark:text-[#d9e8df]"
       >
-        <span className="flex size-8 items-center justify-center rounded-full bg-green-700 text-sm font-bold text-white">
+        <span className="flex size-8 items-center justify-center rounded-full bg-[#c6ddce] text-sm font-bold text-[#355b45] dark:bg-[#a8c7b4]/25 dark:text-[#d9e8df]">
           {name.charAt(0).toUpperCase()}
         </span>
         <span className="hidden max-w-24 truncate text-sm font-semibold lg:inline">

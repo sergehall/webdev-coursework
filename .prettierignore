@@ -1,0 +1,30 @@
+# Generated output, dependencies, caches, and local tools.
+**/node_modules/**
+**/dist/**
+**/build/**
+**/coverage/**
+**/.nyc_output/**
+**/.yarn/**
+**/.pnp.*
+**/.vite/**
+**/.cache/**
+**/.storybook-out/**
+**/.vercel/**
+**/.idea/**
+**/.vscode/**
+**/.claude/**
+**/.temp/**
+**/.tmp/**
+**/temp/**
+**/tmp/**
+**/*.tsbuildinfo
+**/*.log
+
+# Preserve supplied course materials and copied assets verbatim.
+**/public/course-materials/**
+**/public/assets/**
+
+# Package managers own lockfile formatting.
+**/yarn.lock
+**/package-lock.json
+**/pnpm-lock.yaml

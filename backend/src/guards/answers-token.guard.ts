@@ -36,7 +36,7 @@ export class AnswersTokenGuard implements CanActivate {
     let payload;
     try {
       payload = this.tokensService.verifyQuizAnswersToken(token);
-    } catch (err) {
+    } catch {
       throw new UnauthorizedException("Invalid or expired token");
     }
 

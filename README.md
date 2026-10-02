@@ -296,10 +296,10 @@ yarn build
 | `yarn test:frontend`    | Run frontend tests from the root               |
 | `yarn test:backend`     | Run backend tests from the root                |
 | `yarn typecheck`        | Run frontend and backend TypeScript checks     |
-| `yarn lint`             | Lint both workspaces                           |
-| `yarn lint:fix`         | Auto-fix lint issues in both workspaces        |
-| `yarn format`           | Run Prettier across both workspaces            |
-| `yarn format:check`     | Check formatting across both workspaces        |
+| `yarn lint`             | Lint JS/TS in the root and both workspaces     |
+| `yarn lint:fix`         | Auto-fix JS/TS in the root and both workspaces |
+| `yarn format`           | Format supported files across the repository   |
+| `yarn format:check`     | Check formatting across the repository         |
 | `yarn check:frontend`   | Run frontend combined checks                   |
 | `yarn check:backend`    | Run backend combined checks                    |
 | `yarn clean:meta`       | Remove cache, lock metadata, and build outputs |
@@ -309,6 +309,19 @@ yarn build
 | `yarn heroku-postbuild` | Build the backend for Heroku-style deploys     |
 
 </details>
+
+ESLint checks JavaScript and TypeScript, including configuration files, scripts,
+tests, mocks, and browser workers. The root lint commands visit all three scopes
+even if an earlier scope reports lint errors. Workspace lint commands use the
+same file coverage within their own workspace.
+
+Prettier owns formatting; ESLint owns code-quality rules. Both workspaces inherit
+the root `prettier.config.cjs`, with Tailwind class sorting enabled on the
+frontend. Run `yarn lint:fix` followed by `yarn format`, then `yarn lint` and
+`yarn format:check` to verify the result. Generated output, dependencies, caches,
+lockfiles, supplied course materials, and copied assets are excluded; Prettier
+also respects `.gitignore`. Workspace format commands load the shared ignore
+files explicitly so they have the same exclusions when run from a subdirectory.
 
 ---
 

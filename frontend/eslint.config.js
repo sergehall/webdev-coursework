@@ -1,6 +1,3 @@
-// frontend/eslint.config.js
-
-import js from "@eslint/js";
 import tseslintPlugin from "@typescript-eslint/eslint-plugin";
 import tseslintParser from "@typescript-eslint/parser";
 import reactPlugin from "eslint-plugin-react";
@@ -8,70 +5,49 @@ import reactHooksPlugin from "eslint-plugin-react-hooks";
 import vitestPlugin from "@vitest/eslint-plugin";
 import importPlugin from "eslint-plugin-import-x";
 import prettierConfig from "eslint-config-prettier";
-import globals from "globals";
 
-const { browser, node, jest } = globals;
+import base from "../scripts/eslint-base.cjs";
 
 export default [
+  { ignores: base.generatedIgnores },
   {
-    ignores: [
-      "node_modules/**",
-      ".pnp.*",
-      ".yarn/**",
-      "dist/**",
-      "build/**",
-      "coverage/**",
-      ".vite/**",
-      ".storybook-out/**",
-      "__mocks__/**",
-      "*.config.js",
-      "*.config.cjs",
-      "*.config.mjs",
-      "*.log",
-      ".cache/**",
-      "temp/**",
-      "tmp/**",
-      "public/course-materials/**",
-    ],
-  },
-  js.configs.recommended,
-  {
-    files: ["**/*.{ts,tsx,js,jsx}"],
+    files: base.codeFiles,
     languageOptions: {
-      parser: tseslintParser,
-      parserOptions: {
-        ecmaVersion: 2020,
-        sourceType: "module",
-        ecmaFeatures: { jsx: true },
-      },
-      globals: {
-        ...browser,
-        ...node,
-        ...jest,
-        global: "readonly",
-        IntersectionObserver: "readonly",
-        IntersectionObserverCallback: "readonly",
-        IntersectionObserverInit: "readonly",
-        RequestInit: "readonly",
-        importScripts: "readonly",
-        loadPyodide: "readonly",
-        __ESL10G_BROOKLYN_IMAGE_VERSION__: "readonly",
-      },
-    },
-    plugins: {
-      "@typescript-eslint": tseslintPlugin,
-      react: reactPlugin,
-      "react-hooks": reactHooksPlugin,
-      "import-x": importPlugin,
-      vitest: vitestPlugin,
+      ecmaVersion: "latest",
+      parserOptions: { ecmaFeatures: { jsx: true } },
+      globals: base.globals.browser,
     },
     rules: {
+      ...base.js.configs.recommended.rules,
+      "no-unused-vars": [
+        "warn",
+        { argsIgnorePattern: "^_", ignoreRestSiblings: true },
+      ],
+    },
+  },
+  {
+    files: [
+      "*.{js,mjs,cjs,ts,mts,cts}",
+      "scripts/**/*.{js,mjs,cjs,ts,mts,cts}",
+    ],
+    languageOptions: { globals: base.globals.node },
+  },
+  {
+    files: ["public/workers/**/*.js"],
+    languageOptions: {
+      globals: { ...base.globals.worker, loadPyodide: "readonly" },
+    },
+  },
+  {
+    files: base.typescriptFiles,
+    languageOptions: { parser: tseslintParser },
+    plugins: { "@typescript-eslint": tseslintPlugin },
+    rules: {
+      ...tseslintPlugin.configs["eslint-recommended"].overrides[0].rules,
       ...tseslintPlugin.configs.recommended.rules,
-
-      "no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": [
         "warn",
-        { argsIgnorePattern: "^_" },
+        { argsIgnorePattern: "^_", ignoreRestSiblings: true },
       ],
       "@typescript-eslint/no-explicit-any": "error",
       "@typescript-eslint/ban-ts-comment": [
@@ -85,20 +61,22 @@ export default [
       "@typescript-eslint/consistent-type-imports": "warn",
       "no-redeclare": "off",
       "@typescript-eslint/no-redeclare": "off",
-
+    },
+  },
+  {
+    files: ["**/*.{js,jsx,ts,tsx}"],
+    plugins: {
+      react: reactPlugin,
+      "react-hooks": reactHooksPlugin,
+      "import-x": importPlugin,
+    },
+    rules: {
       "react/prop-types": "off",
       "react/no-children-prop": "error",
       "react/require-render-return": "error",
       "react/jsx-no-undef": "error",
-
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "warn",
-
-      "vitest/no-disabled-tests": "warn",
-      "vitest/no-focused-tests": "error",
-      "vitest/no-identical-title": "error",
-      "vitest/prefer-to-be": "warn",
-
       "import-x/order": [
         "warn",
         {
@@ -114,11 +92,21 @@ export default [
         },
       ],
     },
-    settings: {
-      react: {
-        version: "detect",
-      },
+    settings: { react: { version: "detect" } },
+  },
+  {
+    files: ["**/*.{test,spec}.{js,jsx,ts,tsx}", "setupTests.ts", "src/test/**"],
+    languageOptions: {
+      globals: { ...base.globals.vitest, ...base.globals.node },
+    },
+    plugins: { vitest: vitestPlugin },
+    rules: {
+      "vitest/no-disabled-tests": "warn",
+      "vitest/no-focused-tests": "error",
+      "vitest/no-identical-title": "error",
+      "vitest/prefer-to-be": "warn",
     },
   },
+  // Keep formatting rules disabled after every other ruleset.
   prettierConfig,
 ];
