@@ -31,7 +31,7 @@ import SecurityActivityPanel from "./SecurityActivityPanel";
 import AccountRolesPanel from "./AccountRolesPanel";
 import AccountAuthPage, { authPages } from "./AccountAuthPage";
 import MfaSettingsPanel from "./MfaSettingsPanel";
-import AccountProvidersPanel from "./AccountProvidersPanel";
+import SecurityOverview from "./SecurityOverview";
 import MfaChallengePage from "./MfaChallengePage";
 import type { MfaStatus } from "./mfa-api";
 import "./owner.css";
@@ -287,9 +287,9 @@ function SecurityPanel({ session }: { session: OwnerSession }) {
   const owner = useOwner()!;
   const navigate = useNavigate();
   const hash = useLocation().hash.slice(1);
-  const windowId = ["password", "providers", "mfa", "sessions"].includes(hash)
+  const windowId = ["password", "mfa", "sessions"].includes(hash)
     ? hash
-    : "password";
+    : "overview";
   const [mfaStatus, setMfaStatus] = useState<MfaStatus | null>(null);
   const [mfaError, setMfaError] = useState("");
   useEffect(() => {
@@ -320,7 +320,6 @@ function SecurityPanel({ session }: { session: OwnerSession }) {
   useEffect(() => {
     if (confirmRevoke) dialog.current?.showModal();
   }, [confirmRevoke]);
-  const time = (value: string) => formatAccountTime(value, session.profile);
   async function change(e: FormEvent) {
     e.preventDefault();
     setError("");
@@ -383,66 +382,22 @@ function SecurityPanel({ session }: { session: OwnerSession }) {
         title="Security"
         description="Manage your password, connected sign-in providers, two-factor protection and account sessions."
       />
-      <div className="owner-metrics owner-security-summary">
-        <section className="owner-card">
-          <p className="owner-muted">Password</p>
-          <h2>
-            {session.profile.passwordEnabled !== false
-              ? "Ready"
-              : "Managed by GitHub"}
-          </h2>
-          <p className="owner-muted">
-            {session.profile.passwordEnabled !== false
-              ? "Username / password sign-in"
-              : "No site password configured"}
-          </p>
-        </section>
-        <section className="owner-card">
-          <p className="owner-muted">Providers</p>
-          <h2>
-            {session.profile.githubLinked
-              ? "GitHub connected"
-              : "Email / password"}
-          </h2>
-          <p className="owner-muted">Only the methods linked to this account</p>
-        </section>
-        <section className="owner-card">
-          <p className="owner-muted">Two-factor</p>
-          <h2>
-            {mfaStatus
-              ? mfaStatus.enabled
-                ? "Enabled"
-                : "Disabled"
-              : "Loading…"}
-          </h2>
-          <p className="owner-muted">
-            {mfaStatus?.pendingEnrollment
-              ? "Setup in progress"
-              : "Authenticator app and recovery codes"}
-          </p>
-        </section>
-        <section className="owner-card">
-          <p className="owner-muted">Sessions</p>
-          <h2>Current session</h2>
-          <p className="owner-muted">Expires {time(session.expiresAt)}</p>
-        </section>
-      </div>
       <section className="owner-card">
-        <h2>Security windows</h2>
+        <h2>Security sections</h2>
         <p className="owner-muted">
-          Open the section you need without scrolling through one long form.
+          Start with your security overview, or open a specific setting.
         </p>
         <nav className="owner-security-windows" aria-label="Security windows">
           {[
             {
+              id: "overview",
+              label: "Overview",
+              note: "Status and sign-in methods",
+            },
+            {
               id: "password",
               label: "Password",
               note: "Credentials and recovery",
-            },
-            {
-              id: "providers",
-              label: "Providers",
-              note: "GitHub and site login",
             },
             {
               id: "mfa",
@@ -471,14 +426,27 @@ function SecurityPanel({ session }: { session: OwnerSession }) {
       {windowId === "mfa" && (
         <MfaSettingsPanel status={mfaStatus} onChange={setMfaStatus} />
       )}
-      {windowId === "providers" && (
-        <AccountProvidersPanel session={session} mfa={mfaStatus} />
+      {windowId === "overview" && (
+        <SecurityOverview
+          session={session}
+          mfa={mfaStatus}
+          statusUnavailable={!!mfaError}
+        />
       )}
       {(windowId === "password" || windowId === "sessions") && (
         <div>
           {windowId === "password" && (
             <section className="owner-card">
               <h2>Password</h2>
+              <dl className="owner-details">
+                <div>
+                  <dt>Site username</dt>
+                  <dd>{session.profile.username ?? "Not available"}</dd>
+                </div>
+              </dl>
+              <Link className="owner-text-link" to="/account/profile">
+                Manage site username
+              </Link>
               <p className="owner-muted">
                 Changing your password signs you out on every device.
               </p>
@@ -541,9 +509,9 @@ function SecurityPanel({ session }: { session: OwnerSession }) {
               ) : (
                 <p className="owner-muted">
                   You sign in through GitHub. Your GitHub account manages your
-                  password. Add and confirm an email in Providers to set up a
+                  password. Add and confirm an email in Overview to set up a
                   site password.
-                  <Link className="owner-text-link" to="#providers">
+                  <Link className="owner-text-link" to="#overview">
                     Add recovery email
                   </Link>
                 </p>

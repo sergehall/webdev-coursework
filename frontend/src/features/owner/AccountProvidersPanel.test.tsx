@@ -54,7 +54,7 @@ function show(value = session) {
         <Routes>
           <Route
             path="/account/security"
-            element={<AccountProvidersPanel session={value} mfa={null} />}
+            element={<AccountProvidersPanel session={value} />}
           />
           <Route path="/account/login" element={<p>Login page</p>} />
         </Routes>

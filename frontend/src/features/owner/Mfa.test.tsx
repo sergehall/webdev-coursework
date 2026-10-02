@@ -87,7 +87,23 @@ afterEach(() => {
 });
 describe("Two-factor account flows", () => {
   it("adapts the security windows to actual providers and MFA data", async () => {
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(response(disabled)));
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockImplementation((url: string) =>
+        Promise.resolve(
+          response(
+            url.endsWith("/providers")
+              ? {
+                  githubAvailable: true,
+                  emailAvailable: true,
+                  pendingEmail: null,
+                  pendingEmailExpiresAt: null,
+                }
+              : disabled
+          )
+        )
+      )
+    );
     show(<OwnerPage />);
     expect(
       await screen.findByRole("button", { name: "Start 2FA setup" })
@@ -96,9 +112,13 @@ describe("Two-factor account flows", () => {
       "aria-current",
       "page"
     );
-    fireEvent.click(screen.getByRole("link", { name: /^Providers/ }));
+    fireEvent.click(
+      screen.getByRole("link", {
+        name: /^Overview.*Status and sign-in methods$/,
+      })
+    );
     expect(
-      screen.getByRole("heading", { name: "Sign-in providers" })
+      screen.getByRole("heading", { name: "Sign-in and recovery" })
     ).toBeInTheDocument();
     expect(screen.getByText("Connected")).toBeInTheDocument();
     expect(

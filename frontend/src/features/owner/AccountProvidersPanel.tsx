@@ -1,13 +1,12 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FaGithub } from "react-icons/fa";
-import { KeyRound, Mail, ShieldCheck } from "lucide-react";
+import { Mail } from "lucide-react";
 import { z } from "zod";
 
 import { ownerRequest, OwnerApiError, type OwnerSession } from "./owner-api";
 import { useOwner } from "./owner-context";
 import { formatAccountTime } from "./account-time";
-import type { MfaStatus } from "./mfa-api";
 
 const providerStatus = z.object({
   githubAvailable: z.boolean(),
@@ -18,10 +17,8 @@ const providerStatus = z.object({
 type ProviderStatus = z.infer<typeof providerStatus>;
 export default function AccountProvidersPanel({
   session,
-  mfa,
 }: {
   session: OwnerSession;
-  mfa: MfaStatus | null;
 }) {
   const owner = useOwner();
   const navigate = useNavigate();
@@ -89,7 +86,7 @@ export default function AccountProvidersPanel({
           state: {
             notice:
               "GitHub disconnected. All sessions ended. Sign in with your password.",
-            returnTo: "/account/security#providers",
+            returnTo: "/account/security#overview",
           },
         });
       } else {
@@ -126,13 +123,13 @@ export default function AccountProvidersPanel({
   }
   return (
     <section
-      className="owner-card owner-providers"
+      className="owner-providers"
       id="providers"
       aria-labelledby="providers-title"
     >
-      <h2 id="providers-title">Sign-in providers</h2>
+      <h2 id="providers-title">Sign-in and recovery</h2>
       <p className="owner-muted">
-        Manage how you sign in and recover access to this account.
+        Manage your GitHub connection and recovery email.
       </p>
       <div className="owner-grid owner-provider-grid">
         <section className="owner-card">
@@ -184,8 +181,8 @@ export default function AccountProvidersPanel({
               ) : (
                 <p className="owner-muted">
                   Keep GitHub connected until you have a verified email and
-                  password sign-in. Use the email and password settings below to
-                  add a backup.
+                  password sign-in. Add a recovery email here, then configure a
+                  backup in Password.
                 </p>
               )}
             </>
@@ -210,48 +207,14 @@ export default function AccountProvidersPanel({
             </>
           )}
         </section>
-        <section className="owner-card">
-          <div className="owner-provider-heading">
-            <KeyRound aria-hidden="true" />
-            <h3>Username / password</h3>
-            <span className="owner-provider-status">
-              {hasPassword ? "Enabled" : "Not configured"}
-            </span>
-          </div>
-          <dl className="owner-details">
-            <div>
-              <dt>Site username</dt>
-              <dd>{profile.username ?? "Not available"}</dd>
-            </div>
-            <div>
-              <dt>Current sign-in</dt>
-              <dd>
-                {session.authMethod === "github"
-                  ? "GitHub"
-                  : session.authMethod === "password"
-                    ? "Username / password"
-                    : "Not recorded"}
-              </dd>
-            </div>
-          </dl>
-          <p className="owner-muted">
-            {hasPassword
-              ? "Use your site username and password. A confirmed email can also be used to sign in."
-              : "Add a verified email before setting up a separate site password as a backup to GitHub."}
-          </p>
-          {(hasPassword || profile.emailVerified) && (
-            <Link className="owner-button" to="#password">
-              {hasPassword ? "Change password" : "Set up password"}
-            </Link>
-          )}
-          <Link className="owner-text-link" to="/account/profile">
-            Manage site username
-          </Link>
-        </section>
-        <section className="owner-card">
+        <section
+          className="owner-card"
+          id="recovery-email"
+          aria-labelledby="recovery-email-title"
+        >
           <div className="owner-provider-heading">
             <Mail aria-hidden="true" />
-            <h3>Email and recovery</h3>
+            <h3 id="recovery-email-title">Recovery email</h3>
             <span className="owner-provider-status">
               {profile.email
                 ? profile.emailVerified
@@ -352,31 +315,6 @@ export default function AccountProvidersPanel({
             </>
           )}
         </section>
-        <section className="owner-card">
-          <div className="owner-provider-heading">
-            <ShieldCheck aria-hidden="true" />
-            <h3>Two-factor protection</h3>
-            <span className="owner-provider-status">
-              {mfa ? (mfa.enabled ? "Enabled" : "Disabled") : "Loading…"}
-            </span>
-          </div>
-          <p className="owner-muted">
-            Your authenticator protects both GitHub and password sign-in. Adding
-            an email or changing a provider does not remove two-factor
-            protection.
-          </p>
-          {mfa?.enabled && (
-            <p className="owner-muted">
-              Recovery codes remaining: {mfa.recoveryCodesRemaining}. Keep
-              unused codes privately for a lost authenticator.
-            </p>
-          )}
-          <Link className="owner-button" to="#mfa">
-            {mfa?.enabled
-              ? "Manage two-factor protection"
-              : "Set up two-factor protection"}
-          </Link>
-        </section>
       </div>
       {!status && !error && (
         <p role="status" className="owner-muted">
@@ -387,7 +325,7 @@ export default function AccountProvidersPanel({
         <Link
           className="owner-button"
           to="/account/reauthenticate"
-          state={{ returnTo: "/account/security#providers" }}
+          state={{ returnTo: "/account/security#overview" }}
         >
           Sign in again to continue
         </Link>

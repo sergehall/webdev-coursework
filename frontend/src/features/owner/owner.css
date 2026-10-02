@@ -156,8 +156,95 @@
 .owner-profile-identity .owner-details {
   margin-bottom: 0;
 }
-.owner-security-summary h2 {
+.owner-security-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
+  margin-top: 0.65rem;
+}
+.owner-security-facts > div {
+  min-width: 0;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--owner-border);
+  border-radius: 0.45rem;
+  background: var(--owner-card);
+}
+.owner-security-facts dt {
+  color: var(--owner-muted);
+  font-size: 0.75rem;
+}
+.owner-security-facts dd {
+  margin-top: 0.3rem;
+  font-size: 0.85rem;
+  font-weight: 650;
+}
+.owner-security-facts .owner-muted {
+  margin-top: 0.3rem;
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+.owner-security-review {
+  display: grid;
+  gap: 0.5rem;
+  border-top: 1px solid var(--owner-border);
+  margin-top: 0.7rem;
+  padding-top: 0.6rem;
+}
+.owner-security-review h3 {
+  font-size: 0.8rem;
+  font-weight: 650;
+}
+.owner-security-review > p {
+  font-size: 0.8rem;
+}
+.owner-security-signals {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+.owner-security-signals li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  min-width: 0;
+  gap: 0.4rem 0.75rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--owner-border);
+  border-radius: 0.45rem;
+  background: var(--owner-card);
+  font-size: 0.8rem;
+}
+.owner-security-signals .owner-button {
+  justify-self: end;
+  max-width: 100%;
+  border-color: var(--owner-accent);
+  background: var(--owner-soft);
+  text-align: center;
+}
+.owner-security-signals .owner-button:hover {
+  background: var(--owner-primary);
+  color: var(--owner-primary-text);
+}
+.owner-providers > h2 {
+  font-size: 0.95rem;
+  font-weight: 650;
+}
+.owner-providers > .owner-muted {
   margin-top: 0.35rem;
+  font-size: 0.8rem;
+}
+@media (max-width: 900px) {
+  .owner-security-signals {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 600px) {
+  .owner-security-facts {
+    grid-template-columns: 1fr;
+  }
+  .owner-security-signals li {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 .owner-security-windows {
   display: grid;

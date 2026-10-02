@@ -31,8 +31,13 @@ MFA settings are unchanged.
 
 Implemented locally:
 
-- Compact Security summary and Password / Providers / Two-factor / Sessions windows,
-  using actual portfolio account data and the shared account theme tokens.
+- Security opens Overview by default, with the account summary, setup signals and
+  GitHub / recovery-email settings. The summary and reminders share one compact
+  panel; sign-in and recovery use two standalone cards. Site username/password,
+  authenticator/recovery codes and devices belong to Password / Two-factor / Sessions
+  respectively. These subwindows contain their own settings
+  without repeating the overview. Legacy `#providers` links still open Overview.
+  The panels use actual account data and the shared account theme tokens.
 - Local QR generation, temporary manual secret, expiring enrollment and confirmation.
 - Password and GitHub login both stop at a restricted, expiring MFA challenge.
   A full opaque session is issued only after verification.

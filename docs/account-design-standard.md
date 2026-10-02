@@ -52,6 +52,13 @@ and dark modules for scanning.
   icons are muted; account branding does not compete with the page title.
 - Overview shortcuts are compact text/icon links, not a second row of large
   navigation cards. Their destinations and role visibility match the main tabs.
+- Keep Security sections as the navigation block. Below it, Overview uses one
+  compact status panel with actionable setup reminders, followed by separate
+  GitHub and recovery-email cards. Do not repeat password or MFA settings in the
+  provider group. Site username/password controls belong to Password; authenticator
+  and recovery-code controls belong to Two-factor; device controls belong to Sessions.
+  Keep existing `#providers` links compatible with Overview. Signals reflect known
+  account data; loading or unavailable status must not be shown as disabled or safe.
 
 ## Color and interaction rules
 
