@@ -159,6 +159,9 @@ The portfolio covers the following Santa Monica College course track:
 
 Dependency snapshot: **October 2, 2026**, from the resolved Yarn dependencies. Workspace
 `package.json` files declare dependency ranges; `yarn.lock` pins resolutions.
+The 15,262-line lockfile was reviewed in the large-file pass and stays generated
+as one file. Update it through Yarn when dependencies change; do not partition or
+edit its resolutions by hand.
 
 | Layer                                  | Technologies                                                                                                        |
 | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
