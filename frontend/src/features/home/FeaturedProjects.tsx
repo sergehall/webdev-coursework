@@ -9,7 +9,7 @@ export default function FeaturedProjects() {
     <section aria-labelledby="featured-projects-title" className="text-left">
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div className="max-w-3xl">
-          <p className="text-xs font-bold tracking-[0.16em] text-sky-600 uppercase dark:text-sky-300">
+          <p className="text-xs font-bold tracking-[0.16em] text-sky-700 uppercase dark:text-sky-300">
             Applied learning
           </p>
           <h2
@@ -48,7 +48,7 @@ export default function FeaturedProjects() {
             </div>
 
             <div className="p-5">
-              <p className="text-xs font-bold tracking-wide text-sky-600 uppercase dark:text-sky-300">
+              <p className="text-xs font-bold tracking-wide text-sky-700 uppercase dark:text-sky-300">
                 {project.category}
               </p>
               <h3 className="mt-2 text-xl font-black text-slate-950 dark:text-white">

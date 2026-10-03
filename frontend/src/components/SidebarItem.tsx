@@ -15,10 +15,6 @@ export default function SidebarItem({
   external = false,
 }: SidebarItemProps) {
   const location = useLocation();
-  const noTapHighlightStyle = {
-    WebkitTapHighlightColor: "transparent",
-  } as const;
-
   const baseLinkStyle =
     "[-webkit-tap-highlight-color:transparent] flex items-center gap-2 md:gap-3 px-3 py-2 md:px-4 md:py-3 " +
     "rounded border border-transparent text-sm font-medium min-h-[44px] min-w-[44px] " +
@@ -55,7 +51,6 @@ export default function SidebarItem({
         target="_blank"
         rel="noopener noreferrer"
         aria-label={label}
-        style={noTapHighlightStyle}
         className={`${baseLinkStyle} ${inactiveStyle}`}
       >
         {Content}
@@ -68,7 +63,6 @@ export default function SidebarItem({
       to={to}
       aria-label={label}
       aria-current={isActive ? "page" : undefined}
-      style={noTapHighlightStyle}
       className={`${baseLinkStyle} ${isActive ? activeStyle : inactiveStyle}`}
     >
       {Content}

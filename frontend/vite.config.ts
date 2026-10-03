@@ -95,6 +95,12 @@ export default defineConfig(({ mode }) => {
                 ? courseMaterialsContentSecurityPolicy
                 : productionContentSecurityPolicy
             );
+            if (
+              !pathname.startsWith("/course-materials/") &&
+              !pathname.startsWith("/code-playground")
+            ) {
+              response.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+            }
             next();
           });
         },

@@ -93,5 +93,14 @@ describe("security headers", () => {
       expect(headers["X-Frame-Options"]).toBe("SAMEORIGIN");
       expect(headers["Cross-Origin-Resource-Policy"]).toBe("same-origin");
     }
+    expect(headersFor("/")["Cross-Origin-Opener-Policy"]).toBe("same-origin");
+    expect(
+      headersFor("/course-materials/CS80/mod-5/form.html")[
+        "Cross-Origin-Opener-Policy"
+      ]
+    ).toBeUndefined();
+    expect(
+      headersFor("/code-playground")["Cross-Origin-Opener-Policy"]
+    ).toBeUndefined();
   });
 });

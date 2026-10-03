@@ -1,0 +1,16 @@
+# Webdev Coursework
+
+> Serge Hall's public academic portfolio and Web Development learning portal.
+
+This site documents coursework completed at Santa Monica College and projects built from that learning. It is an independent portfolio, not an official college website.
+
+## Main sections
+
+- [Home](https://webdev-coursework.com/): introduction and selected projects.
+- [Coursework](https://webdev-coursework.com/coursework): courses, assignments, labs, and assessments.
+- [Projects](https://webdev-coursework.com/projects): project summaries and architecture details.
+- [Roadmap](https://webdev-coursework.com/web-developer-path): learning path and technology map.
+- [Reference Hub](https://webdev-coursework.com/resources): development references.
+- [Code Playground](https://webdev-coursework.com/code-playground): browser-based practice environment.
+
+Access to public pages and automated crawling remain subject to [robots.txt](https://webdev-coursework.com/robots.txt). This file does not grant access to private accounts or permission to use the content for model training.
