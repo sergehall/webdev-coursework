@@ -1,389 +1,43 @@
-import { useState, type ReactNode } from "react";
-import { ClipboardPenLine } from "lucide-react";
+import { useState } from "react";
+
+import {
+  Callout,
+  CodeBlock,
+  SectionHeading,
+  TutorialStep,
+} from "./components/Assignment12APrimitives";
+import {
+  apiRequestExample,
+  responseJson,
+  responseExtraction,
+  failedResponseExample,
+  configKeyExample,
+  adaptivePromptExample,
+  formInputsExample,
+  mockedServiceExample,
+  createProjectCommands,
+  projectTree,
+  createFilesCommands,
+  envConfiguration,
+  servicesConfiguration,
+  routeConfiguration,
+  controllerCode,
+  serviceStub,
+  serviceHint,
+  bladeView,
+  runCommands,
+  gitCommands,
+  bonusTest,
+} from "./data/assignment12AExamples";
+import {
+  assignment12AItem,
+  assignmentPdfFiles,
+  assignmentPdfUrl,
+  rubricRows,
+} from "./data/assignment12AMetadata";
 
 import { ShowModalButton, ToggleModalButton } from "@/components/buttons";
-import {
-  ModuleItemBlock,
-  type CanvasItem,
-} from "@/courses/CS85/assignments/shared/canvasItems";
-
-const assignment12AItem: CanvasItem = {
-  icon: ClipboardPenLine,
-  title: "Module 12 Assignment 12A: Integrating OpenAI",
-  dueLabel: "Aug 2",
-  pointsLabel: "100 pts",
-};
-
-const assignmentPdfUrl =
-  "/course-materials/CS85/mod-12/12a/Module_12_Assignment_12A_Integrating_OpenAI_Report.pdf";
-
-const assignmentPdfFiles = [
-  {
-    fileUrl: assignmentPdfUrl,
-    filename: "Module_12_Assignment_12A_Integrating_OpenAI_Report.pdf",
-  },
-];
-
-const apiRequestExample = [
-  "use Illuminate\\Support\\Facades\\Http;",
-  "",
-  "$response = Http::withHeaders([",
-  "    'Authorization' => 'Bearer ' . config('services.openai.key'),",
-  "    'Content-Type'  => 'application/json',",
-  "])->post(config('services.openai.url') . '/chat/completions', [",
-  "    'model' => config('services.openai.model'),",
-  "    'messages' => [",
-  "        ['role' => 'user', 'content' => 'Say hello in one short sentence.'],",
-  "    ],",
-  "]);",
-].join("\n");
-
-const responseJson = [
-  "{",
-  '  "choices": [',
-  '    { "message": { "role": "assistant", "content": "Hello there, welcome!" } }',
-  "  ]",
-  "}",
-].join("\n");
-
-const responseExtraction =
-  "$text = $response['choices'][0]['message']['content'] ?? 'No output received';";
-
-const failedResponseExample = [
-  "use Illuminate\\Support\\Facades\\Log;",
-  "",
-  "if (! $response->successful()) {",
-  "    Log::error('API call failed', [",
-  "        'status' => $response->status(),",
-  "        'body'   => $response->body(),",
-  "    ]);",
-  "",
-  "    throw new \\Exception('The request failed.');",
-  "}",
-].join("\n");
-
-const configKeyExample = [
-  "// OPENAI_API_KEY lives in .env; config() reads it. Never hardcode the key.",
-  "$key = config('services.openai.key');",
-].join("\n");
-
-const adaptivePromptExample = [
-  "private function buildTaglinePrompt(string $product, string $style): string",
-  "{",
-  '    $task = "Write a catchy tagline for: {$product}.";',
-  "",
-  "    $styleInstruction = match ($style) {",
-  "        'bold'    => 'Make it punchy and confident. Under 10 words.',",
-  "        'playful' => 'Make it fun and lighthearted. Under 10 words.',",
-  "        default   => 'Keep it clear and professional. Under 10 words.',",
-  "    };",
-  "",
-  "    return $task . ' ' . $styleInstruction;",
-  "}",
-].join("\n");
-
-const formInputsExample = [
-  '<select name="tone">',
-  "    <option value=\"professional\" @selected(old('tone') === 'professional')>Professional</option>",
-  "    <option value=\"casual\" @selected(old('tone') === 'casual')>Casual</option>",
-  "</select>",
-].join("\n");
-
-const mockedServiceExample = [
-  "$this->mock(AiContentService::class, function ($mock) {",
-  "    $mock->shouldReceive('generateDraft')->once()->andReturn('Example output.');",
-  "});",
-].join("\n");
-
-const createProjectCommands = [
-  "cd ~/Sites    # or your preferred dev folder",
-  "laravel new blog-ai",
-  "cd blog-ai",
-].join("\n");
-
-const projectTree = [
-  "app/",
-  "|-- Http/",
-  "|   `-- Controllers/",
-  "|-- Services/        <- you create this",
-  "resources/",
-  "|-- views/",
-  "routes/",
-  "|-- web.php",
-  ".env",
-].join("\n");
-
-const createFilesCommands = [
-  "mkdir app/Services",
-  "touch app/Http/Controllers/AiContentController.php",
-  "touch app/Services/AiContentService.php",
-  "touch resources/views/ai_form.blade.php",
-].join("\n");
-
-const envConfiguration = [
-  "OPENAI_API_KEY=your_openai_api_key_here",
-  "OPENAI_API_URL=https://api.openai.com/v1",
-  "OPENAI_MODEL=gpt-4o-mini",
-].join("\n");
-
-const servicesConfiguration = [
-  "'openai' => [",
-  "    'key'   => env('OPENAI_API_KEY'),",
-  "    'url'   => env('OPENAI_API_URL', 'https://api.openai.com/v1'),",
-  "    'model' => env('OPENAI_MODEL', 'gpt-4o-mini'),",
-  "],",
-].join("\n");
-
-const routeConfiguration = [
-  "use App\\Http\\Controllers\\AiContentController;",
-  "",
-  "Route::get('/ai-form', [AiContentController::class, 'showForm'])->name('ai.form');",
-  "Route::post('/ai-generate', [AiContentController::class, 'generate'])->name('ai.generate');",
-].join("\n");
-
-const controllerCode = [
-  "namespace App\\Http\\Controllers;",
-  "",
-  "use App\\Services\\AiContentService;",
-  "use Illuminate\\Http\\Request;",
-  "",
-  "class AiContentController extends Controller",
-  "{",
-  "    public function showForm()",
-  "    {",
-  "        return view('ai_form');",
-  "    }",
-  "",
-  "    public function generate(Request $request, AiContentService $ai)",
-  "    {",
-  "        $validated = $request->validate([",
-  "            'title' => 'required|string|min:5|max:255',",
-  "            'type'  => 'required|in:blog post,meta description,email subject line',",
-  "            'tone'  => 'required|in:professional,casual,humorous',",
-  "        ]);",
-  "",
-  "        try {",
-  "            $output = $ai->generateDraft(",
-  "                $validated['title'],",
-  "                $validated['type'],",
-  "                $validated['tone'],",
-  "            );",
-  "",
-  "            return view('ai_form', [",
-  "                'output' => $output,",
-  "                'title'  => $validated['title'],",
-  "            ]);",
-  "        } catch (\\Throwable $e) {",
-  "            return back()",
-  "                ->withInput()",
-  "                ->withErrors(['error' => 'AI request failed: ' . $e->getMessage()]);",
-  "        }",
-  "    }",
-  "}",
-].join("\n");
-
-const serviceStub = [
-  "namespace App\\Services;",
-  "",
-  "use Illuminate\\Support\\Facades\\Http;",
-  "use Illuminate\\Support\\Facades\\Log;",
-  "",
-  "class AiContentService",
-  "{",
-  "    /**",
-  "     * Generate a draft from a title, content type, and tone.",
-  "     *",
-  "     * Build the prompt, POST to /chat/completions with the configured",
-  "     * key, send system and user messages, log failed responses, and",
-  "     * safely return the assistant message content.",
-  "     *",
-  "     * @throws \\Exception",
-  "     */",
-  "    public function generateDraft(",
-  "        string $title,",
-  "        string $type = 'blog post',",
-  "        string $tone = 'professional'",
-  "    ): string {",
-  "        // TODO: implement per the specification.",
-  "    }",
-  "",
-  "    /**",
-  "     * Build a type-aware and tone-aware prompt.",
-  "     */",
-  "    private function buildPrompt(",
-  "        string $title,",
-  "        string $type,",
-  "        string $tone",
-  "    ): string {",
-  "        // TODO: implement per the specification.",
-  "    }",
-  "}",
-].join("\n");
-
-const serviceHint = [
-  "$response = Http::withHeaders([",
-  "    'Authorization' => 'Bearer ' . config('services.openai.key'),",
-  "    'Content-Type'  => 'application/json',",
-  "])->post(config('services.openai.url') . '/chat/completions', [",
-  "    'model' => config('services.openai.model'),",
-  "    'messages' => [",
-  "        ['role' => 'system', 'content' => /* TODO: role reflecting $tone */],",
-  "        ['role' => 'user', 'content' => $this->buildPrompt($title, $type, $tone)],",
-  "    ],",
-  "    'temperature' => 0.7,",
-  "    'max_tokens'  => 500,",
-  "]);",
-  "",
-  "// TODO: log and throw when the response is not successful.",
-  "// TODO: safely return choices[0].message.content.",
-].join("\n");
-
-const bladeView = [
-  "<!DOCTYPE html>",
-  '<html lang="en">',
-  "<head>",
-  '    <meta charset="utf-8">',
-  '    <meta name="viewport" content="width=device-width, initial-scale=1">',
-  "    <title>AI Content Generator</title>",
-  '    <script src="https://cdn.tailwindcss.com"></script>',
-  "</head>",
-  '<body class="bg-gray-100">',
-  '<div class="container mx-auto mt-6 max-w-2xl px-4">',
-  '    <h1 class="mb-4 text-2xl font-bold">AI Content Generator</h1>',
-  "",
-  '    <form method="POST" action="{{ route(\'ai.generate\') }}">',
-  "        @csrf",
-  "",
-  '        <label for="title" class="block font-medium">Title or topic:</label>',
-  '        <input type="text" name="title" id="title"',
-  "               value=\"{{ old('title', $title ?? '') }}\"",
-  '               class="mt-1 w-full border p-2" required>',
-  "        @error('title')",
-  '            <div class="mt-1 text-red-600">{{ $message }}</div>',
-  "        @enderror",
-  "",
-  '        <label for="type" class="mt-3 block font-medium">Content type:</label>',
-  '        <select name="type" id="type" class="mt-1 w-full border p-2">',
-  "            <option value=\"blog post\" @selected(old('type') === 'blog post')>Blog Post</option>",
-  "            <option value=\"meta description\" @selected(old('type') === 'meta description')>Meta Description</option>",
-  "            <option value=\"email subject line\" @selected(old('type') === 'email subject line')>Email Subject Line</option>",
-  "        </select>",
-  "",
-  '        <label for="tone" class="mt-3 block font-medium">Tone:</label>',
-  '        <select name="tone" id="tone" class="mt-1 w-full border p-2">',
-  "            <option value=\"professional\" @selected(old('tone') === 'professional')>Professional</option>",
-  "            <option value=\"casual\" @selected(old('tone') === 'casual')>Casual</option>",
-  "            <option value=\"humorous\" @selected(old('tone') === 'humorous')>Humorous</option>",
-  "        </select>",
-  "",
-  '        <button type="submit" class="mt-4 rounded bg-blue-600 px-4 py-2 text-white">Generate</button>',
-  "    </form>",
-  "",
-  "    @error('error')",
-  '        <div class="mt-4 text-red-600">{{ $message }}</div>',
-  "    @enderror",
-  "",
-  "    @isset($output)",
-  '        <div class="mt-6">',
-  '            <h2 class="mb-2 text-xl font-semibold">Generated draft (edit as needed):</h2>',
-  '            <textarea class="h-64 w-full whitespace-pre-wrap border p-3">{{ $output }}</textarea>',
-  "        </div>",
-  "    @endisset",
-  "</div>",
-  "</body>",
-  "</html>",
-].join("\n");
-
-const runCommands = [
-  "# Laravel Herd: http://blog-ai.test",
-  "# Or use Laravel's built-in development server:",
-  "php artisan serve",
-  "",
-  "# Then visit http://localhost:8000/ai-form",
-].join("\n");
-
-const gitCommands = [
-  "git init",
-  "git add .",
-  'git commit -m "Add OpenAI content generator (Module 12)"',
-  "gh repo create cs85_module12 --public --source=. --remote=origin",
-  "git push -u origin main",
-].join("\n");
-
-const bonusTest = [
-  "namespace Tests\\Feature;",
-  "",
-  "use App\\Services\\AiContentService;",
-  "use Tests\\TestCase;",
-  "",
-  "class DraftGenerationTest extends TestCase",
-  "{",
-  "    public function test_generate_returns_the_services_output(): void",
-  "    {",
-  "        $this->mock(AiContentService::class, function ($mock) {",
-  "            $mock->shouldReceive('generateDraft')",
-  "                 ->once()",
-  "                 ->andReturn('A generated draft.');",
-  "        });",
-  "",
-  "        $this->post(route('ai.generate'), [",
-  "            'title' => 'A meaningful test title',",
-  "            'type'  => 'blog post',",
-  "            'tone'  => 'professional',",
-  "        ])->assertOk()->assertSee('A generated draft.');",
-  "    }",
-  "}",
-].join("\n");
-
-const rubricRows = [
-  {
-    criterion: "Form, route, and controller wired correctly",
-    expectation:
-      "The form POSTs to a named route. The controller validates the title, content type, and tone, and delegates to the service.",
-    points: 15,
-  },
-  {
-    criterion: "Service implemented from the spec",
-    expectation:
-      "You wrote generateDraft(): it sends the correct request, logs and throws on a failed response, and returns the content safely.",
-    points: 25,
-  },
-  {
-    criterion: "Prompt adapts to type and tone",
-    expectation:
-      "buildPrompt() asks for a different result for each content type and reflects the chosen tone.",
-    points: 20,
-  },
-  {
-    criterion: "Secure API key handling",
-    expectation:
-      "The key lives in .env and is read through config('services.openai.key'). Nothing sensitive is committed.",
-    points: 12,
-  },
-  {
-    criterion: "Error handling and logging",
-    expectation:
-      "Failures are caught, logged with Log::error, and shown to the user as a friendly message.",
-    points: 8,
-  },
-  {
-    criterion: "Editable draft output",
-    expectation: "The generated draft is displayed in an editable textarea.",
-    points: 5,
-  },
-  {
-    criterion: "README quality",
-    expectation:
-      "Include Mac and Windows setup, how to obtain an API key, an app description, and a screenshot or screencast.",
-    points: 10,
-  },
-  {
-    criterion: "Git hygiene",
-    expectation:
-      "Use a public repository named cs85_module12 with clear, descriptive commits.",
-    points: 5,
-  },
-] as const;
+import { ModuleItemBlock } from "@/courses/CS85/assignments/shared/canvasItems";
 
 export default function Assignment12AContent() {
   const [isPdfOpen, setIsPdfOpen] = useState(false);
@@ -802,44 +456,5 @@ export default function Assignment12AContent() {
         />
       </section>
     </div>
-  );
-}
-
-function SectionHeading({ children }: { children: ReactNode }) {
-  return (
-    <h4 className="text-sm font-semibold tracking-wide text-slate-900 uppercase dark:text-white">
-      {children}
-    </h4>
-  );
-}
-
-function TutorialStep({
-  title,
-  children,
-}: {
-  title: string;
-  children: ReactNode;
-}) {
-  return (
-    <section className="mt-5 text-sm leading-7 text-inherit">
-      <h5 className="font-semibold">{title}</h5>
-      <div className="mt-2 space-y-3">{children}</div>
-    </section>
-  );
-}
-
-function Callout({ children }: { children: ReactNode }) {
-  return (
-    <div className="mt-3 rounded-lg border border-emerald-300 bg-white/70 p-3 dark:border-emerald-800 dark:bg-slate-950/30">
-      {children}
-    </div>
-  );
-}
-
-function CodeBlock({ children }: { children: ReactNode }) {
-  return (
-    <pre className="mt-3 overflow-x-auto rounded-lg bg-slate-950 p-4 text-xs leading-6 text-slate-100">
-      <code>{children}</code>
-    </pre>
   );
 }
