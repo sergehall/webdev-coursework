@@ -1,0 +1,96 @@
+.owner-workspace input,
+.owner-workspace select {
+  min-height: 2.25rem;
+  width: 100%;
+  border: 1px solid var(--owner-control-border);
+  border-radius: 0.5rem;
+  padding: 0.4rem 0.65rem;
+  color: var(--owner-text);
+  background: var(--owner-card);
+  font-size: 0.8rem;
+}
+.owner-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.25rem;
+  width: fit-content;
+  border: 1px solid var(--owner-border);
+  border-radius: 0.45rem;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+  font-weight: 650;
+  background: var(--owner-card);
+  color: var(--owner-text);
+  cursor: pointer;
+}
+.owner-button:hover {
+  background: var(--owner-hover);
+}
+.owner-button--primary {
+  border-color: var(--owner-primary);
+  background: var(--owner-primary);
+  color: var(--owner-primary-text);
+}
+.owner-button--primary:hover {
+  background: color-mix(in srgb, var(--owner-primary) 85%, white);
+}
+.owner-button--danger {
+  border-color: var(--owner-danger-border);
+  color: var(--owner-danger);
+}
+.owner-button--danger:hover {
+  background: var(--owner-danger-bg);
+}
+.owner-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.owner-button--wide {
+  width: 100%;
+}
+.owner-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+.owner-report-controls {
+  justify-content: space-between;
+}
+.owner-report-controls label {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+.owner-report-controls select {
+  width: auto;
+}
+.owner-text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--owner-text);
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+.owner-text-link:hover {
+  color: var(--owner-accent);
+  text-decoration: underline;
+}
+.owner-message {
+  border: 1px solid var(--owner-border);
+  border-radius: 0.5rem;
+  padding: 0.9rem 1rem;
+  font-size: 0.875rem;
+  background: var(--owner-card);
+  color: var(--owner-text);
+}
+.owner-message--error {
+  border-color: var(--owner-danger-border);
+  background: var(--owner-danger-bg);
+  color: var(--owner-danger);
+}

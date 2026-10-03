@@ -1,0 +1,115 @@
+.owner-workspace {
+  width: calc(100% - 1rem);
+  max-width: 68.75rem;
+  min-height: 65vh;
+  margin: 0.5rem auto;
+  color: var(--owner-text);
+  background: transparent;
+  border-radius: 0.65rem;
+  overflow: clip;
+}
+.owner-content {
+  padding-block: clamp(0.8rem, 1.6vw, 1.25rem);
+  display: grid;
+  gap: 1rem;
+}
+.owner-tabs {
+  display: flex;
+  gap: 0.4rem;
+  padding: 0.5rem 0;
+  overflow-x: auto;
+  background: transparent;
+  border-bottom: 1px solid var(--owner-border);
+}
+.owner-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+  min-height: 2.25rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 650;
+  color: var(--owner-text);
+}
+.owner-tab:hover {
+  background: var(--owner-hover);
+  color: var(--owner-text);
+}
+.owner-tab[aria-current="page"] {
+  background: var(--owner-soft);
+  color: var(--owner-text);
+}
+.owner-workspace :is(a, button, input, select, textarea):focus-visible {
+  outline: 3px solid var(--owner-accent);
+  outline-offset: 3px;
+}
+.owner-eyebrow {
+  color: var(--owner-muted);
+  font-size: 0.7rem;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
+.owner-page-header h1 {
+  margin-top: 0.25rem;
+  font-size: clamp(1.25rem, 2vw, 1.55rem);
+  font-weight: 750;
+  line-height: 1.2;
+}
+.owner-page-header > p:last-child {
+  margin-top: 0.35rem;
+  max-width: 45rem;
+  color: var(--owner-muted);
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+.owner-card {
+  min-width: 0;
+  border: 1px solid var(--owner-border);
+  border-radius: 0.65rem;
+  padding: 0.85rem 1rem;
+  background: var(--owner-panel);
+  box-shadow: none;
+}
+.owner-card h2 {
+  font-size: 0.9rem;
+  font-weight: 650;
+  margin-bottom: 0.5rem;
+}
+.owner-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+  align-items: start;
+}
+.owner-grid--statistics {
+  align-items: stretch;
+}
+.owner-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+.owner-metric {
+  font-size: 1.55rem;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+  margin-top: 0.15rem;
+}
+.owner-muted {
+  color: var(--owner-muted);
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+.owner-form {
+  display: grid;
+  gap: 0.7rem;
+}
+.owner-form label {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 650;
+}

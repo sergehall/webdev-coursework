@@ -1,0 +1,109 @@
+.owner-login {
+  display: grid;
+  place-items: center;
+  padding: clamp(1rem, 5vw, 4rem);
+}
+.owner-auth-signup,
+.owner-auth-verification {
+  color: var(--owner-muted);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+.owner-password-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.35rem 0.75rem;
+}
+.owner-password-heading .owner-password-help {
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+.owner-login-card {
+  width: 100%;
+  max-width: 29rem;
+  border: 1px solid var(--owner-border);
+  border-radius: 0.8rem;
+  padding: clamp(1.1rem, 2.5vw, 1.75rem);
+  color: var(--owner-text);
+  background: var(--owner-panel);
+}
+.owner-login-card h1 {
+  margin: 0.75rem 0;
+  font-size: 1.65rem;
+  font-weight: 800;
+}
+.owner-login-card > p:not(.owner-eyebrow, .owner-message) {
+  font-size: 0.9rem;
+  color: var(--owner-muted);
+  line-height: 1.6;
+}
+.owner-login-card > p.owner-auth-description {
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+.owner-login-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin-bottom: 1rem;
+  border-radius: 0.5rem;
+  color: var(--owner-primary);
+  background: var(--owner-soft);
+}
+.owner-login-card form {
+  margin: 1rem 0;
+  display: grid;
+  gap: 0.8rem;
+}
+.owner-login-card label {
+  font-size: 0.875rem;
+  font-weight: 650;
+}
+.owner-login-card input {
+  border-color: var(--owner-control-border);
+  background: var(--owner-bg);
+  color: var(--owner-text);
+  padding-right: 4rem;
+}
+.owner-login-card .owner-button--primary {
+  color: var(--owner-primary-text);
+  background: var(--owner-primary);
+  border-color: var(--owner-primary);
+}
+.owner-login-card .owner-button--primary:hover {
+  background: color-mix(in srgb, var(--owner-primary) 90%, white);
+}
+.owner-login-card .owner-message {
+  margin-top: 1rem;
+}
+.owner-password-field {
+  position: relative;
+}
+.owner-password-field button {
+  position: absolute;
+  top: 0;
+  right: 0.8rem;
+  height: 100%;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--owner-accent);
+}
+.owner-github {
+  margin-top: 1.1rem;
+  border-color: var(--owner-border);
+  background: var(--owner-bg);
+  color: var(--owner-text);
+}
+.owner-github:hover {
+  background: var(--owner-hover);
+}
+.owner-login-divider {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--owner-muted);
+}

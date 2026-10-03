@@ -1,0 +1,182 @@
+.owner-active-sessions {
+  display: grid;
+  gap: 0.7rem;
+  margin: 0.75rem 0 1rem;
+}
+.owner-sessions-heading {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: space-between;
+  align-items: start;
+}
+.owner-sessions-heading h3 {
+  font-size: 0.85rem;
+  font-weight: 750;
+  margin-bottom: 0.3rem;
+}
+/* Keep session status, account context and destructive actions above the paginated list. */
+.owner-sessions-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) minmax(14rem, 0.9fr);
+  gap: 0.7rem;
+}
+.owner-sessions-summary-card {
+  display: grid;
+  align-content: start;
+  gap: 0.5rem;
+  min-width: 0;
+  padding: 0.75rem;
+  border: 1px solid var(--owner-border);
+  border-radius: 0.5rem;
+  background: var(--owner-card);
+}
+.owner-sessions-summary h4 {
+  font-size: 0.8rem;
+  font-weight: 650;
+}
+.owner-sessions-facts {
+  display: grid;
+  gap: 0.65rem;
+}
+.owner-sessions-facts dt {
+  color: var(--owner-muted);
+  font-size: 0.7rem;
+}
+.owner-sessions-facts dd {
+  font-size: 0.8rem;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+.owner-sessions-actions {
+  display: grid;
+  gap: 0.5rem;
+}
+.owner-sessions-actions .owner-button {
+  width: 100%;
+  min-height: 2.75rem;
+}
+.owner-session-refresh {
+  border-color: var(--owner-accent);
+  background: var(--owner-soft);
+  color: var(--owner-accent);
+}
+.owner-session-refresh:hover {
+  background: color-mix(in srgb, var(--owner-soft) 85%, var(--owner-accent));
+}
+.owner-session-end {
+  background: var(--owner-danger-bg);
+}
+@media (max-width: 760px) {
+  .owner-sessions-summary {
+    grid-template-columns: 1fr;
+  }
+}
+.owner-sessions-filters {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) auto;
+  align-items: end;
+  gap: 0.7rem;
+}
+.owner-sessions-filters label {
+  display: grid;
+  min-width: 0;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 650;
+}
+.owner-session-filter-select {
+  display: block;
+  position: relative;
+}
+.owner-sessions-filters select {
+  min-height: 2.75rem;
+  appearance: none;
+  padding-right: 2.25rem;
+  cursor: pointer;
+}
+.owner-session-filter-select > svg {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--owner-muted);
+  pointer-events: none;
+}
+.owner-sessions-filters .owner-button {
+  min-height: 2.75rem;
+}
+.owner-sessions-list {
+  max-height: 22rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  border-radius: 0.5rem;
+}
+.owner-sessions-list:focus-visible {
+  outline: 3px solid var(--owner-accent);
+  outline-offset: 3px;
+}
+.owner-sessions-list ul {
+  display: grid;
+  gap: 0.6rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.owner-session-row {
+  border: 1px solid var(--owner-border);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  font-size: 0.8rem;
+  background: var(--owner-card);
+}
+.owner-session-device {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.7rem;
+}
+.owner-session-device > .owner-muted {
+  flex-basis: 100%;
+  text-transform: capitalize;
+}
+.owner-session-times {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+.owner-session-times dt {
+  color: var(--owner-muted);
+  font-size: 0.7rem;
+}
+.owner-session-times dd {
+  margin-top: 0.2rem;
+  overflow-wrap: anywhere;
+}
+@media (min-width: 900px) {
+  .owner-session-device > .owner-muted {
+    flex-basis: auto;
+    margin-left: auto;
+  }
+  .owner-session-times > div {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .owner-session-times dd {
+    margin-top: 0;
+  }
+}
+@media (max-width: 580px) {
+  .owner-sessions-filters {
+    grid-template-columns: 1fr;
+  }
+  .owner-sessions-heading {
+    flex-direction: column;
+  }
+  .owner-session-times {
+    grid-template-columns: 1fr;
+  }
+}
