@@ -1,5 +1,4 @@
-import { z } from "zod";
-
+import { z } from "@/config/zod";
 import type {
   ActiveAttempt,
   AssessmentAttempt,

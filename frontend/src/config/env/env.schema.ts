@@ -1,5 +1,5 @@
 // frontend/src/config/env/env.schema.ts
-import { z } from "zod";
+import { z } from "../zod";
 
 export const envSchema = z
   .object({

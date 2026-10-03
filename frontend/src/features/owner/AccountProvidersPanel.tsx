@@ -2,11 +2,12 @@ import { useEffect, useState, type FormEvent } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FaGithub } from "react-icons/fa";
 import { Mail } from "lucide-react";
-import { z } from "zod";
 
 import { ownerRequest, OwnerApiError, type OwnerSession } from "./owner-api";
 import { useOwner } from "./owner-context";
 import { formatAccountTime } from "./account-time";
+
+import { z } from "@/config/zod";
 
 const providerStatus = z.object({
   githubAvailable: z.boolean(),
