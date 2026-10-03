@@ -133,6 +133,10 @@ Two `.tab` files are included for assignments 5 and 6:
 
 These are tab-delimited text files used by the parsing functions.
 
+`house.tab` has 29,636 data rows plus one header, with 19 columns per row.
+`A05.py` reads it as one named input, so the large-file review keeps the dataset
+intact. Partitioning or renaming it would change the assignment input contract.
+
 ---
 
 ## Author
