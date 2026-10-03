@@ -26,3 +26,12 @@ and `module10QuizAnswers.ts`. Keep the 55 question IDs aligned with their answer
 entries. Preserve wording, option order, point values, and answer keys when
 reorganizing the data; follow `docs/quiz-assessment-standard.md` for assessment
 changes.
+
+## Final project HTML report
+
+`frontend/public/course-materials/CS79C/final-project/final-report.html` is a
+standalone report offered as an individual download from Module 10. Its inline
+CSS makes the document portable and preserves its appearance when opened outside
+the course app. The 512-line report was reviewed during the large-file pass and
+kept intact. Split its style or sections only if the course begins distributing
+a multi-file report package and updates the download instructions accordingly.
