@@ -1,27 +1,26 @@
 import {
-  BadRequestException,
   ForbiddenException,
   HttpException,
   Injectable,
   Logger,
   ServiceUnavailableException,
-  UnauthorizedException,
   type OnModuleDestroy,
   type OnModuleInit,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { TurnstileService } from "../security/turnstile/turnstile.service";
-import type { GithubStartDto } from "../accounts/account.dto";
-import { createHash, createHmac, randomBytes, randomUUID } from "crypto";
-import { PostgresState } from "./postgres-state";
-import { MfaService, type LoginResult } from "../accounts/mfa/mfa.service";
+import { createHmac, randomUUID } from "crypto";
 import type { Request } from "express";
+
+import type { GithubStartDto } from "../accounts/account.dto";
+import { MfaService, type LoginResult } from "../accounts/mfa/mfa.service";
+import { TurnstileService } from "../security/turnstile/turnstile.service";
+import { GithubOAuth } from "./application/github-oauth";
+import { OwnerAccess } from "./application/owner-access";
 import {
-  AnalyticsStore,
-  type AccessAudit,
-  type OwnerAccount,
-} from "./analytics.store";
-import { normalizeDevice, type QrEvent } from "./analytics.types";
+  loadOwnerConfiguration,
+  type GithubConfiguration,
+} from "./application/owner-configuration";
+import { MAX_BUFFER, PREFIX } from "./analytics.constants";
 import type {
   AuditQueryDto,
   OwnerPasswordDto,
@@ -31,24 +30,12 @@ import type {
   SessionQueryDto,
 } from "./analytics.dto";
 import {
-  hashOwnerPassword,
-  OWNER_HASH_PATTERN,
-  verifyOwnerPassword,
-} from "./owner-password";
-
-type OwnerSession = {
-  accountId: string;
-  role: "admin" | "client";
-  revision: string;
-  issuedAt: string;
-  expiresAt: string;
-  mfaVerifiedAt?: string;
-  authMethod?: "password" | "github" | "unknown";
-};
-
-const PREFIX = "webdev:qr";
-const SESSION_SECONDS = 60 * 60;
-const MAX_BUFFER = 10_000;
+  AnalyticsStore,
+  type AccessAudit,
+  type OwnerAccount,
+} from "./analytics.store";
+import { normalizeDevice, type QrEvent } from "./analytics.types";
+import { PostgresState } from "./postgres-state";
 
 @Injectable()
 export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
@@ -60,12 +47,7 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
   private passwordHash = "";
   private origins: string[] = [];
   private nextRetention = 0;
-  private github?: {
-    clientId: string;
-    clientSecret: string;
-    ownerId: string;
-    callback: string;
-  };
+  private github?: GithubConfiguration;
   get githubCookieName(): string {
     return this.secureCookie
       ? "__Secure-webdev_github_state"
@@ -104,60 +86,11 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
 
   async onModuleInit(): Promise<void> {
     if (this.config.get<string>("QR_ANALYTICS_ENABLED") !== "true") return;
-    this.secret = this.config.get<string>("OWNER_SESSION_SECRET") ?? "";
-    this.passwordHash = this.config.get<string>("OWNER_PASSWORD_HASH") ?? "";
-    this.origins = (this.config.get<string>("OWNER_ALLOWED_ORIGINS") ?? "")
-      .split(",")
-      .map((x) => x.trim())
-      .filter(Boolean);
-    if (
-      this.secret.length < 32 ||
-      !OWNER_HASH_PATTERN.test(this.passwordHash) ||
-      !this.origins.length
-    ) {
-      throw new Error(
-        "Accounts require OWNER_PASSWORD_HASH, OWNER_SESSION_SECRET (32+ characters), and OWNER_ALLOWED_ORIGINS"
-      );
-    }
-    for (const origin of this.origins) {
-      const parsed = new URL(origin);
-      if (
-        parsed.origin !== origin ||
-        (this.secureCookie && parsed.protocol !== "https:")
-      )
-        throw new Error(
-          "OWNER_ALLOWED_ORIGINS must contain exact trusted origins; production requires HTTPS"
-        );
-    }
-    const githubKeys = [
-      "GITHUB_CLIENT_ID",
-      "GITHUB_CLIENT_SECRET",
-      "GITHUB_OWNER_ID",
-      "GITHUB_CALLBACK_URL",
-    ];
-    const githubValues = githubKeys.map(
-      (key) => this.config.get<string>(key) ?? ""
-    );
-    if (githubValues.some(Boolean)) {
-      if (!githubValues.every(Boolean) || !/^\d+$/.test(githubValues[2]))
-        throw new Error(
-          "Complete GitHub owner OAuth configuration is required"
-        );
-      const callback = new URL(githubValues[3]);
-      if (
-        callback.pathname !== "/api/owner/github/callback" ||
-        callback.search ||
-        callback.hash ||
-        (this.secureCookie && callback.protocol !== "https:")
-      )
-        throw new Error("Invalid GitHub callback URL");
-      this.github = {
-        clientId: githubValues[0],
-        clientSecret: githubValues[1],
-        ownerId: githubValues[2],
-        callback: callback.href,
-      };
-    }
+    const owner = loadOwnerConfiguration(this.config, this.secureCookie);
+    this.secret = owner.secret;
+    this.passwordHash = owner.passwordHash;
+    this.origins = owner.origins;
+    this.github = owner.github;
     try {
       await this.store.initializeOwner(this.passwordHash, randomUUID());
     } catch {
@@ -234,45 +167,49 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
     });
   }
 
+  private ownerAccess(): OwnerAccess {
+    return new OwnerAccess({
+      store: this.store,
+      mfa: this.mfa,
+      turnstile: this.turnstile,
+      passwordHash: this.passwordHash,
+      cookieName: this.cookieName,
+      runtimeAvailable: !!this.runtimeState,
+      stateStore: () => this.stateStore(),
+      digest: (value) => this.digest(value),
+      assertOrigin: (req) => this.assertOrigin(req),
+      rateLimit: (key, limit, seconds) => this.rateLimit(key, limit, seconds),
+      audit: (action, allowed, owner) => this.audit(action, allowed, owner),
+    });
+  }
+
+  private githubOAuth(): GithubOAuth {
+    return new GithubOAuth({
+      github: this.github,
+      githubCookieName: this.githubCookieName,
+      runtimeAvailable: !!this.runtimeState,
+      store: this.store,
+      mfa: this.mfa,
+      turnstile: this.turnstile,
+      stateStore: () => this.stateStore(),
+      digest: (value) => this.digest(value),
+      assertOrigin: (req) => this.assertOrigin(req),
+      rateLimit: (key, limit, seconds) => this.rateLimit(key, limit, seconds),
+      audit: (action, allowed, owner) => this.audit(action, allowed, owner),
+      identitySession: (req, action) => this.identitySession(req, action),
+      authenticate: (account, method, req) =>
+        this.authenticate(account, method, req),
+      assertRecentMfa: (session) => this.assertRecentMfa(session),
+    });
+  }
+
   async login(
     req: Request,
     password: string,
     identity?: string,
     turnstileToken?: string
   ): Promise<LoginResult> {
-    try {
-      this.assertOrigin(req);
-    } catch (error) {
-      if (this.runtimeState)
-        await this.audit("owner.login.origin", false, false);
-      throw error;
-    }
-    await this.rateLimit(
-      `login:${this.digest(req.ip ?? req.socket.remoteAddress ?? "unknown")}`,
-      5,
-      900
-    );
-    await this.rateLimit("login-global", 100, 900);
-    // Shared by account/owner aliases and reauthentication; protect credential lookup too.
-    await this.turnstile.verify(turnstileToken, "account_login");
-    const account = identity
-      ? await this.store.byLogin(identity.trim())
-      : await this.store.owner();
-    const validPassword = await verifyOwnerPassword(
-      password,
-      account?.passwordHash ?? this.passwordHash
-    );
-    if (
-      !account ||
-      !account.passwordHash ||
-      !validPassword ||
-      (account.id !== AnalyticsStore.ROOT_ID && !account.emailVerified)
-    ) {
-      await this.audit("owner.login", false, false);
-      throw new UnauthorizedException("Unable to sign in");
-    }
-    await this.audit("owner.login", true, true);
-    return this.authenticate(account, "password", req);
+    return this.ownerAccess().login(req, password, identity, turnstileToken);
   }
 
   async authenticate(
@@ -280,12 +217,7 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
     method: "password" | "github",
     req?: Request
   ): Promise<LoginResult> {
-    const challenge = await this.mfa.challenge(account, method);
-    return (
-      challenge ?? {
-        token: await this.createSession(account, undefined, { req, method }),
-      }
-    );
+    return this.ownerAccess().authenticate(account, method, req);
   }
 
   async createSession(
@@ -293,93 +225,15 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
     mfaVerifiedAt?: string,
     context?: { req?: Request; method?: "password" | "github" | "unknown" }
   ): Promise<string> {
-    if ((await this.mfa.enabled(account.id)) && !mfaVerifiedAt)
-      throw new UnauthorizedException("Two-factor verification required");
-    const token = randomBytes(32).toString("base64url");
-    const session: OwnerSession = {
-      accountId: account.id,
-      role: account.role,
-      revision: account.revision,
-      authMethod: context?.method ?? "unknown",
-      issuedAt: new Date().toISOString(),
-      expiresAt: new Date(Date.now() + SESSION_SECONDS * 1000).toISOString(),
-      ...(mfaVerifiedAt ? { mfaVerifiedAt } : {}),
-    };
-    await this.stateStore().set(
-      `${PREFIX}:session:${this.digest(token)}`,
-      JSON.stringify(session),
-      SESSION_SECONDS
-    );
-    try {
-      await this.registerSession(session, token, context?.req);
-    } catch (error) {
-      await this.stateStore().remove(`${PREFIX}:session:${this.digest(token)}`);
-      throw error;
-    }
-    return token;
-  }
-
-  private async registerSession(
-    session: OwnerSession,
-    token: string,
-    req?: Request
-  ) {
-    await this.store.recordSession({
-      ...session,
-      tokenHash: this.digest(token),
-      authMethod: session.authMethod ?? "unknown",
-      ...normalizeDevice(req?.get("user-agent") ?? ""),
-    });
+    return this.ownerAccess().createSession(account, mfaVerifiedAt, context);
   }
 
   async sessions(req: Request, query: SessionQueryDto = {}) {
-    const session = await this.authorize(req, "owner.sessions.view", false);
-    const account = await this.store.account(session.accountId);
-    if (!account) throw new UnauthorizedException("Sign in again");
-    const page = await this.store.sessions(account.id, account.revision, query);
-    const entries = await Promise.all(
-      page.entries.map(async (entry) => {
-        const raw = await this.stateStore().get(
-          `${PREFIX}:session:${entry.tokenHash}`
-        );
-        let cached: OwnerSession | null = null;
-        try {
-          cached = raw ? (JSON.parse(raw) as OwnerSession) : null;
-        } catch {
-          /* Invalid cache entries are not active sessions. */
-        }
-        if (
-          !cached ||
-          cached.accountId !== account.id ||
-          cached.revision !== account.revision ||
-          cached.role !== account.role ||
-          !(Date.parse(cached.expiresAt) > Date.now())
-        )
-          return null;
-        const { tokenHash, ...safe } = entry;
-        return { ...safe, current: tokenHash === this.digest(session.token) };
-      })
-    );
-    return {
-      entries: entries.filter((entry) => entry !== null),
-      nextCursor: page.nextCursor,
-    };
+    return this.ownerAccess().sessions(req, query);
   }
 
   async identitySession(req: Request, action: string, requireFresh = true) {
-    this.assertOrigin(req);
-    const session = await this.authorize(req, action, false);
-    if (requireFresh) {
-      this.mfa.assertRecentSignIn(session.issuedAt);
-      this.assertRecentMfa(session);
-    }
-    await this.rateLimit(`identity:${session.accountId}`, 10, 900);
-    const raw = await this.stateStore().get(
-      `${PREFIX}:session:${this.digest(session.token)}`
-    );
-    if (!raw) throw new UnauthorizedException("Sign in again");
-    const stored = JSON.parse(raw) as OwnerSession;
-    return { ...session, revision: stored.revision };
+    return this.ownerAccess().identitySession(req, action, requireFresh);
   }
 
   async githubStart(
@@ -387,424 +241,63 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
     linking = false,
     verification: GithubStartDto = {}
   ) {
-    // Browser POSTs must originate from our account UI. Legacy GETs cannot supply proof.
-    if (!linking && req.method === "POST") this.assertOrigin(req);
-    this.stateStore();
-    if (!this.github)
-      throw new ServiceUnavailableException("GitHub sign-in is not configured");
-    await this.rateLimit(`github:${this.digest(req.ip ?? "unknown")}`, 10, 900);
-    // Verify before issuing OAuth state/PKCE. The callback accepts only state created here.
-    // Authenticated provider linking retains its existing recent-sign-in and MFA boundary.
-    if (!linking)
-      await this.turnstile.verify(
-        verification.turnstileToken,
-        verification.intent === "register"
-          ? "account_register"
-          : "account_login"
-      );
-    const state = randomBytes(32).toString("base64url");
-    const verifier = randomBytes(32).toString("base64url");
-    const session = linking
-      ? await this.identitySession(req, "account.providers.github.start")
-      : null;
-    if (session?.profile.githubLinked)
-      throw new BadRequestException("GitHub is already connected");
-    await this.stateStore().set(
-      `${PREFIX}:oauth:${this.digest(state)}`,
-      session
-        ? JSON.stringify({
-            verifier,
-            accountId: session.accountId,
-            revision: session.revision,
-            sessionHash: this.digest(session.token),
-          })
-        : verifier,
-      600,
-      true
-    );
-    const url = new URL("https://github.com/login/oauth/authorize");
-    url.search = new URLSearchParams({
-      client_id: this.github.clientId,
-      redirect_uri: this.github.callback,
-      state,
-      code_challenge: createHash("sha256").update(verifier).digest("base64url"),
-      code_challenge_method: "S256",
-      allow_signup: linking ? "false" : "true",
-    }).toString();
-    return { state, url: url.href };
+    return this.githubOAuth().githubStart(req, linking, verification);
   }
 
   async githubCallback(req: Request): Promise<LoginResult | { linked: true }> {
-    let linking = false;
-    try {
-      const { code, state } = req.query;
-      if (
-        !this.github ||
-        typeof code !== "string" ||
-        !code ||
-        code.length > 256 ||
-        typeof state !== "string" ||
-        !/^[A-Za-z0-9_-]{43}$/.test(state) ||
-        req.cookies?.[this.githubCookieName] !== state
-      )
-        throw new UnauthorizedException();
-      const stored = await this.stateStore().take(
-        `${PREFIX}:oauth:${this.digest(state)}`
-      );
-      if (typeof stored !== "string") throw new UnauthorizedException();
-      const intent: {
-        verifier: string;
-        accountId?: string;
-        revision?: string;
-        sessionHash?: string;
-      } = stored.startsWith("{") ? JSON.parse(stored) : { verifier: stored };
-      const verifier = intent.verifier;
-      linking = !!intent.accountId;
-      const exchange = await fetch(
-        "https://github.com/login/oauth/access_token",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-          body: new URLSearchParams({
-            client_id: this.github.clientId,
-            client_secret: this.github.clientSecret,
-            code,
-            redirect_uri: this.github.callback,
-            code_verifier: verifier,
-          }),
-          signal: AbortSignal.timeout(10000),
-        }
-      );
-      const credentials = (await exchange.json()) as {
-        access_token?: unknown;
-        token_type?: unknown;
-      };
-      if (
-        !exchange.ok ||
-        typeof credentials.access_token !== "string" ||
-        credentials.token_type !== "bearer"
-      )
-        throw new UnauthorizedException();
-      const response = await fetch("https://api.github.com/user", {
-        headers: {
-          Authorization: `Bearer ${credentials.access_token}`,
-          Accept: "application/vnd.github+json",
-          "X-GitHub-Api-Version": "2022-11-28",
-          "User-Agent": "webdev-coursework-owner",
-        },
-        signal: AbortSignal.timeout(10000),
-      });
-      const identity = (await response.json()) as {
-        id: number;
-        login: string;
-        name?: string | null;
-      };
-      if (
-        !response.ok ||
-        typeof identity.id !== "number" ||
-        !Number.isSafeInteger(identity.id) ||
-        identity.id <= 0 ||
-        typeof identity.login !== "string" ||
-        !/^[a-zA-Z0-9-]{1,39}$/.test(identity.login)
-      )
-        throw new UnauthorizedException();
-      if (linking) {
-        if (!intent.sessionHash || !intent.revision || !intent.accountId)
-          throw new UnauthorizedException();
-        const raw = await this.stateStore().get(
-          `${PREFIX}:session:${intent.sessionHash}`
-        );
-        if (!raw) throw new UnauthorizedException();
-        const source = JSON.parse(raw) as OwnerSession;
-        if (
-          source.accountId !== intent.accountId ||
-          source.revision !== intent.revision ||
-          !(Date.parse(source.expiresAt) > Date.now())
-        )
-          throw new UnauthorizedException();
-        this.mfa.assertRecentSignIn(source.issuedAt);
-        this.assertRecentMfa({
-          mfaEnabled: await this.mfa.enabled(source.accountId),
-          mfaVerifiedAt: source.mfaVerifiedAt,
-        });
-        await this.store.linkGithub(
-          source.accountId,
-          source.revision,
-          identity,
-          this.github.ownerId
-        );
-        return { linked: true };
-      }
-      const account = await this.store.githubAccount(
-        identity,
-        this.github.ownerId
-      );
-      await this.audit("account.github.login", true, account.role === "admin");
-      return await this.authenticate(account, "github", req);
-    } catch {
-      if (this.runtimeState)
-        await this.audit("owner.github.login", false, false);
-      throw new UnauthorizedException({
-        code: linking ? "GITHUB_LINK_FAILED" : "GITHUB_LOGIN_FAILED",
-        message: linking
-          ? "Unable to connect GitHub"
-          : "Unable to sign in through GitHub",
-      });
-    }
+    return this.githubOAuth().githubCallback(req);
   }
 
-  private async principal(req: Request, action: string) {
-    const session = await this.authorize(req, action);
-    if (session.accountId !== AnalyticsStore.ROOT_ID) {
-      await this.audit(action, false, false);
-      throw new ForbiddenException(
-        "Only the primary administrator can manage roles"
-      );
-    }
-    return session;
-  }
   async accounts(req: Request) {
-    await this.principal(req, "accounts.list");
-    return this.store.db.query(
-      'SELECT id,username,display_name AS "displayName",role,email,email_verified_at IS NOT NULL AS "emailVerified",created_at AS "createdAt" FROM webdev_accounts ORDER BY created_at DESC LIMIT 100'
-    );
+    return this.ownerAccess().accounts(req);
   }
+
   async accountRole(
     req: Request,
     id: string,
     role: "admin" | "client"
   ): Promise<void> {
-    this.assertOrigin(req);
-    await this.principal(req, "accounts.role.change");
-    if (id === AnalyticsStore.ROOT_ID)
-      throw new BadRequestException(
-        "The primary administrator role is protected"
-      );
-    const rows = await this.store.db.query(
-      "WITH changed AS (UPDATE webdev_accounts SET role=$1,revision=$2,updated_at=now() WHERE id=$3 RETURNING id) SELECT id FROM changed",
-      [role, randomUUID(), id]
-    );
-    if (!rows.length) throw new BadRequestException("Account not found");
+    return this.ownerAccess().accountRole(req, id, role);
   }
 
   async audits(req: Request, query: AuditQueryDto) {
-    await this.authorize(req, "analytics.audit.view");
-    return this.store.audits(query);
+    return this.ownerAccess().audits(req, query);
   }
 
   async authorize(req: Request, action: string, requireOwner = true) {
-    await this.rateLimit(`access:${this.digest(req.ip ?? "unknown")}`, 120, 60);
-    const token: unknown = req.cookies?.[this.cookieName];
-    const valid =
-      typeof token === "string" && /^[A-Za-z0-9_-]{43}$/.test(token);
-    const raw = valid
-      ? await this.stateStore().get(`${PREFIX}:session:${this.digest(token)}`)
-      : null;
-    let session: OwnerSession | null = null;
-    try {
-      session = raw ? (JSON.parse(raw) as OwnerSession) : null;
-    } catch {
-      session = null;
-    }
-    const account =
-      session &&
-      ["admin", "client"].includes(session.role) &&
-      typeof session.accountId === "string"
-        ? await this.store.account(session.accountId)
-        : null;
-    if (
-      !session ||
-      !account ||
-      session.role !== account.role ||
-      session.revision !== account.revision ||
-      !(Date.parse(session.expiresAt) > Date.now())
-    ) {
-      await this.audit(action, false, false);
-      throw new UnauthorizedException("Owner sign-in required");
-    }
-    if (requireOwner && account.role !== "admin") {
-      await this.audit(action, false, false);
-      throw new ForbiddenException("Owner access required");
-    }
-    const mfaEnabled = await this.mfa.enabled(account.id);
-    if (
-      mfaEnabled &&
-      (!session.mfaVerifiedAt ||
-        !Number.isFinite(Date.parse(session.mfaVerifiedAt)))
-    ) {
-      await this.audit(action, false, account.role === "admin");
-      throw new UnauthorizedException("Two-factor verification required");
-    }
-    if (
-      requireOwner ||
-      ["owner.password.change", "owner.sessions.revoke"].includes(action)
-    ) {
-      try {
-        this.assertRecentMfa({
-          mfaEnabled,
-          mfaVerifiedAt: session.mfaVerifiedAt,
-        });
-      } catch (error) {
-        await this.audit(action, false, account.role === "admin");
-        throw error;
-      }
-    }
-    await this.registerSession(session, token as string, req);
-    await this.audit(action, true, account.role === "admin");
-    const { displayName, timeZone, theme, reportDays } = account;
-    return {
-      token: token as string,
-      accountId: account.id,
-      role: session.role,
-      issuedAt: session.issuedAt,
-      expiresAt: session.expiresAt,
-      canManageRoles: account.id === AnalyticsStore.ROOT_ID,
-      mfaEnabled,
-      mfaVerifiedAt: session.mfaVerifiedAt,
-      authMethod: session.authMethod ?? "unknown",
-      profile: {
-        displayName,
-        timeZone,
-        theme,
-        reportDays,
-        dateFormat: account.dateFormat ?? "medium",
-        clockFormat: account.clockFormat ?? "12h",
-        activityDays: account.activityDays ?? 7,
-        activityPageSize: account.activityPageSize ?? 10,
-        username: account.username,
-        email: account.email,
-        emailVerified: account.emailVerified,
-        passwordEnabled: !!account.passwordHash,
-        githubLinked: !!account.githubId,
-        githubUsername: account.githubUsername ?? null,
-        registrationMethod:
-          account.id === AnalyticsStore.ROOT_ID
-            ? "administrator"
-            : account.githubId && !account.email
-              ? "github"
-              : "email",
-      },
-    };
+    return this.ownerAccess().authorize(req, action, requireOwner);
   }
 
   assertRecentMfa(session: { mfaEnabled: boolean; mfaVerifiedAt?: string }) {
-    if (
-      session.mfaEnabled &&
-      (!session.mfaVerifiedAt ||
-        !Number.isFinite(Date.parse(session.mfaVerifiedAt)) ||
-        Date.now() - Date.parse(session.mfaVerifiedAt) > 300000)
-    )
-      throw new HttpException(
-        {
-          code: "MFA_STEP_UP_REQUIRED",
-          message:
-            "Verify your authenticator in Security before retrying this action.",
-        },
-        403
-      );
+    return this.ownerAccess().assertRecentMfa(session);
   }
 
   async markMfaVerified(req: Request, verifiedAt: string) {
-    const session = await this.authorize(req, "account.mfa.session", false);
-    const key = `${PREFIX}:session:${this.digest(session.token)}`;
-    const raw = await this.stateStore().get(key);
-    if (!raw) throw new UnauthorizedException("Sign in again");
-    const stored = JSON.parse(raw) as OwnerSession;
-    const ttl = Math.floor((Date.parse(stored.expiresAt) - Date.now()) / 1000);
-    if (ttl <= 0) throw new UnauthorizedException("Sign in again");
-    await this.stateStore().set(
-      key,
-      JSON.stringify({ ...stored, mfaVerifiedAt: verifiedAt }),
-      ttl
-    );
+    return this.ownerAccess().markMfaVerified(req, verifiedAt);
   }
 
   async logout(req: Request): Promise<void> {
-    this.assertOrigin(req);
-    const session = await this.authorize(req, "owner.logout", false);
-    await this.stateStore().remove(
-      `${PREFIX}:session:${this.digest(session.token)}`
-    );
-    await this.store.forgetSession(
-      this.digest(session.token),
-      session.accountId
-    );
+    return this.ownerAccess().logout(req);
   }
 
   async session(req: Request) {
-    const {
-      token: _token,
-      accountId: _accountId,
-      ...session
-    } = await this.authorize(req, "owner.session.view", false);
-    return session;
+    return this.ownerAccess().session(req);
   }
 
   async profile(req: Request, dto: OwnerProfileDto): Promise<void> {
-    this.assertOrigin(req);
-    const session = await this.authorize(req, "owner.profile.update", false);
-    if (dto.username && dto.username !== session.profile.username)
-      this.assertRecentMfa(session);
-    if (!dto.displayName.trim())
-      throw new BadRequestException("Display name is required");
-    await this.store.profile(dto.displayName, session.accountId, dto.username);
+    return this.ownerAccess().profile(req, dto);
   }
 
   async preferences(req: Request, dto: OwnerPreferencesDto): Promise<void> {
-    this.assertOrigin(req);
-    const session = await this.authorize(
-      req,
-      "owner.preferences.update",
-      false
-    );
-    try {
-      new Intl.DateTimeFormat("en-US", { timeZone: dto.timeZone }).format();
-    } catch {
-      throw new BadRequestException("Choose a valid time zone");
-    }
-    if (
-      session.role !== "admin" &&
-      (dto.reportDays !== session.profile.reportDays ||
-        (dto.activityDays !== undefined &&
-          dto.activityDays !== session.profile.activityDays) ||
-        (dto.activityPageSize !== undefined &&
-          dto.activityPageSize !== session.profile.activityPageSize))
-    )
-      throw new ForbiddenException(
-        "Report defaults are available to administrators"
-      );
-    await this.store.preferences(dto, session.accountId);
+    return this.ownerAccess().preferences(req, dto);
   }
 
   async changePassword(req: Request, dto: OwnerPasswordDto): Promise<void> {
-    this.assertOrigin(req);
-    const session = await this.authorize(req, "owner.password.change", false);
-    await this.rateLimit(`password-change:${session.accountId}`, 5, 900);
-    const account = (await this.store.account(session.accountId))!;
-    if (
-      !account.passwordHash ||
-      !(await verifyOwnerPassword(dto.password, account.passwordHash))
-    ) {
-      await this.audit("owner.password.change", false, true);
-      throw new UnauthorizedException("Current password is incorrect");
-    }
-    if (dto.password === dto.newPassword)
-      throw new BadRequestException("Choose a different password");
-    await this.store.password(
-      await hashOwnerPassword(dto.newPassword),
-      randomUUID(),
-      account.revision,
-      account.id
-    );
+    return this.ownerAccess().changePassword(req, dto);
   }
 
   async revokeSessions(req: Request): Promise<void> {
-    this.assertOrigin(req);
-    const session = await this.authorize(req, "owner.sessions.revoke", false);
-    await this.store.revokeSessions(randomUUID(), session.accountId);
+    return this.ownerAccess().revokeSessions(req);
   }
 
   async ingest(req: Request, dto: QrEventDto): Promise<void> {
