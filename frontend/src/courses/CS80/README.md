@@ -52,6 +52,11 @@ CSS and JavaScript keep that file usable without additional downloaded assets.
 Keep it self-contained when editing the assignment; a change to this delivery
 contract needs corresponding updates to the download and preview flows.
 
+`public/course-materials/CS80/mod-3/assignment3_strict.html` is likewise
+offered through a single-file “Strict HTML” download. Its built-in styles and
+exercise scripts are part of that portable assignment file. Keep it standalone
+unless the download contract is intentionally changed.
+
 ---
 
 ## Getting Started
