@@ -162,6 +162,9 @@ Dependency snapshot: **October 2, 2026**, from the resolved Yarn dependencies. W
 The 15,262-line lockfile was reviewed in the large-file pass and stays generated
 as one file. Update it through Yarn when dependencies change; do not partition or
 edit its resolutions by hand.
+The 940-line `.yarn/releases/yarn-4.14.1.cjs` is the pinned Yarn executable
+selected by `.yarnrc.yml`. It was also reviewed and left intact; update it only
+through an intentional Yarn version upgrade.
 
 | Layer                                  | Technologies                                                                                                        |
 | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
