@@ -38,7 +38,7 @@ distinct stable operation IDs for generated clients and share request budgets.
 | ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
 | `/api/account/register`, `/resend-verification`, `/forgot-password`                                              | Public, trusted Origin; asynchronous email intent; non-enumerating 202                                                                         |
 | `/api/account/verify-email`, `/reset-password`                                                                   | Public, trusted Origin; single-use email token                                                                                                 |
-| `/api/account/login-options`, `/login`, `/github/start`, `/github/callback`                                      | Public sign-in; login requires trusted Origin; OAuth uses single-use cookie-bound state                                                        |
+| `/api/account/login-options`, `/login`, `/github/start`, `/github/callback`                                      | Public sign-in; login requires trusted Origin and shared IP, account and global attempt budgets; OAuth uses single-use cookie-bound state      |
 | `/api/account/session`, `/sessions`, `/profile`, `/preferences`, `/password`, `/revoke-sessions`                 | Account session; writes require trusted Origin; sensitive changes require fresh MFA when enabled                                               |
 | `/api/account/logout`                                                                                            | Active account session and trusted Origin; revokes the current session                                                                         |
 | `/api/account/providers` and provider mutations                                                                  | Account session; identity changes require recent sign-in/fresh MFA; completed changes revoke sessions                                          |
@@ -51,6 +51,12 @@ distinct stable operation IDs for generated clients and share request budgets.
 | `/api/analytics/qr-events`                                                                                       | Anonymous 202 intake; event ID deduplication; aggregation is asynchronous                                                                      |
 | `/quizzes/*`, `/tokens/*`                                                                                        | Public practice reads/progress/token issuance; answers require quiz-bound bearer token; quiz creation/token verification require `x-admin-key` |
 | `/health`, `/info`, `/`, `/robots.txt`                                                                           | System operations; outside the API throttle; health uses the existing circuit breaker                                                          |
+
+New passwords must have at least 15 characters and are checked server-side against a local common-password blocklist and
+current account identifiers at registration, password setup and authenticated
+password change. Password reset checks the common-password blocklist. Rejected
+passwords return the stable `PASSWORD_TOO_COMMON` error code; existing passwords
+remain valid. Password candidates never leave the backend for this check.
 
 The account session cookie is `webdev_owner` locally and
 `__Secure-webdev_owner` in production. The MFA challenge cookie is `webdev_mfa`
@@ -167,9 +173,9 @@ Request fields declare their runtime limits and OpenAPI metadata together:
 
 ```ts
 @IsString()
-@MinLength(12)
+@MinLength(15)
 @MaxLength(128)
-@ApiProperty({ minLength: 12, maxLength: 128, writeOnly: true,
+@ApiProperty({ minLength: 15, maxLength: 128, writeOnly: true,
   example: "example-passphrase-2026" })
 password!: string;
 ```

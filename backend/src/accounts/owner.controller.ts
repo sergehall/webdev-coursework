@@ -296,7 +296,7 @@ export class OwnerController {
   @HttpCode(200)
   @ApiContract(
     "Sign in with password",
-    "Requires trusted Origin and a single-use account_login Turnstile token when configured. Password login is limited to five attempts per IP per 15 minutes plus a global budget. Sets an HttpOnly session cookie or a five-minute MFA challenge cookie.",
+    "Requires trusted Origin and a single-use account_login Turnstile token when configured. Password login is limited per IP, per account across username/email aliases, and globally. Sets an HttpOnly session cookie or a five-minute MFA challenge cookie.",
     LoginResponseDto,
     {}
   )

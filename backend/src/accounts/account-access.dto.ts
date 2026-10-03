@@ -120,11 +120,11 @@ export class OwnerPreferencesDto {
 
 export class OwnerPasswordDto extends OwnerLoginDto {
   @IsString()
-  @MinLength(12)
+  @MinLength(15)
   @MaxLength(128)
   @ApiProperty({
     example: "new-example-passphrase",
-    minLength: 12,
+    minLength: 15,
     maxLength: 128,
     writeOnly: true,
   })

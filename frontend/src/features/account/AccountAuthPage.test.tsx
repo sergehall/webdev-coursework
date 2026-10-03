@@ -56,6 +56,51 @@ function auth(
   return owner;
 }
 describe("Turnstile account integration", () => {
+  it("explains a rejected common password on sign-up", async () => {
+    const fetcher = vi.fn((url: string) =>
+      Promise.resolve(
+        new Response(
+          JSON.stringify(
+            url.endsWith("/login-options")
+              ? {
+                  githubEnabled: false,
+                  registrationEnabled: true,
+                  turnstileRequired: false,
+                  turnstileSiteKey: "",
+                }
+              : { code: "PASSWORD_TOO_COMMON" }
+          ),
+          { status: url.endsWith("/login-options") ? 200 : 400 }
+        )
+      )
+    );
+    vi.stubGlobal("fetch", fetcher);
+    auth("register");
+    fireEvent.change(screen.getByLabelText("Username"), {
+      target: { value: "learner" },
+    });
+    fireEvent.change(screen.getByLabelText("Email"), {
+      target: { value: "learner@example.test" },
+    });
+    fireEvent.change(screen.getByLabelText("Password"), {
+      target: { value: "123456789987654321" },
+    });
+    fireEvent.change(screen.getByLabelText("Confirm password"), {
+      target: { value: "123456789987654321" },
+    });
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: "Sign up" })).toBeEnabled()
+    );
+    expect(screen.getByLabelText("Password")).toHaveAttribute(
+      "minlength",
+      "15"
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Sign up" }));
+    expect(
+      await screen.findByText(/Choose a less common password/)
+    ).toBeInTheDocument();
+  });
+
   it("renders navigation notices as text instead of HTML", () => {
     const markup = '<img src=x onerror="alert(1)">';
     vi.stubGlobal(

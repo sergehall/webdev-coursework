@@ -20,6 +20,7 @@ import type {
 import { AccountStore, type OwnerAccount } from "../store/account.store";
 import { normalizeDevice } from "../../security/device";
 import { hashOwnerPassword, verifyOwnerPassword } from "../owner-password";
+import { assertAcceptablePassword } from "../password-policy";
 import type { PostgresState } from "../../analytics/postgres-state";
 
 export type OwnerSession = {
@@ -73,6 +74,12 @@ export class OwnerAccess {
     const account = identity
       ? await this.context.store.byLogin(identity.trim())
       : await this.context.store.owner();
+    // One account budget covers username/email aliases and requests from different IPs.
+    // Unknown identities receive the same kind of budget without storing their raw value.
+    const accountLimitKey = `login-account:${this.context.digest(
+      account?.id ?? identity?.trim().toLowerCase() ?? AccountStore.ROOT_ID
+    )}`;
+    await this.context.rateLimit(accountLimitKey, 20, 900);
     const validPassword = await verifyOwnerPassword(
       password,
       account?.passwordHash ?? this.context.passwordHash
@@ -86,6 +93,7 @@ export class OwnerAccess {
       await this.context.audit("owner.login", false, false);
       throw new UnauthorizedException("Unable to sign in");
     }
+    await this.context.stateStore().remove(`${PREFIX}:rate:${accountLimitKey}`);
     await this.context.audit("owner.login", true, true);
     return this.authenticate(account, "password", req);
   }
@@ -457,6 +465,10 @@ export class OwnerAccess {
     }
     if (dto.password === dto.newPassword)
       throw new BadRequestException("Choose a different password");
+    assertAcceptablePassword(dto.newPassword, [
+      account.username ?? "",
+      account.email ?? "",
+    ]);
     await this.context.store.password(
       await hashOwnerPassword(dto.newPassword),
       randomUUID(),

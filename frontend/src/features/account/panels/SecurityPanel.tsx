@@ -201,7 +201,7 @@ export function SecurityPanel({ session }: { session: OwnerSession }) {
                     <input
                       autoComplete="new-password"
                       type="password"
-                      minLength={12}
+                      minLength={15}
                       maxLength={128}
                       required
                       value={newPassword}
@@ -213,7 +213,7 @@ export function SecurityPanel({ session }: { session: OwnerSession }) {
                     <input
                       autoComplete="new-password"
                       type="password"
-                      minLength={12}
+                      minLength={15}
                       maxLength={128}
                       required
                       value={confirmation}
@@ -221,7 +221,7 @@ export function SecurityPanel({ session }: { session: OwnerSession }) {
                     />
                   </label>
                   <p className="owner-muted">
-                    Use a unique password of at least 12 characters.
+                    Use a unique password of at least 15 characters.
                   </p>
                   <button
                     type="submit"

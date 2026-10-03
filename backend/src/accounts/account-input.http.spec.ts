@@ -46,6 +46,11 @@ describe("account input validation over HTTP", () => {
     {
       username: "student",
       email: "student@example.test",
+      password: "abcdefghijklmn",
+    },
+    {
+      username: "student",
+      email: "student@example.test",
       password: "long-password-123",
       role: "admin",
     },

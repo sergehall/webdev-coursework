@@ -102,6 +102,8 @@ export async function ownerRequest<T>(
         "This account already has an email address. It cannot be replaced here.",
       EMAIL_UNAVAILABLE:
         "This email cannot be added. Request another confirmation.",
+      PASSWORD_TOO_COMMON:
+        "Choose a less common password, such as a unique passphrase or one from a password manager.",
     };
     if (body?.code && mfaMessages[body.code])
       throw new OwnerApiError(

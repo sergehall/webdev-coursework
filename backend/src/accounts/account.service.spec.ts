@@ -41,4 +41,34 @@ describe("Account registration human verification", () => {
     expect(store.db.transaction).not.toHaveBeenCalled();
     expect(auth.rateLimit).toHaveBeenCalled();
   });
+
+  it("rejects a blocklisted password before account or email persistence", async () => {
+    const auth = {
+      assertOrigin: jest.fn(),
+      rateLimit: jest.fn().mockResolvedValue(undefined),
+      digest: () => "digest",
+    };
+    const store = { db: { transaction: jest.fn() } };
+    const turnstile = { verify: jest.fn().mockResolvedValue(undefined) };
+    const account = new AccountService(
+      auth as unknown as AnalyticsService,
+      store as unknown as AccountStore,
+      { enabled: true } as AuthMailService,
+      turnstile as unknown as TurnstileService
+    );
+    await expect(
+      account.register({ ip: "127.0.0.1" } as Request, {
+        email: "test@example.test",
+        username: "test",
+        password: "123456789987654321",
+      })
+    ).rejects.toMatchObject({
+      response: { code: "PASSWORD_TOO_COMMON" },
+    });
+    expect(turnstile.verify).toHaveBeenCalledWith(
+      undefined,
+      "account_register"
+    );
+    expect(store.db.transaction).not.toHaveBeenCalled();
+  });
 });

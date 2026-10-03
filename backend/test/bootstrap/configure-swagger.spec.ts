@@ -151,7 +151,7 @@ describe("Swagger API contracts and production access", () => {
     expect(register.required).toEqual(
       expect.arrayContaining(["email", "username", "password"])
     );
-    expect((register.properties!.password as SchemaObject).minLength).toBe(12);
+    expect((register.properties!.password as SchemaObject).minLength).toBe(15);
     expect((register.properties!.password as SchemaObject).maxLength).toBe(128);
     expect(
       (schemas.OwnerPreferencesDto as SchemaObject).required

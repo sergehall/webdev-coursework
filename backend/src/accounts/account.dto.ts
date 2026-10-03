@@ -67,11 +67,11 @@ export class RegisterDto extends EmailDto {
   })
   username!: string;
   @IsString()
-  @MinLength(12)
+  @MinLength(15)
   @MaxLength(128)
   @ApiProperty({
     example: "example-passphrase-2026",
-    minLength: 12,
+    minLength: 15,
     maxLength: 128,
     writeOnly: true,
   })
@@ -92,11 +92,11 @@ export class TokenDto {
 }
 export class ResetDto extends TokenDto {
   @IsString()
-  @MinLength(12)
+  @MinLength(15)
   @MaxLength(128)
   @ApiProperty({
     example: "new-example-passphrase",
-    minLength: 12,
+    minLength: 15,
     maxLength: 128,
     writeOnly: true,
   })
@@ -104,11 +104,11 @@ export class ResetDto extends TokenDto {
 }
 export class SetupPasswordDto {
   @IsString()
-  @MinLength(12)
+  @MinLength(15)
   @MaxLength(128)
   @ApiProperty({
     example: "new-example-passphrase",
-    minLength: 12,
+    minLength: 15,
     maxLength: 128,
     writeOnly: true,
   })

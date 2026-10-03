@@ -25,6 +25,7 @@ function fixture(settings: Record<string, string> = {}) {
     }),
     dashboard: jest.fn(),
     audits: jest.fn(),
+    byLogin: jest.fn(),
     recordSession: jest.fn().mockResolvedValue(undefined),
     forgetSession: jest.fn().mockResolvedValue(undefined),
   };
@@ -83,6 +84,98 @@ function fixture(settings: Record<string, string> = {}) {
 }
 
 describe("Owner access and anonymous analytics", () => {
+  it("shares a password-attempt budget across account aliases and source IPs", async () => {
+    const { service, store, runtimeState, req } = fixture();
+    store.byLogin.mockResolvedValue({
+      ...(await store.owner()),
+      passwordHash: "malformed-hash",
+    });
+    const counts = new Map<string, number>();
+    runtimeState.increment.mockImplementation(async (key: string) => {
+      const count = (counts.get(key) ?? 0) + 1;
+      counts.set(key, count);
+      return count;
+    });
+
+    for (let attempt = 0; attempt < 20; attempt++) {
+      const from = {
+        ...req,
+        ip: `192.0.2.${attempt + 1}`,
+      } as Request;
+      const identity = attempt % 2 ? "sergehall" : "serge@example.test";
+      await expect(
+        service.login(from, "incorrect-password-123", identity)
+      ).rejects.toMatchObject({ status: 401 });
+    }
+    await expect(
+      service.login(
+        { ...req, ip: "192.0.2.21" } as Request,
+        "incorrect-password-123",
+        "serge@example.test"
+      )
+    ).rejects.toMatchObject({ status: 429 });
+    const accountKeys = [...counts.keys()].filter((key) =>
+      key.includes(":rate:login-account:")
+    );
+    expect(accountKeys).toHaveLength(1);
+    expect(counts.get(accountKeys[0])).toBe(21);
+  });
+
+  it("limits unknown identities without storing their email in a rate key", async () => {
+    const { service, store, runtimeState, req } = fixture();
+    store.byLogin.mockResolvedValue(null);
+    const counts = new Map<string, number>();
+    runtimeState.increment.mockImplementation(async (key: string) => {
+      const count = (counts.get(key) ?? 0) + 1;
+      counts.set(key, count);
+      return count;
+    });
+
+    for (let attempt = 0; attempt < 20; attempt++) {
+      const from = { ...req, ip: `198.51.100.${attempt + 1}` } as Request;
+      await expect(
+        service.login(
+          from,
+          "incorrect-password-123",
+          attempt % 2 ? "NOBODY@example.test" : "nobody@example.test"
+        )
+      ).rejects.toMatchObject({ status: 401 });
+    }
+    await expect(
+      service.login(
+        { ...req, ip: "198.51.100.21" } as Request,
+        "incorrect-password-123",
+        "nobody@example.test"
+      )
+    ).rejects.toMatchObject({ status: 429 });
+    const accountKeys = [...counts.keys()].filter((key) =>
+      key.includes(":rate:login-account:")
+    );
+    expect(accountKeys).toHaveLength(1);
+    expect(accountKeys[0]).not.toContain("nobody@example.test");
+  });
+
+  it("clears the account attempt budget after a correct password", async () => {
+    const { service, store, runtimeState, req } = fixture();
+    const password = "a long private password";
+    store.byLogin.mockResolvedValue({
+      ...(await store.owner()),
+      passwordHash: await hashOwnerPassword(password),
+    });
+
+    await expect(
+      service.login(req, "incorrect-password-123", "sergehall")
+    ).rejects.toMatchObject({ status: 401 });
+    await expect(service.login(req, password, "sergehall")).resolves.toEqual(
+      expect.objectContaining({ token: expect.any(String) })
+    );
+    const accountKey = runtimeState.increment.mock.calls.find(
+      ([key]: [string]) => key.includes(":rate:login-account:")
+    )?.[0];
+    expect(accountKey).toBeDefined();
+    expect(runtimeState.remove).toHaveBeenCalledWith(accountKey);
+  });
+
   it("advertises email sign-up only with complete mail configuration", () => {
     expect(fixture().service.loginOptions().registrationEnabled).toBe(false);
     expect(

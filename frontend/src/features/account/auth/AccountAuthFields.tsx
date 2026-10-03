@@ -130,7 +130,7 @@ export default function AccountAuthFields({
               required
               type={show ? "text" : "password"}
               autoComplete={isLogin ? "current-password" : "new-password"}
-              minLength={12}
+              minLength={isLogin ? 12 : 15}
               maxLength={128}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -154,13 +154,13 @@ export default function AccountAuthFields({
               required
               type="password"
               autoComplete="new-password"
-              minLength={12}
+              minLength={15}
               maxLength={128}
               value={confirmation}
               onChange={(e) => setConfirmation(e.target.value)}
             />
           </label>
-          <small>Use a unique password with at least 12 characters.</small>
+          <small>Use a unique password with at least 15 characters.</small>
         </>
       )}
       {(mode === "verify-email" || mode === "reset-password") && !token && (

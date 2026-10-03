@@ -11,6 +11,7 @@ import { AnalyticsService } from "../analytics/analytics.service";
 import { AccountStore } from "./store/account.store";
 import { AuthMailService } from "./auth-mail";
 import { hashOwnerPassword } from "./owner-password";
+import { assertAcceptablePassword } from "./password-policy";
 
 @Injectable()
 export class AccountProvidersService {
@@ -147,6 +148,10 @@ export class AccountProvidersService {
     );
     const snapshot = await this.store.account(session.accountId);
     if (!snapshot) throw new UnauthorizedException();
+    assertAcceptablePassword(password, [
+      snapshot.username ?? "",
+      snapshot.email ?? "",
+    ]);
     const encoded = await hashOwnerPassword(password);
     await this.store.db.transaction(async (q) => {
       const account = await this.lock(q, snapshot.id, session.revision);

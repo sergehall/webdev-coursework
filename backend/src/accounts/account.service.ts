@@ -8,6 +8,7 @@ import type { Request } from "express";
 import { AnalyticsService } from "../analytics/analytics.service";
 import { AccountStore } from "./store/account.store";
 import { hashOwnerPassword } from "./owner-password";
+import { assertAcceptablePassword } from "./password-policy";
 import { AuthMailService } from "./auth-mail";
 import type { RegisterDto } from "./account.dto";
 import { TurnstileService } from "../security/turnstile/turnstile.service";
@@ -43,6 +44,11 @@ export class AccountService {
     await this.gate(req, email);
     // Apply origin/mail budgets first, then reject bots before password hashing or writes.
     await this.turnstile.verify(dto.turnstileToken, "account_register");
+    assertAcceptablePassword(dto.password, [
+      dto.username,
+      email,
+      email.split("@")[0],
+    ]);
     const passwordHash = await hashOwnerPassword(dto.password);
     await this.store.db.transaction(async (q) => {
       const id = randomUUID(),
@@ -89,6 +95,7 @@ export class AccountService {
       20,
       900
     );
+    if (purpose === "reset" && password) assertAcceptablePassword(password);
     const passwordHash = password ? await hashOwnerPassword(password) : null;
     return this.store.db.transaction(async (q) => {
       const [row] = await q.query(
