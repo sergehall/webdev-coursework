@@ -1,7 +1,18 @@
 // Deployed CSP coverage; route exceptions are documented in docs/cloudflare-turnstile.md.
-import { describe, expect, it } from "vitest";
+import { createHash } from "node:crypto";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+
+import { describe, expect, it, vi } from "vitest";
 
 import vercelConfig from "../../vercel.json";
+import middleware, { config as middlewareConfig } from "../../middleware";
+import { buildContentSecurityPolicy } from "../../content-security-policy";
+
+vi.mock("@vercel/functions", () => ({
+  next: ({ headers }: { headers: Record<string, string> }) =>
+    new Response(null, { headers }),
+}));
 
 describe("security headers", () => {
   const headersFor = (pathname: string): Record<string, string> => {
@@ -14,7 +25,11 @@ describe("security headers", () => {
     );
   };
   const getDirective = (pathname: string, name: string): string => {
-    const policy = headersFor(pathname)["Content-Security-Policy"] ?? "";
+    const policy = pathname.startsWith("/course-materials/")
+      ? headersFor(pathname)["Content-Security-Policy"]
+      : (middleware(
+          new Request(`https://webdev-coursework.com${pathname}`)
+        ).headers.get("Content-Security-Policy") ?? "");
     return (
       policy
         .split("; ")
@@ -67,6 +82,42 @@ describe("security headers", () => {
     }
   });
 
+  it("gives each HTML response a fresh nonce for Cloudflare's injected script", () => {
+    const first = middleware(new Request("https://webdev-coursework.com/"));
+    const second = middleware(new Request("https://webdev-coursework.com/"));
+    const firstNonce = first.headers
+      .get("Content-Security-Policy")
+      ?.match(/'nonce-([A-Za-z0-9+/=]+)'/)?.[1];
+    const secondNonce = second.headers
+      .get("Content-Security-Policy")
+      ?.match(/'nonce-([A-Za-z0-9+/=]+)'/)?.[1];
+
+    expect(firstNonce).toMatch(/^[A-Za-z0-9+/]{22}==$/);
+    expect(secondNonce).toMatch(/^[A-Za-z0-9+/]{22}==$/);
+    expect(firstNonce).not.toBe(secondNonce);
+    expect(headersFor("/")["Content-Security-Policy"]).toBeUndefined();
+    expect(
+      headersFor("/code-playground")["Content-Security-Policy"]
+    ).toBeUndefined();
+    expect(middlewareConfig.matcher).toContain("/index.html");
+  });
+
+  it("keeps the standalone course policy equivalent to the app policy except inline CSS", () => {
+    expect(
+      headersFor("/course-materials/CS80/mod-5/form.html")[
+        "Content-Security-Policy"
+      ]
+    ).toBe(buildContentSecurityPolicy({ allowInlineStyles: true }));
+  });
+
+  it("allows the exact early theme script without allowing arbitrary inline scripts", () => {
+    const html = readFileSync(resolve(process.cwd(), "index.html"), "utf8");
+    const script = html.match(/<script>(.*?)<\/script>/s)?.[1];
+    expect(script).toBeTruthy();
+    const hash = createHash("sha256").update(script!).digest("base64");
+    expect(getDirective("/", "script-src")).toContain(`'sha256-${hash}'`);
+  });
+
   it("allows the production API origin for progress writes", () => {
     expect(getDirective("/", "connect-src")).toContain(
       "https://api.webdev-coursework.com"
@@ -80,6 +131,19 @@ describe("security headers", () => {
     expect(getDirective("/", "frame-src")).toContain(
       "https://challenges.cloudflare.com"
     );
+  });
+
+  it("publishes the same agent catalog at the well-known and root paths", () => {
+    const catalog = readFileSync(
+      resolve(process.cwd(), "public/ai-catalog.json"),
+      "utf8"
+    );
+    const wellKnownCatalog = readFileSync(
+      resolve(process.cwd(), "public/.well-known/ai-catalog.json"),
+      "utf8"
+    );
+
+    expect(JSON.parse(catalog)).toEqual(JSON.parse(wellKnownCatalog));
   });
 
   it("publishes hardening headers on every route group", () => {

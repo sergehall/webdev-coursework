@@ -75,7 +75,8 @@
     </script>
 
     <!-- Early theme apply to avoid flicker (tiny and synchronous) -->
-    <script src="/theme-init.js"></script>
+    <!-- prettier-ignore -->
+    <script>(function(){try{var stored=localStorage.getItem("theme"),systemDark=window.matchMedia("(prefers-color-scheme: dark)").matches;document.documentElement.classList.toggle("dark",stored?stored==="dark":systemDark)}catch{}})();</script>
 
     <!-- Keep third-party beacons/scripts out of the initial path; load them after onload/idle in app code -->
   </head>

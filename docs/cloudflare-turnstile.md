@@ -39,8 +39,11 @@ values are configuration, never committed documentation or browser secrets.
 
 ## Frontend Content Security Policy
 
-The Vercel header and Vite production preview use `default-src 'none'` as the
-fallback. Every resource type used by the application has an explicit directive.
+The Vercel routing middleware and Vite production preview use `default-src
+'none'` as the fallback. Every resource type used by the application has an
+explicit directive. The middleware adds a fresh script nonce to HTML responses
+so Cloudflare JavaScript Detections can attach it to its injected script without
+allowing arbitrary inline scripts. Static assets bypass the middleware.
 Normal application routes use `style-src 'self'`, so inline style blocks and
 attributes are not generally allowed. React's direct `element.style` property
 updates for progress and animations continue to work under this policy.
@@ -54,10 +57,13 @@ Two disjoint path groups retain `style-src 'self' 'unsafe-inline'`:
   route exception. The iframe's own CSP still blocks network access and external
   resources.
 
-The exception does not relax `script-src`. `frontend/vercel.json` uses
-non-overlapping path patterns; the Vite production preview mirrors them. When
-changing either policy, check the response headers for `/`, `/code-playground`,
-and one `/course-materials/` HTML file, and verify the HTML preview in a browser.
+The exception does not relax `script-src`. `frontend/vercel.json` retains the
+standalone course-materials CSP and other hardening headers; the app and
+playground CSP comes from `frontend/middleware.ts`. The shared policy builder
+in `frontend/content-security-policy.ts` also drives the Vite production
+preview. When changing a policy, check the response headers for `/`,
+`/code-playground`, and one `/course-materials/` HTML file, and verify the HTML
+preview in a browser.
 Re-scan the deployed hostname after the new Vercel deployment is live.
 
 ## Configuration and web hostnames

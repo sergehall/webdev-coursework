@@ -8,6 +8,7 @@ import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 
 import { envSchema } from "./src/config/env/env.schema";
+import { buildContentSecurityPolicy } from "./content-security-policy";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,33 +23,13 @@ const brooklynImageVersion = createHash("sha256")
   )
   .digest("hex")
   .slice(0, 12);
-const jsonLdScriptHash =
-  "'sha256-mqaaJKyEBAtrHnTmEqRs3kIzLcqrfe/bwtUYbNSfq2s='";
-
-// Match the deployed Vercel policy: allow only the official Turnstile script/frame origins.
-const productionContentSecurityPolicy = [
-  "default-src 'none'",
-  "base-uri 'self'",
-  "object-src 'none'",
-  "frame-ancestors 'self'",
-  "form-action 'self'",
-  `script-src 'self' ${jsonLdScriptHash} 'wasm-unsafe-eval' https://cdn.jsdelivr.net https://code.jquery.com https://challenges.cloudflare.com`,
-  "style-src 'self'",
-  "img-src 'self' data: blob: https://images.unsplash.com https://avatars.githubusercontent.com https://randomuser.me https://www.smc.edu https://www.google.com",
-  "font-src 'self' data:",
-  "connect-src 'self' https://api.webdev-coursework.com https://cdn.jsdelivr.net https://*.ingest.sentry.io https://*.ingest.us.sentry.io",
-  "media-src 'self' data: blob:",
-  "worker-src 'self' blob:",
-  "frame-src 'self' blob: https://challenges.cloudflare.com",
-  "manifest-src 'self'",
-].join("; ");
+// Production preview has no Cloudflare injection, so its CSP needs no nonce.
+const productionContentSecurityPolicy = buildContentSecurityPolicy();
 
 // Standalone course HTML and the sandboxed playground preview need embedded CSS.
-const courseMaterialsContentSecurityPolicy =
-  productionContentSecurityPolicy.replace(
-    "style-src 'self'",
-    "style-src 'self' 'unsafe-inline'"
-  );
+const courseMaterialsContentSecurityPolicy = buildContentSecurityPolicy({
+  allowInlineStyles: true,
+});
 
 const productionSecurityHeaders = {
   "Cross-Origin-Resource-Policy": "same-origin",

@@ -29,6 +29,13 @@
     "noEmit": true,
     "types": ["vite/client", "react", "react-dom", "@testing-library/jest-dom"]
   },
-  "include": ["src", "vite.config.ts", "vitest.d.ts", "setupTests.ts"],
+  "include": [
+    "src",
+    "vite.config.ts",
+    "middleware.ts",
+    "content-security-policy.ts",
+    "vitest.d.ts",
+    "setupTests.ts"
+  ],
   "exclude": ["dist", "node_modules"]
 }

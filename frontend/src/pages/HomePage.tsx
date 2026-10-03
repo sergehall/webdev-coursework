@@ -1,5 +1,4 @@
 import { useCallback, useRef, useState, type TouchEvent } from "react";
-import { motion } from "framer-motion";
 
 import type { CourseName } from "@/data/technologies";
 import CourseExplorer from "@/features/home/CourseExplorer";
@@ -173,15 +172,14 @@ export function HomePageContent({
         {pullMessage}
       </div>
 
-      <motion.div
+      <div
         className="mx-auto flex w-full max-w-[90rem] flex-col gap-8 transition-transform duration-200 motion-reduce:transition-none"
-        animate={{ y: pullDistance > 0 ? pullDistance : 0 }}
-        transition={{ duration: 0.2, ease: "easeOut" }}
+        style={{ transform: `translateY(${pullDistance}px)` }}
       >
         <HomeHero />
         <CourseExplorer openCourse={openCourse} onToggle={handleToggle} />
         <FeaturedProjects />
-      </motion.div>
+      </div>
     </div>
   );
 }
