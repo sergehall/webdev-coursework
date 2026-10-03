@@ -137,6 +137,10 @@ These are tab-delimited text files used by the parsing functions.
 `A05.py` reads it as one named input, so the large-file review keeps the dataset
 intact. Partitioning or renaming it would change the assignment input contract.
 
+`president.tab` has 3,739 data rows plus one header, with 15 columns per row
+(including the trailing empty column). `A05.py` also reads this as one named
+input, so the large-file review keeps it intact for the same reason.
+
 ---
 
 ## Author
