@@ -127,7 +127,9 @@ describe("Swagger API contracts and production access", () => {
         expect(operation.responses["503"]).toBeDefined();
       }
     }
-    expect(count).toBe(72);
+    expect(count).toBe(74);
+    expect(doc.paths["/api/account/github/start"].post).toBeDefined();
+    expect(doc.paths["/api/owner/github/start"].post).toBeDefined();
     expect(doc.paths["/api/account/session"].get!.security).toEqual([
       { "account-session": [] },
     ]);

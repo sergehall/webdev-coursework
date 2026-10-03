@@ -15,6 +15,7 @@ import { QuizController } from "../../src/quiz/api/quiz.controller";
 import { QuizService } from "../../src/quiz/service/quiz.service";
 import { TokensModule } from "../../src/tokens/tokens.module";
 import { ApiAbuseGuard } from "../../src/security/api-abuse.guard";
+import { TurnstileModule } from "../../src/security/turnstile/turnstile.module";
 
 type QuizServiceReadContract = jest.Mocked<
   Pick<QuizService, "getQuizWithQuestions" | "getCorrectAnswers">
@@ -66,6 +67,7 @@ const circuitBreaker = {
       ],
     }),
     TokensModule,
+    TurnstileModule,
   ],
   controllers: [AppController, QuizController],
   providers: [

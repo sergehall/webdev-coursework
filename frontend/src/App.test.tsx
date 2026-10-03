@@ -81,6 +81,8 @@ describe("<App /> integration", () => {
 
   it("renders NotFound route", async () => {
     renderWithProviders(<App />, "/some-non-existent-page");
-    expect(await screen.findByText(/loading 404/i)).toBeInTheDocument();
+    expect(
+      await screen.findByRole("heading", { name: "404" })
+    ).toBeInTheDocument();
   });
 });
