@@ -113,6 +113,16 @@ python3 A06.py
 
 ---
 
+## A05 – Election analysis source
+
+The Module 5 instructions ask for `A05.py`, and the course playground runs that
+exact file together with its existing `A05ClassPrH.py` helper and named `.tab`
+inputs. The 920-line source was reviewed during the large-file pass and remains
+intact. Splitting its functions into more modules would change the files needed
+for submission and playground execution.
+
+---
+
 ## A06 – Tkinter GUI Demo
 
 The final assignment (`A06.py`) creates a desktop application that:
