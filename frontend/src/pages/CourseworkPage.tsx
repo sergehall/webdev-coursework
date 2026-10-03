@@ -4,10 +4,10 @@ import { motion } from "framer-motion";
 import { XCircle } from "lucide-react";
 
 import { LoadMoreButton } from "@/components/buttons";
-import { selectedCourseCodes } from "@/data/selectedCourseCodes";
-import { activeCourseCodes } from "@/data/types/activeCourseCodes";
+import { activeCourseCodes } from "@/courses/catalog/activeCourses";
 import { courses } from "@/data/webDeveloperCourses";
 import type { BaseCourse } from "@/data/webDeveloperCourses";
+import type { CourseCode } from "@/data/types/CourseCode";
 
 export default function CourseworkPage() {
   const [visibleCount, setVisibleCount] = useState(10);
@@ -18,12 +18,10 @@ export default function CourseworkPage() {
   );
 
   // We filter only those courses that the user has selected.
+  const activeCodesSet = new Set<CourseCode>(activeCourseCodes);
   const selectedCourses: BaseCourse[] = allCourses.filter((course) =>
-    selectedCourseCodes.includes(course.code)
+    activeCodesSet.has(course.code)
   );
-
-  //  Create a Set for quick search of completed courses
-  const activeCodesSet = new Set(activeCourseCodes);
 
   const loadMore = () => setVisibleCount((prev) => prev + 6);
 
@@ -46,9 +44,7 @@ export default function CourseworkPage() {
 
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           {selectedCourses.slice(0, visibleCount).map((course) => {
-            const isCompleted = activeCodesSet.has(
-              course.code as (typeof activeCourseCodes)[number]
-            );
+            const isCompleted = activeCodesSet.has(course.code);
             const courseUrl = `/coursework/${course.code
               .toUpperCase()
               .replace(/\s/g, "")}/assignment`;

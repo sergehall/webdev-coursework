@@ -6,12 +6,8 @@ import { useCompletedModules } from "@/hooks/useCompletedModules";
 import { prefetchAssignmentModule } from "@/utils/prefetchAssignment";
 import { normalizeCourseIdToCode } from "@/utils/normalizeCourseIdToCode";
 
-interface AssignmentNavProps {
-  totalModules: number;
-}
-
-const AssignmentNav: React.FC<AssignmentNavProps> = ({ totalModules }) => {
-  const { completedModules } = useCompletedModules();
+const AssignmentNav: React.FC = () => {
+  const { completedModules, maxModules } = useCompletedModules();
   const { courseId } = useParams<{ courseId: string }>();
 
   // Normalize courseId from the URL to internal CourseCode format (e.g., CS81 => CS 81)
@@ -24,7 +20,7 @@ const AssignmentNav: React.FC<AssignmentNavProps> = ({ totalModules }) => {
     return null;
   }
 
-  const modules = Array.from({ length: totalModules }, (_, i) => i + 1);
+  const modules = Array.from({ length: maxModules }, (_, i) => i + 1);
 
   return (
     <nav className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-6">

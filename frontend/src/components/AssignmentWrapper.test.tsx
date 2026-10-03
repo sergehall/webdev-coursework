@@ -40,4 +40,5 @@ test("loads course progress once for the assignment shell", async () => {
     expect(fetchProgressMock).toHaveBeenCalledTimes(1);
   });
   expect(fetchProgressMock).toHaveBeenCalledWith("test-client", "CS56");
+  expect(screen.getByRole("link", { name: "Mod 15" })).toBeInTheDocument();
 });

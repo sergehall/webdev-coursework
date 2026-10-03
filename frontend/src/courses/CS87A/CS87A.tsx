@@ -9,7 +9,7 @@ function CS87A() {
   return (
     <>
       <ModuleStatus />
-      <AssignmentNav totalModules={6} />
+      <AssignmentNav />
 
       {/* Render modules like AutoAssignmentRouter or AllDonePage here */}
       <Outlet />

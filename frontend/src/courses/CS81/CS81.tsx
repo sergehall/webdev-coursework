@@ -9,7 +9,7 @@ function CS81() {
   return (
     <>
       <ModuleStatus />
-      <AssignmentNav totalModules={12} />
+      <AssignmentNav />
 
       {/* Render modules like AutoAssignmentRouter or AllDonePage here */}
       <Outlet />

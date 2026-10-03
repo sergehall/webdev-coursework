@@ -5,8 +5,8 @@ import CompletionCelebration from "../components/CompletionCelebration";
 import ResetButton from "@/components/buttons/ResetButton";
 import { useClientId } from "@/hooks/useClientId";
 import { resetAllModules } from "@/api/quiz-progress";
-import { COURSE_PROGRESS_CONFIG } from "@/api/config/course-progress";
-import type { CourseId } from "@/api/config/course-progress";
+import { activeCourses as COURSE_PROGRESS_CONFIG } from "@/courses/catalog/activeCourses";
+import type { ActiveCourseId as CourseId } from "@/courses/catalog/activeCourses";
 
 export default function AllDonePage() {
   const clientId = useClientId();

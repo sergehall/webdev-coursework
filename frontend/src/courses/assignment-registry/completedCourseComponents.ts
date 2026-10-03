@@ -1,6 +1,7 @@
 // src/components/completedCourseComponents.tsx
 import type { FC } from "react";
 
+import { activeCourses } from "@/courses/catalog/activeCourses";
 import CS56 from "@/courses/CS56/CS56";
 import CS60 from "@/courses/CS60/CS60";
 import CS70 from "@/courses/CS70/CS70";
@@ -22,27 +23,27 @@ export type CourseComponentMap = Record<
 
 const completedCourseComponents: CourseComponentMap = {
   "CS 56": {
-    title: "Advanced Java Programming",
+    title: activeCourses.CS56.title,
     component: CS56,
   },
   "CS 60": {
-    title: "Database Concepts and Applications",
+    title: activeCourses.CS60.assignmentTitle,
     component: CS60,
   },
   "CS 70": {
-    title: "Network Fundamentals and Architecture",
+    title: activeCourses.CS70.title,
     component: CS70,
   },
   "CS 79A": {
-    title: "Introduction to Cloud Computing",
+    title: activeCourses.CS79A.title,
     component: CS79A,
   },
   "CS 80": {
-    title: "Internet Programming",
+    title: activeCourses.CS80.title,
     component: CS80,
   },
   "CS 81": {
-    title: "JavaScript Programming",
+    title: activeCourses.CS81.title,
     component: CS81,
   },
   "CS 82": {
@@ -58,11 +59,11 @@ const completedCourseComponents: CourseComponentMap = {
     component: null,
   },
   "CS 85": {
-    title: "PHP Programming",
+    title: activeCourses.CS85.title,
     component: CS85,
   },
   "CS 87A": {
-    title: "Python Programming",
+    title: activeCourses.CS87A.title,
     component: CS87A,
   },
   "CS 73A": {
@@ -82,7 +83,7 @@ const completedCourseComponents: CourseComponentMap = {
     component: null,
   },
   "CS 79D": {
-    title: "Security in Amazon Web Services",
+    title: activeCourses.CS79D.title,
     component: CS79D,
   },
   "CS 77A": {
@@ -98,7 +99,7 @@ const completedCourseComponents: CourseComponentMap = {
     component: null,
   },
   "CS 79C": {
-    title: "Compute Engines in Amazon Web Services",
+    title: activeCourses.CS79C.title,
     component: CS79C,
   },
   "CS 79E": {

@@ -10,7 +10,7 @@ function CS79D() {
   return (
     <div className="p-3">
       <ModuleStatus />
-      <AssignmentNav totalModules={8} />
+      <AssignmentNav />
 
       <Outlet />
 

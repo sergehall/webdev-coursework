@@ -8,7 +8,7 @@ function CS85() {
   return (
     <div className="p-3">
       <ModuleStatus />
-      <AssignmentNav totalModules={12} />
+      <AssignmentNav />
 
       <Outlet />
 

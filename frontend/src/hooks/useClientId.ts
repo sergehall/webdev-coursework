@@ -2,9 +2,9 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 
 import {
-  COURSE_PROGRESS_CONFIG,
-  type CourseId,
-} from "@/api/config/course-progress";
+  activeCourses as COURSE_PROGRESS_CONFIG,
+  type ActiveCourseId as CourseId,
+} from "@/courses/catalog/activeCourses";
 
 const DEFAULT_CLIENT_ID_KEY = "default-client-id";
 

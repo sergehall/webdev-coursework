@@ -10,7 +10,7 @@ function CS70() {
   return (
     <>
       <ModuleStatus />
-      <AssignmentNav totalModules={16} />
+      <AssignmentNav />
 
       {/* Render modules like AutoAssignmentRouter or AllDonePage here */}
       <Outlet />

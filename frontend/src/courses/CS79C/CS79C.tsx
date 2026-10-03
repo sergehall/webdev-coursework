@@ -8,7 +8,7 @@ function CS79C() {
   return (
     <>
       <ModuleStatus />
-      <AssignmentNav totalModules={10} />
+      <AssignmentNav />
 
       <Outlet />
 

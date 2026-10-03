@@ -12,7 +12,7 @@ function CS56() {
   return (
     <div className="p-3">
       <ModuleStatus />
-      <AssignmentNav totalModules={15} />
+      <AssignmentNav />
 
       {isCourseIndex ? <AssignmentPlaceholder /> : null}
       <Outlet />

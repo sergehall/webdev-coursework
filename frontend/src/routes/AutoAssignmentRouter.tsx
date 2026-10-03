@@ -3,8 +3,8 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 
 import { assignmentComponents } from "@/courses/assignment-registry/assignmentComponents";
 import { useCompletedModules } from "@/hooks/useCompletedModules";
-import { COURSE_PROGRESS_CONFIG } from "@/api/config/course-progress";
-import type { CourseId } from "@/api/config/course-progress";
+import { activeCourses as COURSE_PROGRESS_CONFIG } from "@/courses/catalog/activeCourses";
+import type { ActiveCourseId as CourseId } from "@/courses/catalog/activeCourses";
 import { normalizeCourseIdToCode } from "@/utils/normalizeCourseIdToCode";
 
 function ModuleLoadingState() {

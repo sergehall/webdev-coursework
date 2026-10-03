@@ -10,7 +10,7 @@ function CS80() {
   return (
     <div className="p-3">
       <ModuleStatus />
-      <AssignmentNav totalModules={6} />
+      <AssignmentNav />
 
       {/* Render modules like AutoAssignmentRouter or AllDonePage here */}
       <Outlet />
