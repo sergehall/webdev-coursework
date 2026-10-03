@@ -208,6 +208,7 @@ export default defineConfig(({ mode }) => {
       environment: "jsdom",
       setupFiles: "./setupTests.ts",
       coverage: {
+        exclude: ["src/courses/ESL10G/tests/**"],
         thresholds: {
           statements: 65,
           branches: 55,

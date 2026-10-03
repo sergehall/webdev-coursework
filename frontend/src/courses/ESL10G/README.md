@@ -45,9 +45,22 @@ locations. Components do not add wrapping DOM nodes just to separate files.
 
 ## Validation
 
-The existing `ESL10GPage.test.tsx` exercises course content, transcript/PDF links,
-route navigation, image preloading, video identity, timed playback, annotations,
-subtitles, music, native transitions, fullscreen, viewport changes, and guidance.
+`ESL10GPage.test.tsx` keeps the original suite name, media mocks, cleanup, and
+registration order. `tests/renderPage.tsx` provides the shared two-route render
+helper. The behavior cases are grouped under `tests/`:
+
+- `course-page.cases.tsx`: course content, transcript/PDF links, and route entry.
+- `media.cases.tsx`: image preloading and video lifecycle.
+- `navigation.cases.tsx`: buttons, keyboard, touch, and native transitions.
+- `visuals.cases.tsx`: photos and slide-specific annotations.
+- `controls.cases.tsx`: subtitles, music, and playback guidance.
+- `playback.cases.tsx`: timed progression, pause, restart, and speaking progress.
+- `fullscreen.cases.tsx`: native/fallback fullscreen and viewport resize.
+
+Case modules register tests through the entry file so Vitest runs each case
+once. The original 23 test names and their order remain unchanged. The case
+modules and router helper are excluded from application coverage in
+`frontend/vite.config.ts`.
 The additional `presentation/application/usePresentationPlayback.test.tsx`
 protects immediate navigation when reduced motion is requested.
 
