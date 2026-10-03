@@ -3,8 +3,9 @@ import { Test } from "@nestjs/testing";
 import { ConfigService } from "@nestjs/config";
 import type { INestApplication } from "@nestjs/common";
 import request = require("supertest");
-import { OwnerController } from "../analytics/analytics.controller";
+import { OwnerController } from "./owner.controller";
 import { AnalyticsService } from "../analytics/analytics.service";
+import type { AccountStore } from "./store/account.store";
 import type { AnalyticsStore } from "../analytics/analytics.store";
 import type { MfaService } from "./mfa/mfa.service";
 import { TurnstileService } from "../security/turnstile/turnstile.service";
@@ -32,6 +33,7 @@ describe("GitHub Turnstile HTTP boundary", () => {
     const service = new AnalyticsService(
       config,
       {} as AnalyticsStore,
+      {} as AccountStore,
       {} as MfaService,
       new TurnstileService(config)
     );

@@ -2,12 +2,12 @@ import { Controller, Get, HttpCode, Res } from "@nestjs/common";
 import type { Response } from "express";
 import { join } from "path";
 import { ApiTags } from "@nestjs/swagger";
-import { ApiDocService } from "./swagger/api-doc.service";
-import { AppMethods } from "./swagger/enums/app-methods.enum";
-import { EndpointKeys } from "./swagger/enums/endpoint-keys.enum";
-import { getReleaseIdentifier } from "./app/release.utils";
-import { CircuitBreakerService } from "./app/circuit-breaker.service";
-import { isSwaggerEnabled } from "./bootstrap/configure-swagger";
+import { ApiDocService } from "../swagger/api-doc.service";
+import { AppMethods } from "../swagger/enums/app-methods.enum";
+import { EndpointKeys } from "../swagger/enums/endpoint-keys.enum";
+import { getReleaseIdentifier } from "./release.utils";
+import { CircuitBreakerService } from "./circuit-breaker.service";
+import { isSwaggerEnabled } from "../bootstrap/configure-swagger";
 
 @Controller()
 @ApiTags("System")
@@ -62,12 +62,12 @@ export class AppController {
   @Get("robots.txt")
   @ApiDocService.apply(EndpointKeys.App, AppMethods.Robots)
   robots(@Res() res: Response): void {
-    res.sendFile(join(__dirname, "..", "public", "robots.txt"));
+    res.sendFile(join(__dirname, "..", "..", "public", "robots.txt"));
   }
 
   @ApiDocService.apply(EndpointKeys.App, AppMethods.GetHello)
   @Get()
   getHello(@Res() res: Response): void {
-    res.sendFile(join(__dirname, "..", "public", "index.html"));
+    res.sendFile(join(__dirname, "..", "..", "public", "index.html"));
   }
 }

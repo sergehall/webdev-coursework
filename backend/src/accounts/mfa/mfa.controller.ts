@@ -21,7 +21,7 @@ import {
 } from "@nestjs/common";
 import type { Request, Response } from "express";
 import { AnalyticsService } from "../../analytics/analytics.service";
-import { AnalyticsStore } from "../../analytics/analytics.store";
+import { AccountStore } from "../store/account.store";
 import { AccountErrorFilter } from "../account-error.filter";
 import { MfaEnrollmentDto, MfaProofDto } from "./mfa.dto";
 import { MfaService } from "./mfa.service";
@@ -33,7 +33,7 @@ export class MfaController {
   constructor(
     private readonly auth: AnalyticsService,
     private readonly mfa: MfaService,
-    private readonly store: AnalyticsStore
+    private readonly store: AccountStore
   ) {}
   private options() {
     return {

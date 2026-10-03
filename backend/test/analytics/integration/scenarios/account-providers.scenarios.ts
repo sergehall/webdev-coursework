@@ -1,6 +1,6 @@
 import request = require("supertest");
 import { randomUUID } from "crypto";
-import { AnalyticsStore } from "../../../../src/analytics/analytics.store";
+import { AccountStore } from "../../../../src/accounts/store/account.store";
 import { AuthMailService } from "../../../../src/accounts/auth-mail";
 import { MfaService } from "../../../../src/accounts/mfa/mfa.service";
 import { MfaCrypto } from "../../../../src/accounts/mfa/mfa.crypto";
@@ -19,11 +19,11 @@ export function registerAccountProviderScenarios(
       "INSERT INTO webdev_accounts(id,role,username,github_id,revision,display_name) VALUES($1,'client',$2,$3,$4,'Provider Test')",
       [id, username, githubId, randomUUID()]
     );
-    return (await app.get(AnalyticsStore).account(id))!;
+    return (await app.get(AccountStore).account(id))!;
   }
   async function providerCookie(id: string, proof?: string) {
     const { app, service } = getContext();
-    return `webdev_owner=${await service.createSession((await app.get(AnalyticsStore).account(id))!, proof)}`;
+    return `webdev_owner=${await service.createSession((await app.get(AccountStore).account(id))!, proof)}`;
   }
   function providerPost(path: string, cookie: string, body?: object) {
     const { app, origin } = getContext();
@@ -65,9 +65,7 @@ export function registerAccountProviderScenarios(
     await providerPost("email", cookie, {
       email: "Recovery@example.test",
     }).expect(202);
-    expect(
-      (await app.get(AnalyticsStore).account(account.id))?.email
-    ).toBeNull();
+    expect((await app.get(AccountStore).account(account.id))?.email).toBeNull();
     const pending = await request(app.getHttpServer())
       .get("/api/account/providers")
       .set("Cookie", cookie)
@@ -90,7 +88,7 @@ export function registerAccountProviderScenarios(
       .set("Cookie", cookie)
       .expect(401);
     expect(
-      (await app.get(AnalyticsStore).account(account.id))?.emailVerified
+      (await app.get(AccountStore).account(account.id))?.emailVerified
     ).toBe(true);
     cookie = await providerCookie(account.id);
     await providerPost("email", cookie, {
@@ -117,7 +115,7 @@ export function registerAccountProviderScenarios(
       .set("Cookie", cookie)
       .expect(401);
     expect(
-      (await app.get(AnalyticsStore).account(account.id))?.githubId
+      (await app.get(AccountStore).account(account.id))?.githubId
     ).toBeNull();
     await request(app.getHttpServer())
       .post("/api/account/login")
@@ -158,9 +156,7 @@ export function registerAccountProviderScenarios(
       [account.id]
     );
     await confirmEmail(expired.token).expect(400);
-    expect(
-      (await app.get(AnalyticsStore).account(account.id))?.email
-    ).toBeNull();
+    expect((await app.get(AccountStore).account(account.id))?.email).toBeNull();
   });
   it("serializes competing email confirmations and does not enumerate occupied addresses", async () => {
     const { db } = getContext();
@@ -213,7 +209,7 @@ export function registerAccountProviderScenarios(
       .expect(403);
     await providerPost("email", cookie, {
       email: "gates@example.test",
-      accountId: AnalyticsStore.ROOT_ID,
+      accountId: AccountStore.ROOT_ID,
     }).expect(400);
     const runtimeState = (
       service as unknown as {
@@ -289,9 +285,7 @@ export function registerAccountProviderScenarios(
         )
       ).length
     ).toBe(0);
-    expect(
-      (await app.get(AnalyticsStore).account(account.id))?.email
-    ).toBeNull();
+    expect((await app.get(AccountStore).account(account.id))?.email).toBeNull();
   });
   it("binds GitHub connection to the originating session, consumes state once and denies occupied providers", async () => {
     const { app, service, origin } = getContext();
@@ -354,7 +348,7 @@ export function registerAccountProviderScenarios(
         .filter((c) => c.startsWith("webdev_owner="))
         .every((c) => c.startsWith("webdev_owner=;"))
     ).toBe(true);
-    expect(await app.get(AnalyticsStore).account(account.id)).toMatchObject({
+    expect(await app.get(AccountStore).account(account.id)).toMatchObject({
       githubId: "91000002",
       githubUsername: "linked-member",
       email: null,
@@ -372,7 +366,7 @@ export function registerAccountProviderScenarios(
       `${origin}/account/security?providerError=github#providers`
     );
     expect(
-      (await app.get(AnalyticsStore).account(other.id))?.githubId
+      (await app.get(AccountStore).account(other.id))?.githubId
     ).toBeNull();
     const revokedIntent = await start(otherCookie);
     await request(app.getHttpServer())
@@ -383,10 +377,10 @@ export function registerAccountProviderScenarios(
     const revoked = await callback(revokedIntent, 91000004);
     expect(revoked.headers.location).toContain("providerError=github");
     expect(
-      (await app.get(AnalyticsStore).account(other.id))?.githubId
+      (await app.get(AccountStore).account(other.id))?.githubId
     ).toBeNull();
     await expect(
-      app.get(AnalyticsStore).githubAccount({ id: 42, login: "owner" }, "42")
+      app.get(AccountStore).githubAccount({ id: 42, login: "owner" }, "42")
     ).rejects.toThrow("GitHub is not connected");
   });
 }

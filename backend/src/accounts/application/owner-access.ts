@@ -7,20 +7,20 @@ import {
 import { randomBytes, randomUUID } from "crypto";
 import type { Request } from "express";
 
-import type { LoginResult, MfaService } from "../../accounts/mfa/mfa.service";
+import type { LoginResult, MfaService } from "../mfa/mfa.service";
 import type { TurnstileService } from "../../security/turnstile/turnstile.service";
-import { PREFIX, SESSION_SECONDS } from "../analytics.constants";
+import { PREFIX, SESSION_SECONDS } from "../../analytics/analytics.constants";
 import type {
   AuditQueryDto,
   OwnerPasswordDto,
   OwnerPreferencesDto,
   OwnerProfileDto,
   SessionQueryDto,
-} from "../analytics.dto";
-import { AnalyticsStore, type OwnerAccount } from "../analytics.store";
-import { normalizeDevice } from "../analytics.types";
+} from "../account-access.dto";
+import { AccountStore, type OwnerAccount } from "../store/account.store";
+import { normalizeDevice } from "../../security/device";
 import { hashOwnerPassword, verifyOwnerPassword } from "../owner-password";
-import type { PostgresState } from "../postgres-state";
+import type { PostgresState } from "../../analytics/postgres-state";
 
 export type OwnerSession = {
   accountId: string;
@@ -33,7 +33,7 @@ export type OwnerSession = {
 };
 
 export interface OwnerAccessContext {
-  readonly store: AnalyticsStore;
+  readonly store: AccountStore;
   readonly mfa: MfaService;
   readonly turnstile: TurnstileService;
   readonly passwordHash: string;
@@ -81,7 +81,7 @@ export class OwnerAccess {
       !account ||
       !account.passwordHash ||
       !validPassword ||
-      (account.id !== AnalyticsStore.ROOT_ID && !account.emailVerified)
+      (account.id !== AccountStore.ROOT_ID && !account.emailVerified)
     ) {
       await this.context.audit("owner.login", false, false);
       throw new UnauthorizedException("Unable to sign in");
@@ -210,7 +210,7 @@ export class OwnerAccess {
 
   private async principal(req: Request, action: string) {
     const session = await this.authorize(req, action);
-    if (session.accountId !== AnalyticsStore.ROOT_ID) {
+    if (session.accountId !== AccountStore.ROOT_ID) {
       await this.context.audit(action, false, false);
       throw new ForbiddenException(
         "Only the primary administrator can manage roles"
@@ -231,7 +231,7 @@ export class OwnerAccess {
   ): Promise<void> {
     this.context.assertOrigin(req);
     await this.principal(req, "accounts.role.change");
-    if (id === AnalyticsStore.ROOT_ID)
+    if (id === AccountStore.ROOT_ID)
       throw new BadRequestException(
         "The primary administrator role is protected"
       );
@@ -319,7 +319,7 @@ export class OwnerAccess {
       role: session.role,
       issuedAt: session.issuedAt,
       expiresAt: session.expiresAt,
-      canManageRoles: account.id === AnalyticsStore.ROOT_ID,
+      canManageRoles: account.id === AccountStore.ROOT_ID,
       mfaEnabled,
       mfaVerifiedAt: session.mfaVerifiedAt,
       authMethod: session.authMethod ?? "unknown",
@@ -339,7 +339,7 @@ export class OwnerAccess {
         githubLinked: !!account.githubId,
         githubUsername: account.githubUsername ?? null,
         registrationMethod:
-          account.id === AnalyticsStore.ROOT_ID
+          account.id === AccountStore.ROOT_ID
             ? "administrator"
             : account.githubId && !account.email
               ? "github"

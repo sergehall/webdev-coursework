@@ -6,12 +6,12 @@ import {
 import { createHash, randomBytes } from "crypto";
 import type { Request } from "express";
 
-import type { GithubStartDto } from "../../accounts/account.dto";
-import type { LoginResult, MfaService } from "../../accounts/mfa/mfa.service";
+import type { GithubStartDto } from "../account.dto";
+import type { LoginResult, MfaService } from "../mfa/mfa.service";
 import type { TurnstileService } from "../../security/turnstile/turnstile.service";
-import { PREFIX } from "../analytics.constants";
-import type { AnalyticsStore, OwnerAccount } from "../analytics.store";
-import type { PostgresState } from "../postgres-state";
+import { PREFIX } from "../../analytics/analytics.constants";
+import type { AccountStore, OwnerAccount } from "../store/account.store";
+import type { PostgresState } from "../../analytics/postgres-state";
 import type { OwnerAccess, OwnerSession } from "./owner-access";
 import type { GithubConfiguration } from "./owner-configuration";
 
@@ -19,7 +19,7 @@ export interface GithubOAuthContext {
   readonly github?: GithubConfiguration;
   readonly githubCookieName: string;
   readonly runtimeAvailable: boolean;
-  readonly store: AnalyticsStore;
+  readonly store: AccountStore;
   readonly mfa: MfaService;
   readonly turnstile: TurnstileService;
   stateStore(): PostgresState;

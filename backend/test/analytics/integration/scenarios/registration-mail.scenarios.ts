@@ -1,6 +1,6 @@
 import request = require("supertest");
 import type { Request } from "express";
-import { AnalyticsStore } from "../../../../src/analytics/analytics.store";
+import { AccountStore } from "../../../../src/accounts/store/account.store";
 import { AccountService } from "../../../../src/accounts/account.service";
 import { AuthMailService } from "../../../../src/accounts/auth-mail";
 import type { AnalyticsIntegrationContextProvider } from "../support/test-environment";
@@ -94,7 +94,7 @@ export function registerRegistrationMailScenarios(
       .set("Cookie", cookie)
       .send({ displayName: "Student One" })
       .expect(200);
-    expect((await app.get(AnalyticsStore).owner()).displayName).toBe("Serge");
+    expect((await app.get(AccountStore).owner()).displayName).toBe("Serge");
     await request(server)
       .post("/api/account/forgot-password")
       .set("Origin", origin)

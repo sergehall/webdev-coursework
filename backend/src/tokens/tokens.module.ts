@@ -2,7 +2,7 @@
 import { Module } from "@nestjs/common";
 import { JwtModule } from "@nestjs/jwt";
 import { ConfigModule } from "@nestjs/config";
-import { AdminApiKeyGuard } from "../guards/admin-api-key.guard";
+import { AdminApiKeyGuard } from "../security/guards/admin-api-key.guard";
 import { TokensController } from "./api/tokens.controller";
 import { QuizAnswersJwtConfig } from "./config/quiz-answers-jwt.config";
 import { TokensService } from "./service/tokens.service";

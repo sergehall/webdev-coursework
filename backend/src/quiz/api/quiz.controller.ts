@@ -13,8 +13,8 @@ import {
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import { ApiTags } from "@nestjs/swagger";
 import type { Request } from "express";
-import { AnswersTokenGuard } from "../../guards/answers-token.guard";
-import { AdminApiKeyGuard } from "../../guards/admin-api-key.guard";
+import { AnswersTokenGuard } from "../../tokens/guards/answers-token.guard";
+import { AdminApiKeyGuard } from "../../security/guards/admin-api-key.guard";
 import { ApiDocService } from "../../swagger/api-doc.service";
 import { EndpointKeys } from "../../swagger/enums/endpoint-keys.enum";
 import { QuizzesMethods } from "../../swagger/enums/quizzes-methods.enum";

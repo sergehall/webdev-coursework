@@ -10,18 +10,17 @@ import { AccountProvidersController } from "../../src/accounts/account-providers
 import { AccountProvidersService } from "../../src/accounts/account-providers.service";
 import { MfaController } from "../../src/accounts/mfa/mfa.controller";
 import { MfaService } from "../../src/accounts/mfa/mfa.service";
-import {
-  AnalyticsController,
-  OwnerController,
-} from "../../src/analytics/analytics.controller";
+import { AnalyticsController } from "../../src/analytics/analytics.controller";
+import { OwnerController } from "../../src/accounts/owner.controller";
 import { AnalyticsService } from "../../src/analytics/analytics.service";
 import { AnalyticsStore } from "../../src/analytics/analytics.store";
+import { AccountStore } from "../../src/accounts/store/account.store";
 import { QuizController } from "../../src/quiz/api/quiz.controller";
 import { QuizService } from "../../src/quiz/service/quiz.service";
 import { TokensController } from "../../src/tokens/api/tokens.controller";
 import { TokensService } from "../../src/tokens/service/tokens.service";
-import { AnswersTokenGuard } from "../../src/guards/answers-token.guard";
-import { AdminApiKeyGuard } from "../../src/guards/admin-api-key.guard";
+import { AnswersTokenGuard } from "../../src/tokens/guards/answers-token.guard";
+import { AdminApiKeyGuard } from "../../src/security/guards/admin-api-key.guard";
 import { RequestThrottleService } from "../../src/security/request-throttle.service";
 import { configureCors } from "../../src/bootstrap/configure-cors";
 import { configureSwagger } from "../../src/bootstrap/configure-swagger";
@@ -86,6 +85,7 @@ describe("Swagger API contracts and production access", () => {
           MfaService,
           AnalyticsService,
           AnalyticsStore,
+          AccountStore,
           QuizService,
           TokensService,
         ].map((provide) => ({ provide, useValue: {} })),

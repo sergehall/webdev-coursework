@@ -5,7 +5,7 @@ import {
 import type { ConfigService } from "@nestjs/config";
 import type { ExecutionContext } from "@nestjs/common";
 import type { Request } from "express";
-import { AdminApiKeyGuard } from "../../src/guards/admin-api-key.guard";
+import { AdminApiKeyGuard } from "../../src/security/guards/admin-api-key.guard";
 
 function createExecutionContext(
   headerValue?: string | string[]

@@ -3,7 +3,7 @@ import type { ExecutionContext } from "@nestjs/common";
 import { UnauthorizedException } from "@nestjs/common";
 import type { ConfigService } from "@nestjs/config";
 import { createHash } from "crypto";
-import { AnswersTokenGuardQuery } from "../../src/guards/answers-token.guard-query";
+import { AnswersTokenGuardQuery } from "../../src/tokens/guards/answers-token.guard-query";
 
 describe("AnswersTokenGuardQuery", () => {
   const secret = "supersecret";

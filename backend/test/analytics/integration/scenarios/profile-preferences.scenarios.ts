@@ -1,7 +1,7 @@
 import request = require("supertest");
 import { randomUUID } from "crypto";
-import { AnalyticsStore } from "../../../../src/analytics/analytics.store";
-import { hashOwnerPassword } from "../../../../src/analytics/owner-password";
+import { AccountStore } from "../../../../src/accounts/store/account.store";
+import { hashOwnerPassword } from "../../../../src/accounts/owner-password";
 import type { AnalyticsIntegrationContextProvider } from "../support/test-environment";
 
 export function registerProfilePreferenceScenarios(
@@ -10,7 +10,7 @@ export function registerProfilePreferenceScenarios(
   it("persists validated preferences per account and restricts administration defaults", async () => {
     const { app, db, service, origin } = getContext();
     const server = app.getHttpServer(),
-      store = app.get(AnalyticsStore);
+      store = app.get(AccountStore);
     const adminId = randomUUID(),
       clientId = randomUUID();
     for (const [id, role, username] of [
@@ -96,7 +96,7 @@ export function registerProfilePreferenceScenarios(
   it("changes only the current account username, preserves email and GitHub identity, and rejects occupied names", async () => {
     const { app, db, service, password, origin } = getContext();
     const server = app.getHttpServer();
-    const store = app.get(AnalyticsStore);
+    const store = app.get(AccountStore);
     const id = randomUUID();
     const email = "profile@example.test";
     await db.query(
@@ -147,7 +147,7 @@ export function registerProfilePreferenceScenarios(
     await update({
       displayName: "Rejected",
       username: "other",
-      accountId: AnalyticsStore.ROOT_ID,
+      accountId: AccountStore.ROOT_ID,
     }).expect(400);
     expect(await store.account(id)).toMatchObject({
       username: "profile_after",

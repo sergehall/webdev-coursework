@@ -6,8 +6,8 @@ import {
 import { createHash, randomUUID } from "crypto";
 import type { Request } from "express";
 import { AnalyticsService } from "../analytics/analytics.service";
-import { AnalyticsStore } from "../analytics/analytics.store";
-import { hashOwnerPassword } from "../analytics/owner-password";
+import { AccountStore } from "./store/account.store";
+import { hashOwnerPassword } from "./owner-password";
 import { AuthMailService } from "./auth-mail";
 import type { RegisterDto } from "./account.dto";
 import { TurnstileService } from "../security/turnstile/turnstile.service";
@@ -16,7 +16,7 @@ import { TurnstileService } from "../security/turnstile/turnstile.service";
 export class AccountService {
   constructor(
     private readonly auth: AnalyticsService,
-    private readonly store: AnalyticsStore,
+    private readonly store: AccountStore,
     private readonly mail: AuthMailService,
     private readonly turnstile: TurnstileService
   ) {}

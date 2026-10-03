@@ -8,7 +8,7 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
-import { AdminApiKeyGuard } from "../../guards/admin-api-key.guard";
+import { AdminApiKeyGuard } from "../../security/guards/admin-api-key.guard";
 import { ApiDocService } from "../../swagger/api-doc.service";
 import { EndpointKeys } from "../../swagger/enums/endpoint-keys.enum";
 import { QuizzesMethods } from "../../swagger/enums/quizzes-methods.enum";

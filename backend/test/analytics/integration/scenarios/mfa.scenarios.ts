@@ -1,10 +1,10 @@
 import request = require("supertest");
 import { randomUUID } from "crypto";
 import { ConfigService } from "@nestjs/config";
-import { AnalyticsStore } from "../../../../src/analytics/analytics.store";
+import { AccountStore } from "../../../../src/accounts/store/account.store";
 import { MfaService } from "../../../../src/accounts/mfa/mfa.service";
 import { MfaCrypto, totp } from "../../../../src/accounts/mfa/mfa.crypto";
-import { hashOwnerPassword } from "../../../../src/analytics/owner-password";
+import { hashOwnerPassword } from "../../../../src/accounts/owner-password";
 import type { AnalyticsIntegrationContextProvider } from "../support/test-environment";
 
 export function registerMfaScenarios(
@@ -13,7 +13,7 @@ export function registerMfaScenarios(
   it("enforces MFA for password and GitHub, consumes codes once, and safely disables it", async () => {
     const { app, db, service, password, origin } = getContext();
     const server = app.getHttpServer(),
-      store = app.get(AnalyticsStore);
+      store = app.get(AccountStore);
     const id = randomUUID();
     await db.query(
       "INSERT INTO webdev_accounts(id,role,username,email,email_verified_at,password_hash,revision,display_name,github_id) VALUES($1,'client','mfa_member','mfa@example.test',now(),$2,$3,'MFA Test','81230001')",
@@ -285,7 +285,7 @@ export function registerMfaScenarios(
   }, 30000);
   it("isolates and expires enrollment and requires a recent sign-in", async () => {
     const { app, db } = getContext();
-    const store = app.get(AnalyticsStore),
+    const store = app.get(AccountStore),
       mfa = app.get(MfaService);
     const account = (await store.owner())!;
     const old = new Date(Date.now() - 360000).toISOString();
@@ -320,7 +320,7 @@ export function registerMfaScenarios(
   });
   it("fails closed without the encryption key and consumes recovery across distinct challenges once", async () => {
     const { app, db, service } = getContext();
-    const store = app.get(AnalyticsStore),
+    const store = app.get(AccountStore),
       mfa = app.get(MfaService);
     const id = randomUUID();
     await db.query(

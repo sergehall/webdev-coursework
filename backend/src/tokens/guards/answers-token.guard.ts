@@ -1,4 +1,3 @@
-// src/guards/answers-token.guard.ts
 import {
   CanActivate,
   ExecutionContext,
@@ -9,7 +8,7 @@ import { Request } from "express";
 import {
   QuizAnswersTokenPayload,
   TokensService,
-} from "../tokens/service/tokens.service";
+} from "../service/tokens.service";
 
 type RequestWithQuizAnswersPayload = Request & {
   quizAnswersTokenPayload?: QuizAnswersTokenPayload;

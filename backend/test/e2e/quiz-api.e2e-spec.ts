@@ -6,11 +6,11 @@ import {
 } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import * as request from "supertest";
-import { AppController } from "../../src/app.controller";
+import { AppController } from "../../src/app/app.controller";
 import { CircuitBreakerService } from "../../src/app/circuit-breaker.service";
 import { createApp } from "../../src/create-app";
-import { AdminApiKeyGuard } from "../../src/guards/admin-api-key.guard";
-import { AnswersTokenGuard } from "../../src/guards/answers-token.guard";
+import { AdminApiKeyGuard } from "../../src/security/guards/admin-api-key.guard";
+import { AnswersTokenGuard } from "../../src/tokens/guards/answers-token.guard";
 import { QuizController } from "../../src/quiz/api/quiz.controller";
 import { QuizService } from "../../src/quiz/service/quiz.service";
 import { TokensModule } from "../../src/tokens/tokens.module";

@@ -9,14 +9,13 @@ import { TurnstileService } from "../../../../src/security/turnstile/turnstile.s
 import { AccountService } from "../../../../src/accounts/account.service";
 import { AuthMailService } from "../../../../src/accounts/auth-mail";
 import { AddPublicAccounts1790902800000 } from "../../../../src/db/migrations/2026/10/1790902800000-AddPublicAccounts";
-import {
-  AnalyticsController,
-  OwnerController,
-} from "../../../../src/analytics/analytics.controller";
+import { AnalyticsController } from "../../../../src/analytics/analytics.controller";
+import { OwnerController } from "../../../../src/accounts/owner.controller";
 import { AnalyticsStore } from "../../../../src/analytics/analytics.store";
+import { AccountStore } from "../../../../src/accounts/store/account.store";
 import { AnalyticsService } from "../../../../src/analytics/analytics.service";
 import { AddQrAnalytics1790899200000 } from "../../../../src/db/migrations/2026/10/1790899200000-AddQrAnalytics";
-import { hashOwnerPassword } from "../../../../src/analytics/owner-password";
+import { hashOwnerPassword } from "../../../../src/accounts/owner-password";
 import { createApp } from "../../../../src/create-app";
 import { MfaService } from "../../../../src/accounts/mfa/mfa.service";
 import { MfaCrypto } from "../../../../src/accounts/mfa/mfa.crypto";
@@ -95,6 +94,7 @@ export function setupAnalyticsIntegration(): AnalyticsIntegrationContextProvider
         { provide: ApiAbuseGuard, useValue: { protect: async () => true } },
         AnalyticsService,
         AnalyticsStore,
+        AccountStore,
         AccountService,
         TurnstileService,
         AuthMailService,

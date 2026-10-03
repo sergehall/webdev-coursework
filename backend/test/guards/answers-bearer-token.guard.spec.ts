@@ -2,7 +2,7 @@ import type { ExecutionContext } from "@nestjs/common";
 import { UnauthorizedException } from "@nestjs/common";
 import type { Request } from "express";
 
-import { AnswersTokenGuard } from "../../src/guards/answers-token.guard";
+import { AnswersTokenGuard } from "../../src/tokens/guards/answers-token.guard";
 import type {
   QuizAnswersTokenPayload,
   TokensService,

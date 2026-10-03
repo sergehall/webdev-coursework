@@ -8,10 +8,7 @@ import {
 import { createHash, randomBytes, randomUUID } from "crypto";
 import { compare, hash } from "bcryptjs";
 import type { EntityManager } from "typeorm";
-import {
-  AnalyticsStore,
-  type OwnerAccount,
-} from "../../analytics/analytics.store";
+import { AccountStore, type OwnerAccount } from "../store/account.store";
 import { MfaCrypto } from "./mfa.crypto";
 
 type Method = {
@@ -50,7 +47,7 @@ const invalid = () =>
 @Injectable()
 export class MfaService {
   constructor(
-    private readonly store: AnalyticsStore,
+    private readonly store: AccountStore,
     private readonly crypto: MfaCrypto
   ) {}
 

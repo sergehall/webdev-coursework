@@ -1,8 +1,8 @@
 // src/quiz/quiz.module.ts
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { AdminApiKeyGuard } from "../guards/admin-api-key.guard";
-import { AnswersTokenGuard } from "../guards/answers-token.guard";
+import { AdminApiKeyGuard } from "../security/guards/admin-api-key.guard";
+import { AnswersTokenGuard } from "../tokens/guards/answers-token.guard";
 import { TokensModule } from "../tokens/tokens.module";
 import { QuizProgress } from "./entities/quiz-progress.entity";
 import { QuizQuestion } from "./entities/quiz-question.entity";

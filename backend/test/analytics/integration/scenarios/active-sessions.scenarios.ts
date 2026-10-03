@@ -1,7 +1,7 @@
 import request = require("supertest");
 import { randomUUID } from "crypto";
 import type { Request } from "express";
-import { AnalyticsStore } from "../../../../src/analytics/analytics.store";
+import { AccountStore } from "../../../../src/accounts/store/account.store";
 import type { AnalyticsIntegrationContextProvider } from "../support/test-environment";
 
 export function registerActiveSessionScenarios(
@@ -10,7 +10,7 @@ export function registerActiveSessionScenarios(
   it("paginates only live sessions of the current account without leaking session credentials", async () => {
     const { app, db, service, origin } = getContext();
     const server = app.getHttpServer(),
-      store = app.get(AnalyticsStore);
+      store = app.get(AccountStore);
     const id = randomUUID(),
       otherId = randomUUID();
     for (const [accountId, username] of [
@@ -168,7 +168,7 @@ export function registerActiveSessionScenarios(
   it("filters active sessions before pagination and keeps account isolation", async () => {
     const { app, db, service } = getContext();
     const server = app.getHttpServer(),
-      store = app.get(AnalyticsStore);
+      store = app.get(AccountStore);
     const id = randomUUID(),
       otherId = randomUUID();
     for (const [accountId, username] of [

@@ -8,15 +8,15 @@ import type { Request } from "express";
 import type { EntityManager } from "typeorm";
 import { randomUUID } from "crypto";
 import { AnalyticsService } from "../analytics/analytics.service";
-import { AnalyticsStore } from "../analytics/analytics.store";
+import { AccountStore } from "./store/account.store";
 import { AuthMailService } from "./auth-mail";
-import { hashOwnerPassword } from "../analytics/owner-password";
+import { hashOwnerPassword } from "./owner-password";
 
 @Injectable()
 export class AccountProvidersService {
   constructor(
     private readonly auth: AnalyticsService,
-    private readonly store: AnalyticsStore,
+    private readonly store: AccountStore,
     private readonly mail: AuthMailService
   ) {}
   async status(req: Request) {
@@ -72,7 +72,7 @@ export class AccountProvidersService {
         throw new BadRequestException("GitHub is not connected");
       if (
         !account.password_hash ||
-        (snapshot.id !== AnalyticsStore.ROOT_ID && !account.email_verified_at)
+        (snapshot.id !== AccountStore.ROOT_ID && !account.email_verified_at)
       )
         throw new BadRequestException({
           code: "LAST_SIGN_IN_METHOD",

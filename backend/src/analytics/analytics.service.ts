@@ -14,27 +14,28 @@ import type { Request } from "express";
 import type { GithubStartDto } from "../accounts/account.dto";
 import { MfaService, type LoginResult } from "../accounts/mfa/mfa.service";
 import { TurnstileService } from "../security/turnstile/turnstile.service";
-import { GithubOAuth } from "./application/github-oauth";
-import { OwnerAccess } from "./application/owner-access";
+import { GithubOAuth } from "../accounts/application/github-oauth";
+import { OwnerAccess } from "../accounts/application/owner-access";
 import {
   loadOwnerConfiguration,
   type GithubConfiguration,
-} from "./application/owner-configuration";
+} from "../accounts/application/owner-configuration";
 import { MAX_BUFFER, PREFIX } from "./analytics.constants";
 import type {
   AuditQueryDto,
   OwnerPasswordDto,
   OwnerPreferencesDto,
   OwnerProfileDto,
-  QrEventDto,
   SessionQueryDto,
-} from "./analytics.dto";
+} from "../accounts/account-access.dto";
+import type { QrEventDto } from "./analytics.dto";
+import { AnalyticsStore } from "./analytics.store";
 import {
-  AnalyticsStore,
-  type AccessAudit,
+  AccountStore,
   type OwnerAccount,
-} from "./analytics.store";
-import { normalizeDevice, type QrEvent } from "./analytics.types";
+} from "../accounts/store/account.store";
+import type { QrEvent, AccessAudit } from "./analytics.types";
+import { normalizeDevice } from "../security/device";
 import { PostgresState } from "./postgres-state";
 
 @Injectable()
@@ -75,6 +76,7 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
   constructor(
     private readonly config: ConfigService,
     private readonly store: AnalyticsStore,
+    private readonly accountStore: AccountStore,
     private readonly mfa: MfaService,
     private readonly turnstile: TurnstileService
   ) {
@@ -92,7 +94,7 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
     this.origins = owner.origins;
     this.github = owner.github;
     try {
-      await this.store.initializeOwner(this.passwordHash, randomUUID());
+      await this.accountStore.initializeOwner(this.passwordHash, randomUUID());
     } catch {
       throw new Error(
         "Account storage initialization failed; apply account migrations first"
@@ -169,7 +171,7 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
 
   private ownerAccess(): OwnerAccess {
     return new OwnerAccess({
-      store: this.store,
+      store: this.accountStore,
       mfa: this.mfa,
       turnstile: this.turnstile,
       passwordHash: this.passwordHash,
@@ -188,7 +190,7 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
       github: this.github,
       githubCookieName: this.githubCookieName,
       runtimeAvailable: !!this.runtimeState,
-      store: this.store,
+      store: this.accountStore,
       mfa: this.mfa,
       turnstile: this.turnstile,
       stateStore: () => this.stateStore(),

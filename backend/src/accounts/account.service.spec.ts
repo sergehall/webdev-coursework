@@ -3,7 +3,7 @@ import { ConfigService } from "@nestjs/config";
 import type { Request } from "express";
 import { AccountService } from "./account.service";
 import type { AnalyticsService } from "../analytics/analytics.service";
-import type { AnalyticsStore } from "../analytics/analytics.store";
+import type { AccountStore } from "./store/account.store";
 import type { AuthMailService } from "./auth-mail";
 import { TurnstileService } from "../security/turnstile/turnstile.service";
 
@@ -27,7 +27,7 @@ describe("Account registration human verification", () => {
     const store = { db: { transaction: jest.fn() } };
     const account = new AccountService(
       auth as unknown as AnalyticsService,
-      store as unknown as AnalyticsStore,
+      store as unknown as AccountStore,
       { enabled: true } as AuthMailService,
       service()
     );

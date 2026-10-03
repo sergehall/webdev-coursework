@@ -1,5 +1,6 @@
 import request = require("supertest");
 import { randomUUID } from "crypto";
+import { AccountStore } from "../../../../src/accounts/store/account.store";
 import { AnalyticsStore } from "../../../../src/analytics/analytics.store";
 import type { AnalyticsIntegrationContextProvider } from "../support/test-environment";
 
@@ -8,7 +9,7 @@ export function registerAccessSecurityScenarios(
 ): void {
   it("lets only the primary admin manage roles and invalidates changed sessions", async () => {
     const { app, db, service, origin } = getContext();
-    const store = app.get(AnalyticsStore),
+    const store = app.get(AccountStore),
       server = app.getHttpServer();
     const member = await store.githubAccount(
       { id: 7654321, login: "github-student" },
@@ -114,12 +115,12 @@ export function registerAccessSecurityScenarios(
   });
   it("paginates security activity on the server and filters without loading the entire history", async () => {
     const { app, db, service } = getContext();
-    const store = app.get(AnalyticsStore),
+    const store = app.get(AccountStore),
       server = app.getHttpServer();
     const cookie = `${service.cookieName}=${await service.createSession(await store.owner())}`;
     await db.query("DELETE FROM webdev_analytics_access_audit");
     const at = new Date(Date.now() - 60000).toISOString();
-    await store.persistAudits(
+    await app.get(AnalyticsStore).persistAudits(
       Array.from({ length: 37 }, (_, n) => ({
         eventId: randomUUID(),
         occurredAt: at.replace("Z", `${n % 2 ? "123" : "456"}Z`),
@@ -128,7 +129,7 @@ export function registerAccessSecurityScenarios(
         allowed: n % 3 !== 0,
       }))
     );
-    await store.persistAudits([
+    await app.get(AnalyticsStore).persistAudits([
       {
         eventId: randomUUID(),
         occurredAt: new Date(Date.now() - 30 * 86400000).toISOString(),

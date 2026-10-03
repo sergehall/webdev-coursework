@@ -7,10 +7,12 @@ import { MfaService } from "../accounts/mfa/mfa.service";
 import { MfaCrypto } from "../accounts/mfa/mfa.crypto";
 import { AccountProvidersController } from "../accounts/account-providers.controller";
 import { AccountProvidersService } from "../accounts/account-providers.service";
+import { OwnerController } from "../accounts/owner.controller";
 import { Module } from "@nestjs/common";
-import { AnalyticsController, OwnerController } from "./analytics.controller";
+import { AnalyticsController } from "./analytics.controller";
 import { AnalyticsService } from "./analytics.service";
 import { AnalyticsStore } from "./analytics.store";
+import { AccountStore } from "../accounts/store/account.store";
 
 // Account operations consume shared verification through the security module boundary.
 @Module({
@@ -25,6 +27,7 @@ import { AnalyticsStore } from "./analytics.store";
   providers: [
     AnalyticsService,
     AnalyticsStore,
+    AccountStore,
     AccountService,
     AuthMailService,
     MfaService,

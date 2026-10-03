@@ -3,8 +3,12 @@ import type { Request } from "express";
 import { TurnstileService } from "../security/turnstile/turnstile.service";
 import { AnalyticsService } from "./analytics.service";
 import type { AnalyticsStore } from "./analytics.store";
-import { hashOwnerPassword, verifyOwnerPassword } from "./owner-password";
-import { normalizeDevice } from "./analytics.types";
+import type { AccountStore } from "../accounts/store/account.store";
+import {
+  hashOwnerPassword,
+  verifyOwnerPassword,
+} from "../accounts/owner-password";
+import { normalizeDevice } from "../security/device";
 import type { MfaService } from "../accounts/mfa/mfa.service";
 
 function fixture() {
@@ -48,6 +52,7 @@ function fixture() {
   const service = new AnalyticsService(
     new ConfigService(),
     store as unknown as AnalyticsStore,
+    store as unknown as AccountStore,
     mfa as unknown as MfaService,
     new TurnstileService(
       new ConfigService({
