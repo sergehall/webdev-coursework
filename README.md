@@ -364,6 +364,11 @@ an entity/schema diff. Both commands select the date and folder automatically.
 | [Assessment standard](docs/quiz-assessment-standard.md)                | Canonical requirements for quizzes, practice assessments, and migrations                              |
 | [Shared assessment module](frontend/src/features/assessment/README.md) | Assessment integration and frontend architecture                                                      |
 
+The assessment standard remains one canonical document. `AGENTS.md` requires
+reading it in full before assessment work, and existing guides link directly to
+that file. It was reviewed during the large-file pass and kept intact at 507
+lines; split it only alongside an update to those reading instructions and links.
+
 ## Deployment
 
 The frontend is deployed through **Vercel** and the backend through **Heroku**.
