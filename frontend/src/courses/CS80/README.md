@@ -44,6 +44,16 @@ Welcome! This project contains my assignments and coursework for **CS 80 – Int
 
 ---
 
+## Standalone assignment files
+
+`public/course-materials/CS80/mod-5/form.html` is offered as an individual HTML
+file through “View HTML Only” and is also previewed in an iframe. Its embedded
+CSS and JavaScript keep that file usable without additional downloaded assets.
+Keep it self-contained when editing the assignment; a change to this delivery
+contract needs corresponding updates to the download and preview flows.
+
+---
+
 ## Getting Started
 
 <details>
