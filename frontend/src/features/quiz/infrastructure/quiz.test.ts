@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 
-import { fetchQuiz } from "./quiz";
+import { fetchQuiz, resolveQuizImageUrl } from "./quiz";
 
 const fetchMock = vi.fn<typeof fetch>();
 
@@ -36,4 +36,18 @@ test("refreshes an expired answers token using the HTTP status", async () => {
     answers: [{ questionId: 1, correctAnswer: [0] }],
   });
   expect(fetchMock).toHaveBeenCalledTimes(5);
+});
+
+test("resolves backend upload paths against the API origin", () => {
+  expect(
+    resolveQuizImageUrl(
+      "/uploads/00000000-0000-0000-0000-000000000000.png",
+      "https://api.webdev-coursework.com"
+    )
+  ).toBe(
+    "https://api.webdev-coursework.com/uploads/00000000-0000-0000-0000-000000000000.png"
+  );
+  expect(resolveQuizImageUrl("/quiz/legacy.png", "https://api.test")).toBe(
+    "/quiz/legacy.png"
+  );
 });

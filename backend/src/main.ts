@@ -12,17 +12,6 @@ export async function bootstrap() {
     rawBody: true,
   });
 
-  // Warn when running on Heroku's ephemeral filesystem.
-  // Files written to /uploads will be lost on every dyno restart/cycle.
-  // Replace Multer disk storage with an object-store (S3, Cloudinary, etc.)
-  // before using the image-upload feature in production.
-  if (process.env.DYNO) {
-    startupLogger.warn(
-      "Running on Heroku ephemeral filesystem — uploaded files in /uploads " +
-        "will be lost on dyno restart. Migrate Multer to object storage (S3 / Cloudinary)."
-    );
-  }
-
   createApp(app);
 
   // Enable NestJS lifecycle shutdown hooks (SIGTERM/SIGINT).

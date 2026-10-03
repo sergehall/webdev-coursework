@@ -20,16 +20,10 @@ import { SecurityModule } from "./security/security.module";
 
 @Module({
   imports: [
-    ServeStaticModule.forRoot(
-      {
-        rootPath: join(__dirname, "..", "uploads"),
-        serveRoot: "/uploads",
-      },
-      {
-        rootPath: join(__dirname, "..", "public", "assets"),
-        serveRoot: "/assets",
-      }
-    ),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, "..", "public", "assets"),
+      serveRoot: "/assets",
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath:

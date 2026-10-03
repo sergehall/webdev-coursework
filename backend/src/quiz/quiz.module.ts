@@ -12,13 +12,20 @@ import { QuizQuestionRepository } from "./repository/quiz-question.repository";
 import { QuizService } from "./service/quiz.service";
 import { QuizController } from "./api/quiz.controller";
 import { CorrectAnswer } from "./entities/correct-answer.entity";
+import { ConfigService } from "@nestjs/config";
+import { QuizImageController } from "./images/quiz-image.controller";
+import {
+  createQuizImageS3Client,
+  QUIZ_IMAGE_S3_CLIENT,
+  QuizImageStorage,
+} from "./images/quiz-image.storage";
 
 @Module({
   imports: [
     TokensModule,
     TypeOrmModule.forFeature([CorrectAnswer, QuizQuestion, QuizProgress]),
   ],
-  controllers: [QuizController],
+  controllers: [QuizController, QuizImageController],
   providers: [
     QuizService,
     QuizQuestionRepository,
@@ -26,6 +33,12 @@ import { CorrectAnswer } from "./entities/correct-answer.entity";
     QuizProgressRepository,
     AnswersTokenGuard,
     AdminApiKeyGuard,
+    QuizImageStorage,
+    {
+      provide: QUIZ_IMAGE_S3_CLIENT,
+      useFactory: createQuizImageS3Client,
+      inject: [ConfigService],
+    },
   ],
 })
 export class QuizModule {}

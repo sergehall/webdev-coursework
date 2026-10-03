@@ -10,6 +10,14 @@ export interface FetchQuizResponse {
   answers: CorrectAnswerDto[];
 }
 
+export function resolveQuizImageUrl(
+  path: string,
+  apiBase = import.meta.env.VITE_API_URL ?? ""
+): string {
+  if (!path.startsWith("/uploads/") || !apiBase) return path;
+  return `${apiBase.replace(/\/$/, "")}${path}`;
+}
+
 const tokenResponseSchema = z.object({ token: z.string().min(1) });
 const questionDtosSchema = z.array(
   z.object({
@@ -91,7 +99,7 @@ export async function fetchQuiz(quizId: string): Promise<FetchQuizResponse> {
     options: q.options,
     // If UIQuestion expects an array, keep "imageUrls".
     // If it expects a single string, pick the first: q.images?.[0] ?? null
-    imageUrl: q.images ?? [],
+    imageUrl: q.images?.map((path) => resolveQuizImageUrl(path)) ?? [],
     multiple: (answerMap[q.questionId]?.length ?? 0) > 1,
   }));
 

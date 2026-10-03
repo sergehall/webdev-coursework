@@ -90,7 +90,7 @@ export const quizzesApiDocRegistry = {
       ApiConsumes("multipart/form-data"),
       ApiBody({
         description:
-          "Question payload with optional images[]. Runtime validation requires body.quizId; the route quizId is authoritative. Up to five images, 5 MiB each; accepted MIME types: image/png, image/jpeg, image/webp, image/gif. Unsupported MIME types are ignored. Local upload URLs depend on configured storage; ephemeral files are not durable.",
+          "Question payload with optional images[]. Runtime validation requires body.quizId; the route quizId is authoritative. Up to five images, 5 MiB each; accepted and decoded formats: PNG, JPEG, WebP, GIF. Images require configured private S3-compatible storage; invalid content is rejected.",
         schema: {
           type: "object",
           properties: {

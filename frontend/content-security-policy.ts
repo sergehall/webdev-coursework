@@ -20,7 +20,7 @@ export function buildContentSecurityPolicy({
     "form-action 'self'",
     `script-src 'self' ${jsonLdScriptHash} ${themeInitScriptHash}${nonce ? ` 'nonce-${nonce}'` : ""} 'wasm-unsafe-eval' https://cdn.jsdelivr.net https://code.jquery.com https://challenges.cloudflare.com https://static.cloudflareinsights.com`,
     `style-src 'self'${allowInlineStyles ? " 'unsafe-inline'" : ""}`,
-    "img-src 'self' data: blob: https://images.unsplash.com https://avatars.githubusercontent.com https://randomuser.me https://www.smc.edu https://www.google.com",
+    "img-src 'self' data: blob: https://api.webdev-coursework.com https://images.unsplash.com https://avatars.githubusercontent.com https://randomuser.me https://www.smc.edu https://www.google.com",
     "font-src 'self' data:",
     "connect-src 'self' https://api.webdev-coursework.com https://cdn.jsdelivr.net https://*.ingest.sentry.io https://*.ingest.us.sentry.io",
     "media-src 'self' data: blob:",

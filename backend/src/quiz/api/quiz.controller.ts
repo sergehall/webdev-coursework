@@ -12,7 +12,6 @@ import {
 } from "@nestjs/common";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import { ApiTags } from "@nestjs/swagger";
-import type { Request } from "express";
 import { AnswersTokenGuard } from "../../tokens/guards/answers-token.guard";
 import { AdminApiKeyGuard } from "../../security/guards/admin-api-key.guard";
 import { ApiDocService } from "../../swagger/api-doc.service";
@@ -25,19 +24,16 @@ import { ResetProgressDto } from "../dto/reset-progress.dto";
 
 import { QuizService } from "../service/quiz.service";
 import { CreateQuestionDto } from "../dto/create-question.dto";
-
-const MAX_QUESTION_IMAGE_UPLOAD_BYTES = 5 * 1024 * 1024; // 5 MB per file
-const ALLOWED_IMAGE_MIME_TYPES = new Set([
-  "image/png",
-  "image/jpeg",
-  "image/webp",
-  "image/gif",
-]);
+import { QuizImageStorage } from "../images/quiz-image.storage";
+import { MAX_QUESTION_IMAGE_UPLOAD_BYTES } from "../images/normalize-quiz-image";
 
 @Controller("quizzes")
 @ApiTags("Quizzes")
 export class QuizController {
-  constructor(private readonly quizService: QuizService) {}
+  constructor(
+    private readonly quizService: QuizService,
+    private readonly imageStorage: QuizImageStorage
+  ) {}
 
   @ApiDocService.apply(EndpointKeys.Quizzes, QuizzesMethods.GetQuizQuestions)
   @Get(":quizId/questions")
@@ -68,13 +64,6 @@ export class QuizController {
         fieldSize: 64 * 1024,
         parts: 69,
       },
-      fileFilter: (
-        _req: Request,
-        file: Express.Multer.File,
-        callback: (error: Error | null, acceptFile: boolean) => void
-      ) => {
-        callback(null, ALLOWED_IMAGE_MIME_TYPES.has(file.mimetype));
-      },
     })
   )
   async createQuestion(
@@ -82,12 +71,16 @@ export class QuizController {
     @Body() dto: CreateQuestionDto,
     @UploadedFiles() files: { images?: Express.Multer.File[] }
   ) {
-    const imagePaths =
-      files?.images?.map((f) => `/uploads/${f.filename}`) || [];
-    return await this.quizService.createAndSaveQuestion(
-      { ...dto, quizId },
-      imagePaths
-    );
+    const imagePaths = await this.imageStorage.save(files?.images ?? []);
+    try {
+      return await this.quizService.createAndSaveQuestion(
+        { ...dto, quizId },
+        imagePaths
+      );
+    } catch (error) {
+      await this.imageStorage.remove(imagePaths);
+      throw error;
+    }
   }
 
   @ApiDocService.apply(EndpointKeys.Quizzes, QuizzesMethods.GetProgress)

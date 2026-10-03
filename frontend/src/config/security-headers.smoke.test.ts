@@ -122,6 +122,9 @@ describe("security headers", () => {
     expect(getDirective("/", "connect-src")).toContain(
       "https://api.webdev-coursework.com"
     );
+    expect(getDirective("/", "img-src")).toContain(
+      "https://api.webdev-coursework.com"
+    );
   });
 
   it("allows the official Turnstile script and frame without relaxing inline scripts", () => {

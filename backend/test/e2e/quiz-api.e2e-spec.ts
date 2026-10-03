@@ -6,6 +6,14 @@ import {
 } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import * as request from "supertest";
+import {
+  DeleteObjectCommand,
+  GetObjectCommand,
+  PutObjectCommand,
+} from "@aws-sdk/client-s3";
+import sharp = require("sharp");
+import type sharpDefault from "sharp";
+const createImage = sharp as unknown as typeof sharpDefault;
 import { AppController } from "../../src/app/app.controller";
 import { CircuitBreakerService } from "../../src/app/circuit-breaker.service";
 import { createApp } from "../../src/create-app";
@@ -16,6 +24,11 @@ import { QuizService } from "../../src/quiz/service/quiz.service";
 import { TokensModule } from "../../src/tokens/tokens.module";
 import { ApiAbuseGuard } from "../../src/security/api-abuse.guard";
 import { TurnstileModule } from "../../src/security/turnstile/turnstile.module";
+import { QuizImageController } from "../../src/quiz/images/quiz-image.controller";
+import {
+  QUIZ_IMAGE_S3_CLIENT,
+  QuizImageStorage,
+} from "../../src/quiz/images/quiz-image.storage";
 
 type QuizServiceReadContract = jest.Mocked<
   Pick<QuizService, "getQuizWithQuestions" | "getCorrectAnswers">
@@ -51,6 +64,27 @@ const createQuestion = jest.fn().mockResolvedValue({
   options: ["A", "B"],
   images: [],
 });
+const objects = new Map<string, Buffer>();
+const s3Send = jest.fn(async (command: unknown) => {
+  if (command instanceof PutObjectCommand) {
+    objects.set(command.input.Key!, Buffer.from(command.input.Body as Buffer));
+    return {};
+  }
+  if (command instanceof GetObjectCommand) {
+    const body = objects.get(command.input.Key!);
+    if (!body)
+      throw Object.assign(new Error("Missing image"), { name: "NoSuchKey" });
+    return {
+      ContentLength: body.length,
+      Body: { transformToByteArray: async () => body },
+    };
+  }
+  if (command instanceof DeleteObjectCommand) {
+    objects.delete(command.input.Key!);
+    return {};
+  }
+  throw new Error("Unexpected S3 command");
+});
 
 const circuitBreaker = {
   probe: jest.fn(async () => true),
@@ -70,13 +104,14 @@ const circuitBreaker = {
           QUIZ_ANSWERS_JWT_TTL: "5m",
           QUIZ_JWT_ISSUER: "webdev-coursework-e2e",
           QUIZ_JWT_AUDIENCE: "webdev-coursework-e2e-client",
+          QUIZ_IMAGE_S3_BUCKET: "e2e-quiz-images",
         }),
       ],
     }),
     TokensModule,
     TurnstileModule,
   ],
-  controllers: [AppController, QuizController],
+  controllers: [AppController, QuizController, QuizImageController],
   providers: [
     // These tests isolate quiz contracts; global protection has its own HTTP suite.
     { provide: ApiAbuseGuard, useValue: { protect: async () => true } },
@@ -88,6 +123,8 @@ const circuitBreaker = {
       provide: QuizService,
       useValue: { ...quizService, createAndSaveQuestion: createQuestion },
     },
+    QuizImageStorage,
+    { provide: QUIZ_IMAGE_S3_CLIENT, useValue: { send: s3Send } },
     AnswersTokenGuard,
     AdminApiKeyGuard,
   ],
@@ -228,6 +265,69 @@ describe("Quiz API (e2e)", () => {
       });
 
     expect(res.status).toBe(413);
+    expect(createQuestion).not.toHaveBeenCalled();
+  });
+
+  it("stores a decoded image and serves it from the private object store", async () => {
+    createQuestion.mockClear();
+    const image = await createImage({
+      create: {
+        width: 2,
+        height: 2,
+        channels: 4,
+        background: "#ff0000",
+      },
+    })
+      .png()
+      .toBuffer();
+    const upload = await request(app.getHttpServer())
+      .post(`/quizzes/${quizId}/questions`)
+      .set("x-admin-key", "e2e-admin-key")
+      .field("quizId", quizId)
+      .field("questionId", "99")
+      .field("questionText", "A test question")
+      .field("options", "A")
+      .field("options", "B")
+      .attach("images", image, {
+        filename: "original-name.png",
+        contentType: "image/png",
+      });
+
+    expect(upload.status).toBe(201);
+    const paths = createQuestion.mock.calls[0]?.[1] as string[];
+    expect(paths).toHaveLength(1);
+    expect(paths[0]).toMatch(/^\/uploads\/[0-9a-f-]{36}\.png$/);
+    const download = await request(app.getHttpServer()).get(paths[0]);
+    expect(download.status).toBe(200);
+    expect(download.headers["content-type"]).toMatch(/^image\/png/);
+    expect(download.headers["cross-origin-resource-policy"]).toBe(
+      "cross-origin"
+    );
+    expect(download.headers["x-content-type-options"]).toBe("nosniff");
+    expect(download.body).toEqual(expect.any(Buffer));
+    expect(await createImage(download.body).metadata()).toMatchObject({
+      format: "png",
+      width: 2,
+      height: 2,
+    });
+  });
+
+  it("rejects an image whose declared MIME type does not match its content", async () => {
+    createQuestion.mockClear();
+    const upload = await request(app.getHttpServer())
+      .post(`/quizzes/${quizId}/questions`)
+      .set("x-admin-key", "e2e-admin-key")
+      .field("quizId", quizId)
+      .field("questionId", "99")
+      .field("questionText", "A test question")
+      .field("options", "A")
+      .field("options", "B")
+      .attach("images", Buffer.from("<html>not an image</html>"), {
+        filename: "fake.png",
+        contentType: "image/png",
+      });
+
+    expect(upload.status).toBe(400);
     expect(createQuestion).not.toHaveBeenCalled();
   });
 

@@ -368,6 +368,7 @@ an entity/schema diff. Both commands select the date and folder automatically.
 | [Account implementation plan](docs/account-plan.md)                    | Account design and implementation notes                                                               |
 | [Database migrations](docs/database-migrations.md)                     | UTC year/month folders, creation commands, validation, and release allowlist                          |
 | [Assessment standard](docs/quiz-assessment-standard.md)                | Canonical requirements for quizzes, practice assessments, and migrations                              |
+| [Quiz image storage](docs/quiz-image-storage.md)                       | Private R2 setup, upload validation, and image delivery                                               |
 | [Shared assessment module](frontend/src/features/assessment/README.md) | Assessment integration and frontend architecture                                                      |
 
 The assessment standard remains one canonical document. `AGENTS.md` requires

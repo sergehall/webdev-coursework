@@ -17,6 +17,7 @@ import { AnalyticsStore } from "../../src/analytics/analytics.store";
 import { AccountStore } from "../../src/accounts/store/account.store";
 import { QuizController } from "../../src/quiz/api/quiz.controller";
 import { QuizService } from "../../src/quiz/service/quiz.service";
+import { QuizImageStorage } from "../../src/quiz/images/quiz-image.storage";
 import { TokensController } from "../../src/tokens/api/tokens.controller";
 import { TokensService } from "../../src/tokens/service/tokens.service";
 import { AnswersTokenGuard } from "../../src/tokens/guards/answers-token.guard";
@@ -87,6 +88,7 @@ describe("Swagger API contracts and production access", () => {
           AnalyticsStore,
           AccountStore,
           QuizService,
+          QuizImageStorage,
           TokensService,
         ].map((provide) => ({ provide, useValue: {} })),
       ],
