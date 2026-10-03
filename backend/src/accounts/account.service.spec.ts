@@ -6,6 +6,7 @@ import type { AnalyticsService } from "../analytics/analytics.service";
 import type { AccountStore } from "./store/account.store";
 import type { AuthMailService } from "./auth-mail";
 import { TurnstileService } from "../security/turnstile/turnstile.service";
+import * as ownerPassword from "./owner-password";
 
 function service() {
   return new TurnstileService(
@@ -70,5 +71,92 @@ describe("Account registration human verification", () => {
       "account_register"
     );
     expect(store.db.transaction).not.toHaveBeenCalled();
+  });
+});
+
+describe("Password reset token verification", () => {
+  it("rejects an invalid token before deriving a password hash", async () => {
+    const auth = {
+      assertOrigin: jest.fn(),
+      rateLimit: jest.fn().mockResolvedValue(undefined),
+      digest: () => "digest",
+    };
+    const query = jest.fn().mockResolvedValue([]);
+    const store = {
+      db: {
+        transaction: (work: (q: { query: typeof query }) => unknown) =>
+          work({ query }),
+      },
+    };
+    const account = new AccountService(
+      auth as unknown as AnalyticsService,
+      store as unknown as AccountStore,
+      { enabled: true } as AuthMailService,
+      service()
+    );
+    const hash = jest.spyOn(ownerPassword, "hashOwnerPassword");
+    try {
+      await expect(
+        account.consume(
+          { ip: "127.0.0.1" } as Request,
+          "A".repeat(43),
+          "reset",
+          "distinct-passphrase-5821"
+        )
+      ).rejects.toMatchObject({ status: 400 });
+      expect(query).toHaveBeenCalledTimes(1);
+      expect(hash).not.toHaveBeenCalled();
+    } finally {
+      hash.mockRestore();
+    }
+  });
+
+  it("derives and persists the password only after finding a current reset token", async () => {
+    const auth = {
+      assertOrigin: jest.fn(),
+      rateLimit: jest.fn().mockResolvedValue(undefined),
+      digest: () => "digest",
+    };
+    const query = jest
+      .fn()
+      .mockResolvedValueOnce([
+        {
+          account_id: "account-1",
+          revision: "current",
+          current_revision: "current",
+          purpose: "reset",
+        },
+      ])
+      .mockResolvedValue([]);
+    const store = {
+      db: {
+        transaction: (work: (q: { query: typeof query }) => unknown) =>
+          work({ query }),
+      },
+    };
+    const account = new AccountService(
+      auth as unknown as AnalyticsService,
+      store as unknown as AccountStore,
+      { enabled: true } as AuthMailService,
+      service()
+    );
+    const hash = jest
+      .spyOn(ownerPassword, "hashOwnerPassword")
+      .mockResolvedValue("derived-hash");
+    try {
+      await expect(
+        account.consume(
+          { ip: "127.0.0.1" } as Request,
+          "A".repeat(43),
+          "reset",
+          "distinct-passphrase-5821"
+        )
+      ).resolves.toEqual({ signInRequired: false });
+      expect(hash).toHaveBeenCalledWith("distinct-passphrase-5821");
+      expect(query.mock.calls[1][1][0]).toBe("derived-hash");
+      expect(query).toHaveBeenCalledTimes(3);
+    } finally {
+      hash.mockRestore();
+    }
   });
 });

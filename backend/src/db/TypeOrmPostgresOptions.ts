@@ -34,6 +34,11 @@ export class TypeOrmPostgresOptions implements TypeOrmOptionsFactory {
     // Keep schema sync opt-in only. Implicit dev synchronize can trigger
     // noisy/unsafe startup behavior and should not run by default.
     const synchronize = process.env.TYPEORM_SYNCHRONIZE === "true";
+    if (isProduction && synchronize) {
+      throw new Error(
+        "TYPEORM_SYNCHRONIZE must be disabled in production; apply migrations instead"
+      );
+    }
     // Heroku PostgreSQL can be slow to accept connections on cold start.
     // Default: 10 attempts × 3 s = up to 30 s total wait time.
     const retryAttempts = parseIntEnv(process.env.TYPEORM_RETRY_ATTEMPTS, 10);

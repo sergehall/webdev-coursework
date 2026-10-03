@@ -95,8 +95,11 @@ export class AccountService {
       20,
       900
     );
-    if (purpose === "reset" && password) assertAcceptablePassword(password);
-    const passwordHash = password ? await hashOwnerPassword(password) : null;
+    if (purpose === "reset") {
+      if (!password)
+        throw new BadRequestException("A new password is required");
+      assertAcceptablePassword(password);
+    }
     return this.store.db.transaction(async (q) => {
       const [row] = await q.query(
         "SELECT t.account_id,t.revision,t.purpose,t.target_email,a.email,a.role,a.revision AS current_revision FROM webdev_account_tokens t JOIN webdev_accounts a ON a.id=t.account_id WHERE t.token_hash=$1 AND t.purpose=ANY($2::varchar[]) AND t.used_at IS NULL AND t.expires_at>now() FOR UPDATE OF a,t",
@@ -139,11 +142,14 @@ export class AccountService {
           "UPDATE webdev_accounts SET email_verified_at=now(),updated_at=now() WHERE id=$1",
           [row.account_id]
         );
-      else
+      else {
+        // Invalid or expired links must not trigger an expensive scrypt derivation.
+        const passwordHash = await hashOwnerPassword(password!);
         await q.query(
           "UPDATE webdev_accounts SET password_hash=$1,revision=$2,updated_at=now() WHERE id=$3",
           [passwordHash, randomUUID(), row.account_id]
         );
+      }
       await q.query(
         "UPDATE webdev_account_tokens SET used_at=now() WHERE token_hash=$1",
         [createHash("sha256").update(token).digest("hex")]

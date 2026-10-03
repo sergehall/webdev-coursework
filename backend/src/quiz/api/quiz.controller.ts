@@ -64,6 +64,9 @@ export class QuizController {
       limits: {
         files: 5,
         fileSize: MAX_QUESTION_IMAGE_UPLOAD_BYTES,
+        fields: 64,
+        fieldSize: 64 * 1024,
+        parts: 69,
       },
       fileFilter: (
         _req: Request,

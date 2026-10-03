@@ -13,8 +13,8 @@ export class HttpLoggingMiddleware implements NestMiddleware {
   // Middleware entry point
   use(req: Request, res: Response, next: NextFunction) {
     const { method, originalUrl } = req;
-    // Owner credentials, cookies, visitor headers, IPs, and query strings must
-    // never enter the general request log for analytics or account endpoints.
+    // Query parameters may contain anonymous client IDs or other bearer-like values.
+    // Never log them, including for quiz and token routes.
     const path = originalUrl.split("?")[0];
     if (
       path.startsWith("/api/owner") ||
@@ -32,12 +32,12 @@ export class HttpLoggingMiddleware implements NestMiddleware {
 
     // Log request details when response finishes
     res.on("finish", () => {
-      this.logRequest(ip, method, originalUrl, userAgent, res);
+      this.logRequest(ip, method, path, userAgent, res);
     });
 
     // Handle errors and log details
     res.on("error", (error) => {
-      this.handleError(ip, method, originalUrl, userAgent, error);
+      this.handleError(ip, method, path, userAgent, error);
     });
 
     // Move to the next middleware or route handler

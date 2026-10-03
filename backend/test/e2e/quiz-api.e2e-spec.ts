@@ -44,6 +44,13 @@ const quizService: QuizServiceReadContract = {
     },
   ]),
 };
+const createQuestion = jest.fn().mockResolvedValue({
+  quizId: "QuizModule1",
+  questionId: 99,
+  questionText: "A test question",
+  options: ["A", "B"],
+  images: [],
+});
 
 const circuitBreaker = {
   probe: jest.fn(async () => true),
@@ -79,7 +86,7 @@ const circuitBreaker = {
     },
     {
       provide: QuizService,
-      useValue: quizService,
+      useValue: { ...quizService, createAndSaveQuestion: createQuestion },
     },
     AnswersTokenGuard,
     AdminApiKeyGuard,
@@ -181,6 +188,47 @@ describe("Quiz API (e2e)", () => {
 
     expect(res.status).toBe(401);
     expect(res.body.message).toBe("Invalid admin key");
+  });
+
+  it("accepts bounded multipart fields with an administrator key", async () => {
+    createQuestion.mockClear();
+    const res = await request(app.getHttpServer())
+      .post(`/quizzes/${quizId}/questions`)
+      .set("x-admin-key", "e2e-admin-key")
+      .field("quizId", quizId)
+      .field("questionId", "99")
+      .field("questionText", "A test question")
+      .field("options", "A")
+      .field("options", "B");
+
+    expect(res.status).toBe(201);
+    expect(createQuestion).toHaveBeenCalledWith(
+      expect.objectContaining({
+        quizId,
+        questionId: 99,
+        options: ["A", "B"],
+      }),
+      []
+    );
+  });
+
+  it("rejects an image above the upload size limit", async () => {
+    createQuestion.mockClear();
+    const res = await request(app.getHttpServer())
+      .post(`/quizzes/${quizId}/questions`)
+      .set("x-admin-key", "e2e-admin-key")
+      .field("quizId", quizId)
+      .field("questionId", "99")
+      .field("questionText", "A test question")
+      .field("options", "A")
+      .field("options", "B")
+      .attach("images", Buffer.alloc(5 * 1024 * 1024 + 1), {
+        filename: "too-large.png",
+        contentType: "image/png",
+      });
+
+    expect(res.status).toBe(413);
+    expect(createQuestion).not.toHaveBeenCalled();
   });
 
   it("POST /quizzes/progress should reject non-whitelisted fields", async () => {

@@ -75,7 +75,16 @@ describe("TypeOrmPostgresOptions", () => {
     expect(getSynchronizeOption(options)).toBe(false);
   });
 
-  it("enables synchronize only when TYPEORM_SYNCHRONIZE=true", async () => {
+  it("rejects synchronize in production", async () => {
+    process.env.TYPEORM_SYNCHRONIZE = "true";
+
+    await expect(
+      new TypeOrmPostgresOptions().createTypeOrmOptions()
+    ).rejects.toThrow("TYPEORM_SYNCHRONIZE must be disabled in production");
+  });
+
+  it("allows explicit synchronize in local development", async () => {
+    process.env.NODE_ENV = "development";
     process.env.TYPEORM_SYNCHRONIZE = "true";
     const options = await new TypeOrmPostgresOptions().createTypeOrmOptions();
 
