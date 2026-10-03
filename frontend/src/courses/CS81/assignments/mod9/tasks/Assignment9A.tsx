@@ -1,10 +1,10 @@
 import { useState } from "react";
 
-import UserProfileList from "@/components/UserProfileList";
+import UserProfileList from "@/courses/CS81/components/profiles/UserProfileList";
 import ScreenshotGallery from "@/components/ScreenshotGallery";
-import { userProfiles } from "@/data/userProfiles";
-import CodePreviewModal from "@/components/CodePreviewModal";
-import ComponentRenderModal from "@/components/ComponentRenderModal";
+import { userProfiles } from "@/courses/CS81/data/userProfiles";
+import CodePreviewModal from "@/courses/CS81/components/previews/CodePreviewModal";
+import ComponentRenderModal from "@/courses/CS81/components/previews/ComponentRenderModal";
 import {
   OpenCodeModalButton,
   CloseModalButton,

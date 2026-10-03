@@ -1,9 +1,9 @@
 import { useState } from "react";
 
-import StudentCardList from "@/components/StudentCardList";
-import { studentData } from "@/data/studentData";
+import StudentCardList from "@/courses/CS81/components/students/StudentCardList";
+import { studentData } from "@/courses/CS81/data/studentData";
 import ScreenshotGallery from "@/components/ScreenshotGallery";
-import ComponentRenderModal from "@/components/ComponentRenderModal";
+import ComponentRenderModal from "@/courses/CS81/components/previews/ComponentRenderModal";
 import {
   CloseModalButton,
   DownloadAssignmentBundleButton,

@@ -1,6 +1,6 @@
 // src/components/CourseSummaryCard.tsx
 import ExpandedCourseCard from "@/components/ExpandedCourseCard";
-import type { Course } from "@/data/webDeveloperCourses";
+import type { Course } from "@/courses/catalog/webDeveloperCourses";
 
 interface CourseSummaryCardProps {
   course: Course;

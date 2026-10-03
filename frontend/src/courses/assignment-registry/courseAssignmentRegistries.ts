@@ -9,7 +9,7 @@ import assignmentCS81Components from "@/courses/assignment-registry/assignmentCS
 import assignmentCS85Components from "@/courses/assignment-registry/assignmentCS85Components";
 import assignmentCS87AComponents from "@/courses/assignment-registry/assignmentCS87AComponents";
 import type { AssignmentRegistry } from "@/courses/assignment-registry/types";
-import type { CourseCode } from "@/data/types/CourseCode";
+import type { CourseCode } from "@/courses/catalog/CourseCode";
 
 export const courseAssignmentRegistries: Partial<
   Record<CourseCode, AssignmentRegistry>

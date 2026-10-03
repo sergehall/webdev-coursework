@@ -298,3 +298,10 @@ Email: `serge.hall.dev@gmail.com`
 
 This repository is for **educational purposes only**, as part of coursework at **Santa Monica College**.  
 Not intended for production or commercial use.
+
+## App source layout
+
+In this application, `assignments/` contains the course exercises. Their demo UI
+lives in `components/` by topic (profiles, contact forms, students, previews,
+final project), with exercise fixtures in `data/` and local types in `types/`.
+Keep these files within CS81 unless another course or app feature shares them.

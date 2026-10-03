@@ -2,7 +2,10 @@ import React, { Suspense } from "react";
 import { useParams } from "react-router-dom";
 
 import CourseSummaryCard from "@/components/CourseSummaryCard";
-import { type BaseCourse, courses } from "@/data/webDeveloperCourses";
+import {
+  type BaseCourse,
+  courses,
+} from "@/courses/catalog/webDeveloperCourses";
 import completedCourseComponents from "@/courses/assignment-registry/completedCourseComponents";
 import ProgressProvider from "@/context/ProgressProvider";
 

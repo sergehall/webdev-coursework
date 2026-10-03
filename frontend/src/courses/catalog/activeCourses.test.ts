@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { activeCourseCodes, activeCourses } from "./activeCourses";
 
 import { getAssignmentRegistry } from "@/courses/assignment-registry/courseAssignmentRegistries";
-import { courses } from "@/data/webDeveloperCourses";
+import { courses } from "@/courses/catalog/webDeveloperCourses";
 import { homeCourses } from "@/features/home/home-content";
 
 describe("active course catalog", () => {

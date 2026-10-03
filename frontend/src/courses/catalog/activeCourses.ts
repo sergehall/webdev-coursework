@@ -1,4 +1,4 @@
-import type { CourseCode } from "@/data/types/CourseCode";
+import type { CourseCode } from "@/courses/catalog/CourseCode";
 
 type ActiveCourseDefinition = {
   readonly code: CourseCode;

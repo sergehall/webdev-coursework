@@ -1,9 +1,10 @@
 import { Outlet } from "react-router-dom";
 
-import Header from "../components/Header";
-import Sidebar from "../pages/SidebarPage";
-import Footer from "../components/Footer";
 import OwnerProvider from "../features/owner/OwnerProvider";
+
+import Header from "./Header";
+import Footer from "./Footer";
+import Sidebar from "./sidebar/Sidebar";
 
 export default function Layout() {
   return (

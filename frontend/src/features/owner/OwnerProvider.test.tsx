@@ -8,11 +8,12 @@ import {
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, expect, it, vi } from "vitest";
 
-import ThemeToggle from "../../components/ThemeToggle";
 import { ThemeProvider } from "../../context/ThemeProvider";
 
 import OwnerPage from "./OwnerPage";
 import OwnerProvider from "./OwnerProvider";
+
+import ThemeToggle from "@/layout/ThemeToggle";
 
 afterEach(() => {
   cleanup();

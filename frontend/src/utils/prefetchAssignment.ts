@@ -1,7 +1,7 @@
 // frontend/src/utils/prefetchAssignment.ts
 
 import { getAssignmentRegistry } from "@/courses/assignment-registry/courseAssignmentRegistries";
-import type { CourseCode } from "@/data/types/CourseCode";
+import type { CourseCode } from "@/courses/catalog/CourseCode";
 
 export function prefetchAssignmentModule(
   id: string,

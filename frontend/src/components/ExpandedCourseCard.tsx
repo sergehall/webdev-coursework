@@ -8,7 +8,7 @@ import {
   isCourseGroup,
   type Course,
   type BaseCourse,
-} from "@/data/webDeveloperCourses";
+} from "@/courses/catalog/webDeveloperCourses";
 
 interface Props {
   course: Course;

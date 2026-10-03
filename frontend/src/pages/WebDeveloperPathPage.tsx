@@ -1,7 +1,7 @@
 import { BadgeCheck, GraduationCap, Route } from "lucide-react";
 
-import WebDevMajorRequirements from "@/components/WebDevMajorRequirements";
-import PathwaySections from "@/components/PathwaySections";
+import WebDevMajorRequirements from "@/features/pathway/WebDevMajorRequirements";
+import PathwaySections from "@/features/pathway/PathwaySections";
 import { TagLegend } from "@/components/tags";
 
 const WebDeveloperPathPage = () => {

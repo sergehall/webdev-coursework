@@ -1,7 +1,7 @@
 import ResetButton from "@/components/buttons/ResetButton";
 import SubmitButton from "@/components/buttons/SubmitButton";
-import SuccessBar from "@/components/SuccessBar";
-import { useFormSubmitHandler } from "@/hooks/useFormSubmitHandler";
+import SuccessBar from "@/courses/CS80/components/SuccessBar";
+import { useFormSubmitHandler } from "@/courses/CS80/hooks/useFormSubmitHandler";
 import { DownloadHtmlButton } from "@/components/buttons";
 
 const WebsiteRegistrationForm = () => {

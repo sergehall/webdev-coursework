@@ -1,8 +1,8 @@
 import { useState } from "react";
 
-import ContactFormPage from "@/components/ContactFormPage";
+import ContactFormPage from "@/courses/CS81/components/contact/ContactFormPage";
 import ScreenshotGallery from "@/components/ScreenshotGallery";
-import ComponentRenderModal from "@/components/ComponentRenderModal";
+import ComponentRenderModal from "@/courses/CS81/components/previews/ComponentRenderModal";
 import {
   CloseModalButton,
   DownloadAssignmentBundleButton,

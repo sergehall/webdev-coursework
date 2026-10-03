@@ -1,6 +1,6 @@
 // src/utils/normalizeCourseIdToCode.ts
-import { courseCodes } from "@/data/types/CourseCode";
-import type { CourseCode } from "@/data/types/CourseCode";
+import { courseCodes } from "@/courses/catalog/CourseCode";
+import type { CourseCode } from "@/courses/catalog/CourseCode";
 
 export function normalizeCourseIdToCode(
   courseId: string

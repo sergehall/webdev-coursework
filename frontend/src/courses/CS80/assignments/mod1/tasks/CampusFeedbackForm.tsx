@@ -2,8 +2,8 @@
 import { DownloadHtmlButton } from "@/components/buttons";
 import ResetButton from "@/components/buttons/ResetButton";
 import SubmitButton from "@/components/buttons/SubmitButton";
-import SuccessBar from "@/components/SuccessBar";
-import { useFormSubmitHandler } from "@/hooks/useFormSubmitHandler";
+import SuccessBar from "@/courses/CS80/components/SuccessBar";
+import { useFormSubmitHandler } from "@/courses/CS80/hooks/useFormSubmitHandler";
 
 const CampusFeedbackForm = () => {
   const { handleSubmit, submitted, loading } = useFormSubmitHandler({

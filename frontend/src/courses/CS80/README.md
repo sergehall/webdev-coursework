@@ -273,3 +273,9 @@ Email: `serge.hall.dev@gmail.com`
 
 This repository is for **educational purposes only**, as part of coursework at **Santa Monica College**.  
 Not intended for production or commercial use.
+
+## App source layout
+
+The CS80 form exercises share `components/SuccessBar.tsx` for feedback and
+`hooks/useFormSubmitHandler.ts` for submission state. Keep these helpers in
+CS80 while they serve only this course.

@@ -11,15 +11,8 @@ import {
 import { useOwner } from "./owner-context";
 import { securityReturn } from "./auth-return";
 import TurnstileWidget from "./auth/TurnstileWidget";
+import AccountAuthFields, { type AuthMode } from "./auth/AccountAuthFields";
 
-type Mode =
-  | "login"
-  | "reauthenticate"
-  | "register"
-  | "verify-email"
-  | "forgot-password"
-  | "reset-password"
-  | "resend-verification";
 export const authPages = [
   "login",
   "reauthenticate",
@@ -29,7 +22,7 @@ export const authPages = [
   "reset-password",
   "resend-verification",
 ];
-const titles: Record<Mode, string> = {
+const titles: Record<AuthMode, string> = {
   login: "Welcome back",
   reauthenticate: "Confirm your sign-in",
   register: "Create your account",
@@ -38,7 +31,7 @@ const titles: Record<Mode, string> = {
   "reset-password": "Choose a new password",
   "resend-verification": "Resend confirmation",
 };
-export default function AccountAuthPage({ mode }: { mode: Mode }) {
+export default function AccountAuthPage({ mode }: { mode: AuthMode }) {
   const owner = useOwner()!,
     location = useLocation(),
     navigate = useNavigate();
@@ -291,133 +284,30 @@ export default function AccountAuthPage({ mode }: { mode: Mode }) {
           </div>
         ) : (
           <form className="owner-form" onSubmit={(e) => void submit(e)}>
-            {isLogin && (
-              <label>
-                Username or email
-                <input
-                  required
-                  autoComplete="username"
-                  maxLength={254}
-                  value={identity}
-                  onChange={(e) => setIdentity(e.target.value)}
-                />
-              </label>
-            )}
-            {mode === "register" && (
-              <>
-                <label>
-                  Username
-                  <input
-                    required
-                    autoComplete="username"
-                    aria-describedby="account-username-help"
-                    minLength={3}
-                    maxLength={40}
-                    pattern="[a-zA-Z0-9_\-]{3,40}"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                  />
-                </label>
-                <small id="account-username-help">
-                  3–40 letters, numbers, underscores or hyphens.
-                </small>
-              </>
-            )}
-            {["register", "forgot-password", "resend-verification"].includes(
-              mode
-            ) && (
-              <label>
-                Email
-                <input
-                  required
-                  type="email"
-                  autoComplete="email"
-                  maxLength={254}
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </label>
-            )}
-            {hasPassword && (
-              <>
-                <div className="owner-password-heading">
-                  <label htmlFor="account-password">
-                    {mode === "reset-password" ? "New password" : "Password"}
-                  </label>
-                  {isLogin && (
-                    <Link
-                      className="owner-text-link owner-password-help"
-                      to="/account/forgot-password"
-                    >
-                      Forgot password?
-                    </Link>
-                  )}
-                </div>
-                <div className="owner-password-field">
-                  <input
-                    id="account-password"
-                    required
-                    type={show ? "text" : "password"}
-                    autoComplete={isLogin ? "current-password" : "new-password"}
-                    minLength={12}
-                    maxLength={128}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                  <button
-                    type="button"
-                    aria-controls="account-password"
-                    aria-label={show ? "Hide password" : "Show password"}
-                    onClick={() => setShow(!show)}
-                  >
-                    {show ? "Hide" : "Show"}
-                  </button>
-                </div>
-              </>
-            )}
-            {hasPassword && !isLogin && (
-              <>
-                <label>
-                  Confirm password
-                  <input
-                    required
-                    type="password"
-                    autoComplete="new-password"
-                    minLength={12}
-                    maxLength={128}
-                    value={confirmation}
-                    onChange={(e) => setConfirmation(e.target.value)}
-                  />
-                </label>
-                <small>
-                  Use a unique password with at least 12 characters.
-                </small>
-              </>
-            )}
-            {(mode === "verify-email" || mode === "reset-password") &&
-              !token && (
-                <p role="alert">Open the link from your email to continue.</p>
-              )}
-            {requiresTurnstile && !options?.turnstileSiteKey && (
-              <p role="alert">
-                Human verification is unavailable. Please try again later.
-              </p>
-            )}
-            {protectedForm && optionsError && (
-              <p role="alert">
-                Sign-in options could not load.{" "}
-                <button
-                  type="button"
-                  className="owner-text-link"
-                  onClick={() => {
-                    setOptionsError(false);
-                    setOptionsAttempt((value) => value + 1);
-                  }}
-                >
-                  Try again
-                </button>
-              </p>
-            )}
+            <AccountAuthFields
+              mode={mode}
+              identity={identity}
+              setIdentity={setIdentity}
+              username={username}
+              setUsername={setUsername}
+              email={email}
+              setEmail={setEmail}
+              password={password}
+              setPassword={setPassword}
+              confirmation={confirmation}
+              setConfirmation={setConfirmation}
+              show={show}
+              setShow={setShow}
+              token={token}
+              requiresTurnstile={requiresTurnstile}
+              turnstileSiteKeyAvailable={!!options?.turnstileSiteKey}
+              protectedForm={protectedForm}
+              optionsError={optionsError}
+              onRetryOptions={() => {
+                setOptionsError(false);
+                setOptionsAttempt((value) => value + 1);
+              }}
+            />
             <button
               type="submit"
               className="owner-button owner-button--primary owner-button--wide"

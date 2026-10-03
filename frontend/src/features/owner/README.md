@@ -11,6 +11,10 @@ export and the account URL paths remain unchanged.
   account state on an expired session.
 - `OwnerPageElements.tsx` holds the page heading and status/error message used
   by those panels.
+- `auth/AccountAuthFields.tsx` renders the fields shared by account auth modes;
+  `AccountAuthPage.tsx` owns requests, verification, and navigation.
+- `mfa/MfaEnrollmentSection.tsx` renders authenticator setup;
+  `MfaSettingsPanel.tsx` owns MFA requests, expiry, and recovery-code state.
 
 Keep account API calls in the panel or hook that owns the interaction. Keep
 `owner.css` as the ordered stylesheet entry point; its `styles/README.md`

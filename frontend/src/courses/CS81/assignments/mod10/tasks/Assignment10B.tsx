@@ -1,8 +1,8 @@
 import { useState } from "react";
 
-import DynamicProfile from "@/components/DynamicProfile";
+import DynamicProfile from "@/courses/CS81/components/profiles/DynamicProfile";
 import ScreenshotGallery from "@/components/ScreenshotGallery";
-import ComponentRenderModal from "@/components/ComponentRenderModal";
+import ComponentRenderModal from "@/courses/CS81/components/previews/ComponentRenderModal";
 import {
   CloseModalButton,
   DownloadAssignmentBundleButton,

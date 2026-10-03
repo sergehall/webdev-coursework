@@ -1,6 +1,6 @@
 import { getAssignmentRegistry } from "@/courses/assignment-registry/courseAssignmentRegistries";
 import type { AssignmentRegistryEntry } from "@/courses/assignment-registry/types";
-import type { CourseCode } from "@/data/types/CourseCode";
+import type { CourseCode } from "@/courses/catalog/CourseCode";
 
 export function assignmentComponents(
   id: string,

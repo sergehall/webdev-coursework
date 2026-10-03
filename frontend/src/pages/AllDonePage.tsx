@@ -1,7 +1,6 @@
 import { useParams } from "react-router-dom";
 
-import CompletionCelebration from "../components/CompletionCelebration";
-
+import CompletionCelebration from "@/features/progress/CompletionCelebration";
 import ResetButton from "@/components/buttons/ResetButton";
 import { useClientId } from "@/hooks/useClientId";
 import { resetAllModules } from "@/api/quiz-progress";

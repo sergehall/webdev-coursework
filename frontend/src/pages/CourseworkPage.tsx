@@ -5,9 +5,9 @@ import { XCircle } from "lucide-react";
 
 import { LoadMoreButton } from "@/components/buttons";
 import { activeCourseCodes } from "@/courses/catalog/activeCourses";
-import { courses } from "@/data/webDeveloperCourses";
-import type { BaseCourse } from "@/data/webDeveloperCourses";
-import type { CourseCode } from "@/data/types/CourseCode";
+import { courses } from "@/courses/catalog/webDeveloperCourses";
+import type { BaseCourse } from "@/courses/catalog/webDeveloperCourses";
+import type { CourseCode } from "@/courses/catalog/CourseCode";
 
 export default function CourseworkPage() {
   const [visibleCount, setVisibleCount] = useState(10);

@@ -1,7 +1,7 @@
 // src/assignments/mod12/AssignmentMod12.tsx
 import { useState } from "react";
 
-import FinalProjectReveal from "@/components/FinalProjectReveal";
+import FinalProjectReveal from "@/courses/CS81/components/final-project/FinalProjectReveal";
 import AnimatedAccordionItem from "@/components/AnimatedAccordionItem";
 import ModuleCompletionButton from "@/components/buttons/ModuleCompletionButton";
 import { useFinalModuleRedirect } from "@/hooks/useFinalModuleRedirect";

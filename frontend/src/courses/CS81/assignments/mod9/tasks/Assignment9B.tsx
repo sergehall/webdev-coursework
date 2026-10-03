@@ -1,9 +1,9 @@
 import { useState } from "react";
 
-import { userProfilesWithContact } from "@/data/userProfilesWithContact";
-import UserProfileListWithContact from "@/components/UserProfileListWithContact";
+import { userProfilesWithContact } from "@/courses/CS81/data/userProfilesWithContact";
+import UserProfileListWithContact from "@/courses/CS81/components/profiles/UserProfileListWithContact";
 import ScreenshotGallery from "@/components/ScreenshotGallery";
-import ComponentRenderModal from "@/components/ComponentRenderModal";
+import ComponentRenderModal from "@/courses/CS81/components/previews/ComponentRenderModal";
 import {
   CloseModalButton,
   DownloadAssignmentBundleButton,
