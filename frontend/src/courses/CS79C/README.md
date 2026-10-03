@@ -18,3 +18,11 @@ This course scaffold is based on the Spring 2026 syllabus and is structured as:
 The current implementation is an active assignment portal scaffold so each module
 can be filled in with detailed tasks, notes, labs, screenshots, and deliverables
 later.
+
+## Module 10 final exam data
+
+`data/modules/module10Quiz.ts` assembles the Final Exam from `module10QuizQuestions.ts`
+and `module10QuizAnswers.ts`. Keep the 55 question IDs aligned with their answer
+entries. Preserve wording, option order, point values, and answer keys when
+reorganizing the data; follow `docs/quiz-assessment-standard.md` for assessment
+changes.
