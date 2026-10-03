@@ -67,6 +67,7 @@ export default function AccountAuthFields({
           <input
             required
             autoComplete="username"
+            minLength={3}
             maxLength={254}
             value={identity}
             onChange={(e) => setIdentity(e.target.value)}

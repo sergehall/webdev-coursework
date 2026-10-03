@@ -65,7 +65,13 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
       // The frontend reads verification settings here; no build-time secret is needed.
       ...this.turnstile.publicOptions(),
       registrationEnabled:
-        !!this.config.get<string>("SMTP_HOST") && !!this.runtimeState,
+        !!this.runtimeState &&
+        [
+          "SMTP_HOST",
+          "SMTP_USERNAME",
+          "SMTP_PASSWORD",
+          "SMTP_FROM_EMAIL",
+        ].every((key) => !!this.config.get<string>(key)),
       githubEnabled: !!this.github && !!this.runtimeState,
     };
   }

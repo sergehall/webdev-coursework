@@ -205,7 +205,7 @@ export class OwnerController {
         res.clearCookie(this.analytics.mfaCookieName, this.cookieOptions());
         res.redirect(
           303,
-          `${this.analytics.frontendOrigin}/account/login?notice=github-linked`
+          `${this.analytics.frontendOrigin}/account/sign-in?notice=github-linked`
         );
         return;
       }
@@ -241,7 +241,7 @@ export class OwnerController {
       }
       res.redirect(
         303,
-        `${this.analytics.frontendOrigin}/account/login?error=github`
+        `${this.analytics.frontendOrigin}/account/sign-in?error=github`
       );
     }
   }

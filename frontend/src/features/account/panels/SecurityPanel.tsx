@@ -71,7 +71,7 @@ export function SecurityPanel({ session }: { session: OwnerSession }) {
         }
       );
       owner.clear();
-      navigate("/account/login", {
+      navigate("/account/sign-in", {
         replace: true,
         state: {
           notice:
@@ -92,7 +92,7 @@ export function SecurityPanel({ session }: { session: OwnerSession }) {
     try {
       await ownerRequest("revoke-sessions", { method: "POST" });
       owner.clear();
-      navigate("/account/login", {
+      navigate("/account/sign-in", {
         replace: true,
         state: {
           notice: "All account sessions ended. Sign in again to continue.",

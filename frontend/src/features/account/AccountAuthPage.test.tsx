@@ -32,7 +32,10 @@ afterEach(() => {
   delete window.turnstile;
   vi.unstubAllGlobals();
 });
-function auth(mode: "login" | "register" | "reauthenticate" = "login") {
+function auth(
+  mode: "login" | "register" | "reauthenticate" = "login",
+  notice?: string
+) {
   const owner: OwnerState = {
     session: null,
     status: "anonymous",
@@ -42,7 +45,9 @@ function auth(mode: "login" | "register" | "reauthenticate" = "login") {
     logout: vi.fn(),
   };
   render(
-    <MemoryRouter>
+    <MemoryRouter
+      initialEntries={[{ pathname: "/account/sign-in", state: { notice } }]}
+    >
       <OwnerContext.Provider value={owner}>
         <AccountAuthPage mode={mode} />
       </OwnerContext.Provider>
@@ -51,6 +56,46 @@ function auth(mode: "login" | "register" | "reauthenticate" = "login") {
   return owner;
 }
 describe("Turnstile account integration", () => {
+  it("renders navigation notices as text instead of HTML", () => {
+    const markup = '<img src=x onerror="alert(1)">';
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        new Response(
+          JSON.stringify({
+            githubEnabled: false,
+            registrationEnabled: true,
+            turnstileRequired: false,
+            turnstileSiteKey: "",
+          })
+        )
+      )
+    );
+    auth("login", markup);
+    expect(screen.getByRole("status")).toHaveTextContent(markup);
+    expect(document.querySelector("img[src=x]")).toBeNull();
+  });
+
+  it("hides email sign-up when registration is unavailable", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        new Response(
+          JSON.stringify({
+            githubEnabled: false,
+            registrationEnabled: false,
+            turnstileRequired: false,
+            turnstileSiteKey: "",
+          })
+        )
+      )
+    );
+    auth("register");
+    expect(
+      await screen.findByText("Email sign-up is unavailable right now.")
+    ).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Sign up" })).toBeNull();
+  });
   it.each(["login", "reauthenticate", "register"] as const)(
     "requires and submits an action-bound token for %s; refreshes it after failure",
     async (mode) => {
@@ -74,7 +119,7 @@ describe("Turnstile account integration", () => {
       vi.stubGlobal("fetch", fetcher);
       auth(mode);
       const button = screen.getByRole("button", {
-        name: mode === "register" ? "Create account" : "Log in",
+        name: mode === "register" ? "Sign up" : "Sign in",
       });
       expect(button).toBeDisabled();
       await waitFor(() => expect(renderWidget).toHaveBeenCalledOnce());
@@ -146,7 +191,7 @@ describe("Turnstile account integration", () => {
         name: "Continue with GitHub",
       });
       const password = screen.getByRole("button", {
-        name: mode === "register" ? "Create account" : "Log in",
+        name: mode === "register" ? "Sign up" : "Sign in",
       });
       expect(github).toBeDisabled();
       expect(password).toBeDisabled();
@@ -230,10 +275,10 @@ describe("Turnstile account integration", () => {
     );
     auth();
     await screen.findByText("Sign-in options could not load.");
-    expect(screen.getByRole("button", { name: "Log in" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Sign in" })).toBeDisabled();
     fireEvent.click(screen.getByRole("button", { name: "Try again" }));
     await waitFor(() =>
-      expect(screen.getByRole("button", { name: "Log in" })).toBeEnabled()
+      expect(screen.getByRole("button", { name: "Sign in" })).toBeEnabled()
     );
   });
 });

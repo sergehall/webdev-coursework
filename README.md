@@ -103,8 +103,8 @@ key used by coursework endpoints is also separate from account roles.
 
 | Route                          | Purpose                                                                                     |
 | ------------------------------ | ------------------------------------------------------------------------------------------- |
-| `/account/register`            | Create an account                                                                           |
-| `/account/login`               | Sign in with an available method                                                            |
+| `/account/sign-up`             | Create an account                                                                           |
+| `/account/sign-in`             | Sign in with an available method                                                            |
 | `/account/verify-email`        | Confirm registration or a newly added email                                                 |
 | `/account/resend-verification` | Request another registration confirmation link                                              |
 | `/account/forgot-password`     | Request a password reset email                                                              |

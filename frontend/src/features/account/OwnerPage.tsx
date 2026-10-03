@@ -41,7 +41,22 @@ function PreferencesPanel({ profile }: { profile: OwnerProfile }) {
 
 export default function OwnerPage() {
   const owner = useOwner();
-  const path = useLocation().pathname.split("/")[2] ?? "overview";
+  const location = useLocation();
+  const path = location.pathname.split("/")[2] ?? "overview";
+  const oldAuthPath =
+    path === "login" ? "sign-in" : path === "register" ? "sign-up" : null;
+  if (oldAuthPath)
+    return (
+      <Navigate
+        to={{
+          pathname: `/account/${oldAuthPath}`,
+          search: location.search,
+          hash: location.hash,
+        }}
+        state={location.state}
+        replace
+      />
+    );
   if (
     !owner ||
     owner.status === "idle" ||
@@ -67,11 +82,17 @@ export default function OwnerPage() {
       <div className="owner-workspace">
         <AccountAuthPage
           key={path}
-          mode={path as Parameters<typeof AccountAuthPage>[0]["mode"]}
+          mode={
+            path === "sign-in"
+              ? "login"
+              : path === "sign-up"
+                ? "register"
+                : (path as Parameters<typeof AccountAuthPage>[0]["mode"])
+          }
         />
       </div>
     );
-  if (!owner.session) return <Navigate to="/account/login" replace />;
+  if (!owner.session) return <Navigate to="/account/sign-in" replace />;
   const availableSections = sections.filter(
     (s) => s.id !== "administration" || owner.session?.role === "admin"
   );

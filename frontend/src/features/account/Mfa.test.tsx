@@ -272,7 +272,7 @@ describe("Two-factor account flows", () => {
           path="/account/security"
           element={<Settings initial={enabled} />}
         />
-        <Route path="/account/login" element={<p>Sign in again</p>} />
+        <Route path="/account/sign-in" element={<p>Sign in again</p>} />
       </Routes>,
       undefined,
       state
@@ -311,7 +311,7 @@ describe("Two-factor account flows", () => {
       )
     );
     vi.stubGlobal("fetch", fetcher);
-    const state = show(<OwnerPage />, "/account/login", context(false));
+    const state = show(<OwnerPage />, "/account/sign-in", context(false));
     await screen.findByRole("button", { name: "Continue with GitHub" });
     fireEvent.change(screen.getByLabelText("Username or email"), {
       target: { value: "student" },
@@ -319,7 +319,7 @@ describe("Two-factor account flows", () => {
     fireEvent.change(screen.getByLabelText("Password"), {
       target: { value: "private test password" },
     });
-    fireEvent.click(screen.getByRole("button", { name: "Log in" }));
+    fireEvent.click(screen.getByRole("button", { name: "Sign in" }));
     expect(
       await screen.findByRole("heading", { name: "Two-factor verification" })
     ).toBeInTheDocument();

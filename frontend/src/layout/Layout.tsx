@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 
-import OwnerProvider from "../features/owner/OwnerProvider";
+import OwnerProvider from "../features/account/OwnerProvider";
 
 import Header from "./Header";
 import Footer from "./Footer";

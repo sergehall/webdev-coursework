@@ -14,18 +14,18 @@ import TurnstileWidget from "./auth/TurnstileWidget";
 import AccountAuthFields, { type AuthMode } from "./auth/AccountAuthFields";
 
 export const authPages = [
-  "login",
+  "sign-in",
   "reauthenticate",
-  "register",
+  "sign-up",
   "verify-email",
   "forgot-password",
   "reset-password",
   "resend-verification",
 ];
 const titles: Record<AuthMode, string> = {
-  login: "Welcome back",
+  login: "Sign in to your account",
   reauthenticate: "Confirm your sign-in",
-  register: "Create your account",
+  register: "Sign up for an account",
   "verify-email": "Confirm your email",
   "forgot-password": "Forgot your password?",
   "reset-password": "Choose a new password",
@@ -58,6 +58,8 @@ export default function AccountAuthPage({ mode }: { mode: AuthMode }) {
   const [optionsError, setOptionsError] = useState(false);
   const [optionsAttempt, setOptionsAttempt] = useState(0);
   const protectedForm = isLogin || mode === "register";
+  const registrationUnavailable =
+    mode === "register" && options?.registrationEnabled === false;
   const requiresTurnstile = protectedForm && !!options?.turnstileRequired;
   const verificationPending =
     protectedForm && (!options || (requiresTurnstile && !turnstileToken));
@@ -274,6 +276,11 @@ export default function AccountAuthPage({ mode }: { mode: AuthMode }) {
             Continue with GitHub
           </button>
         )}
+        {registrationUnavailable && !done && (
+          <p role="status" className="owner-message">
+            Email sign-up is unavailable right now.
+          </p>
+        )}
         {done ? (
           <div role="status" className="owner-message">
             {mode === "verify-email"
@@ -283,54 +290,56 @@ export default function AccountAuthPage({ mode }: { mode: AuthMode }) {
                 : "If these details are eligible, an email will arrive shortly. Check your inbox and spam folder."}
           </div>
         ) : (
-          <form className="owner-form" onSubmit={(e) => void submit(e)}>
-            <AccountAuthFields
-              mode={mode}
-              identity={identity}
-              setIdentity={setIdentity}
-              username={username}
-              setUsername={setUsername}
-              email={email}
-              setEmail={setEmail}
-              password={password}
-              setPassword={setPassword}
-              confirmation={confirmation}
-              setConfirmation={setConfirmation}
-              show={show}
-              setShow={setShow}
-              token={token}
-              requiresTurnstile={requiresTurnstile}
-              turnstileSiteKeyAvailable={!!options?.turnstileSiteKey}
-              protectedForm={protectedForm}
-              optionsError={optionsError}
-              onRetryOptions={() => {
-                setOptionsError(false);
-                setOptionsAttempt((value) => value + 1);
-              }}
-            />
-            <button
-              type="submit"
-              className="owner-button owner-button--primary owner-button--wide"
-              disabled={
-                busy ||
-                verificationPending ||
-                ((mode === "verify-email" || mode === "reset-password") &&
-                  !token)
-              }
-            >
-              {busy
-                ? "Please wait…"
-                : isLogin
-                  ? "Log in"
-                  : mode === "register"
-                    ? "Create account"
-                    : mode === "verify-email"
-                      ? "Confirm email"
-                      : mode === "reset-password"
-                        ? "Save password"
-                        : "Send email"}
-            </button>
-          </form>
+          !registrationUnavailable && (
+            <form className="owner-form" onSubmit={(e) => void submit(e)}>
+              <AccountAuthFields
+                mode={mode}
+                identity={identity}
+                setIdentity={setIdentity}
+                username={username}
+                setUsername={setUsername}
+                email={email}
+                setEmail={setEmail}
+                password={password}
+                setPassword={setPassword}
+                confirmation={confirmation}
+                setConfirmation={setConfirmation}
+                show={show}
+                setShow={setShow}
+                token={token}
+                requiresTurnstile={requiresTurnstile}
+                turnstileSiteKeyAvailable={!!options?.turnstileSiteKey}
+                protectedForm={protectedForm}
+                optionsError={optionsError}
+                onRetryOptions={() => {
+                  setOptionsError(false);
+                  setOptionsAttempt((value) => value + 1);
+                }}
+              />
+              <button
+                type="submit"
+                className="owner-button owner-button--primary owner-button--wide"
+                disabled={
+                  busy ||
+                  verificationPending ||
+                  ((mode === "verify-email" || mode === "reset-password") &&
+                    !token)
+                }
+              >
+                {busy
+                  ? "Please wait…"
+                  : isLogin
+                    ? "Sign in"
+                    : mode === "register"
+                      ? "Sign up"
+                      : mode === "verify-email"
+                        ? "Confirm email"
+                        : mode === "reset-password"
+                          ? "Save password"
+                          : "Send email"}
+              </button>
+            </form>
+          )
         )}
         {(error || owner.error) && (
           <p role="alert" className="owner-message owner-message--error">
@@ -349,15 +358,15 @@ export default function AccountAuthPage({ mode }: { mode: AuthMode }) {
         )}
         <div className="owner-auth-links">
           {mode !== "login" && (
-            <Link className="owner-text-link" to="/account/login">
+            <Link className="owner-text-link" to="/account/sign-in">
               Back to sign in
             </Link>
           )}
           {mode === "login" && (
             <p className="owner-auth-signup">
               New here?{" "}
-              <Link className="owner-text-link" to="/account/register">
-                Create an account
+              <Link className="owner-text-link" to="/account/sign-up">
+                Sign up
               </Link>
             </p>
           )}

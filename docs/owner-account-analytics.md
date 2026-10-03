@@ -6,14 +6,16 @@ inbox is included. Authentication emails use the existing SMTP provider.
 
 ## Routes and roles
 
-- `/account/login`: GitHub or username/email plus password.
-- `/account/register`: GitHub signup or email/password registration.
+- `/account/sign-in`: GitHub or username/email plus password.
+- `/account/sign-up`: GitHub sign-up or email/password registration.
 - `/account/verify-email`, `/account/resend-verification`.
 - `/account/forgot-password`, `/account/reset-password`.
 - `/account/overview`, `/account/profile`, `/account/preferences`, `/account/security`.
 - `/account/administration`: administrator reports and security activity.
 
-Old `/owner/*` UI/API routes remain compatible aliases. New accounts are `client`
+Old `/account/login`, `/account/register`, and `/owner/*` UI routes remain
+compatible aliases. The `/api/account/login` and `/api/account/register`
+endpoints remain stable. New accounts are `client`
 and never choose their own role. Serge's fixed primary administrator account is
 `admin`, identified by the configured stable GitHub ID. Only this account can
 list clients and change roles; assigned admins can view reports but cannot manage

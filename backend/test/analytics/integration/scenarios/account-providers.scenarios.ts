@@ -341,7 +341,7 @@ export function registerAccountProviderScenarios(
     const successIntent = await start(cookie);
     const success = await callback(successIntent, 91000002);
     expect(success.headers.location).toBe(
-      `${origin}/account/login?notice=github-linked`
+      `${origin}/account/sign-in?notice=github-linked`
     );
     expect(
       (success.headers["set-cookie"] as unknown as string[])

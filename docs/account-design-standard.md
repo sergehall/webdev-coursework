@@ -10,7 +10,7 @@ these presentation rules.
 ## Theme tokens
 
 The source of truth is
-[`owner-theme.css`](../frontend/src/features/owner/owner-theme.css).
+[`owner-theme.css`](../frontend/src/features/account/owner-theme.css).
 Tokens are scoped to `.owner-workspace` and `.owner-account-menu`, so the account
 palette does not recolor the public portfolio. Use these tokens instead of adding
 component-specific hex colors or unrelated green/blue utility classes.

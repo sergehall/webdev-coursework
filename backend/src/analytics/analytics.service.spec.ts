@@ -11,7 +11,7 @@ import {
 import { normalizeDevice } from "../security/device";
 import type { MfaService } from "../accounts/mfa/mfa.service";
 
-function fixture() {
+function fixture(settings: Record<string, string> = {}) {
   const store = {
     owner: jest.fn().mockResolvedValue({
       id: "00000000-0000-4000-8000-000000000001",
@@ -50,7 +50,7 @@ function fixture() {
     challenge: jest.fn().mockResolvedValue(null),
   };
   const service = new AnalyticsService(
-    new ConfigService(),
+    new ConfigService(settings),
     store as unknown as AnalyticsStore,
     store as unknown as AccountStore,
     mfa as unknown as MfaService,
@@ -83,6 +83,21 @@ function fixture() {
 }
 
 describe("Owner access and anonymous analytics", () => {
+  it("advertises email sign-up only with complete mail configuration", () => {
+    expect(fixture().service.loginOptions().registrationEnabled).toBe(false);
+    expect(
+      fixture({ SMTP_HOST: "smtp.example.test" }).service.loginOptions()
+        .registrationEnabled
+    ).toBe(false);
+    expect(
+      fixture({
+        SMTP_HOST: "smtp.example.test",
+        SMTP_USERNAME: "smtp-user",
+        SMTP_PASSWORD: "smtp-pass",
+        SMTP_FROM_EMAIL: "noreply@example.test",
+      }).service.loginOptions().registrationEnabled
+    ).toBe(true);
+  });
   it("removes a newly issued cache token if registering its session fails", async () => {
     const { service, store, runtimeState } = fixture();
     store.recordSession.mockRejectedValueOnce(

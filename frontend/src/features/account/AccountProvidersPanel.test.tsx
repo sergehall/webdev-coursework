@@ -56,7 +56,7 @@ function show(value = session) {
             path="/account/security"
             element={<AccountProvidersPanel session={value} />}
           />
-          <Route path="/account/login" element={<p>Login page</p>} />
+          <Route path="/account/sign-in" element={<p>Login page</p>} />
         </Routes>
       </OwnerContext.Provider>
     </MemoryRouter>

@@ -83,7 +83,7 @@ export default function MfaChallengePage() {
     setError("");
     try {
       await ownerRequest("mfa/cancel-challenge", { method: "POST" });
-      navigate("/account/login", { replace: true });
+      navigate("/account/sign-in", { replace: true });
     } catch {
       setError(
         "Unable to end verification. Check your connection and try again."

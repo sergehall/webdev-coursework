@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 import ThemeToggle from "./ThemeToggle";
 
-import OwnerAccountMenu from "@/features/owner/OwnerAccountMenu";
+import OwnerAccountMenu from "@/features/account/OwnerAccountMenu";
 
 export default function Header() {
   return (

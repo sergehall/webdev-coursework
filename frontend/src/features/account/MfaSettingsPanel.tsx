@@ -89,7 +89,7 @@ export default function MfaSettingsPanel({
           parseResponse: parseSignedOut,
         });
         owner.clear();
-        navigate("/account/login", {
+        navigate("/account/sign-in", {
           replace: true,
           state: {
             notice:
@@ -138,7 +138,7 @@ export default function MfaSettingsPanel({
       }
       if (err instanceof OwnerApiError && err.status === 401) {
         owner.clear();
-        navigate("/account/login", { replace: true });
+        navigate("/account/sign-in", { replace: true });
         return;
       }
       if (

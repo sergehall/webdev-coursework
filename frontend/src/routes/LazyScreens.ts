@@ -4,7 +4,7 @@ import { lazy } from "react";
 
 // Main pages
 export const Home = lazy(() => import("../pages/HomePage"));
-export const OwnerPage = lazy(() => import("../features/owner/OwnerPage"));
+export const OwnerPage = lazy(() => import("../features/account/OwnerPage"));
 export const NotFound = lazy(() => import("../pages/NotFound"));
 
 // Assignment-related pages

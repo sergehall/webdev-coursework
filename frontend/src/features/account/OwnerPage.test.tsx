@@ -5,7 +5,7 @@ import {
   fireEvent,
   waitFor,
 } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter, useLocation } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import OwnerPage from "./OwnerPage";
@@ -28,7 +28,15 @@ const session: OwnerSession = {
     reportDays: 30,
   },
 };
-function show(path: string, authenticated = true) {
+function CurrentLocation() {
+  const location = useLocation();
+  return (
+    <output data-testid="account-path">
+      {location.pathname + location.search + location.hash}
+    </output>
+  );
+}
+function show(path: string, authenticated = true, showLocation = false) {
   const state: OwnerState = {
     session: authenticated ? session : null,
     status: authenticated ? "authenticated" : "anonymous",
@@ -41,6 +49,7 @@ function show(path: string, authenticated = true) {
     <MemoryRouter initialEntries={[path]}>
       <OwnerContext.Provider value={state}>
         <OwnerPage />
+        {showLocation && <CurrentLocation />}
       </OwnerContext.Provider>
     </MemoryRouter>
   );
@@ -206,6 +215,33 @@ describe("Owner account", () => {
 });
 
 describe("Public accounts", () => {
+  it.each([
+    ["login", "sign-in"],
+    ["register", "sign-up"],
+  ])(
+    "redirects legacy %s to %s while preserving URL context",
+    async (oldPath, newPath) => {
+      vi.stubGlobal(
+        "fetch",
+        vi.fn().mockResolvedValue(
+          new Response(
+            JSON.stringify({
+              githubEnabled: false,
+              registrationEnabled: true,
+              turnstileRequired: false,
+              turnstileSiteKey: "",
+            })
+          )
+        )
+      );
+      show(`/account/${oldPath}?notice=example#context`, false, true);
+      await waitFor(() =>
+        expect(screen.getByTestId("account-path")).toHaveTextContent(
+          `/account/${newPath}?notice=example#context`
+        )
+      );
+    }
+  );
   it("keeps confirmation help contextual and offers it after rejected sign-in", async () => {
     vi.stubGlobal(
       "fetch",
@@ -224,14 +260,15 @@ describe("Public accounts", () => {
         )
       )
     );
-    show("/account/login", false);
+    show("/account/sign-in", false);
     expect(
       screen.queryByRole("link", { name: "Resend confirmation email" })
     ).not.toBeInTheDocument();
     expect(screen.getByText("New here?")).toBeInTheDocument();
-    expect(
-      screen.getByRole("link", { name: "Create an account" })
-    ).toHaveAttribute("href", "/account/register");
+    expect(screen.getByRole("link", { name: "Sign up" })).toHaveAttribute(
+      "href",
+      "/account/sign-up"
+    );
     expect(
       screen.getByRole("link", { name: "Forgot password?" })
     ).toHaveAttribute("href", "/account/forgot-password");
@@ -245,9 +282,9 @@ describe("Public accounts", () => {
       target: { value: "student private password" },
     });
     await waitFor(() =>
-      expect(screen.getByRole("button", { name: "Log in" })).toBeEnabled()
+      expect(screen.getByRole("button", { name: "Sign in" })).toBeEnabled()
     );
-    fireEvent.click(screen.getByRole("button", { name: "Log in" }));
+    fireEvent.click(screen.getByRole("button", { name: "Sign in" }));
     expect(await screen.findByRole("alert")).toHaveTextContent(
       "confirm your email first"
     );
@@ -277,7 +314,7 @@ describe("Public accounts", () => {
       )
     );
     vi.stubGlobal("fetch", fetcher);
-    show("/account/register", false);
+    show("/account/sign-up", false);
     await screen.findByRole("button", { name: "Continue with GitHub" });
     expect(
       screen.queryByRole("link", { name: "Resend confirmation email" })
@@ -294,7 +331,7 @@ describe("Public accounts", () => {
     fireEvent.change(screen.getByLabelText("Confirm password"), {
       target: { value: "different private password" },
     });
-    fireEvent.click(screen.getByRole("button", { name: "Create account" }));
+    fireEvent.click(screen.getByRole("button", { name: "Sign up" }));
     expect(await screen.findByRole("alert")).toHaveTextContent(
       "Passwords do not match"
     );
@@ -302,7 +339,7 @@ describe("Public accounts", () => {
     fireEvent.change(screen.getByLabelText("Confirm password"), {
       target: { value: "student private password" },
     });
-    fireEvent.click(screen.getByRole("button", { name: "Create account" }));
+    fireEvent.click(screen.getByRole("button", { name: "Sign up" }));
     expect(await screen.findByRole("status")).toHaveTextContent(
       "Check your inbox"
     );

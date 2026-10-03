@@ -34,7 +34,7 @@ export default function OwnerAccountMenu() {
   if (!owner?.session)
     return (
       <Link
-        to="/account/login"
+        to="/account/sign-in"
         aria-label="Sign in"
         className="owner-account-menu inline-flex min-h-10 items-center gap-2 rounded-full border border-[var(--owner-border)] px-3 text-sm font-semibold text-[var(--owner-text)] hover:bg-[var(--owner-hover)] focus-visible:ring-2 focus-visible:ring-[var(--owner-accent)]"
       >

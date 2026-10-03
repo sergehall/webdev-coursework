@@ -85,7 +85,7 @@ export default function AccountProvidersPanel({
         window.location.assign(url.href);
       } else if (action === "disconnect") {
         owner.clear();
-        navigate("/account/login", {
+        navigate("/account/sign-in", {
           replace: true,
           state: {
             notice:
@@ -106,7 +106,7 @@ export default function AccountProvidersPanel({
       if (err instanceof OwnerApiError) {
         if (err.status === 401) {
           owner.clear();
-          navigate("/account/login", { replace: true });
+          navigate("/account/sign-in", { replace: true });
           return;
         }
         if (err.code === "RECENT_SIGN_IN_REQUIRED") setHelp("signin");

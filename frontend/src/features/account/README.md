@@ -1,7 +1,14 @@
-# Owner workspace
+# Account domain
 
-`OwnerPage.tsx` keeps route and access-state composition. Its public default
-export and the account URL paths remain unchanged.
+This feature contains sign-in, sign-up, recovery, sessions, profile, security,
+and owner-only administration. `OwnerPage.tsx` composes public authentication
+and authenticated account routes. The legacy `Owner*` file and CSS names remain
+internal while those responsibilities share the account domain.
+
+Use `/account/sign-in` and `/account/sign-up` for new links. The old
+`/account/login` and `/account/register` paths redirect to the canonical pages,
+preserving query, hash, and navigation state. The API endpoints and Turnstile
+action names retain `login` and `register` for compatibility.
 
 - `panels/ProfilePanel.tsx` owns display-name and username editing.
 - `panels/SecurityPanel.tsx` owns password changes, MFA and session navigation,
