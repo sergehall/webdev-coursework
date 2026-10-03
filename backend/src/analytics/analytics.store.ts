@@ -1,12 +1,13 @@
 import { randomUUID } from "crypto";
 import {
-  BadRequestException,
   ConflictException,
   Injectable,
   UnauthorizedException,
 } from "@nestjs/common";
 import { DataSource } from "typeorm";
 import { QR_CAMPAIGN, type QrEvent } from "./analytics.types";
+import { auditGroups, decodeActivityCursor } from "./store/audit-query";
+import { decodeSessionCursor } from "./store/session-cursor";
 import type {
   AuditQueryDto,
   OwnerPreferencesDto,
@@ -249,27 +250,7 @@ export class AnalyticsStore {
     revision: string,
     query: SessionQueryDto = {}
   ) {
-    let at: string | null = null,
-      id: string | null = null;
-    if (query.cursor) {
-      try {
-        const parsed = JSON.parse(
-          Buffer.from(query.cursor, "base64url").toString("utf8")
-        ) as { at: string; id: string };
-        if (
-          !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(parsed.at) ||
-          new Date(parsed.at).toISOString() !== parsed.at ||
-          !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
-            parsed.id
-          )
-        )
-          throw new Error();
-        at = parsed.at;
-        id = parsed.id;
-      } catch {
-        throw new BadRequestException("Invalid sessions cursor");
-      }
-    }
+    const { at, id } = decodeSessionCursor(query.cursor);
     // Apply account/revision isolation and filters before selecting a page.
     const rows: {
       id: string;
@@ -412,43 +393,7 @@ export class AnalyticsStore {
   async audits(query: AuditQueryDto) {
     const limit = query.limit ?? 10,
       days = query.days ?? 7;
-    const groups: Record<string, string[]> = {
-      "sign-in": [
-        "owner.login%",
-        "owner.github.%",
-        "account.github.%",
-        "account.mfa.login",
-      ],
-      sessions: ["owner.session%", "owner.logout"],
-      profile: ["owner.profile.%", "owner.preferences.%"],
-      security: ["owner.password.%", "owner.sessions.revoke", "account.mfa.%"],
-      administration: ["accounts.%"],
-      analytics: ["analytics.%"],
-      limits: ["rate.%"],
-    };
-    let before: string | null = null,
-      beforeId: string | null = null;
-    if (query.cursor) {
-      try {
-        const cursor = JSON.parse(
-          Buffer.from(query.cursor, "base64url").toString("utf8")
-        ) as { at: string; id: string };
-        if (
-          typeof cursor.at !== "string" ||
-          !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3,6}Z$/.test(cursor.at) ||
-          new Date(cursor.at).toISOString().slice(0, 19) !==
-            cursor.at.slice(0, 19) ||
-          !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
-            cursor.id
-          )
-        )
-          throw new Error();
-        before = cursor.at;
-        beforeId = cursor.id;
-      } catch {
-        throw new BadRequestException("Invalid activity cursor");
-      }
-    }
+    const { before, beforeId } = decodeActivityCursor(query.cursor);
     const rows: (AccessAudit & { eventId: string; cursorAt: string })[] =
       await this.db.query(
         `
@@ -467,7 +412,7 @@ export class AnalyticsStore {
             : query.result === "allowed"
               ? true
               : null,
-          groups[query.group] ?? null,
+          auditGroups[query.group] ?? null,
           before,
           beforeId,
           limit + 1,

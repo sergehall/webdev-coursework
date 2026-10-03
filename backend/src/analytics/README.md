@@ -16,4 +16,6 @@ The `application/` directory separates owner-facing behavior:
 passes these helpers the current store and security callbacks for each call, so
 they use the same runtime state, audit path, and origin and MFA checks. Keep
 database queries in `analytics.store.ts`; keep request contracts in the service
-and controller.
+and controller. The `store/` directory owns pagination cursor decoding and
+audit action groups. Cursor validation retains the existing session and activity
+formats; SQL pagination and account/revision filters stay in `AnalyticsStore`.
