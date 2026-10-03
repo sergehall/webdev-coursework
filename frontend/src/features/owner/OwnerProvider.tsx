@@ -11,6 +11,7 @@ import { useLocation } from "react-router-dom";
 import { ThemeContext } from "../../context/ThemeContext";
 
 import { OwnerApiError, ownerRequest, type OwnerSession } from "./owner-api";
+import { parseOwnerSession } from "./owner-contracts";
 import { OwnerContext, type OwnerState } from "./owner-context";
 
 export default function OwnerProvider({ children }: { children: ReactNode }) {
@@ -50,7 +51,9 @@ export default function OwnerProvider({ children }: { children: ReactNode }) {
   const refresh = useCallback(async () => {
     setStatus("loading");
     try {
-      const data = await ownerRequest<OwnerSession>("session");
+      const data = await ownerRequest<OwnerSession>("session", {
+        parseResponse: parseOwnerSession,
+      });
       setSession(data);
       setStatus("authenticated");
       setError("");

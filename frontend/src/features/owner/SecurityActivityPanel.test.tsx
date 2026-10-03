@@ -23,6 +23,7 @@ it("requests ten records, fetches the next page on demand and resets pagination 
               occurredAt: new Date().toISOString(),
               action: "owner.login",
               allowed: true,
+              actor: "test-owner",
             },
           ],
           nextCursor: "next-page",

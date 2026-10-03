@@ -1,5 +1,6 @@
 import { apiFetch } from "./client";
 
+import { z } from "@/config/zod";
 import { COURSE_PROGRESS_CONFIG } from "@/api/config/course-progress";
 import type { CourseId } from "@/api/config/course-progress";
 
@@ -16,6 +17,8 @@ type ResetProgress = {
   courseId: CourseId;
 };
 
+const progressResponseSchema = z.array(z.number().int().positive());
+
 export async function fetchProgress(
   clientId: string,
   courseId: CourseId
@@ -23,7 +26,8 @@ export async function fetchProgress(
   const { appId } = COURSE_PROGRESS_CONFIG[courseId];
 
   return apiFetch<number[]>(
-    `/quizzes/progress?clientId=${clientId}&appId=${appId}&courseId=${courseId}`
+    `/quizzes/progress?clientId=${clientId}&appId=${appId}&courseId=${courseId}`,
+    { parseResponse: (value) => progressResponseSchema.parse(value) }
   );
 }
 

@@ -1,6 +1,7 @@
 // src/api/quiz.ts
-import { apiFetch } from "./client";
+import { ApiHttpError, apiFetch } from "./client";
 
+import { z } from "@/config/zod";
 import type { CorrectAnswerDto } from "@/components/quiz/types/correct-answers-map.type";
 import type { QuestionDto } from "@/components/quiz/types/QuestionDto.type";
 import type { UIQuestion } from "@/components/quiz/types/UIQuestion.type";
@@ -10,6 +11,23 @@ export interface FetchQuizResponse {
   answers: CorrectAnswerDto[];
 }
 
+const tokenResponseSchema = z.object({ token: z.string().min(1) });
+const questionDtosSchema = z.array(
+  z.object({
+    questionId: z.number().int(),
+    questionText: z.string(),
+    options: z.array(z.string()),
+    images: z.array(z.string()),
+  })
+);
+const correctAnswersSchema = z.array(
+  z.object({
+    quizId: z.string(),
+    questionId: z.number().int(),
+    correctAnswer: z.array(z.number().int().nonnegative()),
+  })
+);
+
 /**
  * Request a short-lived token from the server for the given quizId.
  * The token is used in Authorization: Bearer <token> when calling /answers.
@@ -17,7 +35,10 @@ export interface FetchQuizResponse {
 async function fetchAnswersToken(quizId: string): Promise<string> {
   const { token } = await apiFetch<{ token: string }>(
     `/tokens/${quizId}/answers-token`,
-    { method: "POST" }
+    {
+      method: "POST",
+      parseResponse: (value) => tokenResponseSchema.parse(value),
+    }
   );
   return token;
 }
@@ -35,22 +56,24 @@ export async function fetchQuiz(quizId: string): Promise<FetchQuizResponse> {
   // 2) Fetch questions and answers in parallel
   let answers: CorrectAnswerDto[];
   const questionDtosPromise = apiFetch<QuestionDto[]>(
-    `/quizzes/${quizId}/questions`
+    `/quizzes/${quizId}/questions`,
+    { parseResponse: (value) => questionDtosSchema.parse(value) }
   );
 
   try {
     answers = await apiFetch<CorrectAnswerDto[]>(`/quizzes/${quizId}/answers`, {
       headers: { Authorization: `Bearer ${token}` },
+      parseResponse: (value) => correctAnswersSchema.parse(value),
     });
   } catch (err) {
     // If the token expired mid-flight, refresh once and retry
-    const isUnauthorized =
-      err instanceof Error && err.message.toLowerCase().includes("401");
+    const isUnauthorized = err instanceof ApiHttpError && err.status === 401;
     if (!isUnauthorized) throw err;
 
     token = await fetchAnswersToken(quizId);
     answers = await apiFetch<CorrectAnswerDto[]>(`/quizzes/${quizId}/answers`, {
       headers: { Authorization: `Bearer ${token}` },
+      parseResponse: (value) => correctAnswersSchema.parse(value),
     });
   }
 

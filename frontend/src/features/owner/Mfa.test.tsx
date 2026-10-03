@@ -294,19 +294,22 @@ describe("Two-factor account flows", () => {
     });
   });
   it("keeps password login pending until the MFA challenge succeeds", async () => {
-    const fetcher = vi
-      .fn()
-      .mockImplementation((url: string) =>
-        Promise.resolve(
-          response(
-            url.endsWith("login-options")
-              ? { githubEnabled: true }
-              : url.endsWith("/login")
-                ? { authenticated: false, mfaRequired: true }
-                : { expiresAt: new Date(Date.now() + 300000).toISOString() }
-          )
+    const fetcher = vi.fn().mockImplementation((url: string) =>
+      Promise.resolve(
+        response(
+          url.endsWith("login-options")
+            ? {
+                githubEnabled: true,
+                registrationEnabled: true,
+                turnstileRequired: false,
+                turnstileSiteKey: "",
+              }
+            : url.endsWith("/login")
+              ? { authenticated: false, mfaRequired: true }
+              : { expiresAt: new Date(Date.now() + 300000).toISOString() }
         )
-      );
+      )
+    );
     vi.stubGlobal("fetch", fetcher);
     const state = show(<OwnerPage />, "/account/login", context(false));
     await screen.findByRole("button", { name: "Continue with GitHub" });

@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import type { ApiHttpError } from "./client";
 import { apiFetch } from "./client";
 
 const fetchMock = vi.fn<typeof fetch>();
@@ -57,6 +58,43 @@ describe("apiFetch", () => {
     await expect(apiFetch<number[]>("/quizzes/progress")).rejects.toThrow(
       "Invalid JSON response from /quizzes/progress"
     );
+  });
+
+  it("preserves the HTTP status independently of the server error message", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    fetchMock.mockResolvedValue(
+      new Response(JSON.stringify({ message: "Token expired" }), {
+        status: 401,
+      })
+    );
+
+    await expect(apiFetch("/quizzes/example/answers")).rejects.toMatchObject({
+      name: "ApiHttpError",
+      status: 401,
+      endpoint: "/quizzes/example/answers",
+      message: "Token expired",
+    } satisfies Partial<ApiHttpError>);
+  });
+
+  it("rejects a response that fails the caller's runtime contract", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    fetchMock.mockResolvedValue(new Response('{"value":"wrong"}'));
+
+    await expect(
+      apiFetch<number>("/example", {
+        parseResponse: (value) => {
+          if (
+            typeof value !== "object" ||
+            value === null ||
+            !("value" in value) ||
+            typeof value.value !== "number"
+          ) {
+            throw new Error("Invalid value");
+          }
+          return value.value;
+        },
+      })
+    ).rejects.toThrow("Invalid value");
   });
 
   it("distinguishes a caller cancellation from a timeout", async () => {

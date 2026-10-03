@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { formatAccountTime } from "./account-time";
 import { ownerRequest, OwnerApiError, type AuditEntry } from "./owner-api";
 import { useOwner } from "./owner-context";
+import { parseAuditPage } from "./owner-contracts";
 type Page = {
   entries: (AuditEntry & { eventId: string })[];
   nextCursor: string | null;
@@ -32,7 +33,7 @@ export default function SecurityActivityPanel() {
     setBusy(true);
     setError("");
     setData(null);
-    void ownerRequest<Page>(`audit?${query}`)
+    void ownerRequest<Page>(`audit?${query}`, { parseResponse: parseAuditPage })
       .then((value) => {
         if (active) setData(value);
       })

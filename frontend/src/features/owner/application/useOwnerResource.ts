@@ -3,7 +3,10 @@ import { useEffect, useState } from "react";
 import { OwnerApiError, ownerRequest } from "../owner-api";
 import { useOwner } from "../owner-context";
 
-export function useOwnerResource<T>(path: string) {
+export function useOwnerResource<T>(
+  path: string,
+  parseResponse: (value: unknown) => T
+) {
   const owner = useOwner();
   const clear = owner?.clear;
   const [data, setData] = useState<T | null>(null);
@@ -13,7 +16,7 @@ export function useOwnerResource<T>(path: string) {
     let active = true;
     setData(null);
     setError("");
-    void ownerRequest<T>(path)
+    void ownerRequest<T>(path, { parseResponse })
       .then((value) => {
         if (active) setData(value);
       })
@@ -28,6 +31,6 @@ export function useOwnerResource<T>(path: string) {
     return () => {
       active = false;
     };
-  }, [path, revision, clear]);
+  }, [path, parseResponse, revision, clear]);
   return { data, error, retry: () => setRevision((value) => value + 1) };
 }

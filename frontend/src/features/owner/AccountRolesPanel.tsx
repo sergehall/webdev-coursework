@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { ownerRequest } from "./owner-api";
+import { parseAccounts } from "./owner-contracts";
 type Entry = {
   id: string;
   username: string;
@@ -16,7 +17,11 @@ export default function AccountRolesPanel() {
     [selected, setSelected] = useState<Entry | null>(null);
   async function load() {
     try {
-      setEntries(await ownerRequest<Entry[]>("accounts"));
+      setEntries(
+        await ownerRequest<Entry[]>("accounts", {
+          parseResponse: parseAccounts,
+        })
+      );
     } catch {
       setError("Unable to load accounts.");
     }

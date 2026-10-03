@@ -128,11 +128,16 @@ describe("Owner account", () => {
   it("offers configured GitHub sign-in and password backup", async () => {
     vi.stubGlobal(
       "fetch",
-      vi
-        .fn()
-        .mockResolvedValue(
-          new Response(JSON.stringify({ githubEnabled: true }))
+      vi.fn().mockResolvedValue(
+        new Response(
+          JSON.stringify({
+            githubEnabled: true,
+            registrationEnabled: true,
+            turnstileRequired: false,
+            turnstileSiteKey: "",
+          })
         )
+      )
     );
     show("/owner/login", false);
     expect(
@@ -204,15 +209,20 @@ describe("Public accounts", () => {
   it("keeps confirmation help contextual and offers it after rejected sign-in", async () => {
     vi.stubGlobal(
       "fetch",
-      vi
-        .fn()
-        .mockImplementation((url) =>
-          Promise.resolve(
-            String(url).endsWith("/login")
-              ? new Response("{}", { status: 401 })
-              : new Response(JSON.stringify({ githubEnabled: false }))
-          )
+      vi.fn().mockImplementation((url) =>
+        Promise.resolve(
+          String(url).endsWith("/login")
+            ? new Response("{}", { status: 401 })
+            : new Response(
+                JSON.stringify({
+                  githubEnabled: false,
+                  registrationEnabled: true,
+                  turnstileRequired: false,
+                  turnstileSiteKey: "",
+                })
+              )
         )
+      )
     );
     show("/account/login", false);
     expect(
@@ -253,13 +263,19 @@ describe("Public accounts", () => {
     expect(screen.getByLabelText("Email")).toBeInTheDocument();
   });
   it("registers only after matching confirmation, without choosing a role", async () => {
-    const fetcher = vi
-      .fn()
-      .mockImplementation(() =>
-        Promise.resolve(
-          new Response(JSON.stringify({ githubEnabled: true, accepted: true }))
+    const fetcher = vi.fn().mockImplementation(() =>
+      Promise.resolve(
+        new Response(
+          JSON.stringify({
+            githubEnabled: true,
+            registrationEnabled: true,
+            turnstileRequired: false,
+            turnstileSiteKey: "",
+            accepted: true,
+          })
         )
-      );
+      )
+    );
     vi.stubGlobal("fetch", fetcher);
     show("/account/register", false);
     await screen.findByRole("button", { name: "Continue with GitHub" });
@@ -358,11 +374,18 @@ describe("Public accounts", () => {
     }
   );
   it("waits for an explicit email confirmation click instead of consuming links on load", async () => {
-    const fetcher = vi
-      .fn()
-      .mockImplementation(() =>
-        Promise.resolve(new Response(JSON.stringify({ githubEnabled: true })))
-      );
+    const fetcher = vi.fn().mockImplementation(() =>
+      Promise.resolve(
+        new Response(
+          JSON.stringify({
+            githubEnabled: true,
+            registrationEnabled: true,
+            turnstileRequired: false,
+            turnstileSiteKey: "",
+          })
+        )
+      )
+    );
     vi.stubGlobal("fetch", fetcher);
     show(`/account/verify-email#token=${"t".repeat(43)}`, false);
     await waitFor(() => expect(fetcher).toHaveBeenCalledTimes(1));

@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { ShieldCheck } from "lucide-react";
 
 import { ownerRequest, OwnerApiError } from "./owner-api";
+import { parseMfaChallenge } from "./owner-contracts";
 import { useOwner } from "./owner-context";
 import { securityReturn } from "./auth-return";
 
@@ -23,7 +24,7 @@ export default function MfaChallengePage() {
     let active = true;
     setLoadFailed(false);
     setError("");
-    void ownerRequest<{ expiresAt: string }>("mfa/challenge")
+    void ownerRequest("mfa/challenge", { parseResponse: parseMfaChallenge })
       .then((value) => {
         const deadline = Date.parse(value.expiresAt);
         if (!Number.isFinite(deadline))

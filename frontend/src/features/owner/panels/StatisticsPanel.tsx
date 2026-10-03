@@ -7,6 +7,7 @@ import { Message, PageHeader } from "../OwnerPageElements";
 import SecurityActivityPanel from "../SecurityActivityPanel";
 import { formatAccountTime } from "../account-time";
 import { useOwnerResource } from "../application/useOwnerResource";
+import { parseQrStatistics } from "../owner-contracts";
 import type { OwnerProfile, QrStatistics } from "../owner-api";
 import { useOwner } from "../owner-context";
 
@@ -48,7 +49,8 @@ export function StatisticsPanel({ profile }: { profile: OwnerProfile }) {
   const canManageRoles = useOwner()?.session?.canManageRoles;
   const [days, setDays] = useState(profile.reportDays);
   const { data, error, retry } = useOwnerResource<QrStatistics>(
-    `analytics?days=${days}`
+    `analytics?days=${days}`,
+    parseQrStatistics
   );
   return (
     <>

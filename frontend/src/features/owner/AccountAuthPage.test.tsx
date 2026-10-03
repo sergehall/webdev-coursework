@@ -63,6 +63,7 @@ describe("Turnstile account integration", () => {
                     turnstileRequired: true,
                     turnstileSiteKey: "public-key",
                     githubEnabled: false,
+                    registrationEnabled: true,
                   }
                 : { code: "TURNSTILE_REJECTED" }
             ),
@@ -131,6 +132,7 @@ describe("Turnstile account integration", () => {
                     githubEnabled: true,
                     turnstileRequired: true,
                     turnstileSiteKey: "public-key",
+                    registrationEnabled: true,
                   }
                 : { code: "TURNSTILE_REJECTED" }
             ),
@@ -184,7 +186,12 @@ describe("Turnstile account integration", () => {
         new Response(
           JSON.stringify(
             url.endsWith("/login-options")
-              ? { githubEnabled: true, turnstileRequired: false }
+              ? {
+                  githubEnabled: true,
+                  registrationEnabled: true,
+                  turnstileRequired: false,
+                  turnstileSiteKey: "",
+                }
               : { url: "https://attacker.example/login" }
           )
         )
@@ -211,7 +218,14 @@ describe("Turnstile account integration", () => {
         .fn()
         .mockRejectedValueOnce(new Error("offline"))
         .mockResolvedValue(
-          new Response(JSON.stringify({ turnstileRequired: false }))
+          new Response(
+            JSON.stringify({
+              githubEnabled: false,
+              registrationEnabled: true,
+              turnstileRequired: false,
+              turnstileSiteKey: "",
+            })
+          )
         )
     );
     auth();

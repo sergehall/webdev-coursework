@@ -5,6 +5,11 @@ import { ShieldCheck } from "lucide-react";
 
 import { formatAccountTime } from "./account-time";
 import { ownerRequest, OwnerApiError } from "./owner-api";
+import {
+  parseMfaResponse,
+  parseMfaStatus,
+  parseSignedOut,
+} from "./owner-contracts";
 import { useOwner } from "./owner-context";
 import type { MfaResponse, MfaSetup, MfaStatus } from "./mfa-api";
 
@@ -36,7 +41,9 @@ export default function MfaSettingsPanel({
         setQr("");
         setCode("");
         setError("Authenticator setup expired. Start again.");
-        void ownerRequest<MfaStatus>("mfa/status")
+        void ownerRequest<MfaStatus>("mfa/status", {
+          parseResponse: parseMfaStatus,
+        })
           .then(onChange)
           .catch(() => {});
       },
@@ -74,11 +81,12 @@ export default function MfaSettingsPanel({
     setMessage("");
     setRecentRequired(false);
     try {
-      const result = await ownerRequest<MfaResponse>(`mfa/${path}`, {
-        method: "POST",
-        body,
-      });
       if (path === "disable") {
+        await ownerRequest("mfa/disable", {
+          method: "POST",
+          body,
+          parseResponse: parseSignedOut,
+        });
         owner.clear();
         navigate("/account/login", {
           replace: true,
@@ -89,6 +97,11 @@ export default function MfaSettingsPanel({
         });
         return;
       }
+      const result = await ownerRequest<MfaResponse>(`mfa/${path}`, {
+        method: "POST",
+        body,
+        parseResponse: parseMfaResponse,
+      });
       onChange(result.mfa);
       if (path === "enroll") {
         setSetup(result.setup!);

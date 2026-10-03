@@ -34,10 +34,11 @@ export default function AccountProvidersPanel({
   const [help, setHelp] = useState<"signin" | "mfa" | null>(null);
   useEffect(() => {
     let active = true;
-    void ownerRequest<unknown>("providers")
+    void ownerRequest("providers", {
+      parseResponse: (value) => providerStatus.parse(value),
+    })
       .then((value) => {
-        const parsed = providerStatus.parse(value);
-        if (active) setStatus(parsed);
+        if (active) setStatus(value);
       })
       .catch(() => {
         if (active) setError("Unable to load sign-in settings. Try again.");
@@ -71,6 +72,8 @@ export default function AccountProvidersPanel({
       const result = await ownerRequest<{ url?: string }>(`providers/${path}`, {
         method: "POST",
         body: action === "email" ? { email: targetEmail?.trim() } : undefined,
+        parseResponse: (value) =>
+          z.object({ url: z.string().url().optional() }).parse(value),
       });
       if (action === "connect") {
         const url = new URL(result.url ?? "");

@@ -3,6 +3,11 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { LockKeyhole } from "lucide-react";
 
 import { ownerRequest, OwnerApiError } from "./owner-api";
+import {
+  parseAuthResponse,
+  parseGithubRedirect,
+  parseLoginOptions,
+} from "./owner-contracts";
 import { useOwner } from "./owner-context";
 import { securityReturn } from "./auth-return";
 import TurnstileWidget from "./auth/TurnstileWidget";
@@ -78,6 +83,7 @@ export default function AccountAuthPage({ mode }: { mode: Mode }) {
       // Redeem proof server-side before navigating; a disabled button alone cannot protect OAuth.
       const result = await ownerRequest<{ url: string }>("github/start", {
         method: "POST",
+        parseResponse: parseGithubRedirect,
         body: {
           intent: mode === "register" ? "register" : "login",
           ...(requiresTurnstile ? { turnstileToken } : {}),
@@ -128,7 +134,7 @@ export default function AccountAuthPage({ mode }: { mode: Mode }) {
       : undefined);
   useEffect(() => {
     let disposed = false;
-    void ownerRequest<typeof options>("login-options")
+    void ownerRequest("login-options", { parseResponse: parseLoginOptions })
       .then((value) => {
         if (!disposed) {
           setOptions(value);
@@ -182,10 +188,11 @@ export default function AccountAuthPage({ mode }: { mode: Mode }) {
             : mode === "reset-password"
               ? { token, password }
               : { email };
-      const response = await ownerRequest<{
-        mfaRequired?: boolean;
-        signInRequired?: boolean;
-      }>(isLogin ? "login" : mode, { method: "POST", body });
+      const response = await ownerRequest(isLogin ? "login" : mode, {
+        method: "POST",
+        body,
+        parseResponse: parseAuthResponse,
+      });
       setPassword("");
       setConfirmation("");
       if (isLogin && response.mfaRequired) {

@@ -7,6 +7,7 @@ import { Message, PageHeader } from "../OwnerPageElements";
 import SecurityOverview from "../SecurityOverview";
 import type { MfaStatus } from "../mfa-api";
 import { ownerRequest, type OwnerSession } from "../owner-api";
+import { parseMfaStatus } from "../owner-contracts";
 import { useOwner } from "../owner-context";
 
 export function SecurityPanel({ session }: { session: OwnerSession }) {
@@ -20,7 +21,9 @@ export function SecurityPanel({ session }: { session: OwnerSession }) {
   const [mfaError, setMfaError] = useState("");
   useEffect(() => {
     let active = true;
-    void ownerRequest<MfaStatus>("mfa/status")
+    void ownerRequest<MfaStatus>("mfa/status", {
+      parseResponse: parseMfaStatus,
+    })
       .then((value) => {
         if (active) setMfaStatus(value);
       })

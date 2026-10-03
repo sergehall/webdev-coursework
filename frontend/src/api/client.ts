@@ -7,20 +7,36 @@ const DEFAULT_TIMEOUT_MS = 10_000;
 
 type ApiMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
 
-interface ApiFetchOptions<TBody = undefined> extends Omit<RequestInit, "body"> {
+export class ApiHttpError extends Error {
+  constructor(
+    public readonly status: number,
+    public readonly endpoint: string,
+    message: string
+  ) {
+    super(message);
+    this.name = "ApiHttpError";
+  }
+}
+
+interface ApiFetchOptions<TBody = undefined, TResponse = unknown> extends Omit<
+  RequestInit,
+  "body"
+> {
   method?: ApiMethod;
   body?: TBody;
   timeoutMs?: number;
+  parseResponse?: (value: unknown) => TResponse;
 }
 
 export async function apiFetch<TResponse, TBody = undefined>(
   endpoint: string,
-  options: ApiFetchOptions<TBody> = {}
+  options: ApiFetchOptions<TBody, TResponse> = {}
 ): Promise<TResponse> {
   const {
     body,
     headers,
     timeoutMs = DEFAULT_TIMEOUT_MS,
+    parseResponse,
     signal: externalSignal,
     ...rest
   } = options;
@@ -56,7 +72,9 @@ export async function apiFetch<TResponse, TBody = undefined>(
       const err = (await res.json().catch(() => ({}))) as {
         message?: unknown;
       };
-      throw new Error(
+      throw new ApiHttpError(
+        res.status,
+        endpoint,
         (typeof err.message === "string" && err.message) ||
           res.statusText ||
           "API request failed"
@@ -65,11 +83,13 @@ export async function apiFetch<TResponse, TBody = undefined>(
 
     const responseText = await res.text();
     if (!responseText.trim()) return undefined as TResponse;
+    let value: unknown;
     try {
-      return JSON.parse(responseText) as TResponse;
+      value = JSON.parse(responseText);
     } catch {
       throw new Error(`Invalid JSON response from ${endpoint}`);
     }
+    return parseResponse ? parseResponse(value) : (value as TResponse);
   } catch (error) {
     if (error instanceof DOMException && error.name === "AbortError") {
       if (timedOut)

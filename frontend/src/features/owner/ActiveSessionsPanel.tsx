@@ -10,6 +10,7 @@ import {
   type OwnerProfile,
 } from "./owner-api";
 import { useOwner } from "./owner-context";
+import { parseActiveSessionsPage } from "./owner-contracts";
 
 function sessionsPath(device: string, authMethod: string, cursor?: string) {
   const query = new URLSearchParams();
@@ -53,7 +54,9 @@ export default function ActiveSessionsPanel({
     setError("");
     setEntries([]);
     setCursor(null);
-    void ownerRequest<ActiveSessionsPage>(sessionsPath(device, authMethod))
+    void ownerRequest<ActiveSessionsPage>(sessionsPath(device, authMethod), {
+      parseResponse: parseActiveSessionsPage,
+    })
       .then((page) => {
         if (requests.value !== id) return;
         setEntries(page.entries);
@@ -85,7 +88,8 @@ export default function ActiveSessionsPanel({
     setError("");
     try {
       const page = await ownerRequest<ActiveSessionsPage>(
-        sessionsPath(device, authMethod, cursor)
+        sessionsPath(device, authMethod, cursor),
+        { parseResponse: parseActiveSessionsPage }
       );
       if (requestId.current.value !== id) return;
       setEntries((old) => [

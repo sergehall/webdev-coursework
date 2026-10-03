@@ -55,7 +55,11 @@ export class OwnerApiError extends Error {
 
 export async function ownerRequest<T>(
   path: string,
-  options: { method?: "GET" | "POST" | "PUT"; body?: unknown } = {}
+  options: {
+    method?: "GET" | "POST" | "PUT";
+    body?: unknown;
+    parseResponse?: (value: unknown) => T;
+  } = {}
 ): Promise<T> {
   const response = await fetch(
     `${import.meta.env.VITE_OWNER_API_URL ?? import.meta.env.VITE_API_URL ?? ""}/api/account/${path}`,
@@ -115,7 +119,8 @@ export async function ownerRequest<T>(
             : "The request could not be completed. Please check your details and try again.";
     throw new OwnerApiError(response.status, message);
   }
-  return (await response.json()) as T;
+  const value: unknown = await response.json();
+  return options.parseResponse ? options.parseResponse(value) : (value as T);
 }
 
 export type ActiveSession = {
