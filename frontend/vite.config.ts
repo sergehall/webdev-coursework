@@ -39,13 +39,13 @@ const jsonLdScriptHash =
 
 // Match the deployed Vercel policy: allow only the official Turnstile script/frame origins.
 const productionContentSecurityPolicy = [
-  "default-src 'self'",
+  "default-src 'none'",
   "base-uri 'self'",
   "object-src 'none'",
   "frame-ancestors 'self'",
   "form-action 'self'",
   `script-src 'self' ${jsonLdScriptHash} 'wasm-unsafe-eval' https://cdn.jsdelivr.net https://code.jquery.com https://challenges.cloudflare.com`,
-  "style-src 'self' 'unsafe-inline'",
+  "style-src 'self'",
   "img-src 'self' data: blob: https://images.unsplash.com https://avatars.githubusercontent.com https://randomuser.me https://www.smc.edu https://www.google.com",
   "font-src 'self' data:",
   "connect-src 'self' https://api.webdev-coursework.com https://cdn.jsdelivr.net https://*.ingest.sentry.io https://*.ingest.us.sentry.io",
@@ -55,8 +55,14 @@ const productionContentSecurityPolicy = [
   "manifest-src 'self'",
 ].join("; ");
 
+// Standalone course HTML and the sandboxed playground preview need embedded CSS.
+const courseMaterialsContentSecurityPolicy =
+  productionContentSecurityPolicy.replace(
+    "style-src 'self'",
+    "style-src 'self' 'unsafe-inline'"
+  );
+
 const productionSecurityHeaders = {
-  "Content-Security-Policy": productionContentSecurityPolicy,
   "Cross-Origin-Resource-Policy": "same-origin",
   "X-Content-Type-Options": "nosniff",
   "X-Frame-Options": "SAMEORIGIN",
@@ -89,6 +95,22 @@ export default defineConfig(({ mode }) => {
   return {
     base: "/",
     plugins: [
+      {
+        name: "preview-content-security-policy",
+        configurePreviewServer(server) {
+          server.middlewares.use((request, response, next) => {
+            const pathname = request.url?.split("?", 1)[0] ?? "";
+            response.setHeader(
+              "Content-Security-Policy",
+              pathname.startsWith("/course-materials/") ||
+                pathname.startsWith("/code-playground")
+                ? courseMaterialsContentSecurityPolicy
+                : productionContentSecurityPolicy
+            );
+            next();
+          });
+        },
+      },
       react({
         jsxImportSource: undefined,
       }),

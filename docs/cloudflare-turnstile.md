@@ -37,6 +37,29 @@ its CSP responsibility is described here and tested by
 `frontend/src/config/security-headers.smoke.test.ts`. Environment and Heroku config
 values are configuration, never committed documentation or browser secrets.
 
+## Frontend Content Security Policy
+
+The Vercel header and Vite production preview use `default-src 'none'` as the
+fallback. Every resource type used by the application has an explicit directive.
+Normal application routes use `style-src 'self'`, so inline style blocks and
+attributes are not generally allowed. React's direct `element.style` property
+updates for progress and animations continue to work under this policy.
+
+Two disjoint path groups retain `style-src 'self' 'unsafe-inline'`:
+
+- `/course-materials/` serves standalone teaching HTML with embedded styles;
+  students may download those files and open them without the application.
+- `/code-playground` embeds user-provided HTML in an opaque-origin `srcdoc`
+  iframe. That iframe inherits the parent CSP, so its embedded CSS requires the
+  route exception. The iframe's own CSP still blocks network access and external
+  resources.
+
+The exception does not relax `script-src`. `frontend/vercel.json` uses
+non-overlapping path patterns; the Vite production preview mirrors them. When
+changing either policy, check the response headers for `/`, `/code-playground`,
+and one `/course-materials/` HTML file, and verify the HTML preview in a browser.
+Re-scan the deployed hostname after the new Vercel deployment is live.
+
 ## Configuration and web hostnames
 
 The current Managed widget is `webdev-coursework-auth`. It is shared across the
