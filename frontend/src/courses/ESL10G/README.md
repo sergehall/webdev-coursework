@@ -40,8 +40,10 @@ explicit props and preserve the original DOM structure, labels, and styling.
 initial playback state, and elapsed-time formatting. `presentation/config.ts`
 contains the existing timings, asset URLs, and slide metadata.
 
-`presentation-bookends.css` and public course materials remain in their existing
-locations. Components do not add wrapping DOM nodes just to separate files.
+`presentation-bookends.css` remains the ordered stylesheet entry point. Its
+presentation-specific rules are grouped in `presentation/styles/` (see that
+folder's README). Public course materials remain in their existing locations.
+Components do not add wrapping DOM nodes just to separate files.
 
 ## Validation
 
