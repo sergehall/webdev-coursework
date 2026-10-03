@@ -8,7 +8,7 @@ import {
 import {
   normalizePlaygroundRelativePath,
   toCodePlaygroundUrl,
-} from "@/utils/playgroundPath";
+} from "@/features/playground/infrastructure/playgroundPath";
 
 export function useCodePlaygroundFileCheck(file: string | null) {
   const [fileExists, setFileExists] = useState<boolean | null>(null);

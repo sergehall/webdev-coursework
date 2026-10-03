@@ -38,7 +38,7 @@ function ProjectPreview({
       className="group relative aspect-[16/10] w-full overflow-hidden bg-slate-950 text-left text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-inset"
     >
       <img
-        src={project.imageUrl}
+        src={project.thumbnailUrl ?? project.imageUrl}
         alt={`${project.title} website preview`}
         width={800}
         height={500}

@@ -1,7 +1,7 @@
 import {
   SAFE_OPEN_FILES_LC,
   SAFE_OPEN_MODES,
-} from "@/utils/secure-python/constants";
+} from "@/features/playground/infrastructure/secure-python/constants";
 
 export type WrapperRange = {
   name: string;

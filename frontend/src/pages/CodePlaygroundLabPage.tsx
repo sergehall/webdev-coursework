@@ -1,6 +1,6 @@
 import PlaygroundHero from "@/features/playground/PlaygroundHero";
 import PlaygroundWorkspace from "@/features/playground/PlaygroundWorkspace";
-import { usePlaygroundSession } from "@/hooks/usePlaygroundSession";
+import { usePlaygroundSession } from "@/features/playground/application/usePlaygroundSession";
 
 export default function CodePlaygroundPage() {
   const session = usePlaygroundSession();

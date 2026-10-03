@@ -2,13 +2,13 @@ import {
   SAFE_OPEN_FILES,
   SAFE_OPEN_MODES,
   SAFE_OPEN_WRAPPERS,
-} from "@/utils/secure-python/constants";
+} from "@/features/playground/infrastructure/secure-python/constants";
 import {
   findWrapperRanges,
   inRanges,
   isAllowedFilename,
   isMode,
-} from "@/utils/secure-python/helpers";
+} from "@/features/playground/infrastructure/secure-python/helpers";
 
 /** open()/Path.open() check:
  *  - Only allowlisted files

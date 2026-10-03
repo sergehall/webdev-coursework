@@ -12,24 +12,24 @@ import {
   PYTHON_EXECUTION_TIMEOUT_MS,
   boundPlaygroundLogs,
 } from "@/features/playground/playground-security";
-import { useCodePlaygroundFileCheck } from "@/hooks/useCodePlaygroundFileCheck";
-import { useJavaScriptWorkerRunner } from "@/hooks/useJavaScriptWorkerRunner";
-import { usePostMessageLogs } from "@/hooks/usePostMessageLogs";
-import { usePythonWorkerRunner } from "@/hooks/usePythonWorkerRunner";
-import { fetchPlaygroundText } from "@/utils/fetchPlaygroundText";
+import { useCodePlaygroundFileCheck } from "@/features/playground/application/useCodePlaygroundFileCheck";
+import { useJavaScriptWorkerRunner } from "@/features/playground/application/useJavaScriptWorkerRunner";
+import { usePostMessageLogs } from "@/features/playground/application/usePostMessageLogs";
+import { usePythonWorkerRunner } from "@/features/playground/application/usePythonWorkerRunner";
+import { fetchPlaygroundText } from "@/features/playground/infrastructure/fetchPlaygroundText";
 import {
   detectSidecarNames,
   dirname,
   fetchSidecars,
-} from "@/utils/playgroundPythonSidecars";
-import { normalizePlaygroundRelativePath } from "@/utils/playgroundPath";
+} from "@/features/playground/infrastructure/playgroundPythonSidecars";
+import { normalizePlaygroundRelativePath } from "@/features/playground/infrastructure/playgroundPath";
 import {
   HTML_PREVIEW_IFRAME_ID,
   SANDBOX_IFRAME_ID,
   runHtmlInSandboxedIframe,
   runInSandboxedIframe,
-} from "@/utils/sandboxIframe";
-import { validateJavaScript } from "@/utils/secureJavaScript";
+} from "@/features/playground/infrastructure/sandboxIframe";
+import { validateJavaScript } from "@/features/playground/infrastructure/secureJavaScript";
 
 export type PlaygroundSourceOrigin = "coursework" | "upload" | null;
 

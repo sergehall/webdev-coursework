@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import type React from "react";
 
-import { sanitizeAndValidateCode } from "@/utils/securePython";
+import { sanitizeAndValidateCode } from "@/features/playground/infrastructure/securePython";
 
 type Setter<T> = React.Dispatch<React.SetStateAction<T>>;
 

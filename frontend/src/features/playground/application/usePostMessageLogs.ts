@@ -1,8 +1,8 @@
-// src/hooks/usePostMessageLogs.ts
+// Playground iframe message listener.
 import { useEffect } from "react";
 
 import { PLAYGROUND_MAX_LOG_LENGTH } from "@/features/playground/playground-security";
-import { SANDBOX_IFRAME_ID } from "@/utils/sandboxIframe";
+import { SANDBOX_IFRAME_ID } from "@/features/playground/infrastructure/sandboxIframe";
 
 type SandboxLogMessage = {
   source?: "sandbox";

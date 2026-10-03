@@ -8,7 +8,7 @@ import {
   sanitizeAndValidateCode,
   isValidPythonFile,
   MAX_FILE_SIZE,
-} from "@/utils/securePython";
+} from "@/features/playground/infrastructure/securePython";
 
 type SecurePythonUploadButtonProps = {
   // extras: validated sidecar module content keyed by filename (e.g. "A05ClassPrH.py")

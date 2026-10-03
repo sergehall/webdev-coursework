@@ -179,4 +179,5 @@ function requireProject(projectId: (typeof featuredProjectIds)[number]) {
   return project satisfies ProjectShowcaseItem;
 }
 
-export const featuredHomeProjects = featuredProjectIds.map(requireProject);
+export const featuredHomeProjects: readonly ProjectShowcaseItem[] =
+  featuredProjectIds.map(requireProject);

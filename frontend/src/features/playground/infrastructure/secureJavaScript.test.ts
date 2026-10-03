@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { validateJavaScript } from "@/utils/secureJavaScript";
+import { validateJavaScript } from "@/features/playground/infrastructure/secureJavaScript";
 
 describe("validateJavaScript", () => {
   it("allows a simple safe script", () => {

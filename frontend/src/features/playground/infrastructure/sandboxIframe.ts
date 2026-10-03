@@ -1,4 +1,4 @@
-// src/utils/sandboxIframe.ts
+// Sandboxed iframe helpers for the Code Playground.
 // Runs code inside a hidden, sandboxed iframe.
 // Intercepts console.log and forwards safe, stringified messages to the parent.
 

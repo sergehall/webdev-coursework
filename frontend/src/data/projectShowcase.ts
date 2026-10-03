@@ -130,6 +130,7 @@ export const projectShowcaseItems = [
     summary:
       "A production full-stack platform combining a photography portfolio with a two-sided services marketplace, authenticated workspaces, booking, Stripe payments, secure messaging, and admin operations.",
     imageUrl: "/screenshots/projects/sergioartg-homepage-portrait.webp",
+    thumbnailUrl: "/screenshots/projects/sergioartg-homepage-card.webp",
     previewLabel: "Photography and creative services",
     previewDescription:
       "Explore Sergio's photography and discover creative professionals, services, and tools for managing bookings.",
@@ -410,6 +411,7 @@ export const projectShowcaseItems = [
     summary:
       "A previously deployed CS79D full-stack learning portal that connects eight cloud security modules to AWS workflows, validated uploads, activity evidence, account security, and a Bedrock-backed assessment advisor. Its EC2 runtime is currently paused.",
     imageUrl: "/screenshots/projects/final-project-CS79D.png",
+    thumbnailUrl: "/screenshots/projects/final-project-CS79D-card.webp",
     previewLabel: "AWS security learning portal",
     previewDescription:
       "Explore course modules, invoke the Lambda logging path, upload validated files to S3, inspect DynamoDB activity, and review cloud security evidence.",

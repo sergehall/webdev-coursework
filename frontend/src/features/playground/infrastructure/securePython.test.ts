@@ -4,7 +4,7 @@ import {
   hasOnlySafeImports,
   hasOnlySafeOpenCalls,
   sanitizeAndValidateCode,
-} from "@/utils/securePython";
+} from "@/features/playground/infrastructure/securePython";
 
 describe("securePython", () => {
   it("allows safe imports and safe file reads", () => {

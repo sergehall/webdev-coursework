@@ -4,7 +4,10 @@ import { Upload } from "lucide-react";
 import { BaseButton, ColoredButton } from "@/components/buttons";
 import type { ButtonSize, ButtonType } from "@/components/buttons/BaseButton";
 import type { Variants } from "@/components/buttons/types/variants";
-import { JS_MAX_FILE_SIZE, validateJavaScript } from "@/utils/secureJavaScript";
+import {
+  JS_MAX_FILE_SIZE,
+  validateJavaScript,
+} from "@/features/playground/infrastructure/secureJavaScript";
 
 type SecureJsUploadButtonProps = {
   onSafeUpload: (code: string, filename: string) => void;

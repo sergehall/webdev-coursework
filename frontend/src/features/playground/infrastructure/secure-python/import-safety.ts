@@ -3,12 +3,12 @@ import {
   ALLOWED_LOCAL_MODULES_LC,
   ALLOWED_LOCAL_SYMBOLS,
   SAFE_IMPORTS_LC,
-} from "@/utils/secure-python/constants";
+} from "@/features/playground/infrastructure/secure-python/constants";
 import {
   baseModule,
   hasAlias,
   splitImportList,
-} from "@/utils/secure-python/helpers";
+} from "@/features/playground/infrastructure/secure-python/helpers";
 
 /** Import check:
  *  - only allowlisted stdlib/local modules (no submodules), case-insensitive

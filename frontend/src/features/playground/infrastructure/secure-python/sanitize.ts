@@ -2,9 +2,9 @@ import {
   MAX_CODE_LENGTH,
   MAX_LINE_COUNT,
   type ValidateResult,
-} from "@/utils/secure-python/constants";
-import { hasOnlySafeImports } from "@/utils/secure-python/import-safety";
-import { hasOnlySafeOpenCalls } from "@/utils/secure-python/open-call-safety";
+} from "@/features/playground/infrastructure/secure-python/constants";
+import { hasOnlySafeImports } from "@/features/playground/infrastructure/secure-python/import-safety";
+import { hasOnlySafeOpenCalls } from "@/features/playground/infrastructure/secure-python/open-call-safety";
 
 /**
  * Sanitize and validate Python code.

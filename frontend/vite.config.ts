@@ -22,18 +22,6 @@ const brooklynImageVersion = createHash("sha256")
   )
   .digest("hex")
   .slice(0, 12);
-const courseChunkGroups: Array<[pathSegment: string, chunkName: string]> = [
-  ["/courses/CS60/", "course-cs60"],
-  ["/courses/CS70/", "course-cs70"],
-  ["/courses/CS79A/", "course-cs79a"],
-  ["/courses/CS79C/", "course-cs79c"],
-  ["/courses/CS79D/", "course-cs79d"],
-  ["/courses/CS80/", "course-cs80"],
-  ["/courses/CS81/", "course-cs81"],
-  ["/courses/CS85/", "course-cs85"],
-  ["/courses/CS87A/", "course-cs87a"],
-];
-
 const jsonLdScriptHash =
   "'sha256-mqaaJKyEBAtrHnTmEqRs3kIzLcqrfe/bwtUYbNSfq2s='";
 
@@ -178,50 +166,6 @@ export default defineConfig(({ mode }) => {
         : undefined,
       rollupOptions: {
         external: ["fsevents"],
-        output: {
-          manualChunks(id) {
-            const matchedCourse = courseChunkGroups.find(([segment]) =>
-              id.includes(segment)
-            );
-            if (matchedCourse) {
-              return matchedCourse[1];
-            }
-
-            if (id.includes("node_modules")) {
-              if (
-                id.includes("react") ||
-                id.includes("scheduler") ||
-                id.includes("react-router")
-              ) {
-                return "vendor-react";
-              }
-              if (
-                id.includes("framer-motion") ||
-                id.includes("canvas-confetti") ||
-                id.includes("react-confetti")
-              ) {
-                return "vendor-motion";
-              }
-              if (
-                id.includes("lucide-react") ||
-                id.includes("react-icons") ||
-                id.includes("@floating-ui")
-              ) {
-                return "vendor-ui";
-              }
-              if (id.includes("@sentry")) {
-                return "vendor-sentry";
-              }
-              if (id.includes("zod")) {
-                return "vendor-zod";
-              }
-
-              return "vendor-misc";
-            }
-
-            return undefined;
-          },
-        },
       },
       chunkSizeWarningLimit: 700,
     },

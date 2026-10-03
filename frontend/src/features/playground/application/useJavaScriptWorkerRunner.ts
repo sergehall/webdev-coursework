@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import type React from "react";
 
 import { JAVASCRIPT_EXECUTION_TIMEOUT_MS } from "@/features/playground/playground-security";
-import { validateJavaScript } from "@/utils/secureJavaScript";
+import { validateJavaScript } from "@/features/playground/infrastructure/secureJavaScript";
 
 type Setter<T> = React.Dispatch<React.SetStateAction<T>>;
 

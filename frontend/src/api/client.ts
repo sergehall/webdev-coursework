@@ -26,36 +26,60 @@ export async function apiFetch<TResponse, TBody = undefined>(
   } = options;
 
   const controller = new AbortController();
-  const timerId = setTimeout(() => controller.abort(), timeoutMs);
+  let timedOut = false;
+  const timerId = setTimeout(() => {
+    timedOut = true;
+    controller.abort();
+  }, timeoutMs);
 
-  // Respect any external signal passed by the caller
-  externalSignal?.addEventListener("abort", () => controller.abort());
+  const abortFromCaller = () => controller.abort();
+  if (externalSignal?.aborted) abortFromCaller();
+  else
+    externalSignal?.addEventListener("abort", abortFromCaller, {
+      once: true,
+    });
+
+  const requestHeaders = new Headers(headers);
+  if (body !== undefined && !requestHeaders.has("Content-Type")) {
+    requestHeaders.set("Content-Type", "application/json");
+  }
 
   try {
     const res = await fetch(`${API_BASE_URL}${endpoint}`, {
-      headers: {
-        "Content-Type": "application/json",
-        ...headers,
-      },
-      body: body ? JSON.stringify(body) : undefined,
+      headers: requestHeaders,
+      body: body === undefined ? undefined : JSON.stringify(body),
       signal: controller.signal,
       ...rest,
     });
 
     if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.message || res.statusText || "API request failed");
+      const err = (await res.json().catch(() => ({}))) as {
+        message?: unknown;
+      };
+      throw new Error(
+        (typeof err.message === "string" && err.message) ||
+          res.statusText ||
+          "API request failed"
+      );
     }
 
-    const data = await res.json().catch(() => ({}));
-    return data as TResponse;
+    const responseText = await res.text();
+    if (!responseText.trim()) return undefined as TResponse;
+    try {
+      return JSON.parse(responseText) as TResponse;
+    } catch {
+      throw new Error(`Invalid JSON response from ${endpoint}`);
+    }
   } catch (error) {
     if (error instanceof DOMException && error.name === "AbortError") {
-      throw new Error(`Request timed out after ${timeoutMs}ms: ${endpoint}`);
+      if (timedOut)
+        throw new Error(`Request timed out after ${timeoutMs}ms: ${endpoint}`);
+      throw error;
     }
     console.error("❌ apiFetch failed:", error);
     throw error;
   } finally {
     clearTimeout(timerId);
+    externalSignal?.removeEventListener("abort", abortFromCaller);
   }
 }

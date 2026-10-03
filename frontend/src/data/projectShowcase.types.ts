@@ -43,6 +43,7 @@ export type ProjectShowcaseItem = {
   readonly frameworks: readonly ProjectFramework[];
   readonly summary: string;
   readonly imageUrl: string;
+  readonly thumbnailUrl?: string;
   readonly galleryImages?: readonly ProjectGalleryImage[];
   readonly previewLabel: string;
   readonly previewDescription: string;

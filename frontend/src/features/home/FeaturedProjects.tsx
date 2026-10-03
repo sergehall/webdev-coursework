@@ -40,7 +40,7 @@ export default function FeaturedProjects() {
           >
             <div className="aspect-[16/9] overflow-hidden bg-slate-100 dark:bg-slate-800">
               <img
-                src={project.imageUrl}
+                src={project.thumbnailUrl ?? project.imageUrl}
                 alt={`${project.title} project preview`}
                 loading="lazy"
                 className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02] motion-reduce:transition-none"

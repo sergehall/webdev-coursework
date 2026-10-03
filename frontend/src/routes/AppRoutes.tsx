@@ -16,7 +16,7 @@ function CourseAssignmentRedirect() {
 
 function PageLoadingState({ label }: { label: string }) {
   return (
-    <div className="p-6">
+    <div className="min-h-screen p-6">
       <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-gray-900">
         <div className="animate-pulse space-y-4">
           <div className="h-4 w-32 rounded bg-slate-200 dark:bg-slate-700" />
@@ -58,7 +58,7 @@ export default function AppRoutes() {
         <Route
           path="/"
           element={
-            <Suspense fallback={<div>Loading Home...</div>}>
+            <Suspense fallback={<PageLoadingState label="Loading home..." />}>
               <Screens.Home />
             </Suspense>
           }
@@ -66,7 +66,9 @@ export default function AppRoutes() {
         <Route
           path="/coursework"
           element={
-            <Suspense fallback={<div>Loading Coursework...</div>}>
+            <Suspense
+              fallback={<PageLoadingState label="Loading coursework..." />}
+            >
               <Screens.CourseworkPage />
             </Suspense>
           }
@@ -109,7 +111,9 @@ export default function AppRoutes() {
           <Route
             path="completed"
             element={
-              <Suspense fallback={<div>Loading Summary...</div>}>
+              <Suspense
+                fallback={<PageLoadingState label="Loading summary..." />}
+              >
                 <Screens.AllDonePage />
               </Suspense>
             }
@@ -118,7 +122,9 @@ export default function AppRoutes() {
         <Route
           path="/code-playground/*"
           element={
-            <Suspense fallback={<div>Loading Code Playground...</div>}>
+            <Suspense
+              fallback={<PageLoadingState label="Loading code playground..." />}
+            >
               <Screens.CodePlaygroundPage />
             </Suspense>
           }
@@ -126,7 +132,11 @@ export default function AppRoutes() {
         <Route
           path="/web-developer-path"
           element={
-            <Suspense fallback={<div>Loading Web Developer Path...</div>}>
+            <Suspense
+              fallback={
+                <PageLoadingState label="Loading web developer path..." />
+              }
+            >
               <Screens.WebDeveloperPathPage />
             </Suspense>
           }
@@ -134,7 +144,9 @@ export default function AppRoutes() {
         <Route
           path="/resources/*"
           element={
-            <Suspense fallback={<div>Loading Resources...</div>}>
+            <Suspense
+              fallback={<PageLoadingState label="Loading resources..." />}
+            >
               <Screens.ResourcesPage />
             </Suspense>
           }
@@ -142,7 +154,9 @@ export default function AppRoutes() {
         <Route
           path="/projects"
           element={
-            <Suspense fallback={<div>Loading Projects...</div>}>
+            <Suspense
+              fallback={<PageLoadingState label="Loading projects..." />}
+            >
               <Screens.ProjectsPage />
             </Suspense>
           }
@@ -151,7 +165,7 @@ export default function AppRoutes() {
         <Route
           path="*"
           element={
-            <Suspense fallback={<div>Loading 404...</div>}>
+            <Suspense fallback={<PageLoadingState label="Loading page..." />}>
               <Screens.NotFound />
             </Suspense>
           }

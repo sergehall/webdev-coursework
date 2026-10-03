@@ -16,16 +16,15 @@ import {
 } from "lucide-react";
 import type { ReactNode, RefObject } from "react";
 
-import { CodePlaygroundStatus } from "@/components/CodePlaygroundStatus";
-import { ConsoleOutput } from "@/components/ConsoleOutput";
-import {
-  SecureHtmlUploadButton,
-  SecureJsUploadButton,
-  SecureJsonUploadButton,
-  SecurePythonUploadButton,
-} from "@/components/buttons";
+import { CodePlaygroundStatus } from "./components/CodePlaygroundStatus";
+import { ConsoleOutput } from "./components/ConsoleOutput";
+import SecureHtmlUploadButton from "./components/SecureHtmlUploadButton";
+import SecureJsUploadButton from "./components/SecureJsUploadButton";
+import SecureJsonUploadButton from "./components/SecureJsonUploadButton";
+import SecurePythonUploadButton from "./components/SecurePythonUploadButton";
+import type { PlaygroundSourceOrigin } from "./application/usePlaygroundSession";
+
 import { getPlaygroundLanguage } from "@/features/playground/playground-security";
-import type { PlaygroundSourceOrigin } from "@/hooks/usePlaygroundSession";
 
 type PlaygroundWorkspaceProps = {
   readonly file: string | null;

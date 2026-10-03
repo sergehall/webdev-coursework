@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   normalizePlaygroundRelativePath,
   toCodePlaygroundUrl,
-} from "@/utils/playgroundPath";
+} from "@/features/playground/infrastructure/playgroundPath";
 
 describe("playgroundPath utilities", () => {
   it("accepts a normal relative path", () => {

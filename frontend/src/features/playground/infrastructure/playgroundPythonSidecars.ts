@@ -1,5 +1,5 @@
 import { isSafeSidecarName } from "@/features/playground/playground-security";
-import { toCodePlaygroundUrl } from "@/utils/playgroundPath";
+import { toCodePlaygroundUrl } from "@/features/playground/infrastructure/playgroundPath";
 
 export type SidecarFile = { name: string; content: string };
 

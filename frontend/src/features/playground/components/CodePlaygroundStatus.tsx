@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 
 import { getPlaygroundLanguage } from "@/features/playground/playground-security";
-import type { PlaygroundSourceOrigin } from "@/hooks/usePlaygroundSession";
+import type { PlaygroundSourceOrigin } from "@/features/playground/application/usePlaygroundSession";
 import { cn } from "@/utils/cn";
 
 type CodePlaygroundStatusProps = {

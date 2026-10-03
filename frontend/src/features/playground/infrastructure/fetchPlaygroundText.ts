@@ -6,7 +6,7 @@ import {
 import {
   normalizePlaygroundRelativePath,
   toCodePlaygroundUrl,
-} from "@/utils/playgroundPath";
+} from "@/features/playground/infrastructure/playgroundPath";
 
 type FetchPlaygroundTextOptions = {
   readonly cacheBust?: boolean;
