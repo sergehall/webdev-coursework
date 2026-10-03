@@ -8,7 +8,7 @@ import {
   type ProjectLanguageFilterOption,
   type ProjectShowcaseItem,
   type ProjectStatus,
-} from "@/data/projectShowcase";
+} from "@/features/projects/data/projectShowcase";
 
 export const projectStatusLabels = {
   featured: "Featured",

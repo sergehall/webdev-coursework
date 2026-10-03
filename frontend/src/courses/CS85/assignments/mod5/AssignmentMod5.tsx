@@ -9,7 +9,7 @@ import {
   ShowModalButton,
   ToggleModalButton,
 } from "@/components/buttons";
-import QuizGenerator from "@/components/quiz/QuizGenerator";
+import LegacyChoicePracticeQuiz from "@/features/quiz/adapters/LegacyChoicePracticeQuiz";
 import {
   ModuleItemBlock,
   type CanvasItem,
@@ -219,7 +219,12 @@ function ModuleFiveQuizShell() {
         practice before submitting on SMC Canvas.
       </p>
 
-      <QuizGenerator questions={quizQuestions} answers={quizAnswers} />
+      <LegacyChoicePracticeQuiz
+        title="Quiz: Module 5 - OOP"
+        eyebrow="CS85 · MODULE 5"
+        questions={quizQuestions}
+        answers={quizAnswers}
+      />
     </section>
   );
 }

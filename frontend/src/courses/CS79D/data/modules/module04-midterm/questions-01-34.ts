@@ -1,4 +1,4 @@
-import type { UIQuestion } from "@/components/quiz/types/UIQuestion.type";
+import type { UIQuestion } from "@/features/quiz/types/UIQuestion.type";
 
 export const questions01To34 = [
   {

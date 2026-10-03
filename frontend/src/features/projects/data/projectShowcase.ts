@@ -1,7 +1,7 @@
-import { cs85PhpProgrammingProject } from "@/data/projects/cs85PhpProgrammingProject";
-import { javaFxEventHandlingProject } from "@/data/projects/javaFxEventHandlingProject";
-import { opCosmetologyProject } from "@/data/projects/opCosmetologyProject";
-import type { ProjectShowcaseItem } from "@/data/projectShowcase.types";
+import { cs85PhpProgrammingProject } from "@/features/projects/data/projects/cs85PhpProgrammingProject";
+import { javaFxEventHandlingProject } from "@/features/projects/data/projects/javaFxEventHandlingProject";
+import { opCosmetologyProject } from "@/features/projects/data/projects/opCosmetologyProject";
+import type { ProjectShowcaseItem } from "@/features/projects/data/projectShowcase.types";
 
 export type {
   BuildContribution,
@@ -11,7 +11,7 @@ export type {
   ProjectLanguage,
   ProjectShowcaseItem,
   ProjectStatus,
-} from "@/data/projectShowcase.types";
+} from "@/features/projects/data/projectShowcase.types";
 
 export const projectFilters = [
   "All",

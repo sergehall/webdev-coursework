@@ -20,7 +20,7 @@ test("refreshes an expired answers token using the HTTP status", async () => {
     .mockResolvedValueOnce(new Response('{"token":"first"}'))
     .mockResolvedValueOnce(
       new Response(
-        '[{"questionId":1,"questionText":"Question","options":["A","B"],"images":[]}]'
+        '[{"questionId":1,"questionText":"Question","options":["A","B"],"images":["/quiz/image.png"]}]'
       )
     )
     .mockResolvedValueOnce(
@@ -32,7 +32,7 @@ test("refreshes an expired answers token using the HTTP status", async () => {
     );
 
   await expect(fetchQuiz("quiz")).resolves.toMatchObject({
-    questions: [{ id: 1, question: "Question" }],
+    questions: [{ id: 1, question: "Question", imageUrl: ["/quiz/image.png"] }],
     answers: [{ questionId: 1, correctAnswer: [0] }],
   });
   expect(fetchMock).toHaveBeenCalledTimes(5);

@@ -7,7 +7,7 @@ import {
   type ProjectFilterOption,
   type ProjectFrameworkFilterOption,
   type ProjectLanguageFilterOption,
-} from "@/data/projectShowcase";
+} from "@/features/projects/data/projectShowcase";
 import { cn } from "@/utils/cn";
 
 type ProjectFiltersProps = {

@@ -1,8 +1,11 @@
-import { render, screen, within } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
+import { completePracticeQuiz } from "../quizTestHelpers";
+
 import AssignmentMod4 from "./AssignmentMod4";
+import { quizAnswers, quizQuestions } from "./quizData";
 
 vi.mock("@/hooks/useCompletedModules", () => ({
   useCompletedModules: () => ({
@@ -11,23 +14,6 @@ vi.mock("@/hooks/useCompletedModules", () => ({
     unmarkAsCompleted: vi.fn(),
   }),
 }));
-
-async function answerQuestion(
-  user: ReturnType<typeof userEvent.setup>,
-  question: string | RegExp,
-  answer: string | RegExp
-) {
-  const questionText = screen.getByText(question);
-  const card = questionText.closest(".rounded-lg");
-
-  expect(card).not.toBeNull();
-
-  await user.click(
-    within(card as HTMLElement).getByRole("button", {
-      name: answer,
-    })
-  );
-}
 
 describe("<AssignmentMod4 />", () => {
   it("renders the Module 4 Canvas shell collapsed by default", () => {
@@ -118,13 +104,13 @@ describe("<AssignmentMod4 />", () => {
     expect(screen.getByText("Implementation Notes")).toBeInTheDocument();
     expect(screen.getByText(/cs85-module4b-inventory/)).toBeInTheDocument();
     expect(screen.queryByText("20 pts")).not.toBeInTheDocument();
-    expect(screen.getAllByText("Quiz: Module 4 - Database")).toHaveLength(2);
+    expect(screen.getAllByText("Quiz: Module 4 - Database")).toHaveLength(3);
     expect(
       screen.getByText("Database fundamentals review")
     ).toBeInTheDocument();
     expect(screen.getByText("Started: Jun 29 at 6:54pm")).toBeInTheDocument();
     expect(
-      screen.getByText("What does PDO stand for in PHP?")
+      screen.getByRole("button", { name: "Begin quiz" })
     ).toBeInTheDocument();
     expect(
       screen.getByText(/This quiz block is available directly in the module/)
@@ -188,127 +174,12 @@ describe("<AssignmentMod4 />", () => {
     );
   });
 
-  it("scores the Module 4 database quiz with the embedded answer key", async () => {
+  it("scores the module quiz through the shared practice runner", async () => {
     const user = userEvent.setup();
-
     render(<AssignmentMod4 />);
-
     await user.click(
-      screen.getByRole("button", {
-        name: "Quiz: Module 4 - Database",
-      })
+      screen.getByRole("button", { name: "Quiz: Module 4 - Database" })
     );
-
-    await answerQuestion(
-      user,
-      "What does PDO stand for in PHP?",
-      "PHP Data Objects"
-    );
-    await answerQuestion(
-      user,
-      "Which SQL command retrieves data from a table?",
-      "SELECT"
-    );
-    await answerQuestion(
-      user,
-      "Which SQL command is used to add new data?",
-      "INSERT"
-    );
-    await answerQuestion(
-      user,
-      "Which clause is critical for targeting specific rows in SELECT or UPDATE?",
-      "WHERE"
-    );
-    await answerQuestion(
-      user,
-      "In a SQL query what does the % symbol do when used with LIKE?",
-      "It matches any number of characters"
-    );
-    await answerQuestion(
-      user,
-      "Which of the following statements about primary keys is true?",
-      "They uniquely identify each row"
-    );
-    await answerQuestion(
-      user,
-      "What type of key connects records in related tables?",
-      "Foreign Key"
-    );
-    await answerQuestion(
-      user,
-      "Which SQL data type is best for storing prices?",
-      "DECIMAL"
-    );
-    await answerQuestion(
-      user,
-      "Which PDO fetch mode returns data as an associative array?",
-      "PDO::FETCH_ASSOC"
-    );
-    await answerQuestion(
-      user,
-      "Which of the following best prevents SQL injection in PDO?",
-      "Prepared statements with parameter binding"
-    );
-    await answerQuestion(
-      user,
-      "In PDO what does the execute() function do?",
-      "Runs the prepared statement"
-    );
-    await answerQuestion(
-      user,
-      "Which of these is considered a security best practice?",
-      "Using environment variables for credentials"
-    );
-    await answerQuestion(
-      user,
-      "Which constraint prevents null entries in a column?",
-      "NOT NULL"
-    );
-    await answerQuestion(
-      user,
-      "What SQL operation is used to change existing data?",
-      "UPDATE"
-    );
-    await answerQuestion(
-      user,
-      "What does fetchAll() return?",
-      "Array of records"
-    );
-    await answerQuestion(
-      user,
-      "What PHP function securely hashes a password?",
-      "password_hash()"
-    );
-    await answerQuestion(
-      user,
-      "In MySQL what is the purpose of AUTO_INCREMENT?",
-      "Automatically assigns unique IDs"
-    );
-    await answerQuestion(
-      user,
-      "Which type of database model does MySQL use?",
-      "Relational"
-    );
-    await answerQuestion(
-      user,
-      "Which SQL clause limits the number of returned records?",
-      "LIMIT"
-    );
-    await answerQuestion(
-      user,
-      "What is the best data type for a true/false column in MySQL?",
-      "BOOLEAN"
-    );
-    await answerQuestion(
-      user,
-      "What does the LIKE operator allow you to do in SQL?",
-      "Perform pattern matching"
-    );
-
-    await user.click(screen.getByRole("button", { name: "Submit Quiz" }));
-
-    expect(
-      screen.getByText("Score for this attempt: 21 out of 21")
-    ).toBeInTheDocument();
+    await completePracticeQuiz(user, quizQuestions, quizAnswers);
   });
 });

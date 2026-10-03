@@ -1,6 +1,6 @@
-import QuizGenerator from "@/components/quiz/QuizGenerator";
-import type { CorrectAnswerDto } from "@/components/quiz/types/correct-answers-map.type";
-import type { UIQuestion } from "@/components/quiz/types/UIQuestion.type";
+import LegacyChoicePracticeQuiz from "@/features/quiz/adapters/LegacyChoicePracticeQuiz";
+import type { CorrectAnswerDto } from "@/features/quiz/types/correct-answers-map.type";
+import type { UIQuestion } from "@/features/quiz/types/UIQuestion.type";
 
 type CS79DStaticQuizProps = {
   title: string;
@@ -16,6 +16,7 @@ export default function CS79DStaticQuiz({
   answers,
 }: CS79DStaticQuizProps) {
   const hasQuestions = questions.length > 0;
+  const timeLimitMinutes = Number(dueLabel?.match(/(\d+) min limit/)?.[1]);
 
   return (
     <section className="space-y-4">
@@ -35,7 +36,15 @@ export default function CS79DStaticQuiz({
       </header>
 
       {hasQuestions ? (
-        <QuizGenerator questions={questions} answers={answers} />
+        <LegacyChoicePracticeQuiz
+          title={title}
+          eyebrow="CS79D · QUIZ"
+          questions={questions}
+          answers={answers}
+          durationSeconds={
+            timeLimitMinutes > 0 ? timeLimitMinutes * 60 : undefined
+          }
+        />
       ) : (
         <div className="rounded-xl border border-dashed border-rose-300 bg-rose-50 p-5 text-sm leading-7 text-slate-700 dark:border-rose-800 dark:bg-rose-950/30 dark:text-slate-200">
           Quiz questions and answers will be added here after the Canvas quiz

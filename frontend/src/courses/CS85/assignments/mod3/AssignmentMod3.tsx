@@ -6,7 +6,7 @@ import { Assignment3AContent, Assignment3BContent } from "./assignmentContent";
 
 import AnimatedAccordionItem from "@/components/AnimatedAccordionItem";
 import { ModuleCompletionButton } from "@/components/buttons";
-import QuizGenerator from "@/components/quiz/QuizGenerator";
+import LegacyChoicePracticeQuiz from "@/features/quiz/adapters/LegacyChoicePracticeQuiz";
 import {
   ModuleItemBlock,
   type CanvasItem,
@@ -59,7 +59,12 @@ function ModuleThreeQuizShell() {
           </p>
         </header>
 
-        <QuizGenerator questions={quizQuestions} answers={quizAnswers} />
+        <LegacyChoicePracticeQuiz
+          title="Quiz: Module 3 - Handling Web Requests"
+          eyebrow="CS85 · MODULE 3"
+          questions={quizQuestions}
+          answers={quizAnswers}
+        />
       </section>
     </div>
   );

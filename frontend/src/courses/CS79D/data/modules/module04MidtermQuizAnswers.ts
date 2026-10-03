@@ -1,4 +1,4 @@
-import type { CorrectAnswerDto } from "@/components/quiz/types/correct-answers-map.type";
+import type { CorrectAnswerDto } from "@/features/quiz/types/correct-answers-map.type";
 
 export const cs79dModule04MidtermQuizAnswers = [
   {

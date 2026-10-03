@@ -1,8 +1,8 @@
 // src/hooks/useQuizEngine.ts
 import { useState } from "react";
 
-import type { CorrectAnswerDto } from "@/components/quiz/types/correct-answers-map.type";
-import type { UIQuestion } from "@/components/quiz/types/UIQuestion.type";
+import type { CorrectAnswerDto } from "@/features/quiz/types/correct-answers-map.type";
+import type { UIQuestion } from "@/features/quiz/types/UIQuestion.type";
 
 export function useQuizEngine(
   questions: UIQuestion[],

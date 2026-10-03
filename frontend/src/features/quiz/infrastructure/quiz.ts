@@ -1,10 +1,9 @@
 // src/api/quiz.ts
-import { ApiHttpError, apiFetch } from "./client";
-
+import { ApiHttpError, apiFetch } from "@/api/client";
 import { z } from "@/config/zod";
-import type { CorrectAnswerDto } from "@/components/quiz/types/correct-answers-map.type";
-import type { QuestionDto } from "@/components/quiz/types/QuestionDto.type";
-import type { UIQuestion } from "@/components/quiz/types/UIQuestion.type";
+import type { CorrectAnswerDto } from "@/features/quiz/types/correct-answers-map.type";
+import type { QuestionDto } from "@/features/quiz/types/QuestionDto.type";
+import type { UIQuestion } from "@/features/quiz/types/UIQuestion.type";
 
 export interface FetchQuizResponse {
   questions: UIQuestion[];
@@ -92,7 +91,7 @@ export async function fetchQuiz(quizId: string): Promise<FetchQuizResponse> {
     options: q.options,
     // If UIQuestion expects an array, keep "imageUrls".
     // If it expects a single string, pick the first: q.images?.[0] ?? null
-    imageUrls: q.images ?? [],
+    imageUrl: q.images ?? [],
     multiple: (answerMap[q.questionId]?.length ?? 0) > 1,
   }));
 

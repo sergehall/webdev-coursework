@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { X } from "lucide-react";
 
-import type { ProjectShowcaseItem } from "@/data/projectShowcase";
+import type { ProjectShowcaseItem } from "@/features/projects/data/projectShowcase";
 import { useProjectDialogFocus } from "@/features/projects/useProjectDialogFocus";
 
 type ProjectScreenshotDialogProps = {

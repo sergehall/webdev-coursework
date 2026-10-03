@@ -6,7 +6,7 @@ import {
   PencilLine,
 } from "lucide-react";
 
-import type { ProjectShowcaseItem } from "@/data/projectShowcase";
+import type { ProjectShowcaseItem } from "@/features/projects/data/projectShowcase";
 import ProjectLinks from "@/features/projects/ProjectLinks";
 import {
   projectStatusLabels,

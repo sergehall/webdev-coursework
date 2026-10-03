@@ -1,7 +1,7 @@
 import { cs79dModule04MidtermQuizAnswers } from "./module04MidtermQuizAnswers";
 import { cs79dModule04MidtermQuizQuestions } from "./module04MidtermQuizQuestions";
 
-import type { UIQuestion } from "@/components/quiz/types/UIQuestion.type";
+import type { UIQuestion } from "@/features/quiz/types/UIQuestion.type";
 import {
   assertAssessmentDefinition,
   type AssessmentDefinition,

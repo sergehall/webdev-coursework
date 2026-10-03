@@ -1,7 +1,7 @@
 import {
   projectShowcaseItems,
   type ProjectShowcaseItem,
-} from "@/data/projectShowcase";
+} from "@/features/projects/data/projectShowcase";
 import { technologies, type CourseName, type Tech } from "@/data/technologies";
 import {
   activeCourses,

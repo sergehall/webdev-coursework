@@ -1,8 +1,11 @@
-import { render, screen, within } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
+import { completePracticeQuiz } from "../quizTestHelpers";
+
 import AssignmentMod3 from "./AssignmentMod3";
+import { quizAnswers, quizQuestions } from "./quizData";
 
 vi.mock("@/hooks/useCompletedModules", () => ({
   useCompletedModules: () => ({
@@ -11,23 +14,6 @@ vi.mock("@/hooks/useCompletedModules", () => ({
     unmarkAsCompleted: vi.fn(),
   }),
 }));
-
-async function answerQuestion(
-  user: ReturnType<typeof userEvent.setup>,
-  question: string | RegExp,
-  answer: string | RegExp
-) {
-  const questionText = screen.getByText(question);
-  const card = questionText.closest(".rounded-lg");
-
-  expect(card).not.toBeNull();
-
-  await user.click(
-    within(card as HTMLElement).getByRole("button", {
-      name: answer,
-    })
-  );
-}
 
 describe("<AssignmentMod3 />", () => {
   it("renders the Module 3 Canvas shell collapsed by default", () => {
@@ -128,11 +114,11 @@ describe("<AssignmentMod3 />", () => {
     expect(screen.getByText(/cs85-module3b-createform/)).toBeInTheDocument();
     expect(
       screen.getAllByText("Quiz: Module 3 - Handling Web Requests")
-    ).toHaveLength(2);
+    ).toHaveLength(3);
     expect(screen.getByText("Started: Jun 29 at 6:37pm")).toBeInTheDocument();
     expect(screen.getByText("PDO, SQL, and CRUD review")).toBeInTheDocument();
     expect(
-      screen.getByText("What does PDO stand for in PHP?")
+      screen.getByRole("button", { name: "Begin quiz" })
     ).toBeInTheDocument();
     expect(
       screen.getByText(/This quiz block is available directly in the module/)
@@ -202,117 +188,14 @@ describe("<AssignmentMod3 />", () => {
     );
   });
 
-  it("scores the Module 3 handling web requests quiz with the embedded answer key", async () => {
+  it("scores the module quiz through the shared practice runner", async () => {
     const user = userEvent.setup();
-
     render(<AssignmentMod3 />);
-
     await user.click(
       screen.getByRole("button", {
         name: "Quiz: Module 3 - Handling Web Requests",
       })
     );
-
-    await answerQuestion(
-      user,
-      "What does PDO stand for in PHP?",
-      "PHP Data Objects"
-    );
-    await answerQuestion(
-      user,
-      "What SQL command is used to retrieve data from a table?",
-      "SELECT"
-    );
-    await answerQuestion(
-      user,
-      "Which clause in an SQL SELECT statement filters rows?",
-      "WHERE"
-    );
-    await answerQuestion(
-      user,
-      "Which of these is a prepared statement vulnerability mitigation technique?",
-      "Using placeholders and binding parameters"
-    );
-    await answerQuestion(
-      user,
-      "Which SQL keyword is used to insert new data into a table?",
-      "INSERT"
-    );
-    await answerQuestion(
-      user,
-      "Which of the following ensures each row in a table is unique?",
-      "PRIMARY KEY"
-    );
-    await answerQuestion(
-      user,
-      "Which statement prevents SQL injection in PHP using PDO?",
-      "$stmt->execute([$userInput])"
-    );
-    await answerQuestion(
-      user,
-      "Which function returns a single row from a PDO statement?",
-      "fetch()"
-    );
-    await answerQuestion(
-      user,
-      "Which SQL type stores large text like blog posts?",
-      "TEXT"
-    );
-    await answerQuestion(
-      user,
-      "Which data type is best for monetary values?",
-      "DECIMAL"
-    );
-    await answerQuestion(
-      user,
-      "Which SQL statement is used to remove records?",
-      "DELETE"
-    );
-    await answerQuestion(
-      user,
-      "Which type of database key helps link tables?",
-      "Foreign Key"
-    );
-    await answerQuestion(
-      user,
-      "Which SQL constraint prevents duplicate values?",
-      "UNIQUE"
-    );
-    await answerQuestion(
-      user,
-      "What does the NOW() function return in SQL?",
-      "Current date and time"
-    );
-    await answerQuestion(
-      user,
-      'What would cause a "Column count doesn\'t match value count" error?',
-      "Mismatch between columns and VALUES in INSERT"
-    );
-    await answerQuestion(
-      user,
-      "Which PHP function should be avoided due to SQL injection risk?",
-      "mysqli_query() with direct input"
-    );
-    await answerQuestion(
-      user,
-      "Which of the following is TRUE about PDO prepared statements?",
-      "They separate logic and data"
-    );
-    await answerQuestion(
-      user,
-      "What happens if you omit WHERE in an UPDATE statement?",
-      "All rows are updated"
-    );
-    await answerQuestion(
-      user,
-      "Which statements describe the purpose of the C in CRUD?",
-      "Create new records"
-    );
-
-    await user.click(screen.getByRole("button", { name: "Submit Quiz" }));
-
-    expect(
-      screen.getByText("Score for this attempt: 19 out of 19")
-    ).toBeInTheDocument();
+    await completePracticeQuiz(user, quizQuestions, quizAnswers);
   });
 });

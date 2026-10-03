@@ -2,7 +2,10 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
+import { completePracticeQuiz } from "../quizTestHelpers";
+
 import AssignmentMod1 from "./AssignmentMod1";
+import { quizAnswers, quizQuestions } from "./quizData";
 
 vi.mock("@/hooks/useCompletedModules", () => ({
   useCompletedModules: () => ({
@@ -112,12 +115,10 @@ describe("<AssignmentMod1 />", () => {
     );
 
     expect(screen.getAllByText("Quiz: Module 1 - Intro to PHP")).toHaveLength(
-      2
+      3
     );
     expect(
-      screen.getByText(
-        "What is the default extension that most Web servers use to process PHP scripts?"
-      )
+      screen.getByRole("button", { name: "Begin quiz" })
     ).toBeInTheDocument();
     expect(screen.getByText("Due: Jun 28 at 11:59pm")).toBeInTheDocument();
   });
@@ -142,38 +143,12 @@ describe("<AssignmentMod1 />", () => {
     ).toHaveAttribute("href", "/course-materials/CS85/mod-1/assignment_1a.pdf");
   });
 
-  it("scores the Module 1 PHP quiz with the embedded answer key", async () => {
+  it("scores the module quiz through the shared practice runner", async () => {
     const user = userEvent.setup();
-
     render(<AssignmentMod1 />);
-
     await user.click(
       screen.getByRole("button", { name: "Quiz: Module 1 - Intro to PHP" })
     );
-
-    await user.click(screen.getByRole("button", { name: ".php" }));
-    await user.click(screen.getByRole("button", { name: "comma ," }));
-    await user.click(
-      screen.getAllByRole("button", {
-        name: "// forward slash forward slash",
-      })[0]
-    );
-    await user.click(screen.getByRole("button", { name: "$myNewVariable" }));
-    await user.click(screen.getByRole("button", { name: "$myNum = 1;" }));
-    await user.click(screen.getByRole("button", { name: "; semicolon" }));
-    await user.click(screen.getByRole("button", { name: "FALSE" }));
-    await user.click(screen.getByRole("button", { name: "TRUE" }));
-    await user.click(screen.getByRole("button", { name: "$aArray[0]" }));
-    await user.click(screen.getByRole("button", { name: "13" }));
-    await user.click(
-      screen.getByRole("button", {
-        name: "the right operand is TRUE and the left operand is TRUE",
-      })
-    );
-    await user.click(screen.getByRole("button", { name: "Submit Quiz" }));
-
-    expect(
-      screen.getByText("Score for this attempt: 10 out of 10")
-    ).toBeInTheDocument();
+    await completePracticeQuiz(user, quizQuestions, quizAnswers);
   });
 });

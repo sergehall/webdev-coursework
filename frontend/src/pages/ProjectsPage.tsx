@@ -5,7 +5,7 @@ import {
   type ProjectFrameworkFilterOption,
   type ProjectLanguageFilterOption,
   type ProjectShowcaseItem,
-} from "@/data/projectShowcase";
+} from "@/features/projects/data/projectShowcase";
 import ProjectCard from "@/features/projects/ProjectCard";
 import ProjectFilters from "@/features/projects/ProjectFilters";
 import ProjectScreenshotDialog from "@/features/projects/ProjectScreenshotDialog";

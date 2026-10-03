@@ -1,10 +1,10 @@
 // frontend/src/hooks/useQuizData.ts
 import { useEffect, useState } from "react";
 
-import type { UIQuestion } from "@/components/quiz/types/UIQuestion.type";
-import type { CorrectAnswerDto } from "@/components/quiz/types/correct-answers-map.type";
-import type { FetchQuizResponse } from "@/api/quiz";
-import { QuizAPI } from "@/api";
+import type { UIQuestion } from "@/features/quiz/types/UIQuestion.type";
+import type { CorrectAnswerDto } from "@/features/quiz/types/correct-answers-map.type";
+import { fetchQuiz } from "@/features/quiz/infrastructure/quiz";
+import type { FetchQuizResponse } from "@/features/quiz/infrastructure/quiz";
 
 export function useQuizData(quizId: string) {
   const [questions, setQuestions] = useState<UIQuestion[]>([]);
@@ -14,7 +14,7 @@ export function useQuizData(quizId: string) {
 
   useEffect(() => {
     setLoading(true);
-    QuizAPI.fetchQuiz(quizId)
+    fetchQuiz(quizId)
       .then((res: FetchQuizResponse) => {
         setQuestions(res.questions);
         setAnswers(res.answers);

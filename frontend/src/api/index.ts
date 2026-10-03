@@ -1,2 +1,2 @@
 // src/api/index.ts
-export * as QuizAPI from "./quiz";
+export * as QuizAPI from "@/features/quiz/infrastructure/quiz";

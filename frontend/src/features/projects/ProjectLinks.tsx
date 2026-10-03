@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { SiGithub } from "react-icons/si";
 
-import type { ProjectShowcaseItem } from "@/data/projectShowcase";
+import type { ProjectShowcaseItem } from "@/features/projects/data/projectShowcase";
 import ProjectResourceDialog from "@/features/projects/ProjectResourceDialog";
 import {
   publicProjectArchitectureById,

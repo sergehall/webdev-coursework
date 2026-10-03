@@ -6,7 +6,7 @@ import { Assignment1AContent, Assignment1BContent } from "./assignmentContent";
 
 import AnimatedAccordionItem from "@/components/AnimatedAccordionItem";
 import { ModuleCompletionButton } from "@/components/buttons";
-import QuizGenerator from "@/components/quiz/QuizGenerator";
+import LegacyChoicePracticeQuiz from "@/features/quiz/adapters/LegacyChoicePracticeQuiz";
 import {
   CanvasRow,
   type CanvasItem,
@@ -66,7 +66,13 @@ function ModuleOneQuiz() {
         </p>
       </header>
 
-      <QuizGenerator questions={quizQuestions} answers={quizAnswers} />
+      <LegacyChoicePracticeQuiz
+        title="Quiz: Module 1 - Intro to PHP"
+        eyebrow="CS85 · MODULE 1"
+        questions={quizQuestions}
+        answers={quizAnswers}
+        durationSeconds={30 * 60}
+      />
     </section>
   );
 }

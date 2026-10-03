@@ -1,4 +1,4 @@
-import type { ProjectShowcaseItem } from "@/data/projectShowcase.types";
+import type { ProjectShowcaseItem } from "@/features/projects/data/projectShowcase.types";
 
 export const cs85PhpProgrammingProject = {
   id: "cs85-php-programming",

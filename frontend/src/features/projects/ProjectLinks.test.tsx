@@ -2,7 +2,7 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
-import { projectShowcaseItems } from "@/data/projectShowcase";
+import { projectShowcaseItems } from "@/features/projects/data/projectShowcase";
 import ProjectLinks from "@/features/projects/ProjectLinks";
 
 const hexGateProject = projectShowcaseItems.find(

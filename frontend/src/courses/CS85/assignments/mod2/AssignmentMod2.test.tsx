@@ -2,7 +2,10 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
+import { completePracticeQuiz } from "../quizTestHelpers";
+
 import AssignmentMod2 from "./AssignmentMod2";
+import { quizAnswers, quizQuestions } from "./quizData";
 
 vi.mock("@/hooks/useCompletedModules", () => ({
   useCompletedModules: () => ({
@@ -103,7 +106,7 @@ describe("<AssignmentMod2 />", () => {
     ).toBeInTheDocument();
     expect(
       screen.getAllByText("Quiz: Module 2 - Condition Statements & Loops")
-    ).toHaveLength(2);
+    ).toHaveLength(3);
     expect(screen.getAllByText("Due: Jun 28 at 11:59pm")).toHaveLength(1);
     expect(screen.getAllByText("20 pts")).toHaveLength(2);
     expect(screen.getByText("10 pts")).toBeInTheDocument();
@@ -112,9 +115,7 @@ describe("<AssignmentMod2 />", () => {
       screen.getByText(/SHIFT, ALT, and T\. Again: SHIFT, ALT, and T\./)
     ).toBeInTheDocument();
     expect(
-      screen.getByText(
-        "Which of the following is the correct syntax for an if statement?"
-      )
+      screen.getByRole("button", { name: "Begin quiz" })
     ).toBeInTheDocument();
   });
 
@@ -170,47 +171,14 @@ describe("<AssignmentMod2 />", () => {
     );
   });
 
-  it("scores the Module 2 conditions and loops quiz with the embedded answer key", async () => {
+  it("scores the module quiz through the shared practice runner", async () => {
     const user = userEvent.setup();
-
     render(<AssignmentMod2 />);
-
     await user.click(
       screen.getByRole("button", {
         name: "Quiz: Module 2 - Condition Statements & Loops",
       })
     );
-
-    await user.click(
-      screen.getByRole("button", { name: "if ($aVariable == 1)" })
-    );
-    await user.click(
-      screen.getByRole("button", {
-        name: "are within a command { ... } block",
-      })
-    );
-    await user.click(
-      screen.getByRole("button", {
-        name: 'else { echo "the else statement"; }',
-      })
-    );
-    await user.click(screen.getByRole("button", { name: "iteration" }));
-    await user.click(
-      screen.getByRole("button", { name: "while ($i < 100) { }" })
-    );
-
-    const trueOptions = screen.getAllByRole("button", { name: "True" });
-    const falseOptions = screen.getAllByRole("button", { name: "False" });
-
-    await user.click(trueOptions[0]);
-    await user.click(trueOptions[1]);
-    await user.click(falseOptions[2]);
-    await user.click(trueOptions[3]);
-    await user.click(trueOptions[4]);
-    await user.click(screen.getByRole("button", { name: "Submit Quiz" }));
-
-    expect(
-      screen.getByText("Score for this attempt: 10 out of 10")
-    ).toBeInTheDocument();
+    await completePracticeQuiz(user, quizQuestions, quizAnswers);
   });
 });

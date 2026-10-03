@@ -1,7 +1,7 @@
 // src/components/quiz/QuestionCard.tsx
 
-import type { UIQuestion } from "@/components/quiz/types/UIQuestion.type";
-import type { UserAnswer } from "@/components/quiz/types/userAnswer.type";
+import type { UIQuestion } from "@/features/quiz/types/UIQuestion.type";
+import type { UserAnswer } from "@/features/quiz/types/userAnswer.type";
 
 type Props = {
   question: UIQuestion;

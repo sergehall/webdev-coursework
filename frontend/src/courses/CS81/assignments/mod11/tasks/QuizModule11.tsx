@@ -1,7 +1,7 @@
 // frontend/src/assignments/mod11/tasks/QuizModule11.tsx
 
-import QuizGenerator from "@/components/quiz/QuizGenerator";
-import { useQuizData } from "@/hooks/useQuizData";
+import QuizGenerator from "@/features/quiz/components/QuizGenerator";
+import { useQuizData } from "@/features/quiz/application/useQuizData";
 
 const QuizModule11 = () => {
   const { questions, answers, loading, error } = useQuizData("QuizModule11");

@@ -1,6 +1,6 @@
 // src/assignments/mod5/tasks/QuizModule5.tsx
-import QuizGeneratorPaginated from "@/components/quiz/QuizGeneratorPaginated";
-import { useQuizData } from "@/hooks/useQuizData";
+import QuizGeneratorPaginated from "@/features/quiz/components/QuizGeneratorPaginated";
+import { useQuizData } from "@/features/quiz/application/useQuizData";
 
 const QuizModule5 = () => {
   const { questions, answers, loading, error } = useQuizData("QuizModule5");

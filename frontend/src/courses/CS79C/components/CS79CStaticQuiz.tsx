@@ -1,6 +1,6 @@
-import QuizGenerator from "@/components/quiz/QuizGenerator";
-import type { CorrectAnswerDto } from "@/components/quiz/types/correct-answers-map.type";
-import type { UIQuestion } from "@/components/quiz/types/UIQuestion.type";
+import LegacyChoicePracticeQuiz from "@/features/quiz/adapters/LegacyChoicePracticeQuiz";
+import type { CorrectAnswerDto } from "@/features/quiz/types/correct-answers-map.type";
+import type { UIQuestion } from "@/features/quiz/types/UIQuestion.type";
 
 type CS79CStaticQuizProps = {
   title: string;
@@ -33,7 +33,12 @@ export default function CS79CStaticQuiz({
         </p>
       </header>
 
-      <QuizGenerator questions={questions} answers={answers} />
+      <LegacyChoicePracticeQuiz
+        title={title}
+        eyebrow="CS79C · QUIZ"
+        questions={questions}
+        answers={answers}
+      />
     </section>
   );
 }
