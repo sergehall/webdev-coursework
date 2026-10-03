@@ -211,3 +211,8 @@ export const submissionChecklist = [
   "Add the screen recording to the project.",
   "Create a clean ZIP of the required project without generated files or secrets.",
 ] as const;
+
+export const totalRubricPoints = rubricEvidence.reduce(
+  (total, item) => total + item.points,
+  0
+);
