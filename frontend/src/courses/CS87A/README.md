@@ -117,6 +117,11 @@ python3 A06.py
 
 The final assignment (`A06.py`) creates a desktop application that:
 
+The Module 6 instructions require submission as a single `A06.py` file. The
+980-line source was reviewed during the large-file pass and remains intact so
+its displayed, runnable, and submitted form stays consistent. A multi-module
+version would require a changed assignment and distribution package.
+
 - Loads parsed election data from `A05`’s helper functions
 - Lets the user select year/state and type of chart
 - Draws bar charts on a Tkinter `Canvas`
