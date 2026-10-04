@@ -2,14 +2,19 @@
 
 _Santa Monica College, Fall 2025_
 
-Welcome! This repository contains my coursework, labs, and assignments for **CS 79A – Cloud Computing with AWS** at **Santa Monica College**.
+This directory presents CS 79A coursework, labs, and assignments within the
+[WebDev Coursework Platform](../../../../README.md). The term and class details
+below describe the Fall 2025 course, not current enrollment or deadlines.
 
 ---
 
 ## Course Overview
 
-**CS 79A** introduces the fundamentals of **Cloud Computing** using **Amazon Web Services (AWS)**.  
-The course emphasizes hands-on learning, problem-solving, and real-world cloud concepts through labs, assignments, discussions, and assessments delivered entirely online via **Canvas**.
+**CS 79A** introduces the fundamentals of **Cloud Computing** using **Amazon Web
+Services (AWS)**.
+The course emphasizes hands-on learning, problem-solving, and real-world cloud
+concepts through labs, assignments, discussions, and assessments delivered
+entirely online via **Canvas**.
 
 - **Instructor**: Koda Kol ([kol_koda@smc.edu](mailto:kol_koda@smc.edu))
 - **Term**: Fall 2025 (8-week course)
@@ -31,7 +36,8 @@ The course emphasizes hands-on learning, problem-solving, and real-world cloud c
 - **Final Exam**: Required (details announced during the course)
 - **Deadlines**: Strict and non-negotiable
 
-> Participation during **Week 1 is mandatory**. Failure to participate may result in being dropped from the course.
+> Participation during **Week 1 is mandatory**. Failure to participate may
+> result in being dropped from the course.
 
 ---
 
@@ -56,25 +62,27 @@ This course uses **AWS Academy** for labs and instructional materials.
 - Labs are mandatory and hands-on
 - Learner Lab access is required for course completion
 
-Detailed setup instructions are provided during Week 1 and the first virtual meeting.
+Detailed setup instructions are provided during Week 1 and the first virtual
+meeting.
 
 ---
 
 ## Class Meetings & Support
 
-- **Optional Virtual Meetings**:  
+- **Optional Virtual Meetings**:
   Wednesdays, **5:30 – 6:30 PM**
 - **Office Hours**: Listed in the syllabus or by appointment
 - **Contact Email**: kol_koda@smc.edu
 - **Response Time**: 24–48 hours
 
-Students are responsible for keeping up with all coursework, labs, and assessments.
+Students are responsible for keeping up with all coursework, labs, and
+assessments.
 
 ---
 
-## Repository Purpose
+## Course directory
 
-This repository serves as:
+This directory serves as:
 
 - A structured collection of **weekly coursework**
 - A record of **AWS labs and assignments**
@@ -85,13 +93,14 @@ This repository serves as:
 
 ## Disclaimer
 
-This repository is for **educational purposes only** as part of coursework at **Santa Monica College**.  
+This repository is for **educational purposes only** as part of coursework at
+**Santa Monica College**.
 Not intended for production or commercial use.
 
 ---
 
 ## Author
 
-**Serge Hall**  
-GitHub: [@SergeHall](https://github.com/SergeHall)  
+**Serge Hall**
+GitHub: [@SergeHall](https://github.com/SergeHall)
 Email: serge.hall.dev@gmail.com

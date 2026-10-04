@@ -51,71 +51,9 @@ Below is a screenshot showing the `Profile.jsx` here showing a matched profile w
 
 ---
 
-## Getting Started
+## Archived standalone project
 
-1. **Clone the repository**
-
-```bash
-git clone https://github.com/sergehall/module10a-studentcard-review
-cd module10a-studentcard-review
-```
-
-2. **Install Node.js** (if not already installed)
-
-- Visit https://nodejs.org and download for your system.
-
-3. **Install dependencies**
-
-```bash
-npm install
-```
-
-4. **Start the development server**
-
-```bash
-npm run dev
-```
-
-## Repository Structure
-
-```
-.
-├── public/
-│   └── my-new-favicon.ico
-├── screenshots/
-│   └── studentcard-comments.png    # Screenshot of comments + running component
-├── src/
-│   ├── assets/                        # Optional static assets (e.g. images)
-│   ├── components/
-│   │   ├── Assignment9A.jsx           # Module 9A: reusable profile cards
-│   │   ├── Assignment9B.jsx           # Module 9B: tech-focused profiles
-│   │   ├── Assignment10B.jsx          # Module 10A: StudentCard review
-│   │   ├── AssignmentHeader.jsx       # Shared assignment header component
-│   │   ├── AssignmentTemplate.jsx      # Template for assignment components
-│   │   ├── ContactCard.jsx            # Optional contact card component
-│   │   ├── DynamicProfileSearch.jsx   # Dynamic search for user profiles
-│   │   ├── Profile.jsx                # Reusable profile card component
-│   │   ├── StudentCard.jsx            # Student card with toggleable bio
-│   │   ├── UserList.jsx               # List renderer for user profiles
-│   │   ├── UserProfile.jsx            # Class-based profile styling
-│   │   └── UserProfileInline.jsx      # Inline CSS version for Assignment 9B
-│   ├── data/
-│   │   ├── dynamicProfile.js          # Dynamic profile data for search
-│   │   ├── userProfiles.js            # Sample profiles for Assignment 9A
-│   │   ├── frontendProfiles.js        # Tech-focused profiles for Assignment 9B
-│   │   └── studentData.js             # Data for Module 10A
-│   ├── styles/
-│   │   └── styles.css                 # Global component-specific styles
-│   ├── App.jsx                        # Root application component
-│   ├── index.css                      # Base styles for the app
-│   └── main.jsx                       # Entry point for React (Vite)
-├── index.html                         # HTML entry point
-├── vite.config.js                     # Vite configuration
-├── package.json
-├── package-lock.json
-├── .gitignore
-└── README.md
-```
+The [original assignment package](module10a-profile.zip) contains the standalone Vite project and its setup files. Its historical commands and `src/` tree refer to that archive, not to this coursework platform. Use the [platform README](../../../../../../README.md) to run the current application.
 
 ---
 

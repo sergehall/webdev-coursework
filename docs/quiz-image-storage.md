@@ -6,21 +6,20 @@ limits the decoded pixel count, and re-encodes the image without untrusted
 metadata. It uses a random filename under `quiz-images/` and stores only a
 `/uploads/<filename>` path with the question. `GET /uploads/<filename>` reads
 the object through the backend and returns the verified image type with
-`X-Content-Type-Options: nosniff` and a long-lived cache header. The bucket
-does not need public access or browser CORS.
+`X-Content-Type-Options: nosniff` and a long-lived cache header. The bucket does
+not need public access or browser CORS.
 
 ## Cloudflare R2 setup
 
-1. Use the dedicated private bucket `webdev-coursework-quiz-images` in the
-   webdev-coursework Cloudflare account. Keep public access disabled.
+1. Use a dedicated private bucket for quiz images in the intended Cloudflare
+   account. Keep public access disabled.
 2. Create an R2 S3 API token with **Object Read & Write** access restricted to
    that bucket. Save the Access Key ID and Secret Access Key in the backend's
    Heroku Config Vars, never in Git or frontend variables.
-3. Set `QUIZ_IMAGE_S3_BUCKET=webdev-coursework-quiz-images`,
-   `QUIZ_IMAGE_S3_REGION=auto`,
-   `QUIZ_IMAGE_S3_ENDPOINT=https://bd3d3ed400d1fdffb13624848f5ebb8b.r2.cloudflarestorage.com`,
-   `QUIZ_IMAGE_S3_ACCESS_KEY_ID`, and `QUIZ_IMAGE_S3_SECRET_ACCESS_KEY`.
-   Restart the backend after changing configuration.
+3. Set `QUIZ_IMAGE_S3_BUCKET` to that bucket name, `QUIZ_IMAGE_S3_REGION=auto`,
+   `QUIZ_IMAGE_S3_ENDPOINT` to the account-specific HTTPS R2 S3 endpoint,
+   `QUIZ_IMAGE_S3_ACCESS_KEY_ID`, and `QUIZ_IMAGE_S3_SECRET_ACCESS_KEY`. Restart
+   the backend after changing configuration.
 4. Deploy the backend and frontend together. The frontend resolves `/uploads/`
    paths against its configured `VITE_API_URL`, and its image CSP allows the
    production API origin.

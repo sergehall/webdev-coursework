@@ -23,18 +23,9 @@ It demonstrates how to use DOM manipulation, browser events, and JavaScript cond
 
 ---
 
-## Getting Started
+## Open this assignment
 
-1. **Clone the repository**
-
-```bash
-git clone https://github.com/sergehall/cs81-module8-clicker
-cd cs81-module8-clicker
-```
-
-2. **Open the HTML file in your browser**
-
-No installation is required. Just open `cookieClicker.html` in your browser and begin clicking!
+Open [`cookieClicker.html`](cookieClicker.html) in a modern browser. This folder contains the standalone assignment assets; no package installation is required. For the current coursework application, use the [platform README](../../../../../../README.md).
 
 ---
 

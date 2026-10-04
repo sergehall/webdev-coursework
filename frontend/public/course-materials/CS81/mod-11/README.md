@@ -41,54 +41,9 @@ It features a responsive and interactive contact form built with **React**, supp
 
 ---
 
-## Getting Started
+## Archived standalone project
 
-1. **Clone the repository**
-
-```bash
-git clone https://github.com/sergehall/cs81-module11-form
-cd cs81-module11-form
-```
-
-2. **Install dependencies**
-
-```bash
-npm install
-```
-
-3. **Run the development server**
-
-```bash
-npm run dev
-```
-
----
-
-## Repository Structure
-
-```
-.
-├── public/
-├── src/
-│   ├── assets/
-│   ├── components/
-│   │   ├── ContactForm.jsx
-│   │   ├── StyledContactForm.jsx
-│   │   └── Footer.jsx
-│   ├── pages/
-│   │   ├── ContactFormPage.jsx
-│   │   ├── Contact.jsx
-│   │   └── Home.jsx
-│   ├── App.jsx
-│   ├── App.css
-│   ├── index.css
-│   └── main.jsx
-├── index.html
-├── vite.config.js
-├── package.json
-├── .gitignore
-└── README.md
-```
+The [original assignment package](cs81-module11-form.zip) contains the standalone Vite project and its setup files. Its historical commands and `src/` tree refer to that archive, not to this coursework platform. Use the [platform README](../../../../../README.md) to run the current application.
 
 ---
 

@@ -4,7 +4,7 @@
   components, fixtures, and types. Put a helper inside its course when only that
   course uses it.
 - `features/` owns product areas such as home, projects, pathway, assessment,
-  owner account, and progress. Keep their UI, data, and request logic together.
+  account, and progress. Keep their UI, data, and request logic together.
 - `components/` contains UI shared by multiple courses or product areas.
 - `layout/` contains the app shell and navigation. `pages/` contains route entry
   points that compose features and shared UI.

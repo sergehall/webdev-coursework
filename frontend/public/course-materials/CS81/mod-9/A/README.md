@@ -24,7 +24,7 @@ We also extended the component to support dynamic rendering of multiple user pro
 
 Here is an example of the final component rendering multiple users inside a responsive modal:
 
-[View Screenshot](/sandbox/mod-9/A/user-profiles.png)
+[View Screenshot](user-profiles.png)
 
 ---
 

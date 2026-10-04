@@ -157,5 +157,5 @@ Run `php -m` and confirm `pdo_mysql` appears. Switch to a PHP build that include
 - [x] MySQL running in the healthy `cs85-mysql` Docker container.
 - [x] `orm_practice_db` created.
 - [x] Laravel migrations completed against the named `module8a` MySQL connection.
-- [ ] Successful migration screenshot added to `docs/screenshots`.
-- [ ] Project pushed to GitHub.
+- [x] Local migration screenshot included as `php_artisan_migrate.png`.
+- [ ] Publication status is not recorded by this local handout.

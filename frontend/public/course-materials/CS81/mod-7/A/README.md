@@ -24,18 +24,9 @@ It demonstrates how to use JavaScript's asynchronous loops and the `setInterval`
 
 ---
 
-## Getting Started
+## Open this assignment
 
-1. **Clone the repository**
-
-```bash
-git clone https://github.com/yourusername/cs81-module7a-animation
-cd cs81-module7a-animation
-```
-
-2. **Open the HTML file in your browser**
-
-No installation is required. Just open `loadingAnimation.html` in your browser and click **Start Loading** to see the animation in action.
+Open [`loadingAnimation.html`](loadingAnimation.html) in a modern browser. This folder contains the standalone assignment assets; no package installation is required. For the current coursework application, use the [platform README](../../../../../../README.md).
 
 ---
 

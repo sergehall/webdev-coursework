@@ -23,58 +23,9 @@ Two profile components are available:
 
 ---
 
-## Getting Started
+## Archived standalone project
 
-1. **Clone the repository**
-
-```bash
-git clone https://github.com/sergehall/module9b-profile
-cd module9b-profile
-```
-
-2. **Install Node.js** (if not already installed)
-
-- Visit https://nodejs.org and download for your system.
-
-3. **Install dependencies**
-
-```bash
-npm install
-```
-
-4. **Start the development server**
-
-```bash
-npm run dev
-```
-
-## Repository Structure
-
-```
-.
-├── public/
-│   └── my-new-favicon.ico
-├── src/
-│   ├── assets/               # Optional assets folder (e.g. images)
-│   ├── components/
-│   │   ├── Assignment9A.jsx
-│   │   ├── AssignmentHeader.jsx
-│   │   ├── ContactCard.jsx
-│   │   ├── UserList.jsx
-│   │   ├── UserProfile.jsx             # CSS class-based version
-│   │   └── UserProfileInline.jsx      # Inline CSS version
-│   ├── data/
-│   │   ├── userProfiles.js            # Data from Module 9A
-│   │   └── frontendProfiles.js        # Updated tech-focused profiles for 9B
-│   ├── styles/
-│   │   └── styles.css
-│   ├── App.jsx
-│   ├── index.css
-│   └── main.jsx
-├── index.html
-├── vite.config.js
-└── README.md
-```
+The [original assignment package](module9b-profile.zip) contains the standalone Vite project and its setup files. Its historical commands and `src/` tree refer to that archive, not to this coursework platform. Use the [platform README](../../../../../../README.md) to run the current application.
 
 ---
 

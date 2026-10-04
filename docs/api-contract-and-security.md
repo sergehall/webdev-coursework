@@ -1,9 +1,9 @@
 # API contract and abuse protection
 
-The generated OpenAPI document is the runtime API contract. Swagger is configured
-in `backend/src/bootstrap/configure-swagger.ts`. Controllers declare business
-operations; request DTOs describe validation, response DTOs describe safe output,
-and reusable decorators describe errors and authentication.
+The generated OpenAPI document is the runtime API contract. Swagger is
+configured in `backend/src/bootstrap/configure-swagger.ts`. Controllers declare
+business operations; request DTOs describe validation, response DTOs describe
+safe output, and reusable decorators describe errors and authentication.
 
 ## Documentation access
 
@@ -16,11 +16,12 @@ Production enablement requires `SWAGGER_USERNAME` (no colon) and a separate
 `SWAGGER_PASSWORD` of at least 24 characters. Use a random password, HTTPS and
 the deployment's secret manager. Do not reuse an account password, admin API key
 or JWT signing secret. The same access control protects `/docs`, its assets,
-`/openapi.json` and `/openapi.yaml`, including trailing-slash variants. Responses
-are marked `no-store` and `noindex, nofollow`; Basic-protected documentation has
-an additional 30-requests/minute/IP budget, including unsuccessful authentication.
-Missing required production configuration fails startup. `/info.docsEnabled`
-reports the actual policy, and the API landing page hides a disabled docs link.
+`/openapi.json` and `/openapi.yaml`, including trailing-slash variants.
+Responses are marked `no-store` and `noindex, nofollow`; Basic-protected
+documentation has an additional 30-requests/minute/IP budget, including
+unsuccessful authentication. Missing required production configuration fails
+startup. `/info.docsEnabled` reports the actual policy, and the API landing page
+hides a disabled docs link.
 
 Swagger does not persist authorization in localStorage. Requests in the UI are
 disabled by default until explicitly enabled by the reader. Browser cookie
@@ -29,10 +30,10 @@ HttpOnly session cookie through its Authorize dialog.
 
 ## Route groups and authentication
 
-The API includes 72 operations across the following groups, plus four system
-operations. `/api/owner` is a compatibility alias for the corresponding account
-and MFA operations; it does not grant administrative privileges. Aliases have
-distinct stable operation IDs for generated clients and share request budgets.
+The API includes the following route groups and system operations. `/api/owner`
+is a compatibility alias for the corresponding account and MFA operations; it
+does not grant administrative privileges. Aliases have distinct stable operation
+IDs for generated clients and share request budgets.
 
 | Routes                                                                                                           | Authentication and behavior                                                                                                                    |
 | ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -52,19 +53,20 @@ distinct stable operation IDs for generated clients and share request budgets.
 | `/quizzes/*`, `/tokens/*`                                                                                        | Public practice reads/progress/token issuance; answers require quiz-bound bearer token; quiz creation/token verification require `x-admin-key` |
 | `/health`, `/info`, `/`, `/robots.txt`                                                                           | System operations; outside the API throttle; health uses the existing circuit breaker                                                          |
 
-New passwords must have at least 15 characters and are checked server-side against a local common-password blocklist and
-current account identifiers at registration, password setup and authenticated
-password change. Password reset checks the common-password blocklist. Rejected
-passwords return the stable `PASSWORD_TOO_COMMON` error code; existing passwords
-remain valid. Password candidates never leave the backend for this check.
+New passwords must have at least 15 characters and are checked server-side
+against a local common-password blocklist and current account identifiers at
+registration, password setup and authenticated password change. Password reset
+checks the common-password blocklist. Rejected passwords return the stable
+`PASSWORD_TOO_COMMON` error code; existing passwords remain valid. Password
+candidates never leave the backend for this check.
 
-The account session cookie is `webdev_owner` locally and
-`__Secure-webdev_owner` in production. The MFA challenge cookie is `webdev_mfa`
-locally and `__Secure-webdev_mfa` in production. Both are opaque HttpOnly
-cookies scoped to `/api`, with SameSite Strict and Secure in production.
-OAuth state uses a separate SameSite Lax cookie for the provider redirect.
-OpenAPI names these security schemes `account-session`, `mfa-challenge`,
-`answersToken` and `adminKey`; account authentication is not JWT bearer auth.
+The account session cookie is `webdev_owner` locally and `__Secure-webdev_owner`
+in production. The MFA challenge cookie is `webdev_mfa` locally and
+`__Secure-webdev_mfa` in production. Both are opaque HttpOnly cookies scoped to
+`/api`, with SameSite Strict and Secure in production. OAuth state uses a
+separate SameSite Lax cookie for the provider redirect. OpenAPI names these
+security schemes `account-session`, `mfa-challenge`, `answersToken` and
+`adminKey`; account authentication is not JWT bearer auth.
 
 Practice JWTs default to a five-minute expiry; configured TTLs must be positive
 seconds or s/m/h durations up to one hour. Verification allows HS256 only,
@@ -92,43 +94,45 @@ consume budgets too, before controller guards, DTO validation and uploads:
 | Writes    | 30 requests / minute  | POST/PUT/PATCH/DELETE together per IP                                                                                           |
 | Sensitive | 10 requests / minute  | Token routes, login, registration, email/password links, MFA, provider, OAuth and session-revocation operations together per IP |
 
-Requests rejected by validation or authorization still count. Rotating endpoints,
-aliases, session cookies or forged forwarding headers does not reset these
-budgets. IPv4-mapped IPv6 shares its IPv4 bucket; IPv6 privacy addresses share a
-`/64` bucket. Shared-office/NAT clients also share their IP's budget. OPTIONS
-preflight requests are exempt. Existing service limits remain in force: password
-login 5/IP/15 minutes and 100/global/15 minutes; public authentication
-10/IP/15 minutes and 200/global/hour; email delivery 3/address/hour; MFA actions and
-challenges have additional account/IP limits and proof-attempt limits.
+Requests rejected by validation or authorization still count. Rotating
+endpoints, aliases, session cookies or forged forwarding headers does not reset
+these budgets. IPv4-mapped IPv6 shares its IPv4 bucket; IPv6 privacy addresses
+share a `/64` bucket. Shared-office/NAT clients also share their IP's budget.
+OPTIONS preflight requests are exempt. Existing service limits remain in force:
+password login 5/IP/15 minutes and 100/global/15 minutes; public authentication
+10/IP/15 minutes and 200/global/hour; email delivery 3/address/hour; MFA actions
+and challenges have additional account/IP limits and proof-attempt limits.
 
-Global rejections return 429 with `Retry-After` seconds and `Cache-Control:
-no-store`. Existing account-specific limit errors also return 429 but may omit
-Retry-After. CORS exposes this header to trusted frontend origins. Clients must
-back off and should not automatically repeat email/password/provider mutations.
+Global rejections return 429 with `Retry-After` seconds and
+`Cache-Control: no-store`. Existing account-specific limit errors also return
+429 but may omit Retry-After. CORS exposes this header to trusted frontend
+origins. Clients must back off and should not automatically repeat
+email/password/provider mutations.
 
-Counters use atomic PostgreSQL upserts in the existing `webdev_runtime_state` table. They do not depend on
-`QR_ANALYTICS_ENABLED`. No process-local production counters or per-process
-fallbacks are used. Replicas must share storage and the same HMAC secret.
-Storage failure returns 503 instead of
-allowing unmetered requests. PostgreSQL counters cap denied counts to prevent
-integer overflow; bounded expiration cleanup runs every minute even when QR
-analytics is disabled. Counter keys contain HMAC address digests, never raw IPs.
+Counters use atomic PostgreSQL upserts in the existing `webdev_runtime_state`
+table. They do not depend on `QR_ANALYTICS_ENABLED`. No process-local production
+counters or per-process fallbacks are used. Replicas must share storage and the
+same HMAC secret. Storage failure returns 503 instead of allowing unmetered
+requests. PostgreSQL counters cap denied counts to prevent integer overflow;
+bounded expiration cleanup runs every minute even when QR analytics is disabled.
+Counter keys contain HMAC address digests, never raw IPs.
 
 Set a dedicated `API_THROTTLE_SECRET` of at least 32 characters, or use the
 existing server-only `OWNER_SESSION_SECRET`/`QUIZ_ANSWERS_JWT_SECRET` fallback.
 Apply the repository's account/runtime-state migrations before starting the API,
 even when account features are disabled. The PostgreSQL startup probe verifies
-that the runtime-state table exists. No new migration is required by this change.
+that the runtime-state table exists. No new migration is required by this
+change.
 
 Heroku continues to trust exactly one router hop. Elsewhere proxy trust is off
-unless `TRUST_PROXY_CIDRS` lists the actual infrastructure proxy networks.
-Never configure all addresses as trusted. Restrict direct access around that
-proxy so client-supplied headers cannot impersonate its source address.
+unless `TRUST_PROXY_CIDRS` lists the actual infrastructure proxy networks. Never
+configure all addresses as trusted. Restrict direct access around that proxy so
+client-supplied headers cannot impersonate its source address.
 
 Untrusted Origin headers and cross-site Fetch Metadata are rejected on writes.
 Configured trusted cross-site frontends remain supported. These headers are
-browser CSRF signals, not evidence that a caller is human. Account services
-also enforce their existing exact Origin allowlist. CORS requires explicit
+browser CSRF signals, not evidence that a caller is human. Account services also
+enforce their existing exact Origin allowlist. CORS requires explicit
 `ALLOWED_ORIGINS` in production; an empty allowlist cannot expose credentialed
 responses to arbitrary websites. Non-browser clients without Origin remain
 supported by public practice endpoints.
@@ -137,10 +141,13 @@ These controls constrain automated bursts, credential guessing and repeated
 mail/MFA abuse. They do not establish human identity or stop distributed,
 low-rate botnets or network-level DDoS. A deployment requiring that boundary
 needs edge bot management/WAF and/or a separately integrated human challenge.
-No CAPTCHA provider or User-Agent blocklist is silently enabled here.
+Cloudflare Turnstile can provide a human challenge for configured account and
+API documentation flows; see [the Turnstile guide](cloudflare-turnstile.md). A
+User-Agent blocklist is not used.
 
-Security headers include no-referrer, nosniff, the existing CSP/frame protections,
-and HSTS on HTTPS responses. Express's X-Powered-By header is disabled.
+Security headers include no-referrer, nosniff, the existing CSP/frame
+protections, and HSTS on HTTPS responses. Express's X-Powered-By header is
+disabled.
 
 ## Contract structure and examples
 
@@ -180,19 +187,20 @@ Request fields declare their runtime limits and OpenAPI metadata together:
 password!: string;
 ```
 
-Account errors always include `statusCode`; `message` is a string or an array
-of field-validation errors. `error` and actionable `code` are optional.
+Account errors always include `statusCode`; `message` is a string or an array of
+field-validation errors. `error` and actionable `code` are optional.
 Provider/database failures use generic 503 responses without private details.
 Success contracts do not expose entities, password/session hashes, account
 revisions, encryption envelopes or queue internals. MFA enrollment secret and
 recovery codes are intentional one-time business outputs to the signed-in user:
-render/store them locally and never log them or send them to a remote QR service.
+render/store them locally and never log them or send them to a remote QR
+service.
 
 Sessions use cursor pagination (up to five visible active records), optional
 `device`/`authMethod` filters and nullable `nextCursor`. Activity supports exact
-`limit`, `days`, `result`, `group` and `cursor` query enums documented in Swagger.
-QR reports accept `days=7|30|90` (default 30) and return typed numeric maps.
-Quiz progress mutations have empty success bodies. Multipart quiz creation
+`limit`, `days`, `result`, `group` and `cursor` query enums documented in
+Swagger. QR reports accept `days=7|30|90` (default 30) and return typed numeric
+maps. Quiz progress mutations have empty success bodies. Multipart quiz creation
 documents five images maximum, 5 MiB each and the runtime MIME allowlist; the
 current implementation ignores unsupported MIME types. The route quiz ID wins
 over the required body quiz ID.
@@ -224,8 +232,8 @@ environment variables. Do not cache account, MFA enrollment or recovery output.
 - Configure trusted CORS/account origins and infrastructure-only proxy trust.
 - Apply account/runtime-state migrations; configure shared PostgreSQL.
 - Keep HMAC secrets identical across replicas and private on the server.
-- Keep production Swagger disabled, or configure dedicated Basic credentials
-  and HTTPS before explicitly enabling it.
+- Keep production Swagger disabled, or configure dedicated Basic credentials and
+  HTTPS before explicitly enabling it.
 - Inspect the generated document and verify protected UI/assets/JSON/YAML.
 - Verify 429/backoff, invalid requests counting, alias sharing, IPv6 grouping,
   spoofed forwarding headers, origin rejection and 503 storage failure.

@@ -8,4 +8,4 @@ Correct answers remain in `../module04MidtermQuizAnswers.ts`; do not merge them
 into the question data or change question wording, option order, or the
 multiple-answer flags during structural refactors. The course assessment uses
 the shared client-practice runner described in
-`docs/quiz-assessment-standard.md`.
+[assessment standard](../../../../../../../docs/quiz-assessment-standard.md).

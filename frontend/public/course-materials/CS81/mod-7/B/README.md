@@ -23,18 +23,9 @@ It demonstrates how to use JavaScript's `setTimeout` to simulate a personal dail
 
 ---
 
-## Getting Started
+## Open this assignment
 
-1. **Clone the repository**
-
-```bash
-git clone https://github.com/yourusername/cs81-module7a-dailysim
-cd cs81-module7a-dailysim
-```
-
-2. **Open the simulation**
-
-Open the `dailySimulation.html` file in your browser. Events will begin animating automatically after a short delay.
+Open [`dailySimulation.html`](dailySimulation.html) in a modern browser. This folder contains the standalone assignment assets; no package installation is required. For the current coursework application, use the [platform README](../../../../../../README.md).
 
 ---
 
