@@ -5,3 +5,5 @@
 .yarn/cache
 .yarn/install-state.gz
 .pnp.*
+docs/ai-pathway-mentor-plan.md
+.local/ai-mentor/

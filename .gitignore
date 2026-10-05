@@ -103,3 +103,7 @@ frontend/.env.test.example
 # TypeScript build info cache
 tsconfig.tsbuildinfo
 /.claude/
+
+# Local AI planning and spike evidence
+/docs/ai-pathway-mentor-plan.md
+/.local/ai-mentor/
