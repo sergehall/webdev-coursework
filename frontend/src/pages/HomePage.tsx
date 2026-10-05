@@ -1,5 +1,6 @@
 import { useCallback, useRef, useState, type TouchEvent } from "react";
 
+import MentorEntryCard from "@/features/mentor/MentorEntryCard";
 import type { CourseName } from "@/data/technologies";
 import CourseExplorer from "@/features/home/CourseExplorer";
 import FeaturedProjects from "@/features/home/FeaturedProjects";
@@ -177,6 +178,7 @@ export function HomePageContent({
         style={{ transform: `translateY(${pullDistance}px)` }}
       >
         <HomeHero />
+        <MentorEntryCard />
         <CourseExplorer openCourse={openCourse} onToggle={handleToggle} />
         <FeaturedProjects />
       </div>

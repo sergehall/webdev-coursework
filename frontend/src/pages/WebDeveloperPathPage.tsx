@@ -1,5 +1,6 @@
 import { BadgeCheck, GraduationCap, Route } from "lucide-react";
 
+import MentorEntryCard from "@/features/mentor/MentorEntryCard";
 import WebDevMajorRequirements from "@/features/pathway/WebDevMajorRequirements";
 import PathwaySections from "@/features/pathway/PathwaySections";
 import { TagLegend } from "@/components/tags";
@@ -61,6 +62,7 @@ const WebDeveloperPathPage = () => {
           </div>
         </section>
 
+        <MentorEntryCard />
         <PathwaySections />
         <TagLegend />
         <WebDevMajorRequirements />

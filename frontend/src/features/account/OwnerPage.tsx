@@ -17,6 +17,8 @@ import { useOwner } from "./owner-context";
 import { ProfilePanel } from "./panels/ProfilePanel";
 import { SecurityPanel } from "./panels/SecurityPanel";
 import { StatisticsPanel } from "./panels/StatisticsPanel";
+
+import { hasMentorReturn, MENTOR_PATH } from "@/features/mentor/mentor-preview";
 import "./owner.css";
 
 const sections = [
@@ -93,6 +95,8 @@ export default function OwnerPage() {
       </div>
     );
   if (!owner.session) return <Navigate to="/account/sign-in" replace />;
+  if (hasMentorReturn() && ["overview", "sign-in", "sign-up"].includes(path))
+    return <Navigate to={MENTOR_PATH} replace />;
   const availableSections = sections.filter(
     (s) => s.id !== "administration" || owner.session?.role === "admin"
   );

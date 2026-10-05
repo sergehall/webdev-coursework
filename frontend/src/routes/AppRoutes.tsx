@@ -129,6 +129,18 @@ export default function AppRoutes() {
             </Suspense>
           }
         />
+        {import.meta.env.DEV && (
+          <Route
+            path="/web-developer-path/mentor"
+            element={
+              <Suspense
+                fallback={<PageLoadingState label="Loading your pathway…" />}
+              >
+                <Screens.MentorPage />
+              </Suspense>
+            }
+          />
+        )}
         <Route
           path="/web-developer-path"
           element={

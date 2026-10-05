@@ -5,12 +5,14 @@ import {
   fireEvent,
   waitFor,
 } from "@testing-library/react";
-import { MemoryRouter, useLocation } from "react-router-dom";
+import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import OwnerPage from "./OwnerPage";
 import { OwnerContext, type OwnerState } from "./owner-context";
 import type { OwnerSession } from "./owner-api";
+
+import { rememberMentorReturn } from "@/features/mentor/mentor-preview";
 const session: OwnerSession = {
   role: "admin",
   issuedAt: new Date().toISOString(),
@@ -48,7 +50,14 @@ function show(path: string, authenticated = true, showLocation = false) {
   render(
     <MemoryRouter initialEntries={[path]}>
       <OwnerContext.Provider value={state}>
-        <OwnerPage />
+        <Routes>
+          <Route path="/account/*" element={<OwnerPage />} />
+          <Route path="/owner/*" element={<OwnerPage />} />
+          <Route
+            path="/web-developer-path/mentor"
+            element={<div>Mentor</div>}
+          />
+        </Routes>
         {showLocation && <CurrentLocation />}
       </OwnerContext.Provider>
     </MemoryRouter>
@@ -58,8 +67,23 @@ function show(path: string, authenticated = true, showLocation = false) {
 afterEach(() => {
   cleanup();
   vi.unstubAllGlobals();
+  sessionStorage.clear();
 });
 describe("Owner account", () => {
+  it("returns a signed-in learner to the mentor after authentication", () => {
+    rememberMentorReturn();
+    show("/account", true, true);
+    expect(screen.getByTestId("account-path")).toHaveTextContent(
+      "/web-developer-path/mentor"
+    );
+  });
+  it("does not redirect an explicit account profile visit to the mentor", () => {
+    rememberMentorReturn();
+    show("/account/profile", true, true);
+    expect(screen.getByTestId("account-path")).toHaveTextContent(
+      "/account/profile"
+    );
+  });
   it("saves the site username separately and keeps email read-only", async () => {
     const fetcher = vi
       .fn()

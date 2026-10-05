@@ -31,3 +31,7 @@ export const ProjectsPage = lazy(() => import("../pages/ProjectsPage"));
 export const WebDeveloperPathPage = lazy(
   () => import("../pages/WebDeveloperPathPage")
 );
+
+export const MentorPage = import.meta.env.DEV
+  ? lazy(() => import("../features/mentor/MentorPage"))
+  : () => null;
