@@ -7,7 +7,7 @@ import {
 import { SiGithub } from "react-icons/si";
 import { Link } from "react-router-dom";
 
-import { homeStats } from "@/features/home/home-content";
+import PortfolioSnapshot from "@/features/home/PortfolioSnapshot";
 
 export default function HomeHero() {
   return (
@@ -24,7 +24,7 @@ export default function HomeHero() {
         className="absolute -bottom-32 -left-24 h-72 w-72 rounded-full bg-indigo-300/20 blur-3xl dark:bg-indigo-500/10"
       />
 
-      <div className="relative grid items-center gap-10 lg:grid-cols-[1.25fr_0.75fr]">
+      <div className="relative grid items-center gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:gap-6">
         <div>
           <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-sky-200 bg-sky-50 px-3 py-1.5 text-xs font-bold tracking-[0.16em] text-sky-700 uppercase dark:border-sky-900 dark:bg-sky-950/60 dark:text-sky-200">
             <GraduationCap className="h-4 w-4" aria-hidden="true" />
@@ -33,7 +33,7 @@ export default function HomeHero() {
 
           <h1
             id="home-hero-title"
-            className="max-w-3xl text-3xl leading-[1.08] font-black tracking-tight text-slate-950 sm:text-4xl lg:text-5xl dark:text-white"
+            className="max-w-3xl text-3xl leading-[1.08] font-black tracking-tight text-slate-950 sm:text-4xl lg:text-[2.75rem] 2xl:text-5xl dark:text-white"
           >
             From SMC coursework to{" "}
             <span className="block bg-gradient-to-r from-indigo-500 via-sky-500 to-cyan-400 bg-clip-text text-transparent">
@@ -85,30 +85,7 @@ export default function HomeHero() {
           </div>
         </div>
 
-        <aside
-          aria-label="Academic portfolio snapshot"
-          className="rounded-2xl border border-slate-200 bg-slate-50/80 p-5 shadow-inner dark:border-slate-700 dark:bg-slate-950/55"
-        >
-          <p className="text-xs font-bold tracking-[0.16em] text-slate-500 uppercase dark:text-slate-400">
-            Portfolio snapshot
-          </p>
-          <dl className="mt-4 grid grid-cols-2 gap-3">
-            {homeStats.map(({ value, label, description }) => (
-              <div
-                key={label}
-                className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900"
-                title={description}
-              >
-                <dd className="text-2xl font-black text-slate-950 dark:text-white">
-                  {value}
-                </dd>
-                <dt className="mt-1 text-xs leading-5 font-semibold text-slate-500 dark:text-slate-400">
-                  {label}
-                </dt>
-              </div>
-            ))}
-          </dl>
-        </aside>
+        <PortfolioSnapshot />
       </div>
     </section>
   );

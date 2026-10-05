@@ -54,6 +54,31 @@ describe("<HomePage />", () => {
     }
   });
 
+  it("links each snapshot metric directly to its destination", () => {
+    renderWithProviders(<HomePage />);
+
+    const snapshot = screen.getByRole("complementary", {
+      name: /Academic portfolio snapshot/i,
+    });
+
+    for (const [name, href] of [
+      [/10 SMC courses/i, "/coursework"],
+      [/103 Learning modules/i, "/coursework"],
+      [/128 Technologies mapped/i, "/web-developer-path"],
+      [/9 Projects showcased/i, "/projects"],
+    ] as const) {
+      expect(within(snapshot).getByRole("link", { name })).toHaveAttribute(
+        "href",
+        href
+      );
+    }
+
+    expect(within(snapshot).getAllByRole("link")).toHaveLength(4);
+    expect(
+      within(snapshot).queryByText(/A documented Web Development pathway/i)
+    ).not.toBeInTheDocument();
+  });
+
   it("shows an accordion for every documented course", () => {
     renderWithProviders(<HomePage />);
 

@@ -130,21 +130,29 @@ export const homeStats = [
     value: String(homeCourses.length),
     label: "SMC courses",
     description: "A documented Web Development pathway.",
+    href: "/coursework",
+    action: "Explore the courses",
   },
   {
     value: String(totalModuleCount),
     label: "Learning modules",
     description: "Assignments, labs, quizzes, and final projects.",
+    href: "/coursework",
+    action: "Browse the modules",
   },
   {
     value: String(totalTechnologyCount),
     label: "Technologies mapped",
     description: "Skills connected directly to course evidence.",
+    href: "/web-developer-path",
+    action: "See the learning path",
   },
   {
     value: String(projectShowcaseItems.length),
     label: "Projects showcased",
     description: "Academic work applied in working systems.",
+    href: "/projects",
+    action: "View the projects",
   },
 ] as const;
 
