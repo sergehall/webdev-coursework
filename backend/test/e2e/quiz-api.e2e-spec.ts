@@ -64,6 +64,9 @@ const createQuestion = jest.fn().mockResolvedValue({
   options: ["A", "B"],
   images: [],
 });
+const getProgress = jest.fn(async () => [1, 2]);
+const markProgress = jest.fn(async () => undefined);
+const resetProgress = jest.fn(async () => undefined);
 const objects = new Map<string, Buffer>();
 const s3Send = jest.fn(async (command: unknown) => {
   if (command instanceof PutObjectCommand) {
@@ -121,7 +124,14 @@ const circuitBreaker = {
     },
     {
       provide: QuizService,
-      useValue: { ...quizService, createAndSaveQuestion: createQuestion },
+      useValue: {
+        ...quizService,
+        createAndSaveQuestion: createQuestion,
+        getProgress,
+        markModuleCompleted: markProgress,
+        unmarkModuleCompleted: markProgress,
+        resetProgress,
+      },
     },
     QuizImageStorage,
     { provide: QUIZ_IMAGE_S3_CLIENT, useValue: { send: s3Send } },
@@ -353,6 +363,74 @@ describe("Quiz API (e2e)", () => {
     );
   });
 
+  it.each([
+    "",
+    "?appId=app&courseId=CS85",
+    "?clientId=client&appId=app",
+    "?clientId=&appId=app&courseId=CS85",
+    "?clientId=one&clientId=two&appId=app&courseId=CS85",
+    `?clientId=${"x".repeat(129)}&appId=app&courseId=CS85`,
+    "?clientId=client&appId=app&courseId=CS85&extra=true",
+  ])(
+    "rejects invalid progress selectors before reading storage: %s",
+    async (query) => {
+      getProgress.mockClear();
+      await request(app.getHttpServer())
+        .get(`/quizzes/progress${query}`)
+        .expect(400);
+      expect(getProgress).not.toHaveBeenCalled();
+    }
+  );
+
+  it("preserves valid anonymous progress reads and mutations", async () => {
+    const identity = { clientId: "client-1", appId: "app-1", courseId: "CS85" };
+    await request(app.getHttpServer())
+      .get("/quizzes/progress")
+      .query(identity)
+      .expect(200, [1, 2]);
+    expect(getProgress).toHaveBeenCalledWith("client-1", "app-1", "CS85");
+    await request(app.getHttpServer())
+      .post("/quizzes/progress")
+      .send({ ...identity, moduleNumber: 3 })
+      .expect(201);
+    await request(app.getHttpServer())
+      .delete("/quizzes/progress")
+      .send({ ...identity, moduleNumber: 3 })
+      .expect(200);
+    await request(app.getHttpServer())
+      .post("/quizzes/progress/reset")
+      .send(identity)
+      .expect(201);
+  });
+
+  it.each([0, -1, 1.5, 1001, true, "3", null])(
+    "rejects invalid module values before writes: %s",
+    async (moduleNumber) => {
+      markProgress.mockClear();
+      for (const method of ["post", "delete"] as const) {
+        await request(app.getHttpServer())
+          [method]("/quizzes/progress")
+          .send({
+            clientId: "client",
+            appId: "app",
+            courseId: "CS85",
+            moduleNumber,
+          })
+          .expect(400);
+      }
+      expect(markProgress).not.toHaveBeenCalled();
+    }
+  );
+
+  it("validates reset selectors before deleting progress", async () => {
+    resetProgress.mockClear();
+    await request(app.getHttpServer())
+      .post("/quizzes/progress/reset")
+      .send({ clientId: null, appId: "app", courseId: "CS85" })
+      .expect(400);
+    expect(resetProgress).not.toHaveBeenCalled();
+  });
+
   it("POST /quizzes/progress should reject an invalid module number", async () => {
     const res = await request(app.getHttpServer())
       .post("/quizzes/progress")
@@ -368,7 +446,7 @@ describe("Quiz API (e2e)", () => {
       expect.arrayContaining([
         expect.objectContaining({
           field: "moduleNumber",
-          message: expect.stringContaining("number"),
+          message: expect.stringContaining("integer"),
         }),
       ])
     );

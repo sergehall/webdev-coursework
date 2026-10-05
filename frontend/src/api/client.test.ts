@@ -17,6 +17,25 @@ afterEach(() => {
 });
 
 describe("apiFetch", () => {
+  it("rejects unsafe destinations before sending a request", async () => {
+    await expect(
+      apiFetch("//evil.example", { method: "POST" })
+    ).rejects.toThrow();
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+  it("does not follow redirects, cache responses or disclose a referrer", async () => {
+    fetchMock.mockResolvedValue(new Response("{}"));
+    await apiFetch("/tokens/example/answers-token", {
+      method: "POST",
+      redirect: "follow",
+      cache: "force-cache",
+    });
+    expect(fetchMock.mock.calls[0]?.[1]).toMatchObject({
+      redirect: "error",
+      cache: "no-store",
+      referrerPolicy: "no-referrer",
+    });
+  });
   it("keeps read-only requests free of a JSON content type", async () => {
     fetchMock.mockResolvedValue(new Response("[1,2]", { status: 200 }));
 

@@ -1,22 +1,16 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNumber, IsString } from "class-validator";
-import { Type } from "class-transformer";
+import { IsInt, Min, Max } from "class-validator";
+import { ProgressIdentityDto } from "./progress-identity.dto";
 
-export class QuizProgressDto {
-  @ApiProperty({ example: "clientId" })
-  @IsString()
-  clientId!: string;
-
-  @ApiProperty({ example: "Internet-Programming" })
-  @IsString()
-  appId!: string;
-
-  @ApiProperty({ example: "CS80" })
-  @IsString()
-  courseId!: string;
-
-  @ApiProperty({ example: 3, description: "Module number to mark/unmark." })
-  @Type(() => Number)
-  @IsNumber()
+export class QuizProgressDto extends ProgressIdentityDto {
+  @ApiProperty({
+    example: 3,
+    minimum: 1,
+    maximum: 1000,
+    description: "Integer module number to mark/unmark.",
+  })
+  @IsInt()
+  @Min(1)
+  @Max(1000)
   moduleNumber!: number;
 }

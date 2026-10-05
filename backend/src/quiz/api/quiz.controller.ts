@@ -21,6 +21,7 @@ import { CorrectAnswerDto } from "../dto/correct-answer.dto";
 import { QuizProgressDto } from "../dto/quiz-progress.dto";
 import { QuizQuestionDto } from "../dto/quiz-question.dto";
 import { ResetProgressDto } from "../dto/reset-progress.dto";
+import { ProgressIdentityDto } from "../dto/progress-identity.dto";
 
 import { QuizService } from "../service/quiz.service";
 import { CreateQuestionDto } from "../dto/create-question.dto";
@@ -85,11 +86,8 @@ export class QuizController {
 
   @ApiDocService.apply(EndpointKeys.Quizzes, QuizzesMethods.GetProgress)
   @Get("progress")
-  async getProgress(
-    @Query("clientId") clientId: string,
-    @Query("appId") appId: string,
-    @Query("courseId") courseId: string
-  ): Promise<number[]> {
+  async getProgress(@Query() query: ProgressIdentityDto): Promise<number[]> {
+    const { clientId, appId, courseId } = query;
     return this.quizService.getProgress(clientId, appId, courseId);
   }
 

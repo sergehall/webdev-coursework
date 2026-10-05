@@ -23,8 +23,8 @@ function disableCapability(name) {
       writable: false,
     });
   } catch {
-    // Some browser-owned globals are not configurable. Validation still blocks
-    // direct global access before code reaches this worker.
+    // Best-effort ergonomics only. The worker response CSP enforces network
+    // restrictions even when uploaded code recovers a native prototype method.
   }
 }
 

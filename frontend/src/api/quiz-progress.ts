@@ -24,11 +24,11 @@ export async function fetchProgress(
   courseId: CourseId
 ): Promise<number[]> {
   const { appId } = COURSE_PROGRESS_CONFIG[courseId];
+  const query = new URLSearchParams({ clientId, appId, courseId });
 
-  return apiFetch<number[]>(
-    `/quizzes/progress?clientId=${clientId}&appId=${appId}&courseId=${courseId}`,
-    { parseResponse: (value) => progressResponseSchema.parse(value) }
-  );
+  return apiFetch<number[]>(`/quizzes/progress?${query}`, {
+    parseResponse: (value) => progressResponseSchema.parse(value),
+  });
 }
 
 export async function markModuleCompleted(

@@ -156,7 +156,11 @@ describe("QuizController", () => {
     quizService.getProgress.mockResolvedValue([1, 2]);
 
     await expect(
-      controller.getProgress("client-1", "app-1", "course-1")
+      controller.getProgress({
+        clientId: "client-1",
+        appId: "app-1",
+        courseId: "course-1",
+      })
     ).resolves.toEqual([1, 2]);
     expect(quizService.getProgress).toHaveBeenCalledWith(
       "client-1",

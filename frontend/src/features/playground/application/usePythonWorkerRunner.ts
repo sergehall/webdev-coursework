@@ -50,7 +50,7 @@ export function usePythonWorkerRunner({
         }
       };
 
-      const worker = new Worker(`workers/pyWorker.js?ts=${Date.now()}`); // cache-busting
+      const worker = new Worker("/workers/pyWorker.js");
       workerRef.current = worker;
       const cleanupWorker = () => {
         clearExecutionTimer();

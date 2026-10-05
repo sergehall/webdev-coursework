@@ -24,6 +24,8 @@ export const QUIZ_IMAGE_S3_CLIENT = Symbol("QUIZ_IMAGE_S3_CLIENT");
 const IMAGE_NAME =
   /^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\.(jpg|png|webp|gif)$/;
 const OBJECT_PREFIX = "quiz-images/";
+export const MAX_CONCURRENT_IMAGE_READS = 8;
+const IMAGE_READ_TIMEOUT_MS = 10_000;
 
 export function createQuizImageS3Client(config: ConfigService): S3Client {
   const endpoint = config.get<string>("QUIZ_IMAGE_S3_ENDPOINT")?.trim();
@@ -60,6 +62,7 @@ export function createQuizImageS3Client(config: ConfigService): S3Client {
 
 @Injectable()
 export class QuizImageStorage {
+  private activeReads = 0;
   constructor(
     @Inject(QUIZ_IMAGE_S3_CLIENT) private readonly client: S3Client,
     private readonly config: ConfigService
@@ -136,13 +139,36 @@ export class QuizImageStorage {
     const match = IMAGE_NAME.exec(fileName);
     if (!match) throw new NotFoundException("Image not found");
     const bucket = this.bucket();
+    // No unbounded queue: this cap also protects against callers spread across IPs.
+    if (this.activeReads >= MAX_CONCURRENT_IMAGE_READS) {
+      throw new ServiceUnavailableException("Quiz image storage is busy");
+    }
+    this.activeReads++;
+    const abortSignal = AbortSignal.timeout(IMAGE_READ_TIMEOUT_MS);
+    let stopBody: (() => void) | undefined;
     try {
       const result = await this.client.send(
         new GetObjectCommand({
           Bucket: bucket,
           Key: `${OBJECT_PREFIX}${fileName}`,
-        })
+        }),
+        { abortSignal }
       );
+      const responseBody = result.Body;
+      if (abortSignal.aborted) {
+        // No stream collector is attached yet: close without emitting an
+        // unhandled stream error, then reject the request explicitly.
+        if (responseBody && "destroy" in responseBody) responseBody.destroy();
+        throw new ServiceUnavailableException(
+          "Quiz image storage is unavailable"
+        );
+      }
+      stopBody = () => {
+        if (responseBody && "destroy" in responseBody) {
+          responseBody.destroy(new Error("Image read timed out"));
+        }
+      };
+      abortSignal.addEventListener("abort", stopBody, { once: true });
       if (
         !result.Body ||
         !result.ContentLength ||
@@ -172,6 +198,9 @@ export class QuizImageStorage {
       throw new ServiceUnavailableException(
         "Quiz image storage is unavailable"
       );
+    } finally {
+      if (stopBody) abortSignal.removeEventListener("abort", stopBody);
+      this.activeReads--;
     }
   }
 }

@@ -9,6 +9,7 @@ import react from "@vitejs/plugin-react";
 
 import { envSchema } from "./src/config/env/env.schema";
 import { buildContentSecurityPolicy } from "./content-security-policy";
+import { workerContentSecurityPolicy } from "./worker-content-security-policy";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -66,15 +67,25 @@ export default defineConfig(({ mode }) => {
     plugins: [
       {
         name: "preview-content-security-policy",
+        configureServer(server) {
+          server.middlewares.use((request, response, next) => {
+            const policy = workerContentSecurityPolicy(
+              request.url?.split("?", 1)[0] ?? ""
+            );
+            if (policy) response.setHeader("Content-Security-Policy", policy);
+            next();
+          });
+        },
         configurePreviewServer(server) {
           server.middlewares.use((request, response, next) => {
             const pathname = request.url?.split("?", 1)[0] ?? "";
             response.setHeader(
               "Content-Security-Policy",
-              pathname.startsWith("/course-materials/") ||
+              workerContentSecurityPolicy(pathname) ??
+                (pathname.startsWith("/course-materials/") ||
                 pathname.startsWith("/code-playground")
-                ? courseMaterialsContentSecurityPolicy
-                : productionContentSecurityPolicy
+                  ? courseMaterialsContentSecurityPolicy
+                  : productionContentSecurityPolicy)
             );
             if (
               !pathname.startsWith("/course-materials/") &&

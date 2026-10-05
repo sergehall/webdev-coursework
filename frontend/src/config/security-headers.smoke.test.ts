@@ -8,6 +8,11 @@ import { describe, expect, it, vi } from "vitest";
 import vercelConfig from "../../vercel.json";
 import middleware, { config as middlewareConfig } from "../../middleware";
 import { buildContentSecurityPolicy } from "../../content-security-policy";
+import {
+  javascriptWorkerPolicy,
+  pythonWorkerPolicy,
+  workerContentSecurityPolicy,
+} from "../../worker-content-security-policy";
 
 vi.mock("@vercel/functions", () => ({
   next: ({ headers }: { headers: Record<string, string> }) =>
@@ -36,6 +41,22 @@ describe("security headers", () => {
         .find((directive) => directive.startsWith(`${name} `)) ?? ""
     );
   };
+
+  it("contains worker networking with the same policies in Vercel and Vite", () => {
+    for (const [path, policy] of [
+      ["/workers/jsWorker.js", javascriptWorkerPolicy],
+      ["/workers/pyWorker.js", pythonWorkerPolicy],
+    ]) {
+      expect(headersFor(path)["Content-Security-Policy"]).toBe(policy);
+      expect(workerContentSecurityPolicy(path)).toBe(policy);
+      expect(policy).toContain("worker-src 'none'");
+      expect(policy).not.toContain("'self'");
+    }
+    expect(javascriptWorkerPolicy).toContain("connect-src 'none'");
+    expect(pythonWorkerPolicy).toContain(
+      "connect-src https://cdn.jsdelivr.net/pyodide/v0.28.1/full/"
+    );
+  });
 
   it("denies unlisted resource types by default on app and course routes", () => {
     for (const pathname of [

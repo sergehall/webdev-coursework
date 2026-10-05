@@ -43,6 +43,10 @@ class HealthTestController {
   @Get("health") health() {
     return { ok: true };
   }
+  @Get("uploads/:fileName") image() {
+    executed();
+    return "image";
+  }
 }
 const db = { query: jest.fn(async () => []) };
 @Global()
@@ -203,6 +207,21 @@ describe("global API abuse protection over HTTP", () => {
     await request(app.getHttpServer()).get("/api/account/session").expect(503);
     expect(executed).not.toHaveBeenCalled();
   });
+
+  it.each(["get", "head"] as const)(
+    "meters %s image reads before the storage handler",
+    async (method) => {
+      consume.mockImplementation(async (_address: string, bucket: string) => ({
+        count: bucket === "api" ? 121 : 1,
+        retryAfter: 30,
+      }));
+      const response = await request(app.getHttpServer())
+        [method]("/uploads/00000000-0000-0000-0000-000000000000.png?fresh=1")
+        .expect(429);
+      expect(response.headers["retry-after"]).toBe("30");
+      expect(executed).not.toHaveBeenCalled();
+    }
+  );
 });
 
 describe("throttle identity", () => {

@@ -3,6 +3,29 @@ import { describe, expect, test } from "vitest";
 import { envSchema } from "./env.schema";
 
 describe("envSchema", () => {
+  test.each(["VITE_API_URL", "VITE_OWNER_API_URL"])(
+    "validates the account and general API origins: %s",
+    (key) => {
+      for (const value of [
+        "http://api.example",
+        "HTTP://api.example",
+        "ftp://api.example",
+        "https://user:pass@api.example",
+        "https://api.example/path",
+      ]) {
+        expect(() =>
+          envSchema.parse({ VITE_QUIZ_SECRET: "practice-code", [key]: value })
+        ).toThrow();
+      }
+      expect(
+        envSchema.parse({
+          VITE_QUIZ_SECRET: "practice-code",
+          VITE_ENVIRONMENT: "development",
+          [key]: "http://localhost:5050",
+        })[key]
+      ).toBe("http://localhost:5050");
+    }
+  );
   test("passes with all fields provided", () => {
     const result = envSchema.parse({
       VITE_ENVIRONMENT: "development",
@@ -47,7 +70,7 @@ describe("envSchema", () => {
         VITE_API_URL: "invalid-url",
         VITE_QUIZ_SECRET: "secret",
       })
-    ).toThrow(/VITE_API_URL must be a valid URL/);
+    ).toThrow(/API URL must be a valid URL/);
   });
 
   test("fails with missing VITE_QUIZ_SECRET", () => {

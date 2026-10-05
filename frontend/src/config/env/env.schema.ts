@@ -1,5 +1,15 @@
 // frontend/src/config/env/env.schema.ts
 import { z } from "../zod";
+import { normalizeApiOrigin } from "../../api/request-url";
+
+const apiOriginSchema = z.string().refine((value) => {
+  try {
+    normalizeApiOrigin(value, false);
+    return true;
+  } catch {
+    return false;
+  }
+}, "API URL must be a valid URL using an HTTP(S) origin without credentials, path, query or fragment");
 
 export const envSchema = z
   .object({
@@ -12,14 +22,8 @@ export const envSchema = z
 
     // Empty string = same-origin relative URLs (valid for single-dyno deploys).
     // Set to a full URL only when the API lives on a different origin.
-    VITE_API_URL: z
-      .union([
-        z
-          .string()
-          .url("VITE_API_URL must be a valid URL starting with http or https"),
-        z.literal(""),
-      ])
-      .default(""),
+    VITE_API_URL: apiOriginSchema.default(""),
+    VITE_OWNER_API_URL: apiOriginSchema.optional(),
 
     VITE_QUIZ_SECRET: z
       .string()
@@ -30,4 +34,18 @@ export const envSchema = z
       .url("VITE_SENTRY_DSN must be a valid URL")
       .optional(),
   })
-  .passthrough();
+  .passthrough()
+  .superRefine((env, ctx) => {
+    if (env.VITE_ENVIRONMENT !== "production") return;
+    for (const key of ["VITE_API_URL", "VITE_OWNER_API_URL"] as const) {
+      try {
+        normalizeApiOrigin(env[key] ?? "", true);
+      } catch {
+        ctx.addIssue({
+          code: "custom",
+          path: [key],
+          message: `${key} requires HTTPS in production`,
+        });
+      }
+    }
+  });

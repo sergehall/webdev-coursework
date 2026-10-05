@@ -3,7 +3,7 @@
   "name": "smc-2025-cs81-javascript-programming",
   "headers": [
     {
-      "source": "/((?!course-materials/|code-playground).*)",
+      "source": "/((?!course-materials/|code-playground|workers/).*)",
       "headers": [
         {
           "key": "X-Content-Type-Options",
@@ -58,6 +58,48 @@
         {
           "key": "Cross-Origin-Resource-Policy",
           "value": "same-origin"
+        }
+      ]
+    },
+    {
+      "source": "/workers/jsWorker.js",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'none'; script-src 'unsafe-eval'; connect-src 'none'; worker-src 'none'; object-src 'none'; base-uri 'none'"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Cross-Origin-Resource-Policy",
+          "value": "same-origin"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "no-referrer"
+        }
+      ]
+    },
+    {
+      "source": "/workers/pyWorker.js",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'none'; script-src 'wasm-unsafe-eval' https://cdn.jsdelivr.net/pyodide/v0.28.1/full/; connect-src https://cdn.jsdelivr.net/pyodide/v0.28.1/full/; worker-src 'none'; object-src 'none'; base-uri 'none'"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Cross-Origin-Resource-Policy",
+          "value": "same-origin"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "no-referrer"
         }
       ]
     }

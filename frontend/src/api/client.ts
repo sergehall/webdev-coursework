@@ -1,4 +1,5 @@
 // src/api/client.ts
+import { buildApiUrl } from "./request-url";
 // Empty string → same-origin relative requests (single-dyno / same-domain setup).
 // Full URL → cross-origin requests (separate API subdomain/host).
 const API_BASE_URL: string = import.meta.env.VITE_API_URL ?? "";
@@ -32,6 +33,7 @@ export async function apiFetch<TResponse, TBody = undefined>(
   endpoint: string,
   options: ApiFetchOptions<TBody, TResponse> = {}
 ): Promise<TResponse> {
+  const url = buildApiUrl(endpoint, API_BASE_URL);
   const {
     body,
     headers,
@@ -61,11 +63,15 @@ export async function apiFetch<TResponse, TBody = undefined>(
   }
 
   try {
-    const res = await fetch(`${API_BASE_URL}${endpoint}`, {
+    const res = await fetch(url, {
       headers: requestHeaders,
       body: body === undefined ? undefined : JSON.stringify(body),
       signal: controller.signal,
       ...rest,
+      // Sensitive bodies and tokens must not be replayed to a redirect target.
+      redirect: "error",
+      referrerPolicy: "no-referrer",
+      cache: "no-store",
     });
 
     if (!res.ok) {
@@ -96,7 +102,6 @@ export async function apiFetch<TResponse, TBody = undefined>(
         throw new Error(`Request timed out after ${timeoutMs}ms: ${endpoint}`);
       throw error;
     }
-    console.error("❌ apiFetch failed:", error);
     throw error;
   } finally {
     clearTimeout(timerId);

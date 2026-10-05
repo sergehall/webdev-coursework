@@ -40,7 +40,7 @@ export class ApiAbuseGuard implements CanActivate {
     // Shared buckets across endpoints and /account and /owner aliases.
     const path = req.path.toLowerCase();
     if (
-      !/^\/(?:api|quizzes|tokens)(?:\/|$)/.test(path) ||
+      !/^\/(?:api|quizzes|tokens|uploads)(?:\/|$)/.test(path) ||
       req.method === "OPTIONS"
     )
       return true;

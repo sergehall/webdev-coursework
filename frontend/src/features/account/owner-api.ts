@@ -1,3 +1,5 @@
+import { buildApiUrl } from "@/api/request-url";
+
 export type OwnerProfile = {
   username?: string;
   email?: string | null;
@@ -62,11 +64,16 @@ export async function ownerRequest<T>(
   } = {}
 ): Promise<T> {
   const response = await fetch(
-    `${import.meta.env.VITE_OWNER_API_URL ?? import.meta.env.VITE_API_URL ?? ""}/api/account/${path}`,
+    buildApiUrl(
+      `/api/account/${path}`,
+      import.meta.env.VITE_OWNER_API_URL ?? import.meta.env.VITE_API_URL ?? ""
+    ),
     {
       method: options.method ?? "GET",
       credentials: "include",
       cache: "no-store",
+      redirect: "error",
+      referrerPolicy: "no-referrer",
       headers: { "Content-Type": "application/json" },
       body:
         options.body === undefined ? undefined : JSON.stringify(options.body),

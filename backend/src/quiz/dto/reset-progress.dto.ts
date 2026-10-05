@@ -1,16 +1,3 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsString } from "class-validator";
+import { ProgressIdentityDto } from "./progress-identity.dto";
 
-export class ResetProgressDto {
-  @ApiProperty({ example: "clientId" })
-  @IsString()
-  clientId!: string;
-
-  @ApiProperty({ example: "CS80" })
-  @IsString()
-  courseId!: string;
-
-  @ApiProperty({ example: "Internet-Programming" })
-  @IsString()
-  appId!: string;
-}
+export class ResetProgressDto extends ProgressIdentityDto {}

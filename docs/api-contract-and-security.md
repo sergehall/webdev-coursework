@@ -103,6 +103,13 @@ password login 5/IP/15 minutes and 100/global/15 minutes; public authentication
 10/IP/15 minutes and 200/global/hour; email delivery 3/address/hour; MFA actions
 and challenges have additional account/IP limits and proof-attempt limits.
 
+Public `/uploads/*` image reads (including HEAD and cache-busting queries) also
+consume the shared burst/API budgets before contacting object storage. Image
+storage allows at most eight concurrent reads per backend process, rejects
+additional work with 503 instead of queuing it, and aborts reads after ten seconds.
+The existing 5 MiB per-image limit remains in effect. A CDN can cache successful
+immutable responses; limits still protect direct origin requests.
+
 Global rejections return 429 with `Retry-After` seconds and
 `Cache-Control: no-store`. Existing account-specific limit errors also return
 429 but may omit Retry-After. CORS exposes this header to trusted frontend
@@ -206,6 +213,20 @@ current implementation ignores unsupported MIME types. The route quiz ID wins
 over the required body quiz ID.
 
 ## Frontend integration
+
+`VITE_API_URL` and `VITE_OWNER_API_URL` accept an empty same-origin value or an
+HTTP(S) origin without credentials, path, query or fragment. Production requires
+HTTPS. The request helpers normalize a trailing slash, reject endpoint traversal
+and protocol-relative URLs, use `no-store`/`no-referrer`, and refuse redirects so
+password/MFA bodies cannot be replayed to a different endpoint. Progress query
+values and quiz route identifiers are encoded separately from URL syntax.
+
+All progress reads, writes and resets require bounded nonempty `clientId`,
+`appId` and `courseId` strings (128, 128 and 32 characters respectively), using
+letters, digits, dots, underscores, colons and hyphens, starting with a letter or
+digit. Module mutations require a JSON integer from 1 to 1000. Missing, repeated,
+oversized or unexpected query fields are rejected before storage access.
+These identifiers remain anonymous practice selectors, not account authorization.
 
 Use the runtime `/openapi.json` (authenticated in production) for client
 generation, for example `openapi-typescript` or Orval. Operation IDs are stable

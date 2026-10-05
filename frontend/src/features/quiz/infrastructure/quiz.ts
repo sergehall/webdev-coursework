@@ -41,7 +41,7 @@ const correctAnswersSchema = z.array(
  */
 async function fetchAnswersToken(quizId: string): Promise<string> {
   const { token } = await apiFetch<{ token: string }>(
-    `/tokens/${quizId}/answers-token`,
+    `/tokens/${encodeURIComponent(quizId)}/answers-token`,
     {
       method: "POST",
       parseResponse: (value) => tokenResponseSchema.parse(value),
@@ -63,25 +63,31 @@ export async function fetchQuiz(quizId: string): Promise<FetchQuizResponse> {
   // 2) Fetch questions and answers in parallel
   let answers: CorrectAnswerDto[];
   const questionDtosPromise = apiFetch<QuestionDto[]>(
-    `/quizzes/${quizId}/questions`,
+    `/quizzes/${encodeURIComponent(quizId)}/questions`,
     { parseResponse: (value) => questionDtosSchema.parse(value) }
   );
 
   try {
-    answers = await apiFetch<CorrectAnswerDto[]>(`/quizzes/${quizId}/answers`, {
-      headers: { Authorization: `Bearer ${token}` },
-      parseResponse: (value) => correctAnswersSchema.parse(value),
-    });
+    answers = await apiFetch<CorrectAnswerDto[]>(
+      `/quizzes/${encodeURIComponent(quizId)}/answers`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+        parseResponse: (value) => correctAnswersSchema.parse(value),
+      }
+    );
   } catch (err) {
     // If the token expired mid-flight, refresh once and retry
     const isUnauthorized = err instanceof ApiHttpError && err.status === 401;
     if (!isUnauthorized) throw err;
 
     token = await fetchAnswersToken(quizId);
-    answers = await apiFetch<CorrectAnswerDto[]>(`/quizzes/${quizId}/answers`, {
-      headers: { Authorization: `Bearer ${token}` },
-      parseResponse: (value) => correctAnswersSchema.parse(value),
-    });
+    answers = await apiFetch<CorrectAnswerDto[]>(
+      `/quizzes/${encodeURIComponent(quizId)}/answers`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+        parseResponse: (value) => correctAnswersSchema.parse(value),
+      }
+    );
   }
 
   const [questionDtos] = await Promise.all([questionDtosPromise]);
