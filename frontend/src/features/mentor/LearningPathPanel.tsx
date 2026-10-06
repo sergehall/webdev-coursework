@@ -131,16 +131,23 @@ export default function LearningPathPanel({
                     <p>
                       <strong>Done when:</strong> {step.doneWhen}
                     </p>
-                    {step.sourceIds?.map((id) => {
-                      const source = metadata?.sources.find(
-                        (item) => item.sourceId === id
-                      );
-                      return source ? (
-                        <Link key={id} to={source.href}>
-                          {source.title}
-                        </Link>
-                      ) : null;
-                    })}
+                    {step.sourceIds?.length ? (
+                      <ul
+                        className="mentor-step-sources"
+                        aria-label="Coursework sources"
+                      >
+                        {step.sourceIds.map((id) => {
+                          const source = metadata?.sources.find(
+                            (item) => item.sourceId === id
+                          );
+                          return source ? (
+                            <li key={id}>
+                              <Link to={source.href}>{source.title}</Link>
+                            </li>
+                          ) : null;
+                        })}
+                      </ul>
+                    ) : null}
                     {!proposal && (
                       <div className="mentor-step-actions">
                         <label>

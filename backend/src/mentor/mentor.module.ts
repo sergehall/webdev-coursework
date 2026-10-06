@@ -11,6 +11,7 @@ import { CloudflareProvider } from "./generation/cloudflare-provider";
 import { GenerationService } from "./generation/generation.service";
 import { PlanPrompt } from "./pathway/plan-prompt";
 import { PlanGenerationStore } from "./pathway/plan-generation.store";
+import { MentorMaintenanceService } from "./maintenance/mentor-maintenance.service";
 
 @Module({
   imports: [AnalyticsModule],
@@ -25,6 +26,7 @@ import { PlanGenerationStore } from "./pathway/plan-generation.store";
     GenerationService,
     PlanPrompt,
     PlanGenerationStore,
+    MentorMaintenanceService,
   ],
 })
 export class MentorModule {}

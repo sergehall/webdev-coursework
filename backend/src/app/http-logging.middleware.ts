@@ -22,9 +22,29 @@ export class HttpLoggingMiddleware implements NestMiddleware {
       path.startsWith("/api/mentor") ||
       path.startsWith("/api/analytics")
     ) {
-      res.on("finish", () =>
-        this.logger.log(`${method} ${path} ${res.statusCode}`)
-      );
+      const started = Date.now();
+      let finished = false;
+      const safePath = () => {
+        const route = req.route?.path;
+        return path.startsWith("/api/mentor")
+          ? typeof route === "string" && route.startsWith("/api/mentor")
+            ? route
+            : "/api/mentor/*"
+          : path;
+      };
+      res.on("finish", () => {
+        finished = true;
+        this.logger.log(
+          `${method} ${safePath()} ${res.statusCode}${path.startsWith("/api/mentor") ? ` ${Date.now() - started}ms` : ""}`
+        );
+      });
+      if (path.startsWith("/api/mentor"))
+        res.on("close", () => {
+          if (!finished)
+            this.logger.warn(
+              `${method} ${safePath()} aborted ${Date.now() - started}ms`
+            );
+        });
       next();
       return;
     }

@@ -24,6 +24,7 @@ import { MentorPathwayStore } from "./pathway/mentor-pathway.store";
 import { MentorController } from "./api/mentor.controller";
 import { MentorAccountAccess } from "./access/mentor-account-access";
 import { GenerationStore } from "./generation/generation.store";
+import { MentorMaintenanceService } from "./maintenance/mentor-maintenance.service";
 
 const integration =
   process.env.MENTOR_INTEGRATION_TEST === "true" ? describe : describe.skip;
@@ -56,6 +57,7 @@ integration("mentor workspace PostgreSQL integration", () => {
     await db.initialize();
     await db.runMigrations();
     await db.query("TRUNCATE webdev_accounts CASCADE");
+    await db.query("TRUNCATE webdev_ai_budget_buckets");
     profiles = new MentorProfileStore(db);
     conversations = new MentorConversationStore(db);
     paths = new MentorPathwayStore(db);
@@ -261,5 +263,82 @@ integration("mentor workspace PostgreSQL integration", () => {
     } finally {
       await app.close();
     }
+  });
+
+  it("retains recent work, removes inactive history, and preserves active generations", async () => {
+    const account = randomUUID();
+    await db.query(
+      `INSERT INTO webdev_accounts(id,role,username,revision,display_name)
+       VALUES($1,'client','mentor_retention',$2,'Retention')`,
+      [account, randomUUID()]
+    );
+    const old = await conversations.create(account, "Old conversation");
+    await conversations.add(account, old.id, "user", "Old private content");
+    const active = await conversations.create(account, "Active generation");
+    const recent = await conversations.create(account, "Recent conversation");
+    await profiles.save(
+      account,
+      { goal: "frontend", level: "beginner", hours: 4, outcome: "" },
+      null
+    );
+    const proposal = await paths.propose(
+      account,
+      Array.from({ length: 8 }, (_, index) => ({
+        id: `retention-${index}`,
+        week: Math.floor(index / 2) + 1,
+        title: `Practice ${index}`,
+        doneWhen: "Show a working example",
+        hours: 2,
+      })),
+      1
+    );
+    await db.query(
+      `UPDATE webdev_learning_path_revisions
+       SET created_at=now()-interval '31 days' WHERE id=$1`,
+      [proposal.id]
+    );
+    const generations = new GenerationStore(db);
+    const running = await generations.start(
+      account,
+      active.id,
+      randomUUID(),
+      "a".repeat(64),
+      "Current question"
+    );
+    await db.query(
+      `UPDATE webdev_mentor_conversations
+       SET updated_at=now()-interval '91 days' WHERE id=ANY($1::uuid[])`,
+      [[old.id, active.id]]
+    );
+    await db.query(
+      `INSERT INTO webdev_ai_budget_buckets(scope,subject_key,period_start)
+       VALUES('account-minute',$1,now()-interval '3 days')`,
+      [account]
+    );
+    const maintenance = new MentorMaintenanceService(db, generations);
+    const counts = await maintenance.run();
+    expect(counts).toMatchObject({
+      conversations: 1,
+      proposals: 1,
+      budgetBuckets: 1,
+    });
+    expect(
+      (await conversations.list(account, 10, null)).entries.map((row) => row.id)
+    ).toEqual(expect.arrayContaining([active.id, recent.id]));
+    await expect(
+      conversations.messages(account, old.id, 10, null)
+    ).rejects.toThrow();
+    expect((await generations.get(account, running.row.id)).state).toBe(
+      "reserved"
+    );
+    expect((await maintenance.run())?.conversations).toBe(0);
+    await generations.finish(account, running.row.id, "cancelled", "");
+    expect((await maintenance.run())?.conversations).toBe(1);
+    await db.query(
+      `UPDATE webdev_mentor_generations
+       SET created_at=now()-interval '31 days' WHERE id=$1`,
+      [running.row.id]
+    );
+    expect((await maintenance.run())?.generations).toBe(1);
   });
 });

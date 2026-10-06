@@ -84,4 +84,37 @@ describe("structured Cloudflare plan response", () => {
       )
     ).rejects.toThrow("Incomplete provider response");
   });
+
+  it.each([429, 502])(
+    "reports HTTP %i without exposing the response body",
+    async (status) => {
+      jest
+        .spyOn(global, "fetch")
+        .mockResolvedValue(new Response("private upstream detail", { status }));
+      await expect(
+        new CloudflareProvider().completePlan(
+          [{ role: "user", content: "Plan" }],
+          new AbortController().signal
+        )
+      ).rejects.toThrow(`Provider HTTP ${status}`);
+    }
+  );
+
+  it("passes cancellation to the upstream fetch", async () => {
+    const fetcher = jest
+      .spyOn(global, "fetch")
+      .mockImplementation(async (_url, init) => {
+        if (init?.signal?.aborted) throw init.signal.reason;
+        throw new Error("Unexpected provider dispatch");
+      });
+    const controller = new AbortController();
+    controller.abort();
+    await expect(
+      new CloudflareProvider().completePlan(
+        [{ role: "user", content: "Plan" }],
+        controller.signal
+      )
+    ).rejects.toBeDefined();
+    expect(fetcher).toHaveBeenCalledTimes(1);
+  });
 });

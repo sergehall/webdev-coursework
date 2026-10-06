@@ -41,6 +41,52 @@ describe("validated mentor plan proposals", () => {
     expect(c.milestones[0].id).not.toBe(a.milestones[0].id);
   });
 
+  it("omits unused model-declared sources from published links", () => {
+    const input = proposal();
+    const extra = evidence.sources.find((source) => source.id !== first.id)!;
+    input.sourceIds.push(extra.id);
+    expect(
+      validatePlanProposal(input, profile, evidence).metadata.sources
+    ).toEqual([{ sourceId: first.id, title: first.title, href: first.href }]);
+  });
+
+  it("deduplicates repeated allowed source IDs in a model response", () => {
+    const input = proposal();
+    input.milestones[0].sourceIds = [first.id, first.id];
+    const result = validatePlanProposal(input, profile, evidence);
+    expect(result.milestones[0].sourceIds).toEqual([first.id]);
+    expect(result.metadata.sources).toHaveLength(1);
+  });
+
+  it("does not publish a course link for an unsupported named technology", () => {
+    const input = proposal();
+    input.milestones[1].title = "Build a Flask route";
+    input.milestones[1].sourceIds = [first.id];
+    const result = validatePlanProposal(input, profile, evidence);
+    expect(result.milestones[1].sourceIds).toEqual([]);
+    expect(result.metadata.sources).toHaveLength(1);
+  });
+
+  it("rejects external cloud provisioning in a short starter plan", () => {
+    const input = proposal();
+    input.milestones[1].title = "Launch an EC2 instance";
+    expect(() => validatePlanProposal(input, profile, evidence)).toThrow(
+      "INVALID_PLAN"
+    );
+  });
+
+  it("allows an offline network diagram but rejects a firewall change", () => {
+    const input = proposal();
+    input.milestones[1].title = "Sketch VPC diagram";
+    input.milestones[1].doneWhen = "Create a paper diagram of two subnets.";
+    expect(() => validatePlanProposal(input, profile, evidence)).not.toThrow();
+    input.milestones[1].title = "Configure local firewall";
+    input.milestones[1].doneWhen = "Allow port 80 from another machine.";
+    expect(() => validatePlanProposal(input, profile, evidence)).toThrow(
+      "INVALID_PLAN"
+    );
+  });
+
   it.each([
     [
       "unknown source",
@@ -52,6 +98,13 @@ describe("validated mentor plan proposals", () => {
       "over budget",
       (p: ReturnType<typeof proposal>) => {
         p.milestones[0].hours = 3;
+      },
+    ],
+    [
+      "half-hour over weekly budget",
+      (p: ReturnType<typeof proposal>) => {
+        p.milestones[0].hours = 2.5;
+        p.milestones[1].hours = 1;
       },
     ],
     [
@@ -72,6 +125,12 @@ describe("validated mentor plan proposals", () => {
       "Russian text",
       (p: ReturnType<typeof proposal>) => {
         p.rationale = "Начните с HTML";
+      },
+    ],
+    [
+      "empty rationale",
+      (p: ReturnType<typeof proposal>) => {
+        p.rationale = "";
       },
     ],
     [

@@ -3,8 +3,8 @@ import { ServiceUnavailableException } from "@nestjs/common";
 export const MODEL = "@cf/openai/gpt-oss-20b";
 export const RESERVATION_NEURONS = 400;
 export const MAX_OUTPUT_TOKENS = 1200;
-// The validated eight-step Cloudflare sample used 2380 output tokens including reasoning.
-export const PLAN_OUTPUT_TOKENS = 3200;
+// Allow room for reasoning and eight concise milestones in structured output.
+export const PLAN_OUTPUT_TOKENS = 4096;
 export const DEADLINE_MS = 45_000;
 
 export function generationEnabled(accountId?: string): boolean {

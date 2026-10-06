@@ -119,6 +119,37 @@ integration("mentor generation ledger in disposable PostgreSQL", () => {
     expect((await store.limits(alice)).dailyRemaining).toBe(14);
   });
 
+  it("deduplicates simultaneous starts from independent database pools", async () => {
+    const secondPool = new DataSource({
+      type: "postgres",
+      url: "postgres://postgres:test-local-only@127.0.0.1:55439/mentor_test",
+    });
+    await secondPool.initialize();
+    try {
+      const conversation = await conversations.create(alice, "Two instances");
+      const requestId = randomUUID();
+      const input = [
+        alice,
+        conversation.id,
+        requestId,
+        "9".repeat(64),
+        "HTML?",
+      ] as const;
+      const [first, second] = await Promise.all([
+        store.start(...input),
+        new GenerationStore(secondPool).start(...input),
+      ]);
+      expect(first.row.id).toBe(second.row.id);
+      expect([first.duplicate, second.duplicate].sort()).toEqual([false, true]);
+      expect(
+        (await conversations.messages(alice, conversation.id, 50, null)).entries
+      ).toHaveLength(1);
+      await store.finish(alice, first.row.id, "cancelled", "");
+    } finally {
+      await secondPool.destroy();
+    }
+  });
+
   it("releases a cancelled pre-dispatch reservation and retains dispatched unknown usage", async () => {
     const conversation = await conversations.create(bob, "Learning JS");
     const before = await store.start(

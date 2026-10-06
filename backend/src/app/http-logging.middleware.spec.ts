@@ -4,6 +4,56 @@ import type { NextFunction, Request, Response } from "express";
 import { HttpLoggingMiddleware } from "./http-logging.middleware";
 
 describe("HTTP logging", () => {
+  it("logs mentor route templates without IDs, query values or client metadata", () => {
+    const log = jest.spyOn(Logger.prototype, "log").mockImplementation();
+    try {
+      const response = new EventEmitter() as Response;
+      response.statusCode = 200;
+      const request = {
+        method: "GET",
+        originalUrl:
+          "/api/mentor/conversations/private-id/messages?token=private-token",
+        ip: "private-ip",
+        get: jest.fn().mockReturnValue("private-agent"),
+      } as unknown as Request;
+      new HttpLoggingMiddleware().use(request, response, jest.fn());
+      request.route = { path: "/api/mentor/conversations/:id/messages" };
+      response.emit("finish");
+      expect(log).toHaveBeenCalledWith(
+        expect.stringMatching(
+          /^GET \/api\/mentor\/conversations\/:id\/messages 200 \d+ms$/
+        )
+      );
+      expect(JSON.stringify(log.mock.calls)).not.toMatch(
+        /private-id|private-token|private-ip|private-agent/
+      );
+    } finally {
+      log.mockRestore();
+    }
+  });
+
+  it("records a disconnected mentor stream without a private URL", () => {
+    const warn = jest.spyOn(Logger.prototype, "warn").mockImplementation();
+    try {
+      const response = new EventEmitter() as Response;
+      const request = {
+        method: "POST",
+        originalUrl: "/api/mentor/conversations/private-id/messages",
+      } as Request;
+      new HttpLoggingMiddleware().use(request, response, jest.fn());
+      request.route = { path: "/api/mentor/conversations/:id/messages" };
+      response.emit("close");
+      expect(warn).toHaveBeenCalledWith(
+        expect.stringMatching(
+          /^POST \/api\/mentor\/conversations\/:id\/messages aborted \d+ms$/
+        )
+      );
+      expect(JSON.stringify(warn.mock.calls)).not.toContain("private-id");
+    } finally {
+      warn.mockRestore();
+    }
+  });
+
   it("does not log anonymous client IDs from quiz progress URLs", () => {
     const log = jest.spyOn(Logger.prototype, "log").mockImplementation();
     try {

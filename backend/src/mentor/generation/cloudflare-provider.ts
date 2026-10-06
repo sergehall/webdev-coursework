@@ -72,8 +72,9 @@ export class CloudflareProvider {
         signal: AbortSignal.any([signal, AbortSignal.timeout(DEADLINE_MS)]),
       }
     );
-    if (!response.ok || Number(response.headers.get("content-length")) > 65536)
-      throw new Error("Provider unavailable");
+    if (!response.ok) throw new Error(`Provider HTTP ${response.status}`);
+    if (Number(response.headers.get("content-length")) > 65536)
+      throw new Error("Provider response too large");
     const body = await response.text();
     if (body.length > 65536) throw new Error("Provider response too large");
     const envelope = JSON.parse(body) as {
