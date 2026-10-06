@@ -5,6 +5,28 @@ Account emails use the renderer/transport separation from the local
 outbox. They use Web Engineering Portfolio branding and the account area's
 green action color.
 
+## Sender identity
+
+This application's sender is
+`Web Engineering Portfolio <serge.hall.dev@gmail.com>`.
+Set `SMTP_FROM_EMAIL=serge.hall.dev@gmail.com` in its environment configuration.
+The address in the email header comes from this setting, not from the HTML template.
+
+For a dedicated Gmail SMTP connection, set
+`SMTP_USERNAME=serge.hall.dev@gmail.com` and provide that account's app password
+as `SMTP_PASSWORD` through the private environment configuration. The tracked
+`backend/.env.example` contains the intended username and sender, without a password.
+If an existing SMTP account is retained, Gmail must have the sender configured
+as a verified "Send mail as" address; changing the From header alone does not
+establish permission to send from that address. See
+[Gmail's sender setup](https://support.google.com/mail/answer/22370?hl=en).
+
+Local development reads `backend/.env.local`; `backend/.env.production.local`
+is an input to the existing production SMTP synchronization script, not live
+production configuration. Restart the backend after local SMTP changes.
+Updating either private file does not update Heroku; production settings need
+their own synchronization. Never commit environment files or app passwords.
+
 ## Delivery boundaries
 
 1. `AccountService` or `AccountProvidersService` calls `AuthMailService.enqueue`

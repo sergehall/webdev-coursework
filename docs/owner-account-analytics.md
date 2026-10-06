@@ -62,6 +62,12 @@ port 587 requires STARTTLS. TLS certificates are verified. The existing sender
 address remains configured for the SMTP service; the display name is Web
 Engineering Portfolio.
 
+For this application, use `SMTP_FROM_EMAIL=serge.hall.dev@gmail.com`.
+Authenticate with that Gmail account's app password, or explicitly configure
+the address as a verified Gmail sender for the existing SMTP account. See
+[sender identity](account-emails.md#sender-identity) for environment ownership
+and restart requirements.
+
 Verification, password-reset and recovery-email messages share a responsive
 HTML layout and have plain-text alternatives. Rendering and SMTP transport
 are separate from the outbox worker. See [account email templates](account-emails.md)
