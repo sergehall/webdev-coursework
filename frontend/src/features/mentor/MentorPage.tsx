@@ -30,6 +30,7 @@ function MentorPreviewPage() {
   const owner = useOwner();
   const [sample, setSample] = useState(false);
   const [expired, setExpired] = useState(false);
+  const [expiredAccount, setExpiredAccount] = useState(false);
   const status = owner?.status;
   const refresh = owner?.refresh;
   useEffect(() => {
@@ -70,6 +71,10 @@ function MentorPreviewPage() {
               : `${owner?.session?.profile.username ?? "account"}-${owner?.session?.issuedAt}`
           }
           onExpire={() => {
+            if (!sample) {
+              setExpiredAccount(true);
+              owner?.clear();
+            }
             setExpired(true);
             setSample(false);
           }}
@@ -111,7 +116,7 @@ function MentorPreviewPage() {
             </ul>
             {expired ? (
               <p role="alert" className="mentor-error">
-                {authenticated
+                {expiredAccount || authenticated
                   ? "Your account session ended. Sign in again to restore your saved workspace."
                   : "Your preview session expired. The conversation and personal path have been cleared."}
               </p>

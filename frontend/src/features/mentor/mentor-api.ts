@@ -45,15 +45,41 @@ export type MentorBootstrap = {
   conversations: SavedConversation[];
   previewEnabled: boolean;
   generationEnabled: boolean;
-  limits: { dailyRemaining: number; minuteRemaining: number; resetAt: string };
+  limits: MentorLimits;
+};
+export type MentorLimits = {
+  dailyRemaining: number;
+  minuteRemaining: number;
+  globalNeuronsRemaining?: number;
+  resetAt: string;
 };
 export class MentorApiError extends Error {
   constructor(
     public readonly status: number,
-    message: string
+    message: string,
+    public readonly code: string | null = null,
+    public readonly retryAfterSeconds: number | null = null
   ) {
     super(message);
   }
+}
+
+export async function mentorResponseError(
+  response: Response,
+  messages: Record<number, string>
+): Promise<MentorApiError> {
+  const body = await response.json().catch(() => null);
+  const code = typeof body?.code === "string" ? body.code : null;
+  const retryAfterSeconds =
+    Number.isInteger(body?.retryAfterSeconds) && body.retryAfterSeconds > 0
+      ? body.retryAfterSeconds
+      : null;
+  return new MentorApiError(
+    response.status,
+    messages[response.status] ?? "The request could not be completed.",
+    code,
+    retryAfterSeconds
+  );
 }
 export async function mentorRequest<T>(
   path: string,
@@ -94,10 +120,7 @@ export async function mentorRequest<T>(
       429: "Too many requests. Wait a moment and try again.",
       503: "The mentor workspace is temporarily unavailable.",
     };
-    throw new MentorApiError(
-      response.status,
-      messages[response.status] ?? "The request could not be completed."
-    );
+    throw await mentorResponseError(response, messages);
   }
   if (response.status === 204) return undefined as T;
   return (await response.json()) as T;

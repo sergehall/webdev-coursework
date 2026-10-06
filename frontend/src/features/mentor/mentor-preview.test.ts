@@ -6,6 +6,8 @@ import {
   rememberMentorReturn,
 } from "./mentor-preview";
 
+import { accountReturn } from "@/features/account/auth-return";
+
 afterEach(() => {
   vi.useRealTimers();
   sessionStorage.clear();
@@ -21,5 +23,14 @@ describe("mentor auth return", () => {
     rememberMentorReturn();
     clearMentorReturn();
     expect(hasMentorReturn()).toBe(false);
+  });
+  it("chooses only allowed account destinations", () => {
+    rememberMentorReturn();
+    expect(accountReturn("https://attacker.example/collect")).toBe(
+      "/web-developer-path/mentor"
+    );
+    expect(accountReturn("/account/security#mfa")).toBe(
+      "/account/security#mfa"
+    );
   });
 });

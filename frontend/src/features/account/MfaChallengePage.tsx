@@ -5,7 +5,7 @@ import { ShieldCheck } from "lucide-react";
 import { ownerRequest, OwnerApiError } from "./owner-api";
 import { parseMfaChallenge } from "./owner-contracts";
 import { useOwner } from "./owner-context";
-import { securityReturn } from "./auth-return";
+import { accountReturn } from "./auth-return";
 
 export default function MfaChallengePage() {
   const owner = useOwner()!,
@@ -62,7 +62,7 @@ export default function MfaChallengePage() {
       setCode("");
       await owner.refresh();
       navigate(
-        securityReturn(
+        accountReturn(
           (location.state as { returnTo?: unknown } | null)?.returnTo
         ) ?? "/account/security#mfa",
         { replace: true }

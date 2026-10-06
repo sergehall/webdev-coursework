@@ -10,6 +10,7 @@ type Props = {
   metadata: SavedProposal["metadata"];
   done: string[];
   busy: boolean;
+  canGenerate?: boolean;
   onCreate: () => void;
   onAccept: () => void;
   onDiscard: () => void;
@@ -22,6 +23,7 @@ export default function LearningPathPanel({
   metadata,
   done,
   busy,
+  canGenerate = true,
   onCreate,
   onAccept,
   onDiscard,
@@ -71,11 +73,16 @@ export default function LearningPathPanel({
                 <button
                   className="mentor-button mentor-primary"
                   onClick={onAccept}
+                  disabled={busy}
                 >
                   Accept this path
                   <Check size={16} aria-hidden="true" />
                 </button>
-                <button className="mentor-button" onClick={onDiscard}>
+                <button
+                  className="mentor-button"
+                  onClick={onDiscard}
+                  disabled={busy}
+                >
                   Dismiss
                 </button>
               </div>
@@ -91,7 +98,7 @@ export default function LearningPathPanel({
               <button
                 className="mentor-button mentor-adjust"
                 onClick={onCreate}
-                disabled={busy}
+                disabled={busy || !canGenerate}
               >
                 Adjust my plan
               </button>
@@ -147,7 +154,7 @@ export default function LearningPathPanel({
                         </label>
                         <button
                           type="button"
-                          disabled={busy}
+                          disabled={busy || !canGenerate}
                           onClick={() => onExplain(step.title)}
                         >
                           Explain this step
@@ -191,7 +198,7 @@ export default function LearningPathPanel({
           <button
             className="mentor-button mentor-primary"
             onClick={onCreate}
-            disabled={busy}
+            disabled={busy || !canGenerate}
           >
             Create my first plan
             <ArrowUpRight size={17} aria-hidden="true" />

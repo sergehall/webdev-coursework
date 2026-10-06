@@ -181,6 +181,7 @@ export function useMentorPreview() {
     send,
     accept,
     retry,
+    canRetry: Boolean(lastRequest.current),
     clearConversation,
     toggleDone: (id: string) =>
       setDone((previous) =>

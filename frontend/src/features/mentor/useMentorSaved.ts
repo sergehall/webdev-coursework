@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import {
   type DemoScenario,
@@ -10,7 +10,6 @@ import {
   MentorApiError,
   type MentorBootstrap,
   type SavedConversation,
-  type SavedMessage,
   type SavedPath,
   type SavedProfile,
   type SavedProposal,
@@ -26,9 +25,19 @@ import {
   type LastMentorRequest,
   type MentorRequestKind as Kind,
 } from "./mentor-message-map";
-import { mergeGenerationReceipt } from "./mentor-generation-receipt";
+import {
+  mergeGenerationReceipt,
+  receiptOutcome,
+} from "./mentor-generation-receipt";
+import {
+  conversationMessages,
+  conversationPage,
+  initialConversation,
+} from "./mentor-history-api";
 import { runMentorPreview } from "./mentor-preview-flow";
 import { toggleSavedProgress } from "./mentor-progress";
+import { applySavedStreamEvent } from "./mentor-saved-stream";
+import { useMentorQuota } from "./useMentorQuota";
 export function useMentorSaved(
   enabled: boolean,
   onSessionExpired?: () => void
@@ -50,6 +59,7 @@ export function useMentorSaved(
   const [loading, setLoading] = useState(enabled);
   const [bootError, setBootError] = useState(false);
   const [generationEnabled, setGenerationEnabled] = useState(false);
+  const [previewEnabled, setPreviewEnabled] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
   const expired = useRef(onSessionExpired);
   expired.current = onSessionExpired;
@@ -57,6 +67,15 @@ export function useMentorSaved(
   const lastRequest = useRef<LastMentorRequest | null>(null);
   const liveController = useRef<AbortController | null>(null);
   const liveGenerationId = useRef<string | null>(null);
+  const historySequence = useRef(0);
+  const refreshWorkspace = useCallback(() => {
+    setLoading(true);
+    setError("");
+    setBootError(false);
+    setReloadKey((value) => value + 1);
+  }, []);
+  const quota = useMentorQuota(refreshWorkspace);
+  const loadLimits = quota.load;
   useEffect(() => {
     if (!enabled) return;
     let alive = true;
@@ -67,6 +86,8 @@ export function useMentorSaved(
         if (!alive) return;
         setBootError(false);
         setGenerationEnabled(data.generationEnabled);
+        setPreviewEnabled(data.previewEnabled);
+        loadLimits(data.limits);
         setProfileState(data.profile);
         setPath(data.pathway);
         setProposal(data.proposal);
@@ -78,18 +99,10 @@ export function useMentorSaved(
         );
         const current = data.conversations[0]?.id ?? null;
         setConversationId(current);
-        if (current) {
-          const page = await mentorRequest<{
-            entries: SavedMessage[];
-            nextCursor: number | null;
-          }>(`conversations/${current}/messages?limit=50`);
-          if (!alive) return;
-          setMessages(page.entries.map(mapMessage));
-          setMessageCursor(page.nextCursor);
-        } else {
-          setMessages([]);
-          setMessageCursor(null);
-        }
+        const page = await initialConversation(current);
+        if (!alive) return;
+        setMessages(page.entries.map(mapMessage));
+        setMessageCursor(page.nextCursor);
       } catch (reason) {
         if (alive) {
           setBootError(true);
@@ -112,10 +125,11 @@ export function useMentorSaved(
       if (liveGenerationId.current)
         void cancelGeneration(liveGenerationId.current).catch(() => undefined);
     };
-  }, [enabled, reloadKey]);
+  }, [enabled, reloadKey, loadLimits]);
   const fail = (reason: unknown) => {
     if (reason instanceof MentorApiError && reason.status === 401)
       expired.current?.();
+    quota.failed(reason);
     setError(reason instanceof Error ? reason.message : "The request failed.");
     setNotice("");
   };
@@ -139,29 +153,26 @@ export function useMentorSaved(
     }
   };
   const loadConversation = async (id: string) => {
+    if (busy) stop();
+    const lookup = ++historySequence.current;
     setError("");
     try {
-      const page = await mentorRequest<{
-        entries: SavedMessage[];
-        nextCursor: number | null;
-      }>(`conversations/${id}/messages?limit=50`);
+      const page = await conversationMessages(id);
+      if (lookup !== historySequence.current) return;
       setConversationId(id);
       setMessages(page.entries.map(mapMessage));
       setMessageCursor(page.nextCursor);
       setNotice("");
     } catch (reason) {
-      fail(reason);
+      if (lookup === historySequence.current) fail(reason);
     }
   };
   const loadOlderMessages = async () => {
     if (!conversationId || messageCursor === null) return;
+    const lookup = historySequence.current;
     try {
-      const page = await mentorRequest<{
-        entries: SavedMessage[];
-        nextCursor: number | null;
-      }>(
-        `conversations/${conversationId}/messages?limit=50&cursor=${messageCursor}`
-      );
+      const page = await conversationMessages(conversationId, messageCursor);
+      if (lookup !== historySequence.current) return;
       setMessages((old) => [...page.entries.map(mapMessage), ...old]);
       setMessageCursor(page.nextCursor);
     } catch (reason) {
@@ -171,10 +182,7 @@ export function useMentorSaved(
   const loadMoreConversations = async () => {
     if (!conversationCursor) return;
     try {
-      const page = await mentorRequest<{
-        entries: SavedConversation[];
-        nextCursor: string | null;
-      }>(`conversations?limit=10&cursor=${conversationCursor}`);
+      const page = await conversationPage(conversationCursor);
       setConversations((old) => [...old, ...page.entries]);
       setConversationCursor(page.nextCursor);
     } catch (reason) {
@@ -182,11 +190,30 @@ export function useMentorSaved(
     }
   };
   const clearConversation = async () => {
+    if (busy) stop();
+    historySequence.current++;
     setConversationId(null);
     setMessages([]);
     setMessageCursor(null);
     setNotice("New conversation ready. Your earlier conversations are saved.");
     setError("");
+  };
+  const deleteConversation = async (id: string) => {
+    if (id === conversationId && busy) stop();
+    try {
+      await mentorRequest(`conversations/${id}`, "DELETE");
+      setConversations((old) => old.filter((entry) => entry.id !== id));
+      if (id === conversationId) {
+        historySequence.current++;
+        setConversationId(null);
+        setMessages([]);
+        setMessageCursor(null);
+      }
+      setNotice("Conversation deleted. Your accepted path remains.");
+      setError("");
+    } catch (reason) {
+      fail(reason);
+    }
   };
   const stop = () => {
     sequence.current++;
@@ -199,10 +226,18 @@ export function useMentorSaved(
         old.filter((message) => !String(message.id).startsWith("pending-"))
       );
     setNotice("Response stopped. Saved messages remain in your history.");
+    lastRequest.current = null;
   };
   const send = async (text: string, kind: Kind = "chat", retryId?: string) => {
     const input = text.trim();
     if (!profile || !input || input.length > 4000 || busy) return;
+    if (!generationEnabled && !previewEnabled) {
+      setError(
+        "Mentor generation is unavailable. Your saved path remains available."
+      );
+      return;
+    }
+    if (quota.blocked && generationEnabled) return;
     const request = ++sequence.current;
     const clientRequestId = retryId ?? crypto.randomUUID();
     lastRequest.current = { text: input, kind, requestId: clientRequestId };
@@ -218,6 +253,12 @@ export function useMentorSaved(
           { title: input.slice(0, 80) }
         );
         id = created.id;
+        if (sequence.current !== request) {
+          void mentorRequest(`conversations/${created.id}`, "DELETE").catch(
+            () => undefined
+          );
+          return;
+        }
         setConversationId(id);
         setConversations((old) => [created, ...old]);
       }
@@ -243,26 +284,17 @@ export function useMentorSaved(
               old.filter((message) => message.id !== pendingId)
             );
           await loadProposal(receipt.proposalId);
-          if (receipt.state === "completed" || receipt.state === "cancelled") {
-            lastRequest.current = null;
-            setError("");
-            setNotice(
-              receipt.state === "completed"
-                ? "Response saved."
-                : "Response stopped."
-            );
-          } else if (["failed", "abandoned"].includes(receipt.state)) {
-            lastRequest.current = { text: input, kind, requestId: null };
-            setError(
-              "The response could not be completed. Your question is saved."
-            );
-            setNotice("");
-          } else {
-            setError(
-              "Connection interrupted. Retry checks this request without starting another."
-            );
-            setNotice(`Request status: ${receipt.state}.`);
-          }
+          const outcome = receiptOutcome(receipt);
+          lastRequest.current =
+            outcome.retry === "none"
+              ? null
+              : {
+                  text: input,
+                  kind,
+                  requestId: outcome.retry === "same" ? clientRequestId : null,
+                };
+          setError(outcome.error);
+          setNotice(outcome.notice);
         };
         try {
           const receipt = await sendGeneration(
@@ -273,81 +305,26 @@ export function useMentorSaved(
             controller.signal,
             (event) => {
               if (sequence.current !== request) return;
-              if (event.event === "accepted") {
-                liveGenerationId.current = event.generationId;
-                setMessages((old) => [
-                  ...old,
-                  { id: event.userMessageId, role: "user", text: input },
-                  {
-                    id: pendingId,
-                    role: "assistant",
-                    text:
-                      kind === "plan" ? "Building your four-week draft…" : "",
-                  },
-                ]);
-                setNotice(
-                  kind === "plan"
-                    ? "Checking your learning plan…"
-                    : "Generating an English response…"
-                );
-              } else if (event.event === "text_delta") {
-                setMessages((old) =>
-                  old.map((m) =>
-                    m.id === pendingId
-                      ? { ...m, text: m.text + event.delta }
-                      : m
-                  )
-                );
-              } else if (event.event === "progress") {
-                setNotice("Building and validating your four-week draft…");
-              } else if (event.event === "completed") {
-                setMessages((old) =>
-                  old.map((m) =>
-                    m.id === pendingId
-                      ? {
-                          ...m,
-                          id: event.messageId,
-                          text: event.proposalId
-                            ? "Your four-week draft is ready. Review the milestones and sources in My path before accepting it."
-                            : m.text,
-                        }
-                      : m
-                  )
-                );
-                if (event.proposalId)
-                  void loadProposal(event.proposalId).catch(fail);
-                setNotice(
-                  `${event.proposalId ? "Draft saved" : "Response saved"}. ${event.remaining} daily requests remain.`
-                );
-                lastRequest.current = null;
-              } else if (event.event === "failed") {
-                setMessages((old) =>
-                  (kind === "plan"
-                    ? old.filter((m) => m.id !== pendingId)
-                    : old
-                  ).map((m) =>
-                    m.id === pendingId ? { ...m, partial: Boolean(m.text) } : m
-                  )
-                );
-                setError(
-                  event.code === "AI_TIMEOUT"
-                    ? "The response timed out. Your question is saved."
-                    : "The response could not be completed. Your question is saved."
-                );
-                setNotice("");
-                lastRequest.current = { text: input, kind, requestId: null };
-              } else if (event.event === "cancelled") {
-                setMessages((old) =>
-                  (kind === "plan"
-                    ? old.filter((m) => m.id !== pendingId)
-                    : old
-                  ).map((m) =>
-                    m.id === pendingId ? { ...m, partial: Boolean(m.text) } : m
-                  )
-                );
-                setNotice("Response stopped.");
-                lastRequest.current = null;
-              }
+              applySavedStreamEvent(event, {
+                kind,
+                input,
+                pendingId,
+                setMessages,
+                setNotice,
+                setError,
+                generationAccepted: (generationId) => {
+                  liveGenerationId.current = generationId;
+                  quota.accepted();
+                },
+                generationCompleted: quota.completed,
+                loadProposal: (proposalId) =>
+                  void loadProposal(proposalId).catch(fail),
+                retryable: (retry) => {
+                  lastRequest.current = retry
+                    ? { text: input, kind, requestId: null }
+                    : null;
+                },
+              });
             }
           );
           if (receipt && sequence.current === request)
@@ -385,7 +362,18 @@ export function useMentorSaved(
           : "Example response saved."
       );
     } catch (reason) {
-      fail(reason);
+      if (
+        reason instanceof MentorApiError &&
+        reason.status === 429 &&
+        reason.retryAfterSeconds === null &&
+        reason.code === "USER_LIMIT_REACHED" &&
+        !conversationId
+      ) {
+        setError(
+          "Conversation limit reached. Delete an older conversation to start a new one."
+        );
+        setNotice("");
+      } else fail(reason);
     } finally {
       if (sequence.current === request) setBusy(null);
     }
@@ -454,7 +442,9 @@ export function useMentorSaved(
           lastRequest.current.requestId ?? undefined
         );
     },
+    canRetry: Boolean(lastRequest.current),
     clearConversation,
+    deleteConversation,
     toggleDone,
     discard,
     loading,
@@ -467,11 +457,13 @@ export function useMentorSaved(
     messageCursor,
     bootError,
     generationEnabled,
-    reload: () => {
-      setLoading(true);
-      setError("");
-      setBootError(false);
-      setReloadKey((value) => value + 1);
+    previewEnabled,
+    quota: {
+      limits: quota.limits,
+      blocked: quota.blocked,
+      resetLabel: quota.resetLabel,
+      blockReason: quota.blockReason,
     },
+    reload: refreshWorkspace,
   };
 }

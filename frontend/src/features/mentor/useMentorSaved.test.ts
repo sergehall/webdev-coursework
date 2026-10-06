@@ -81,6 +81,11 @@ describe("saved mentor workspace", () => {
             status: "done",
             version: 8,
           });
+        if (
+          path.endsWith(`/conversations/${conversationId}`) &&
+          options.method === "DELETE"
+        )
+          return Response.json({ deleted: true });
         throw new Error(`Unexpected path ${path}`);
       })
     );
@@ -98,6 +103,11 @@ describe("saved mentor workspace", () => {
       credentials: "include",
       body: { status: "done", expectedVersion: 7, expectedPathVersion: 3 },
     });
+    await act(async () => {
+      await hook.result.current.deleteConversation(conversationId);
+    });
+    expect(hook.result.current.conversations).toEqual([]);
+    expect(hook.result.current.path?.[0].id).toBe("step-1");
   });
 
   it("uses the private SSE endpoint for an enabled live chat", async () => {
@@ -301,5 +311,150 @@ describe("saved mentor workspace", () => {
     );
     expect(requestIds).toHaveLength(2);
     expect(requestIds[0]).toBe(requestIds[1]);
+  });
+
+  it("keeps history readable and prevents sending when generation is off", async () => {
+    const fetcher = vi.fn(async (url: string) => {
+      if (url.endsWith("/bootstrap"))
+        return Response.json({
+          profile: {
+            goal: "frontend",
+            level: "beginner",
+            hours: 4,
+            outcome: "A site",
+            version: 1,
+          },
+          pathway: null,
+          proposal: null,
+          conversations: [],
+          previewEnabled: false,
+          generationEnabled: false,
+          limits: {
+            dailyRemaining: 15,
+            minuteRemaining: 5,
+            resetAt: "2026-10-06T00:00:00Z",
+          },
+        });
+      throw new Error(`Unexpected request ${url}`);
+    });
+    vi.stubGlobal("fetch", fetcher);
+    const hook = renderHook(() => useMentorSaved(true));
+    await waitFor(() => expect(hook.result.current.loading).toBe(false));
+    await act(async () => {
+      await hook.result.current.send("Build my plan", "plan");
+    });
+    expect(hook.result.current.error).toContain("generation is unavailable");
+    expect(fetcher).toHaveBeenCalledTimes(1);
+  });
+
+  it("shows the provider retry time after a quota response", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (url: string, options: RequestInit) => {
+        const path = new URL(url, "http://localhost").pathname;
+        if (path.endsWith("/bootstrap"))
+          return Response.json({
+            profile: {
+              goal: "frontend",
+              level: "beginner",
+              hours: 4,
+              outcome: "A site",
+              version: 1,
+            },
+            pathway: null,
+            proposal: null,
+            conversations: [
+              {
+                id: conversationId,
+                title: "CSS",
+                updated_at: "2026-10-05T00:00:00Z",
+              },
+            ],
+            generationEnabled: true,
+            previewEnabled: false,
+            limits: {
+              dailyRemaining: 1,
+              minuteRemaining: 1,
+              resetAt: "2026-10-06T00:00:00Z",
+            },
+          });
+        if (path.endsWith("/messages") && options.method !== "POST")
+          return Response.json({ entries: [], nextCursor: null });
+        if (path.endsWith("/messages"))
+          return Response.json(
+            { code: "USER_LIMIT_REACHED", retryAfterSeconds: 120 },
+            { status: 429 }
+          );
+        throw new Error(`Unexpected request ${path}`);
+      })
+    );
+    const hook = renderHook(() => useMentorSaved(true));
+    await waitFor(() => expect(hook.result.current.loading).toBe(false));
+    await act(async () => {
+      await hook.result.current.send("How do I learn CSS?");
+    });
+    expect(hook.result.current.quota.blocked).toBe(true);
+    expect(hook.result.current.quota.resetLabel).toBeTruthy();
+    expect(hook.result.current.error).toContain("limit");
+  });
+
+  it("removes an empty conversation created after Stop before model dispatch", async () => {
+    let completeCreate!: (response: Response) => void;
+    const create = new Promise<Response>((resolve) => {
+      completeCreate = resolve;
+    });
+    const calls: string[] = [];
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (url: string, options: RequestInit) => {
+        const path = new URL(url, "http://localhost").pathname;
+        const action = `${options.method ?? "GET"} ${path}`;
+        calls.push(action);
+        if (path.endsWith("/bootstrap"))
+          return Response.json({
+            profile: {
+              goal: "frontend",
+              level: "beginner",
+              hours: 4,
+              outcome: "A site",
+              version: 1,
+            },
+            pathway: null,
+            proposal: null,
+            conversations: [],
+            generationEnabled: true,
+            limits: {
+              dailyRemaining: 15,
+              minuteRemaining: 5,
+              resetAt: "2026-10-07T00:00:00Z",
+            },
+          });
+        if (path.endsWith("/conversations") && options.method === "POST")
+          return create;
+        if (
+          path.endsWith(`/conversations/${conversationId}`) &&
+          options.method === "DELETE"
+        )
+          return Response.json({ deleted: true });
+        throw new Error(`Unexpected request ${action}`);
+      })
+    );
+    const hook = renderHook(() => useMentorSaved(true));
+    await waitFor(() => expect(hook.result.current.loading).toBe(false));
+    let sending!: Promise<void>;
+    act(() => {
+      sending = hook.result.current.send("CSS?");
+    });
+    act(() => hook.result.current.stop());
+    await act(async () => {
+      completeCreate(Response.json({ id: conversationId, title: "CSS?" }));
+      await sending;
+    });
+    await waitFor(() =>
+      expect(calls).toContain(
+        `DELETE /api/mentor/conversations/${conversationId}`
+      )
+    );
+    expect(calls.some((call) => call.endsWith("/messages"))).toBe(false);
   });
 });

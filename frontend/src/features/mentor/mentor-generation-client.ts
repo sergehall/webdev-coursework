@@ -1,4 +1,8 @@
-import { MentorApiError, mentorRequest } from "./mentor-api";
+import {
+  MentorApiError,
+  mentorRequest,
+  mentorResponseError,
+} from "./mentor-api";
 
 import { buildApiUrl } from "@/api/request-url";
 
@@ -116,10 +120,7 @@ export async function sendGeneration(
       429: "The mentor limit is reached. Try again after it resets.",
       503: "The mentor model is unavailable. Try again later.",
     };
-    throw new MentorApiError(
-      response.status,
-      messages[response.status] ?? "The mentor request failed."
-    );
+    throw await mentorResponseError(response, messages);
   }
   if (response.headers.get("content-type")?.includes("application/json"))
     return (await response.json()) as GenerationReceipt;

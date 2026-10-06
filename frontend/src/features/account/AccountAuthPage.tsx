@@ -9,7 +9,7 @@ import {
   parseLoginOptions,
 } from "./owner-contracts";
 import { useOwner } from "./owner-context";
-import { securityReturn } from "./auth-return";
+import { accountReturn } from "./auth-return";
 import TurnstileWidget from "./auth/TurnstileWidget";
 import AccountAuthFields, { type AuthMode } from "./auth/AccountAuthFields";
 
@@ -120,7 +120,7 @@ export default function AccountAuthPage({ mode }: { mode: AuthMode }) {
   const githubLinked =
     new URLSearchParams(location.search).get("notice") === "github-linked";
   const returnTo =
-    securityReturn(navigationState?.returnTo) ??
+    accountReturn(navigationState?.returnTo) ??
     (githubLinked ? "/account/security#providers" : null);
   const notice =
     navigationState?.notice ??

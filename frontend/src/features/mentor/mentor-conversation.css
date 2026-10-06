@@ -124,7 +124,44 @@
   font-size: 14px;
   line-height: 1.75;
   overflow-wrap: anywhere;
-  white-space: pre-wrap;
+}
+.mentor-markdown p + p,
+.mentor-markdown ul + p,
+.mentor-markdown p + ul {
+  margin-top: 10px;
+}
+.mentor-markdown ul {
+  list-style: disc;
+  padding-left: 20px;
+}
+.mentor-markdown code {
+  padding: 1px 4px;
+  border-radius: 4px;
+  background: var(--mentor-tint);
+}
+.mentor-markdown a {
+  color: var(--mentor-accent);
+  text-decoration: underline;
+}
+.mentor-quota {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 12px;
+  margin-bottom: 10px;
+  color: var(--mentor-muted);
+  font-size: 12px;
+}
+.mentor-quota button {
+  color: var(--mentor-accent);
+  text-decoration: underline;
+}
+.mentor-quota-blocked {
+  color: #9a4929;
+}
+.dark .mentor-quota-blocked {
+  color: #ffbc9d;
 }
 .mentor-message-user {
   margin-left: auto;

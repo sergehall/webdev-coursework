@@ -7,11 +7,13 @@ import {
   SlidersHorizontal,
   Sparkles,
   Square,
-  X,
 } from "lucide-react";
 
 import LearnerOnboarding from "./LearnerOnboarding";
 import LearningPathPanel from "./LearningPathPanel";
+import MentorHistoryPanel from "./MentorHistoryPanel";
+import MentorMarkdown from "./MentorMarkdown";
+import MentorQuota from "./MentorQuota";
 import { goalLabels, type DemoScenario } from "./mentor-demo";
 import { useMentorPreview } from "./useMentorPreview";
 import { useMentorSaved } from "./useMentorSaved";
@@ -39,6 +41,11 @@ export default function MentorWorkspace({
   const [tab, setTab] = useState<"chat" | "path">("chat");
   const [draft, setDraft] = useState("");
   const [history, setHistory] = useState(false);
+  const historyToggle = useRef<HTMLButtonElement>(null);
+  const generationAvailable =
+    sample || saved.generationEnabled || saved.previewEnabled;
+  const requestBlocked =
+    !sample && (!generationAvailable || saved.quota.blocked);
   const scroll = useRef<HTMLDivElement>(null);
   const follow = useRef(true);
   const composer = useRef<HTMLTextAreaElement>(null);
@@ -85,12 +92,13 @@ export default function MentorWorkspace({
 
   function submit(event: FormEvent) {
     event.preventDefault();
-    if (!draft.trim() || mentor.busy) return;
+    if (!draft.trim() || mentor.busy || requestBlocked) return;
     mentor.send(draft);
     setDraft("");
     follow.current = true;
   }
   function createPlan() {
+    if (requestBlocked) return;
     mentor.send(
       mentor.path
         ? "Adjust my plan to my current profile."
@@ -162,75 +170,38 @@ export default function MentorWorkspace({
               </div>
             </div>
             <button
+              ref={historyToggle}
               className="mentor-icon-button"
               aria-label="Conversation history"
               onClick={() => setHistory(!history)}
               aria-expanded={history}
+              aria-controls="mentor-history"
             >
               <MessageSquare size={19} aria-hidden="true" />
             </button>
           </div>
           {history && (
-            <aside className="mentor-history" aria-label="Conversation history">
-              <div>
-                <strong>{sample ? "This visit" : "Saved conversations"}</strong>
-                <button
-                  aria-label="Close conversation history"
-                  className="mentor-icon-button"
-                  onClick={() => setHistory(false)}
-                >
-                  <X size={16} />
-                </button>
-              </div>
-              <p>
-                Current conversation ·{" "}
-                {mentor.messages.filter((m) => m.role === "user").length}{" "}
-                messages
-              </p>
-              {sample ? (
-                <p className="mentor-small mentor-muted">
-                  Preview history is temporary. Starting over clears this
-                  conversation, but keeps your accepted path.
-                </p>
-              ) : (
-                <>
-                  {saved.conversations.map((conversation) => (
-                    <button
-                      key={conversation.id}
-                      className="mentor-history-entry"
-                      aria-current={
-                        saved.conversationId === conversation.id
-                          ? "true"
-                          : undefined
-                      }
-                      onClick={() => {
-                        void saved.openConversation(conversation.id);
-                        setHistory(false);
-                      }}
-                    >
-                      {conversation.title}
-                    </button>
-                  ))}
-                  {saved.conversationCursor && (
-                    <button
-                      className="mentor-button"
-                      onClick={() => void saved.loadMoreConversations()}
-                    >
-                      Load more conversations
-                    </button>
-                  )}
-                </>
-              )}
-              <button
-                className="mentor-button"
-                onClick={() => {
-                  mentor.clearConversation();
-                  setHistory(false);
-                }}
-              >
-                Start a new conversation
-              </button>
-            </aside>
+            <MentorHistoryPanel
+              sample={sample}
+              count={mentor.messages.filter((m) => m.role === "user").length}
+              conversations={sample ? [] : saved.conversations}
+              activeId={sample ? null : saved.conversationId}
+              hasMore={!sample && Boolean(saved.conversationCursor)}
+              onOpen={(id) => {
+                void saved.openConversation(id);
+                setHistory(false);
+              }}
+              onDelete={saved.deleteConversation}
+              onMore={() => void saved.loadMoreConversations()}
+              onNew={() => {
+                mentor.clearConversation();
+                setHistory(false);
+              }}
+              onClose={() => {
+                setHistory(false);
+                historyToggle.current?.focus();
+              }}
+            />
           )}
           <div
             className="mentor-messages"
@@ -265,7 +236,7 @@ export default function MentorWorkspace({
                   more manageable.
                 </p>
                 <div className="mentor-suggestions">
-                  <button onClick={createPlan}>
+                  <button onClick={createPlan} disabled={requestBlocked}>
                     Build my four-week plan
                     <ArrowRight size={16} aria-hidden="true" />
                   </button>
@@ -274,7 +245,11 @@ export default function MentorWorkspace({
                     "Make this easier",
                     "I already know the basics",
                   ].map((text) => (
-                    <button key={text} onClick={() => mentor.send(text)}>
+                    <button
+                      key={text}
+                      disabled={requestBlocked}
+                      onClick={() => mentor.send(text)}
+                    >
                       {text}
                       <ArrowRight size={16} aria-hidden="true" />
                     </button>
@@ -290,12 +265,18 @@ export default function MentorWorkspace({
                   <p className="mentor-message-author">
                     {message.role === "user" ? "You" : "Pathway mentor"}
                   </p>
-                  <p>
-                    {message.text ||
-                      (mentor.busy === "plan"
+                  {message.text ? (
+                    <MentorMarkdown
+                      text={message.text}
+                      allowedSources={sample ? [] : saved.pathMetadata?.sources}
+                    />
+                  ) : (
+                    <p>
+                      {mentor.busy === "plan"
                         ? "Preparing your draft…"
-                        : "Thinking about your next step…")}
-                  </p>
+                        : "Thinking about your next step…"}
+                    </p>
+                  )}
                   {message.partial && (
                     <span className="mentor-small">
                       Stopped · partial response
@@ -306,6 +287,15 @@ export default function MentorWorkspace({
             )}
           </div>
           <div className="mentor-chat-bottom">
+            {!sample && (
+              <MentorQuota
+                enabled={saved.generationEnabled}
+                preview={saved.previewEnabled}
+                {...saved.quota}
+                busy={Boolean(mentor.busy)}
+                onRefresh={saved.reload}
+              />
+            )}
             <p className="mentor-status" role="status">
               {mentor.notice}
             </p>
@@ -326,11 +316,13 @@ export default function MentorWorkspace({
             {mentor.error && (
               <div className="mentor-error" role="alert">
                 <p>{mentor.error}</p>
-                {mentor.scenario !== "quota" && (
-                  <button className="mentor-button" onClick={mentor.retry}>
-                    Retry request
-                  </button>
-                )}
+                {mentor.canRetry &&
+                  !requestBlocked &&
+                  mentor.scenario !== "quota" && (
+                    <button className="mentor-button" onClick={mentor.retry}>
+                      Retry request
+                    </button>
+                  )}
               </div>
             )}
             <form onSubmit={submit} className="mentor-composer">
@@ -345,7 +337,7 @@ export default function MentorWorkspace({
                 maxLength={4000}
                 onChange={(e) => setDraft(e.target.value)}
                 placeholder="What would you like to work on?"
-                disabled={mentor.scenario === "quota"}
+                disabled={requestBlocked || mentor.scenario === "quota"}
               />
               <div>
                 <span className="mentor-small mentor-muted">
@@ -363,7 +355,11 @@ export default function MentorWorkspace({
                 ) : (
                   <button
                     className="mentor-button mentor-primary"
-                    disabled={!draft.trim() || mentor.scenario === "quota"}
+                    disabled={
+                      !draft.trim() ||
+                      requestBlocked ||
+                      mentor.scenario === "quota"
+                    }
                     type="submit"
                   >
                     <Send size={16} aria-hidden="true" />
@@ -375,6 +371,8 @@ export default function MentorWorkspace({
             <p className="mentor-small mentor-muted mentor-disclaimer">
               {!sample && saved.generationEnabled ? (
                 "Your messages are processed by Cloudflare for an English response and saved in your private history."
+              ) : !sample && !saved.previewEnabled ? (
+                "Your private history and accepted path remain available. AI responses are currently off."
               ) : (
                 <>
                   Example responses · No live AI calls ·{" "}
@@ -393,6 +391,7 @@ export default function MentorWorkspace({
             metadata={sample ? null : saved.pathMetadata}
             done={mentor.done}
             busy={Boolean(mentor.busy)}
+            canGenerate={!requestBlocked}
             onCreate={createPlan}
             onAccept={mentor.accept}
             onDiscard={mentor.discard}

@@ -13,6 +13,7 @@ import {
 afterEach(() => {
   cleanup();
   sessionStorage.clear();
+  vi.unstubAllGlobals();
 });
 function show(status: OwnerState["status"] = "anonymous") {
   const state: OwnerState = {
@@ -78,5 +79,42 @@ describe("mentor entry and session boundary", () => {
     expect(
       screen.getByRole("button", { name: "Find my starting point" })
     ).toBeInTheDocument();
+  });
+  it("clears a stale account session when the private bootstrap rejects it", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(Response.json({}, { status: 401 }))
+    );
+    const state: OwnerState = {
+      session: {
+        role: "client",
+        issuedAt: new Date().toISOString(),
+        expiresAt: new Date(Date.now() + 60_000).toISOString(),
+        profile: {
+          username: "learner",
+          displayName: "Learner",
+          timeZone: "UTC",
+          theme: "system",
+          reportDays: 30,
+        },
+      },
+      status: "authenticated",
+      error: "",
+      refresh: vi.fn(),
+      logout: vi.fn(),
+      clear: vi.fn(),
+    };
+    render(
+      <MemoryRouter>
+        <OwnerContext.Provider value={state}>
+          <MentorPage />
+        </OwnerContext.Provider>
+      </MemoryRouter>
+    );
+    expect(
+      await screen.findByText(/Your account session ended/)
+    ).toBeInTheDocument();
+    expect(state.clear).toHaveBeenCalledOnce();
+    expect(screen.queryByRole("textbox", { name: /message/i })).toBeNull();
   });
 });

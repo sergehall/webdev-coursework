@@ -16,6 +16,8 @@ import OwnerPage from "./OwnerPage";
 import { OwnerContext, type OwnerState } from "./owner-context";
 import type { MfaStatus } from "./mfa-api";
 
+import { rememberMentorReturn } from "@/features/mentor/mentor-preview";
+
 vi.mock("qrcode", () => ({
   default: {
     toDataURL: vi.fn().mockResolvedValue("data:image/png;base64,dGVzdA=="),
@@ -84,6 +86,7 @@ afterEach(() => {
   vi.useRealTimers();
   vi.unstubAllGlobals();
   vi.clearAllMocks();
+  sessionStorage.clear();
 });
 describe("Two-factor account flows", () => {
   it("adapts the security windows to actual providers and MFA data", async () => {
@@ -365,6 +368,37 @@ describe("Two-factor account flows", () => {
     expect(JSON.parse(fetcher.mock.calls[2][1].body)).toEqual({
       code: "AAAAA-BBBBB-CCCCC-DDDDD",
     });
+  });
+  it("returns to mentor after MFA for a mentor sign-in", async () => {
+    rememberMentorReturn();
+    vi.stubGlobal(
+      "fetch",
+      vi
+        .fn()
+        .mockResolvedValueOnce(
+          response({ expiresAt: new Date(Date.now() + 300000).toISOString() })
+        )
+        .mockResolvedValueOnce(response({ authenticated: true }))
+    );
+    const state = context(false);
+    show(
+      <Routes>
+        <Route path="/account/mfa" element={<MfaChallengePage />} />
+        <Route
+          path="/web-developer-path/mentor"
+          element={<p>Mentor ready</p>}
+        />
+      </Routes>,
+      "/account/mfa",
+      state
+    );
+    await screen.findByText(/Verification expires in/);
+    fireEvent.change(screen.getByLabelText("Authenticator code"), {
+      target: { value: "123456" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Finish sign-in" }));
+    expect(await screen.findByText("Mentor ready")).toBeInTheDocument();
+    expect(state.refresh).toHaveBeenCalledOnce();
   });
   it("ends an expired challenge without allowing verification", async () => {
     vi.stubGlobal(
