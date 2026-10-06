@@ -13,7 +13,12 @@ import "./index.css";
 // Validate environment variables at runtime startup so misconfigured
 // deployments fail immediately with a clear message rather than producing
 // cryptic network errors later.
-const envResult = envSchema.safeParse(import.meta.env);
+const envResult = envSchema.safeParse({
+  VITE_ENVIRONMENT: import.meta.env.VITE_ENVIRONMENT,
+  VITE_API_URL: import.meta.env.VITE_API_URL,
+  VITE_OWNER_API_URL: import.meta.env.VITE_OWNER_API_URL,
+  VITE_SENTRY_DSN: import.meta.env.VITE_SENTRY_DSN,
+});
 if (!envResult.success) {
   const formatted = envResult.error.issues
     .map((i) => `  • ${i.path.join(".")}: ${i.message}`)
