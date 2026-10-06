@@ -43,6 +43,8 @@ const db = new DataSource({
       .AddMentorGenerations1791248400000,
     require("../dist/db/migrations/2026/10/1791252000000-AddMentorPlanGeneration")
       .AddMentorPlanGeneration1791252000000,
+    require("../dist/db/migrations/2026/10/1791255600000-AddMentorGenerationPause")
+      .AddMentorGenerationPause1791255600000,
   ],
 });
 (async () => {

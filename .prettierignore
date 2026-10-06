@@ -19,6 +19,7 @@
 **/tmp/**
 **/*.tsbuildinfo
 **/*.log
+backend/src/mentor/knowledge/catalog.manifest.json
 
 # Preserve supplied course materials and copied assets verbatim.
 **/public/course-materials/**

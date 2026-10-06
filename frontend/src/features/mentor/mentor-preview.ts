@@ -1,6 +1,7 @@
-// P1 is a development-only, in-memory prototype. No provider credentials or API.
+// Production includes the route only for a separately enabled closed beta.
 export const MENTOR_PATH = "/web-developer-path/mentor";
-export const mentorPreviewEnabled = import.meta.env.DEV;
+export const mentorPreviewEnabled =
+  import.meta.env.DEV || import.meta.env.VITE_AI_MENTOR_ENABLED === "true";
 const returnKey = "mentor-preview-return";
 
 export function rememberMentorReturn() {

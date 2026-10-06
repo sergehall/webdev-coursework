@@ -11,6 +11,7 @@ import { AddAccountProviders1790924400000 } from "../../db/migrations/2026/10/17
 import { AddMentorWorkspace1791244800000 } from "../../db/migrations/2026/10/1791244800000-AddMentorWorkspace";
 import { AddMentorGenerations1791248400000 } from "../../db/migrations/2026/10/1791248400000-AddMentorGenerations";
 import { AddMentorPlanGeneration1791252000000 } from "../../db/migrations/2026/10/1791252000000-AddMentorPlanGeneration";
+import { AddMentorGenerationPause1791255600000 } from "../../db/migrations/2026/10/1791255600000-AddMentorGenerationPause";
 import { MentorProfileStore } from "../profile/mentor-profile.store";
 import { MentorConversationStore } from "../conversation/mentor-conversation.store";
 import { MentorPathwayStore } from "./mentor-pathway.store";
@@ -56,6 +57,7 @@ integration("mentor plan generation in disposable PostgreSQL", () => {
         AddMentorWorkspace1791244800000,
         AddMentorGenerations1791248400000,
         AddMentorPlanGeneration1791252000000,
+        AddMentorGenerationPause1791255600000,
       ],
     });
     await db.initialize();

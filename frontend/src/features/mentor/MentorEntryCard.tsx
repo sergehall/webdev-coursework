@@ -4,7 +4,8 @@ import { Link } from "react-router-dom";
 import { MENTOR_PATH, mentorPreviewEnabled } from "./mentor-preview";
 
 export default function MentorEntryCard() {
-  if (!mentorPreviewEnabled) return null;
+  // Closed-beta testers receive a direct route; the public entry opens in P9.
+  if (!mentorPreviewEnabled || !import.meta.env.DEV) return null;
   return (
     <section
       aria-labelledby="mentor-entry-title"

@@ -113,12 +113,23 @@ export async function sendGeneration(
     );
   }
   if (!response.ok) {
+    if (response.status === 503) {
+      const error = await mentorResponseError(response, {
+        503: "The mentor model is unavailable. Try again later.",
+      });
+      if (error.code === "GENERATION_PAUSED")
+        throw new MentorApiError(
+          503,
+          "AI responses are paused while the daily budget is reviewed. Your saved work is available.",
+          error.code
+        );
+      throw error;
+    }
     const messages: Record<number, string> = {
       401: "Your session ended. Sign in again.",
       403: "This account cannot use mentor generation.",
       409: "A generation is already active, or this request ID was used for different content.",
       429: "The mentor limit is reached. Try again after it resets.",
-      503: "The mentor model is unavailable. Try again later.",
     };
     throw await mentorResponseError(response, messages);
   }

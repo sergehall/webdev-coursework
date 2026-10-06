@@ -1,5 +1,30 @@
 # Mentor operations (private beta)
 
+## Closed-beta release order
+
+Keep `AI_MENTOR_ENABLED` and `AI_GENERATION_ENABLED` unset during the backend
+release. The account release hook runs only the allowlisted account and Mentor
+migrations. Verify that `AddMentorGenerationPause1791255600000` was applied and
+that no Mentor migration is pending before enabling the workspace.
+
+Set `AI_MENTOR_BETA_ACCOUNT_IDS` to the selected production account UUIDs,
+`AI_PROVIDER_MODE=cloudflare`, and `AI_MODEL=@cf/openai/gpt-oss-20b`. The
+backend requires both flags to be `true` for generation; every Mentor API route
+also requires `AI_MENTOR_ENABLED=true` and an allowlisted signed-in account in
+production. Enable the frontend route with `VITE_AI_MENTOR_ENABLED=true` in its
+production build and share its direct URL only with beta testers. The public
+entry card stays hidden until the separate public launch.
+
+Before enabling generation, inspect Cloudflare's current account-wide Workers
+AI usage, Workers plan, token status, and other workloads. Confirm the SMTP
+variables are present without printing their values. Start with one account and
+one real request. Check API `Cache-Control: no-store`, cookies and origin
+behavior, SSE completion and Stop, latency, terminal state, and the budget
+ledger against Cloudflare usage. If quota is exhausted, verify persistent mute,
+saved-work reads, one outbox event, and receipt of the owner email. Set
+`AI_GENERATION_ENABLED=false` if results are unexpected; leave the workspace
+available for saved work while investigating.
+
 The backend runs `MentorMaintenanceService` at startup and hourly only when `AI_MENTOR_ENABLED=true`. It reaps expired generation leases, then uses a PostgreSQL transaction advisory lock so only one instance performs retention at a time. Each run deletes at most 500 rows per category. Inactive conversations expire after 90 days; active generations protect their conversations. Unaccepted/discarded proposals and terminal generation metadata expire after 30 days. Old minute/day budget buckets are pruned. The service logs counts, never content or account identifiers.
 
 ## Read-only daily report
@@ -32,3 +57,30 @@ The first query measures total request duration, not time to first text. `accoun
 ## Incident and rollback
 
 If error rate, latency, or charged usage rises unexpectedly, set `AI_GENERATION_ENABLED=false` in the active backend environment and verify that new generation is denied while saved plans/history remain readable. Existing in-flight requests should be allowed to settle or be stopped; monitor terminal generation states and the next maintenance run. Keep `AI_MENTOR_ENABLED=true` while investigating so account access and retention continue. Restore generation only after checking the provider, database health, daily budget, and a limited real request. Backend and frontend feature flags are independent; hide the frontend entry only when rolling back the UI.
+
+## Automatic free-allocation pause and owner email
+
+The app protects itself at 8,000 reserved/accounted Neurons per UTC day, before Cloudflare's account-wide 10,000 free Neurons. A denied request at this boundary persists `webdev_ai_generation_control.muted_at` and queues one `webdev_ai_budget_alerts` row. A Cloudflare HTTP/SSE error with code `3036` does the same even if the app ledger is below 8,000; ordinary `429` and `3040` capacity responses do not. Chat and plan creation stop on every dyno. Saved work stays readable. The pause persists across a dyno restart and UTC midnight.
+
+The alert worker sends the dedicated HTML/plain-text template to `serge.hall.dev@gmail.com` using the existing SMTP environment and stable Message-ID. It retries pending rows with backoff after a transient failure. If SMTP is absent, the pause remains active and the alert stays pending; configure SMTP and restart the backend to deliver it. Inspect `status`, `attempts`, and `next_attempt_at` in `webdev_ai_budget_alerts` without exposing message bodies or credentials. A process crash after SMTP accepted a message but before marking it sent can produce a duplicate delivery with the same Message-ID; the outbox guarantees one logical alert per pause transition, not physical exactly-once SMTP delivery.
+
+The 8,000 limit only counts this Mentor app. Other Workers AI uses on the same Cloudflare account can spend the remaining allocation. On a Workers Paid account, usage above 10,000 is billed, so verify the actual account plan and all workloads before enabling a broader beta. The email is informational and cannot be the spending control.
+
+To resume, first inspect Cloudflare usage/billing and decide that new calls are acceptable. Run the following transaction only against the intended database as an authorized operator; record your operator ID in place of `operator-name`. Do not expose a public unmute endpoint:
+
+```sql
+BEGIN;
+SELECT pg_advisory_xact_lock(1791248400);
+WITH resumed AS (
+  UPDATE webdev_ai_generation_control
+  SET muted_at=NULL, reason=NULL
+  WHERE id=1 AND muted_at IS NOT NULL
+  RETURNING id
+)
+INSERT INTO webdev_ai_control_audit(id,action,reason,actor)
+SELECT gen_random_uuid(),'resume','owner_reviewed','operator-name'
+FROM resumed;
+COMMIT;
+```
+
+An unmute before the same day's protective limit is reset will pause again on the next new request. The alert is sent once per subsequent pause transition. Keep `AI_GENERATION_ENABLED=false` until an intentional reopen if a manual environment-level stop is also in place.

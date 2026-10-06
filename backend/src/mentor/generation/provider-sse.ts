@@ -25,6 +25,7 @@ export function parseProviderEvent(data: string): ProviderUpdate[] {
   }
   if (!payload || typeof payload !== "object") return [];
   const event = payload as Record<string, unknown>;
+  if (cloudflareQuotaCode(event)) throw new CloudflareQuotaExhaustedError();
   if (event.success === false || event.error || event.type === "error")
     throw new Error("Provider reported failure");
   const choices = Array.isArray(event.choices) ? event.choices : [];
@@ -101,3 +102,7 @@ export async function* readProviderSse(
     reader.releaseLock();
   }
 }
+import {
+  CloudflareQuotaExhaustedError,
+  cloudflareQuotaCode,
+} from "./provider-errors";

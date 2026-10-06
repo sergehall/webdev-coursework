@@ -1,5 +1,6 @@
 import { CloudflareProvider } from "./cloudflare-provider";
 import { PLAN_OUTPUT_TOKENS } from "./generation-config";
+import { CloudflareQuotaExhaustedError } from "./provider-errors";
 
 describe("structured Cloudflare plan response", () => {
   const original = {
@@ -99,6 +100,35 @@ describe("structured Cloudflare plan response", () => {
       ).rejects.toThrow(`Provider HTTP ${status}`);
     }
   );
+
+  it("recognizes only Cloudflare's daily-allocation code as a global pause signal", async () => {
+    const fetcher = jest.spyOn(global, "fetch");
+    fetcher.mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({ errors: [{ code: 3036, message: "private" }] }),
+        {
+          status: 429,
+        }
+      )
+    );
+    await expect(
+      new CloudflareProvider().completePlan(
+        [{ role: "user", content: "Plan" }],
+        new AbortController().signal
+      )
+    ).rejects.toBeInstanceOf(CloudflareQuotaExhaustedError);
+    fetcher.mockResolvedValueOnce(
+      new Response(JSON.stringify({ errors: [{ code: 3040 }] }), {
+        status: 429,
+      })
+    );
+    await expect(
+      new CloudflareProvider().completePlan(
+        [{ role: "user", content: "Plan" }],
+        new AbortController().signal
+      )
+    ).rejects.toThrow("Provider HTTP 429");
+  });
 
   it("passes cancellation to the upstream fetch", async () => {
     const fetcher = jest

@@ -143,27 +143,38 @@ function MentorPreviewPage() {
                 Sign in to build my path
                 <ArrowRight size={16} aria-hidden="true" />
               </Link>
-              <Link
-                className="mentor-button"
-                to="/account/sign-up"
-                onClick={rememberMentorReturn}
-              >
-                Create an account
-              </Link>
+              {import.meta.env.DEV && (
+                <Link
+                  className="mentor-button"
+                  to="/account/sign-up"
+                  onClick={rememberMentorReturn}
+                >
+                  Create an account
+                </Link>
+              )}
             </div>
-            <button
-              className="mentor-sample-link"
-              onClick={() => {
-                setExpired(false);
-                setSample(true);
-              }}
-            >
-              Explore with an example profile
-              <ArrowRight size={16} aria-hidden="true" />
-            </button>
-            <p className="mentor-muted mentor-small">
-              Example access is available only in this development preview.
-            </p>
+            {!import.meta.env.DEV && (
+              <p className="mentor-muted mentor-small">
+                Private beta access requires an invited account.
+              </p>
+            )}
+            {import.meta.env.DEV && (
+              <>
+                <button
+                  className="mentor-sample-link"
+                  onClick={() => {
+                    setExpired(false);
+                    setSample(true);
+                  }}
+                >
+                  Explore with an example profile
+                  <ArrowRight size={16} aria-hidden="true" />
+                </button>
+                <p className="mentor-muted mentor-small">
+                  Example access is available only in this development preview.
+                </p>
+              </>
+            )}
           </div>
           <div
             className="mentor-welcome-path"

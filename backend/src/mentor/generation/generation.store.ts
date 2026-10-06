@@ -3,12 +3,19 @@ import {
   HttpException,
   Injectable,
   NotFoundException,
+  ServiceUnavailableException,
 } from "@nestjs/common";
 import { InjectDataSource } from "@nestjs/typeorm";
 import { randomUUID } from "crypto";
 import { DataSource, type QueryRunner } from "typeorm";
 import { returnedRows } from "../mentor-sql";
 import { MODEL, RESERVATION_NEURONS } from "./generation-config";
+import {
+  GLOBAL_DAILY_NEURON_LIMIT,
+  generationPaused,
+  pauseAfterCloudflareQuota,
+  pauseGeneration,
+} from "./generation-safety";
 
 export type GenerationRow = {
   id: string;
@@ -71,6 +78,7 @@ export class GenerationStore {
     );
     const bucket = (scope: string) => rows.find((row) => row.scope === scope);
     const global = bucket("global-day");
+    const paused = await generationPaused(this.db);
     return {
       dailyRemaining: Math.max(
         0,
@@ -82,20 +90,30 @@ export class GenerationStore {
       ),
       globalNeuronsRemaining: Math.max(
         0,
-        8000 - (global?.reserved_neurons ?? 0) - (global?.consumed_neurons ?? 0)
+        paused
+          ? 0
+          : GLOBAL_DAILY_NEURON_LIMIT -
+              (global?.reserved_neurons ?? 0) -
+              (global?.consumed_neurons ?? 0)
       ),
+      generationPaused: paused,
       resetAt: new Date(new Date(day).getTime() + 86_400_000).toISOString(),
     };
   }
 
   private async settle(q: QueryRunner, row: GenerationRow, bill: boolean) {
-    await q.query(
-      `UPDATE webdev_ai_budget_buckets
+    const [bucket] = returnedRows<{ total: number }>(
+      await q.query(
+        `UPDATE webdev_ai_budget_buckets
        SET reserved_neurons=reserved_neurons-$2,
            consumed_neurons=consumed_neurons+$3
-       WHERE scope='global-day' AND subject_key='all' AND period_start=$1`,
-      [row.budget_day, RESERVATION_NEURONS, bill ? RESERVATION_NEURONS : 0]
+       WHERE scope='global-day' AND subject_key='all' AND period_start=$1
+       RETURNING reserved_neurons+consumed_neurons AS total`,
+        [row.budget_day, RESERVATION_NEURONS, bill ? RESERVATION_NEURONS : 0]
+      )
     );
+    if (bucket?.total >= GLOBAL_DAILY_NEURON_LIMIT)
+      await pauseGeneration(q, "app_budget", row.budget_day, bucket.total);
   }
 
   private async expire(q: QueryRunner) {
@@ -138,6 +156,8 @@ export class GenerationStore {
         await q.commitTransaction();
         return { row: existing[0], duplicate: true, remaining: 0 };
       }
+      if (await generationPaused(q))
+        throw new ServiceUnavailableException({ code: "GENERATION_PAUSED" });
       const owners: { id: string }[] = await q.query(
         `SELECT id FROM webdev_mentor_conversations WHERE id=$1 AND account_id=$2 AND status='active' FOR UPDATE`,
         [conversationId, accountId]
@@ -195,12 +215,17 @@ export class GenerationStore {
         buckets[0].reserved_neurons +
           buckets[0].consumed_neurons +
           RESERVATION_NEURONS >
-        8000
-      )
-        limit(
-          "DAILY_BUDGET_REACHED",
-          Math.ceil((new Date(day).getTime() + 86400000 - now.getTime()) / 1000)
+        GLOBAL_DAILY_NEURON_LIMIT
+      ) {
+        await pauseGeneration(
+          q,
+          "app_budget",
+          day,
+          buckets[0].reserved_neurons + buckets[0].consumed_neurons
         );
+        await q.commitTransaction();
+        throw new ServiceUnavailableException({ code: "GENERATION_PAUSED" });
+      }
       const userMessageId = randomUUID();
       const [{ next }]: { next: number }[] = await q.query(
         `SELECT coalesce(max(sequence),0)+1 AS next FROM webdev_mentor_messages WHERE conversation_id=$1`,
@@ -251,7 +276,7 @@ export class GenerationStore {
         remaining: 15 - buckets[1].request_count - 1,
       };
     } catch (error) {
-      await q.rollbackTransaction();
+      if (q.isTransactionActive) await q.rollbackTransaction();
       throw error;
     } finally {
       await q.release();
@@ -288,11 +313,18 @@ export class GenerationStore {
     const rows = returnedRows<GenerationRow>(
       await this.db.query(
         `UPDATE webdev_mentor_generations SET state='dispatched',dispatched_at=now(),updated_at=now()
-       WHERE id=$1 AND account_id=$2 AND state='reserved' RETURNING id`,
+       WHERE id=$1 AND account_id=$2 AND state='reserved'
+         AND NOT EXISTS (SELECT 1 FROM webdev_ai_generation_control
+                         WHERE id=1 AND muted_at IS NOT NULL)
+       RETURNING id`,
         [id, accountId]
       )
     );
     return rows.length > 0;
+  }
+
+  async pauseForCloudflareQuota(): Promise<void> {
+    await pauseAfterCloudflareQuota(this.db);
   }
 
   async markStreaming(accountId: string, id: string) {

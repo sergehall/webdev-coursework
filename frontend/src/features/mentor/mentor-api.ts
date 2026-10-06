@@ -74,9 +74,17 @@ export async function mentorResponseError(
     Number.isInteger(body?.retryAfterSeconds) && body.retryAfterSeconds > 0
       ? body.retryAfterSeconds
       : null;
+  const betaMessage =
+    code === "BETA_ACCESS_REQUIRED"
+      ? "The mentor beta is available to invited accounts only."
+      : code === "MENTOR_DISABLED"
+        ? "The mentor workspace is not enabled yet."
+        : null;
   return new MentorApiError(
     response.status,
-    messages[response.status] ?? "The request could not be completed.",
+    betaMessage ??
+      messages[response.status] ??
+      "The request could not be completed.",
     code,
     retryAfterSeconds
   );

@@ -2,6 +2,8 @@
 
 import { lazy } from "react";
 
+import { mentorPreviewEnabled } from "../features/mentor/mentor-preview";
+
 // Main pages
 export const Home = lazy(() => import("../pages/HomePage"));
 export const OwnerPage = lazy(() => import("../features/account/OwnerPage"));
@@ -32,6 +34,6 @@ export const WebDeveloperPathPage = lazy(
   () => import("../pages/WebDeveloperPathPage")
 );
 
-export const MentorPage = import.meta.env.DEV
+export const MentorPage = mentorPreviewEnabled
   ? lazy(() => import("../features/mentor/MentorPage"))
   : () => null;

@@ -433,10 +433,33 @@ export function buildCatalog(root: string): CatalogManifest {
   return manifest;
 }
 
+function serializeManifest(manifest: CatalogManifest): string {
+  const entries = manifest.entries
+    .map((entry) => `    ${JSON.stringify(entry)}`)
+    .join(",\n");
+  const hashes = Object.entries(manifest.inputHashes)
+    .map(
+      ([path, hash]) => `    ${JSON.stringify(path)}: ${JSON.stringify(hash)}`
+    )
+    .join(",\n");
+  return `{
+  "schemaVersion": ${manifest.schemaVersion},
+  "entries": [
+${entries}
+  ],
+  "skills": ${JSON.stringify(manifest.skills)},
+  "coverage": ${JSON.stringify(manifest.coverage)},
+  "inputHashes": {
+${hashes}
+  },
+  "version": ${JSON.stringify(manifest.version)}
+}\n`;
+}
+
 if (require.main === module) {
   const root = resolve(__dirname, "../../..");
   const manifest = buildCatalog(root);
-  const serialized = JSON.stringify(manifest, null, 2) + "\n";
+  const serialized = serializeManifest(manifest);
   const output = resolve(root, outputPath);
   if (process.argv.includes("--write")) writeFileSync(output, serialized);
   else

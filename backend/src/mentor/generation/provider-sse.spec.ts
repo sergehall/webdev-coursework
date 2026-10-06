@@ -1,4 +1,5 @@
 import { parseProviderEvent, readProviderSse } from "./provider-sse";
+import { CloudflareQuotaExhaustedError } from "./provider-errors";
 
 function chunks(parts: string[]): ReadableStream<Uint8Array> {
   const bytes = new TextEncoder().encode(parts.join(""));
@@ -36,5 +37,13 @@ describe("Cloudflare SSE boundary", () => {
         void _;
     };
     await expect(consume()).rejects.toThrow();
+  });
+  it("recognizes quota exhaustion inside a streamed error event", () => {
+    expect(() =>
+      parseProviderEvent('{"success":false,"errors":[{"code":3036}]}')
+    ).toThrow(CloudflareQuotaExhaustedError);
+    expect(() =>
+      parseProviderEvent('{"success":false,"errors":[{"code":3040}]}')
+    ).toThrow("Provider reported failure");
   });
 });

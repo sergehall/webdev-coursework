@@ -7,6 +7,7 @@ import { GenerationStore } from "./generation.store";
 import { PlanPrompt } from "../pathway/plan-prompt";
 import { PlanGenerationStore } from "../pathway/plan-generation.store";
 import { validatePlanProposal } from "../pathway/plan-proposal";
+import { CloudflareQuotaExhaustedError } from "./provider-errors";
 
 export type AppEvent =
   | { event: "accepted"; generationId: string; userMessageId: string | null }
@@ -157,9 +158,12 @@ export class GenerationService {
         };
       }
     } catch (error) {
+      const quotaExhausted = error instanceof CloudflareQuotaExhaustedError;
+      if (quotaExhausted) await this.store.pauseForCloudflareQuota();
       const reason = error instanceof Error ? error.message : "";
-      const code =
-        timedOut || reason === "AI_TIMEOUT"
+      const code = quotaExhausted
+        ? "GENERATION_PAUSED"
+        : timedOut || reason === "AI_TIMEOUT"
           ? "AI_TIMEOUT"
           : [
                 "INVALID_PLAN",
@@ -180,7 +184,13 @@ export class GenerationService {
       );
       if (row.state === "cancelled")
         yield { event: "cancelled", partial: false };
-      else yield { event: "failed", code, partial: false, canRetry: true };
+      else
+        yield {
+          event: "failed",
+          code,
+          partial: false,
+          canRetry: !quotaExhausted,
+        };
     } finally {
       clearTimeout(deadline);
       clearInterval(cancelPoll);
@@ -302,8 +312,14 @@ export class GenerationService {
           remaining,
         };
       }
-    } catch {
-      const code = deadlineReached ? "AI_TIMEOUT" : "AI_UNAVAILABLE";
+    } catch (error) {
+      const quotaExhausted = error instanceof CloudflareQuotaExhaustedError;
+      if (quotaExhausted) await this.store.pauseForCloudflareQuota();
+      const code = quotaExhausted
+        ? "GENERATION_PAUSED"
+        : deadlineReached
+          ? "AI_TIMEOUT"
+          : "AI_UNAVAILABLE";
       const row = await this.store.finish(
         accountId,
         id,
@@ -315,7 +331,12 @@ export class GenerationService {
       if (row.state === "cancelled")
         yield { event: "cancelled", partial: Boolean(text) };
       else
-        yield { event: "failed", code, partial: Boolean(text), canRetry: true };
+        yield {
+          event: "failed",
+          code,
+          partial: Boolean(text),
+          canRetry: !quotaExhausted,
+        };
     } finally {
       clearTimeout(deadline);
       clearInterval(cancelPoll);

@@ -129,6 +129,13 @@ export function useMentorSaved(
   const fail = (reason: unknown) => {
     if (reason instanceof MentorApiError && reason.status === 401)
       expired.current?.();
+    if (
+      reason instanceof MentorApiError &&
+      reason.code === "GENERATION_PAUSED"
+    ) {
+      setGenerationEnabled(false);
+      lastRequest.current = null;
+    }
     quota.failed(reason);
     setError(reason instanceof Error ? reason.message : "The request failed.");
     setNotice("");
@@ -305,6 +312,11 @@ export function useMentorSaved(
             controller.signal,
             (event) => {
               if (sequence.current !== request) return;
+              if (
+                event.event === "failed" &&
+                event.code === "GENERATION_PAUSED"
+              )
+                setGenerationEnabled(false);
               applySavedStreamEvent(event, {
                 kind,
                 input,

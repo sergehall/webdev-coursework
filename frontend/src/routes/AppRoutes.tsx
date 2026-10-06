@@ -7,6 +7,7 @@ import * as Screens from "./LazyScreens";
 
 import Layout from "@/layout/Layout";
 import AutoAssignmentRouter from "@/routes/AutoAssignmentRouter";
+import { mentorPreviewEnabled } from "@/features/mentor/mentor-preview";
 
 function CourseAssignmentRedirect() {
   const { courseId } = useParams<{ courseId: string }>();
@@ -129,7 +130,7 @@ export default function AppRoutes() {
             </Suspense>
           }
         />
-        {import.meta.env.DEV && (
+        {mentorPreviewEnabled && (
           <Route
             path="/web-developer-path/mentor"
             element={

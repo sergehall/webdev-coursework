@@ -89,10 +89,12 @@ export function applySavedStreamEvent(
         view.setError(
           event.code === "AI_TIMEOUT"
             ? "The response timed out. Your question is saved."
-            : "The response could not be completed. Your question is saved."
+            : event.code === "GENERATION_PAUSED"
+              ? "AI responses are paused while the daily budget is reviewed. Your saved work is available."
+              : "The response could not be completed. Your question is saved."
         );
         setNotice("");
-        view.retryable(true);
+        view.retryable(event.canRetry);
       } else {
         setNotice("Response stopped.");
         view.retryable(false);

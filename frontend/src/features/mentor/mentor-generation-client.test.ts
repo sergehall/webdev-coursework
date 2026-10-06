@@ -1,6 +1,9 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { parseGenerationStream } from "./mentor-generation-client";
+import {
+  parseGenerationStream,
+  sendGeneration,
+} from "./mentor-generation-client";
 
 function splitStream(text: string) {
   const bytes = new TextEncoder().encode(text);
@@ -14,6 +17,7 @@ function splitStream(text: string) {
 }
 
 describe("mentor app SSE parser", () => {
+  afterEach(() => vi.restoreAllMocks());
   it("reassembles split UTF-8, CRLF and multiple frames", async () => {
     const raw = [
       'event: accepted\r\ndata: {"event":"accepted","generationId":"g","userMessageId":"u"}\r\n\r\n',
@@ -40,5 +44,26 @@ describe("mentor app SSE parser", () => {
         void _;
     };
     await expect(read()).rejects.toThrow();
+  });
+  it("shows a durable budget pause without suggesting an immediate retry", async () => {
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response(JSON.stringify({ code: "GENERATION_PAUSED" }), {
+        status: 503,
+        headers: { "Content-Type": "application/json" },
+      })
+    );
+    await expect(
+      sendGeneration(
+        "conversation",
+        "Question",
+        "request",
+        "chat",
+        new AbortController().signal,
+        () => undefined
+      )
+    ).rejects.toMatchObject({
+      code: "GENERATION_PAUSED",
+      message: expect.stringContaining("paused"),
+    });
   });
 });

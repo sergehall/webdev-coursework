@@ -12,6 +12,7 @@ import { GenerationService } from "./generation/generation.service";
 import { PlanPrompt } from "./pathway/plan-prompt";
 import { PlanGenerationStore } from "./pathway/plan-generation.store";
 import { MentorMaintenanceService } from "./maintenance/mentor-maintenance.service";
+import { BudgetAlertMailWorker } from "./alerts/budget-alert-mail";
 
 @Module({
   imports: [AnalyticsModule],
@@ -27,6 +28,7 @@ import { MentorMaintenanceService } from "./maintenance/mentor-maintenance.servi
     PlanPrompt,
     PlanGenerationStore,
     MentorMaintenanceService,
+    BudgetAlertMailWorker,
   ],
 })
 export class MentorModule {}

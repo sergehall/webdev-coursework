@@ -42,7 +42,13 @@ export class MentorErrorFilter implements ExceptionFilter {
     const safeCodes: Record<number, string[]> = {
       409: ["GENERATION_ACTIVE", "REQUEST_ID_CONFLICT"],
       429: ["USER_LIMIT_REACHED", "DAILY_BUDGET_REACHED"],
-      503: ["GENERATION_DISABLED", "AI_UNAVAILABLE"],
+      403: ["BETA_ACCESS_REQUIRED"],
+      503: [
+        "MENTOR_DISABLED",
+        "GENERATION_DISABLED",
+        "GENERATION_PAUSED",
+        "AI_UNAVAILABLE",
+      ],
       504: ["AI_TIMEOUT"],
     };
     const rawCode =
@@ -64,9 +70,15 @@ export class MentorErrorFilter implements ExceptionFilter {
     response.status(publicStatus).json({
       code: explicitCode ?? codes[publicStatus],
       message:
-        explicitCode === "GENERATION_DISABLED"
-          ? "Mentor generation is not enabled."
-          : messages[publicStatus],
+        explicitCode === "BETA_ACCESS_REQUIRED"
+          ? "The mentor beta is available to invited accounts only."
+          : explicitCode === "MENTOR_DISABLED"
+            ? "The mentor workspace is not enabled."
+            : explicitCode === "GENERATION_PAUSED"
+              ? "Mentor generation is temporarily paused. Saved work is still available."
+              : explicitCode === "GENERATION_DISABLED"
+                ? "Mentor generation is not enabled."
+                : messages[publicStatus],
       ...(explicitCode &&
       typeof exceptionBody === "object" &&
       exceptionBody !== null &&

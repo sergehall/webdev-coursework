@@ -7,6 +7,7 @@ import {
 } from "./generation-config";
 import { readProviderSse, type ProviderUpdate } from "./provider-sse";
 import { PLAN_SCHEMA } from "../pathway/plan-proposal";
+import { throwProviderHttpError } from "./provider-errors";
 
 export type PromptMessage = {
   role: "system" | "user" | "assistant";
@@ -72,7 +73,7 @@ export class CloudflareProvider {
         signal: AbortSignal.any([signal, AbortSignal.timeout(DEADLINE_MS)]),
       }
     );
-    if (!response.ok) throw new Error(`Provider HTTP ${response.status}`);
+    if (!response.ok) await throwProviderHttpError(response);
     if (Number(response.headers.get("content-length")) > 65536)
       throw new Error("Provider response too large");
     const body = await response.text();
@@ -142,8 +143,8 @@ export class CloudflareProvider {
       }),
       signal: AbortSignal.any([signal, AbortSignal.timeout(DEADLINE_MS)]),
     });
+    if (!response.ok) await throwProviderHttpError(response);
     if (
-      !response.ok ||
       !response.body ||
       !response.headers.get("content-type")?.includes("text/event-stream")
     )

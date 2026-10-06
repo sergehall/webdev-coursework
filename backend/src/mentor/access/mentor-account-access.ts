@@ -1,4 +1,8 @@
-import { Injectable } from "@nestjs/common";
+import {
+  ForbiddenException,
+  Injectable,
+  ServiceUnavailableException,
+} from "@nestjs/common";
 import type { Request } from "express";
 import { AnalyticsService } from "../../analytics/analytics.service";
 
@@ -16,6 +20,16 @@ export class MentorAccountAccess {
       `mentor.${action}`,
       false
     );
+    if (process.env.NODE_ENV === "production") {
+      if (process.env.AI_MENTOR_ENABLED !== "true")
+        throw new ServiceUnavailableException({ code: "MENTOR_DISABLED" });
+      const betaAccounts = (process.env.AI_MENTOR_BETA_ACCOUNT_IDS ?? "")
+        .split(",")
+        .map((id) => id.trim())
+        .filter(Boolean);
+      if (!betaAccounts.includes(session.accountId))
+        throw new ForbiddenException({ code: "BETA_ACCESS_REQUIRED" });
+    }
     return session.accountId;
   }
 }
