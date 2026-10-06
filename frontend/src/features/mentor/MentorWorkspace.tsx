@@ -262,10 +262,12 @@ export default function MentorWorkspace({
                   more manageable.
                 </p>
                 <div className="mentor-suggestions">
-                  <button onClick={createPlan}>
-                    Build my four-week plan
-                    <ArrowRight size={16} aria-hidden="true" />
-                  </button>
+                  {(sample || !saved.generationEnabled) && (
+                    <button onClick={createPlan}>
+                      Build my four-week plan
+                      <ArrowRight size={16} aria-hidden="true" />
+                    </button>
+                  )}
                   {[
                     "Explain my next step",
                     "Make this easier",
@@ -370,10 +372,16 @@ export default function MentorWorkspace({
               </div>
             </form>
             <p className="mentor-small mentor-muted mentor-disclaimer">
-              Example responses · No live AI calls ·{" "}
-              {sample
-                ? "Changes reset when you leave."
-                : "Your profile, conversation and path are saved to your account."}
+              {!sample && saved.generationEnabled ? (
+                "Your messages are processed by Cloudflare for an English response and saved in your private history."
+              ) : (
+                <>
+                  Example responses · No live AI calls ·{" "}
+                  {sample
+                    ? "Changes reset when you leave."
+                    : "Your profile, conversation and path are saved to your account."}
+                </>
+              )}
             </p>
           </div>
         </div>

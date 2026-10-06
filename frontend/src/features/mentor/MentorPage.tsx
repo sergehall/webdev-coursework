@@ -52,11 +52,13 @@ function MentorPreviewPage() {
         <span aria-current="page">My AI pathway</span>
       </nav>
       <div className="mentor-preview-banner">
-        <span className="mentor-preview-tag">Interactive preview</span>
+        <span className="mentor-preview-tag">
+          {sample ? "Interactive preview" : "Private beta"}
+        </span>
         <span>
           {sample
             ? "Example responses. Changes reset when you leave or reload."
-            : "Example responses. Your signed-in profile, conversations, path and progress are saved."}
+            : "Your signed-in profile, conversations, path and progress are saved. Chat mode is shown below."}
         </span>
       </div>
       {open ? (

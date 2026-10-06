@@ -16,6 +16,7 @@ const codes: Record<number, string> = {
   413: "MESSAGE_TOO_LARGE",
   429: "USER_LIMIT_REACHED",
   503: "STORAGE_UNAVAILABLE",
+  504: "AI_TIMEOUT",
 };
 const messages: Record<number, string> = {
   400: "Check your input and try again.",
@@ -26,6 +27,7 @@ const messages: Record<number, string> = {
   413: "The message is too long.",
   429: "Too many requests. Wait a moment and try again.",
   503: "The mentor workspace is temporarily unavailable.",
+  504: "The mentor response timed out. Try again.",
 };
 @Catch()
 export class MentorErrorFilter implements ExceptionFilter {
@@ -37,12 +39,21 @@ export class MentorErrorFilter implements ExceptionFilter {
     const publicStatus = codes[status] ? status : 503;
     const exceptionBody =
       error instanceof HttpException ? error.getResponse() : null;
-    const explicitCode =
+    const safeCodes: Record<number, string[]> = {
+      409: ["GENERATION_ACTIVE", "REQUEST_ID_CONFLICT"],
+      429: ["USER_LIMIT_REACHED", "DAILY_BUDGET_REACHED"],
+      503: ["GENERATION_DISABLED", "AI_UNAVAILABLE"],
+      504: ["AI_TIMEOUT"],
+    };
+    const rawCode =
       typeof exceptionBody === "object" &&
       exceptionBody !== null &&
-      "code" in exceptionBody &&
-      exceptionBody.code === "GENERATION_DISABLED"
-        ? "GENERATION_DISABLED"
+      "code" in exceptionBody
+        ? exceptionBody.code
+        : null;
+    const explicitCode =
+      typeof rawCode === "string" && safeCodes[status]?.includes(rawCode)
+        ? rawCode
         : null;
     const suppliedId = request.get("x-request-id");
     const requestId =
@@ -52,9 +63,17 @@ export class MentorErrorFilter implements ExceptionFilter {
     response.setHeader("Cache-Control", "no-store, private");
     response.status(publicStatus).json({
       code: explicitCode ?? codes[publicStatus],
-      message: explicitCode
-        ? "Mentor generation is not enabled."
-        : messages[publicStatus],
+      message:
+        explicitCode === "GENERATION_DISABLED"
+          ? "Mentor generation is not enabled."
+          : messages[publicStatus],
+      ...(explicitCode &&
+      typeof exceptionBody === "object" &&
+      exceptionBody !== null &&
+      "retryAfterSeconds" in exceptionBody &&
+      Number.isInteger(exceptionBody.retryAfterSeconds)
+        ? { retryAfterSeconds: exceptionBody.retryAfterSeconds }
+        : {}),
       requestId,
     });
   }

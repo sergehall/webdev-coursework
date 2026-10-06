@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { HttpException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectDataSource } from "@nestjs/typeorm";
 import { randomUUID } from "crypto";
 import { DataSource } from "typeorm";
@@ -22,12 +22,33 @@ export type MessageRow = {
 export class MentorConversationStore {
   constructor(@InjectDataSource() private readonly db: DataSource) {}
   async create(accountId: string, title: string): Promise<ConversationRow> {
-    const rows: ConversationRow[] = await this.db.query(
-      `INSERT INTO webdev_mentor_conversations(id,account_id,title) VALUES($1,$2,$3)
-       RETURNING id,title,updated_at,created_at`,
-      [randomUUID(), accountId, title]
-    );
-    return rows[0];
+    const q = this.db.createQueryRunner();
+    await q.connect();
+    await q.startTransaction();
+    try {
+      await q.query(`SELECT id FROM webdev_accounts WHERE id=$1 FOR UPDATE`, [
+        accountId,
+      ]);
+      const [{ count }]: { count: string }[] = await q.query(
+        `SELECT count(*)::text AS count FROM webdev_mentor_conversations
+         WHERE account_id=$1 AND status='active'`,
+        [accountId]
+      );
+      if (Number(count) >= 10)
+        throw new HttpException({ code: "USER_LIMIT_REACHED" }, 429);
+      const rows: ConversationRow[] = await q.query(
+        `INSERT INTO webdev_mentor_conversations(id,account_id,title) VALUES($1,$2,$3)
+         RETURNING id,title,updated_at,created_at`,
+        [randomUUID(), accountId, title]
+      );
+      await q.commitTransaction();
+      return rows[0];
+    } catch (error) {
+      await q.rollbackTransaction();
+      throw error;
+    } finally {
+      await q.release();
+    }
   }
   async list(accountId: string, limit: number, cursor: string | null) {
     const rows: ConversationRow[] = await this.db.query(
@@ -99,6 +120,12 @@ export class MentorConversationStore {
     }
   }
   async remove(accountId: string, conversationId: string) {
+    await this.db.query(
+      `UPDATE webdev_mentor_generations SET state='cancel_requested',updated_at=now()
+       WHERE account_id=$1 AND conversation_id=$2
+       AND state IN ('reserved','dispatched','streaming')`,
+      [accountId, conversationId]
+    );
     const rows = returnedRows<{ id: string }>(
       await this.db.query(
         `DELETE FROM webdev_mentor_conversations WHERE id=$1 AND account_id=$2 RETURNING id`,

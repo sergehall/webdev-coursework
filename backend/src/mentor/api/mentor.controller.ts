@@ -25,6 +25,8 @@ import { MentorAccountAccess } from "../access/mentor-account-access";
 import { MentorProfileStore } from "../profile/mentor-profile.store";
 import { MentorConversationStore } from "../conversation/mentor-conversation.store";
 import { MentorPathwayStore } from "../pathway/mentor-pathway.store";
+import { generationEnabled } from "../generation/generation-config";
+import { GenerationStore } from "../generation/generation.store";
 import {
   exact,
   integer,
@@ -51,10 +53,11 @@ export class MentorController {
     private readonly access: MentorAccountAccess,
     private readonly profiles: MentorProfileStore,
     private readonly conversations: MentorConversationStore,
-    private readonly paths: MentorPathwayStore
+    private readonly paths: MentorPathwayStore,
+    private readonly generations: GenerationStore
   ) {}
-  private previewOnly() {
-    if (process.env.NODE_ENV === "production")
+  private previewOnly(accountId: string) {
+    if (process.env.NODE_ENV === "production" || generationEnabled(accountId))
       throw new ServiceUnavailableException({
         code: "GENERATION_DISABLED",
         message: "Mentor generation is not enabled",
@@ -72,19 +75,23 @@ export class MentorController {
   @Get("bootstrap")
   async bootstrap(@Req() req: Request) {
     const accountId = await this.access.accountId(req, "bootstrap");
-    const [profile, pathway, conversations, proposal] = await Promise.all([
-      this.profiles.get(accountId),
-      this.paths.current(accountId),
-      this.conversations.list(accountId, 10, null),
-      this.paths.latestProposal(accountId),
-    ]);
+    const [profile, pathway, conversations, proposal, limits] =
+      await Promise.all([
+        this.profiles.get(accountId),
+        this.paths.current(accountId),
+        this.conversations.list(accountId, 10, null),
+        this.paths.latestProposal(accountId),
+        this.generations.limits(accountId),
+      ]);
     return {
       profile,
       pathway,
       proposal,
       conversations: conversations.entries,
-      generationEnabled: false,
-      previewEnabled: process.env.NODE_ENV !== "production",
+      limits,
+      generationEnabled: generationEnabled(accountId),
+      previewEnabled:
+        process.env.NODE_ENV !== "production" && !generationEnabled(accountId),
     };
   }
   @Put("profile")
@@ -129,14 +136,14 @@ export class MentorController {
       cursor === undefined ? null : integer(Number(cursor), 1, 2147483647)
     );
   }
-  @Post("conversations/:id/messages")
+  @Post("conversations/:id/preview-messages")
   async addMessage(
     @Req() req: Request,
     @Param("id") id: string,
     @Body() body: unknown
   ) {
-    this.previewOnly();
     const accountId = await this.access.accountId(req, "message.create", true);
+    this.previewOnly(accountId);
     const input = record(body);
     exact(input, ["content"]);
     return this.conversations.add(
@@ -152,8 +159,8 @@ export class MentorController {
     @Param("id") id: string,
     @Body() body: unknown
   ) {
-    this.previewOnly();
     const accountId = await this.access.accountId(req, "preview.reply", true);
+    this.previewOnly(accountId);
     const input = record(body);
     exact(input, ["content"]);
     return this.conversations.add(
@@ -188,8 +195,8 @@ export class MentorController {
   }
   @Post("proposals")
   async propose(@Req() req: Request, @Body() body: unknown) {
-    this.previewOnly();
     const accountId = await this.access.accountId(req, "proposal.create", true);
+    this.previewOnly(accountId);
     const input = record(body);
     exact(input, ["milestones", "expectedProfileVersion"]);
     return this.paths.propose(

@@ -39,6 +39,8 @@ const db = new DataSource({
       .AddAccountProviders1790924400000,
     require("../dist/db/migrations/2026/10/1791244800000-AddMentorWorkspace")
       .AddMentorWorkspace1791244800000,
+    require("../dist/db/migrations/2026/10/1791248400000-AddMentorGenerations")
+      .AddMentorGenerations1791248400000,
   ],
 });
 (async () => {

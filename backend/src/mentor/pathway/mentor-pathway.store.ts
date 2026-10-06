@@ -228,6 +228,11 @@ export class MentorPathwayStore {
   async deleteWorkspace(accountId: string) {
     await this.transaction(async (runner) => {
       await runner.query(
+        `UPDATE webdev_mentor_generations SET state='cancel_requested',updated_at=now()
+         WHERE account_id=$1 AND state IN ('reserved','dispatched','streaming')`,
+        [accountId]
+      );
+      await runner.query(
         `DELETE FROM webdev_mentor_conversations WHERE account_id=$1`,
         [accountId]
       );

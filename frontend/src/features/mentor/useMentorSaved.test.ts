@@ -99,4 +99,125 @@ describe("saved mentor workspace", () => {
       body: { status: "done", expectedVersion: 7, expectedPathVersion: 3 },
     });
   });
+
+  it("uses the private SSE endpoint for an enabled live chat", async () => {
+    const calls: string[] = [];
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (url: string, options: RequestInit) => {
+        const path = new URL(url, "http://localhost").pathname;
+        calls.push(`${options.method ?? "GET"} ${path}`);
+        if (path.endsWith("/bootstrap"))
+          return Response.json({
+            profile: {
+              goal: "frontend",
+              level: "beginner",
+              hours: 4,
+              outcome: "A site",
+              version: 1,
+            },
+            pathway: null,
+            proposal: null,
+            conversations: [],
+            previewEnabled: true,
+            generationEnabled: true,
+          });
+        if (path.endsWith("/conversations") && options.method === "POST")
+          return Response.json({
+            id: conversationId,
+            title: "CSS",
+            updated_at: "2026-10-05T00:00:00Z",
+          });
+        if (
+          path.endsWith(`/conversations/${conversationId}/messages`) &&
+          options.method === "POST"
+        ) {
+          expect(options.credentials).toBe("include");
+          expect(JSON.parse(String(options.body))).toMatchObject({
+            content: "How do I learn CSS?",
+            intent: "chat",
+          });
+          const raw = [
+            'event: accepted\ndata: {"event":"accepted","generationId":"g","userMessageId":"u"}\n\n',
+            'event: text_delta\ndata: {"event":"text_delta","delta":"Start with CSS.","sequence":1}\n\n',
+            'event: completed\ndata: {"event":"completed","messageId":"a","remaining":14}\n\n',
+          ].join("");
+          return new Response(raw, {
+            headers: { "Content-Type": "text/event-stream" },
+          });
+        }
+        throw new Error(`Unexpected path ${path}`);
+      })
+    );
+    const hook = renderHook(() => useMentorSaved(true));
+    await waitFor(() => expect(hook.result.current.loading).toBe(false));
+    await act(async () => {
+      await hook.result.current.send("How do I learn CSS?");
+    });
+    expect(hook.result.current.messages).toEqual([
+      { id: "u", role: "user", text: "How do I learn CSS?" },
+      { id: "a", role: "assistant", text: "Start with CSS." },
+    ]);
+    expect(calls.some((call) => call.includes("preview"))).toBe(false);
+  });
+
+  it("reuses the request ID after a lost response and restores the receipt", async () => {
+    const requestIds: string[] = [];
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (url: string, options: RequestInit) => {
+        const path = new URL(url, "http://localhost").pathname;
+        if (path.endsWith("/bootstrap"))
+          return Response.json({
+            profile: {
+              goal: "frontend",
+              level: "beginner",
+              hours: 4,
+              outcome: "A site",
+              version: 1,
+            },
+            pathway: null,
+            proposal: null,
+            conversations: [],
+            previewEnabled: false,
+            generationEnabled: true,
+          });
+        if (path.endsWith("/conversations") && options.method === "POST")
+          return Response.json({
+            id: conversationId,
+            title: "CSS",
+            updated_at: "2026-10-05T00:00:00Z",
+          });
+        if (
+          path.endsWith(`/conversations/${conversationId}/messages`) &&
+          options.method === "POST"
+        ) {
+          requestIds.push(JSON.parse(String(options.body)).clientRequestId);
+          if (requestIds.length === 1) throw new Error("lost response");
+          return Response.json({
+            generationId: "g",
+            state: "completed",
+            userMessageId: "u",
+            messageId: "a",
+            content: "Recovered answer",
+            partial: false,
+            failureCode: null,
+          });
+        }
+        throw new Error(`Unexpected path ${path}`);
+      })
+    );
+    const hook = renderHook(() => useMentorSaved(true));
+    await waitFor(() => expect(hook.result.current.loading).toBe(false));
+    await act(async () => {
+      await hook.result.current.send("How do I learn CSS?");
+    });
+    expect(hook.result.current.error).toContain("Connection interrupted");
+    act(() => hook.result.current.retry());
+    await waitFor(() =>
+      expect(hook.result.current.messages.at(-1)?.text).toBe("Recovered answer")
+    );
+    expect(requestIds).toHaveLength(2);
+    expect(requestIds[0]).toBe(requestIds[1]);
+  });
 });

@@ -38,6 +38,7 @@ export type MentorBootstrap = {
   conversations: SavedConversation[];
   previewEnabled: boolean;
   generationEnabled: boolean;
+  limits: { dailyRemaining: number; minuteRemaining: number; resetAt: string };
 };
 export class MentorApiError extends Error {
   constructor(

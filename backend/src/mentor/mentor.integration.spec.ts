@@ -16,11 +16,13 @@ import { AddAccountPreferences1790917200000 } from "../db/migrations/2026/10/179
 import { AddAccountSessions1790920800000 } from "../db/migrations/2026/10/1790920800000-AddAccountSessions";
 import { AddAccountProviders1790924400000 } from "../db/migrations/2026/10/1790924400000-AddAccountProviders";
 import { AddMentorWorkspace1791244800000 } from "../db/migrations/2026/10/1791244800000-AddMentorWorkspace";
+import { AddMentorGenerations1791248400000 } from "../db/migrations/2026/10/1791248400000-AddMentorGenerations";
 import { MentorProfileStore } from "./profile/mentor-profile.store";
 import { MentorConversationStore } from "./conversation/mentor-conversation.store";
 import { MentorPathwayStore } from "./pathway/mentor-pathway.store";
 import { MentorController } from "./api/mentor.controller";
 import { MentorAccountAccess } from "./access/mentor-account-access";
+import { GenerationStore } from "./generation/generation.store";
 
 const integration =
   process.env.MENTOR_INTEGRATION_TEST === "true" ? describe : describe.skip;
@@ -46,6 +48,7 @@ integration("mentor workspace PostgreSQL integration", () => {
         AddAccountSessions1790920800000,
         AddAccountProviders1790924400000,
         AddMentorWorkspace1791244800000,
+        AddMentorGenerations1791248400000,
       ],
     });
     await db.initialize();
@@ -75,6 +78,9 @@ integration("mentor workspace PostgreSQL integration", () => {
     );
     expect(tables.map((row) => row.table_name)).toContain(
       "webdev_learning_milestone_progress"
+    );
+    expect(tables.map((row) => row.table_name)).toContain(
+      "webdev_mentor_generations"
     );
   });
 
@@ -204,6 +210,7 @@ integration("mentor workspace PostgreSQL integration", () => {
         { provide: MentorProfileStore, useValue: profiles },
         { provide: MentorConversationStore, useValue: conversations },
         { provide: MentorPathwayStore, useValue: paths },
+        { provide: GenerationStore, useValue: new GenerationStore(db) },
       ],
     }).compile();
     const app: INestApplication = module.createNestApplication();
