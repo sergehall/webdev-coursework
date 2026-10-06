@@ -77,15 +77,15 @@ describe("main startup", () => {
       error: {
         issues: [
           {
-            path: ["VITE_QUIZ_SECRET"],
-            message: "VITE_QUIZ_SECRET must be defined and not empty",
+            path: ["VITE_API_URL"],
+            message: "API URL must be a valid URL",
           },
         ],
       },
     });
 
     await expect(import("./main")).rejects.toThrow(
-      "Invalid environment variables:\n  • VITE_QUIZ_SECRET: VITE_QUIZ_SECRET must be defined and not empty"
+      "Invalid environment variables:\n  • VITE_API_URL: API URL must be a valid URL"
     );
     expect(applySavedThemeMock).not.toHaveBeenCalled();
     expect(createRootMock).not.toHaveBeenCalled();

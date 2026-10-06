@@ -25,10 +25,6 @@ export const envSchema = z
     VITE_API_URL: apiOriginSchema.default(""),
     VITE_OWNER_API_URL: apiOriginSchema.optional(),
 
-    VITE_QUIZ_SECRET: z
-      .string()
-      .min(1, "VITE_QUIZ_SECRET must be defined and not empty"),
-
     VITE_SENTRY_DSN: z
       .string()
       .url("VITE_SENTRY_DSN must be a valid URL")

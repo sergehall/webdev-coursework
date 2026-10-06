@@ -19,8 +19,6 @@ on:
     secrets:
       VITE_API_URL:
         required: true
-      VITE_QUIZ_SECRET:
-        required: true
       VITE_SENTRY_DSN:
         required: true
       ACTIONS_CHECKOUT_TOKEN:
@@ -39,7 +37,6 @@ jobs:
     env:
       VITE_ENVIRONMENT: ${{ inputs.environment }}
       VITE_API_URL: ${{ secrets.VITE_API_URL }}
-      VITE_QUIZ_SECRET: ${{ secrets.VITE_QUIZ_SECRET }}
       VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
 
     steps:
@@ -86,6 +83,5 @@ jobs:
         run: |
           echo "VITE_ENVIRONMENT=$VITE_ENVIRONMENT" >> .env
           echo "VITE_API_URL=$VITE_API_URL" >> .env
-          echo "VITE_QUIZ_SECRET=$VITE_QUIZ_SECRET" >> .env
           echo "VITE_SENTRY_DSN=$VITE_SENTRY_DSN" >> .env
           yarn build
