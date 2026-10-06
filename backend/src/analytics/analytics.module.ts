@@ -12,6 +12,7 @@ import { Module } from "@nestjs/common";
 import { AnalyticsController } from "./analytics.controller";
 import { AnalyticsService } from "./analytics.service";
 import { AnalyticsStore } from "./analytics.store";
+import { MentorAccountAccess } from "../mentor/access/mentor-account-access";
 import { AccountStore } from "../accounts/store/account.store";
 
 // Account operations consume shared verification through the security module boundary.
@@ -26,6 +27,7 @@ import { AccountStore } from "../accounts/store/account.store";
   ],
   providers: [
     AnalyticsService,
+    MentorAccountAccess,
     AnalyticsStore,
     AccountStore,
     AccountService,
@@ -34,5 +36,6 @@ import { AccountStore } from "../accounts/store/account.store";
     MfaCrypto,
     AccountProvidersService,
   ],
+  exports: [MentorAccountAccess],
 })
 export class AnalyticsModule {}

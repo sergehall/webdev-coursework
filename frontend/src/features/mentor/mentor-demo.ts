@@ -25,7 +25,7 @@ export type DemoScenario =
   | "invalid-plan"
   | "conflict";
 export type Message = {
-  id: number;
+  id: number | string;
   role: "user" | "assistant";
   text: string;
   partial?: boolean;

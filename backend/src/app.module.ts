@@ -15,6 +15,7 @@ import { TypeOrmPostgresOptions } from "./db/TypeOrmPostgresOptions";
 import { HttpLoggingMiddleware } from "./app/http-logging.middleware";
 import { QuizModule } from "./quiz/quiz.module";
 import { TokensModule } from "./tokens/tokens.module";
+import { MentorModule } from "./mentor/mentor.module";
 import { AnalyticsModule } from "./analytics/analytics.module";
 import { SecurityModule } from "./security/security.module";
 
@@ -36,6 +37,7 @@ import { SecurityModule } from "./security/security.module";
     QuizModule,
     TokensModule,
     AnalyticsModule,
+    MentorModule,
   ],
   controllers: [AppController],
   providers: [AppService, CircuitBreakerService],

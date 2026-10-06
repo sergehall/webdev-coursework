@@ -22,13 +22,16 @@ export default function LearnerOnboarding({
   initial,
   onComplete,
   onCancel,
+  persistent = false,
 }: {
   initial: LearnerProfile | null;
-  onComplete: (profile: LearnerProfile) => void;
+  onComplete: (profile: LearnerProfile) => void | Promise<void>;
+  persistent?: boolean;
   onCancel?: () => void;
 }) {
   const [error, setError] = useState("");
-  function submit(event: FormEvent<HTMLFormElement>) {
+  const [saving, setSaving] = useState(false);
+  async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const result = profileSchema.safeParse(
       Object.fromEntries(new FormData(event.currentTarget))
@@ -39,7 +42,16 @@ export default function LearnerOnboarding({
       );
       return;
     }
-    onComplete(result.data);
+    setSaving(true);
+    try {
+      await onComplete(result.data);
+    } catch (reason) {
+      setError(
+        reason instanceof Error ? reason.message : "Could not save profile."
+      );
+    } finally {
+      setSaving(false);
+    }
   }
   return (
     <section
@@ -117,8 +129,10 @@ export default function LearnerOnboarding({
           />
         </label>
         <p className="mentor-muted mentor-small">
-          English · Skills are self-reported · Everything in this preview stays
-          in this tab until you leave or reload.
+          English · Skills are self-reported ·{" "}
+          {persistent
+            ? "Your profile is saved to your account."
+            : "This example resets when you leave or reload."}
         </p>
         {error && (
           <p role="alert" className="mentor-error">
@@ -126,7 +140,11 @@ export default function LearnerOnboarding({
           </p>
         )}
         <div className="mentor-actions">
-          <button className="mentor-button mentor-primary" type="submit">
+          <button
+            className="mentor-button mentor-primary"
+            type="submit"
+            disabled={saving}
+          >
             {initial ? "Update my profile" : "Find my starting point"}
             <ArrowRight size={18} aria-hidden="true" />
           </button>

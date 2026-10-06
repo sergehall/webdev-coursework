@@ -26,7 +26,7 @@ export const createApp = (app: INestApplication): INestApplication => {
   // Cookie middleware
   app.use(cookieParser());
   app.use(
-    ["/api/owner", "/api/account"],
+    ["/api/owner", "/api/account", "/api/mentor"],
     (_req: Request, res: Response, next: NextFunction) => {
       res.setHeader("Cache-Control", "no-store");
       next();

@@ -19,6 +19,7 @@ export class HttpLoggingMiddleware implements NestMiddleware {
     if (
       path.startsWith("/api/owner") ||
       path.startsWith("/api/account") ||
+      path.startsWith("/api/mentor") ||
       path.startsWith("/api/analytics")
     ) {
       res.on("finish", () =>

@@ -1,0 +1,169 @@
+.mentor-path {
+  padding-bottom: 22px;
+}
+.mentor-path .mentor-panel-heading .mentor-eyebrow {
+  font-size: 9px;
+  margin-bottom: 7px;
+}
+.mentor-path-summary {
+  padding: 20px 24px 12px;
+}
+.mentor-path-summary strong,
+.mentor-path-summary span {
+  display: block;
+}
+.mentor-path-summary strong {
+  font-size: 14px;
+}
+.mentor-path-summary span {
+  margin-top: 5px;
+  color: var(--mentor-muted);
+  font-size: 12px;
+}
+.mentor-path progress {
+  display: block;
+  margin: 0 24px 22px;
+  width: calc(100% - 48px);
+  height: 6px;
+  accent-color: var(--mentor-accent);
+}
+.mentor-path progress::-webkit-progress-bar {
+  background: var(--mentor-border);
+  border-radius: 4px;
+}
+.mentor-path progress::-webkit-progress-value {
+  background: var(--mentor-accent);
+  border-radius: 4px;
+}
+.mentor-path progress::-moz-progress-bar {
+  background: var(--mentor-accent);
+}
+.mentor-adjust {
+  margin: 0 24px;
+}
+.mentor-draft-notice {
+  padding: 14px;
+  margin: 0 18px 20px;
+  border-radius: 12px;
+  border: 1px solid var(--mentor-accent);
+  background: var(--mentor-tint);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.mentor-draft-notice .mentor-actions {
+  margin-top: 12px;
+}
+.mentor-week {
+  padding: 0 18px;
+  margin-top: 20px;
+}
+.mentor-week > .mentor-eyebrow {
+  margin: 0 6px 10px;
+}
+.mentor-step {
+  padding: 15px;
+  margin-bottom: 10px;
+  border: 1px solid var(--mentor-border);
+  border-radius: 14px;
+}
+.mentor-step-next {
+  border-color: var(--mentor-accent);
+  background: var(--mentor-tint);
+}
+.mentor-step-heading {
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+}
+.mentor-step h3 {
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1.5;
+}
+.mentor-step > p {
+  font-size: 12px;
+  line-height: 1.7;
+  margin-top: 10px;
+  color: var(--mentor-muted);
+}
+.mentor-step-actions {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  font-size: 11px;
+}
+.mentor-step-actions label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  min-height: 32px;
+}
+.mentor-step-actions button {
+  color: var(--mentor-accent);
+  min-height: 32px;
+  font-weight: 700;
+}
+.mentor-path-empty {
+  text-align: center;
+  padding: 50px 28px;
+}
+.mentor-path-empty h3 {
+  font-size: 19px;
+  font-weight: 750;
+  margin: 28px 0 10px;
+}
+.mentor-path-empty > p {
+  color: var(--mentor-muted);
+  line-height: 1.8;
+  font-size: 13px;
+  margin: 12px 0 22px;
+}
+.mentor-path-map {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mentor-path-map span {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--mentor-border);
+  color: var(--mentor-muted);
+  font-size: 10px;
+}
+.mentor-path-map span:first-child {
+  background: var(--mentor-tint);
+  border-color: var(--mentor-accent);
+  color: var(--mentor-accent);
+}
+.mentor-path-map i {
+  height: 1px;
+  width: 20px;
+  background: var(--mentor-border);
+}
+.mentor-material-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 22px 24px 10px;
+  color: var(--mentor-accent);
+  font-size: 13px;
+  font-weight: 700;
+}
+.mentor-path > .mentor-small {
+  margin: 0 24px;
+}
+.mentor-complete {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 15px 24px;
+  color: var(--mentor-accent);
+  font-size: 13px;
+}

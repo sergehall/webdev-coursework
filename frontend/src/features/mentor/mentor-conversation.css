@@ -1,0 +1,185 @@
+.mentor-workspace-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 24px 0;
+}
+.mentor-workspace-heading h1 {
+  font-size: clamp(30px, 3vw, 42px);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.2;
+  margin: 8px 0 14px;
+}
+.mentor-heading-dot {
+  color: var(--mentor-accent);
+}
+.mentor-profile-summary {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.mentor-profile-summary span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 7px;
+  border: 1px solid var(--mentor-border);
+  color: var(--mentor-muted);
+  font-size: 12px;
+}
+.mentor-outcome {
+  margin: -8px 0 24px;
+  color: var(--mentor-muted);
+  overflow-wrap: anywhere;
+}
+.mentor-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+.mentor-panel-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid var(--mentor-border);
+  padding: 20px 24px;
+}
+.mentor-panel-heading h2 {
+  font-size: 17px;
+  font-weight: 750;
+}
+.mentor-chat-title {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.mentor-chat {
+  position: sticky;
+  top: 12px;
+  overflow: hidden;
+}
+.mentor-messages {
+  height: min(430px, 45vh);
+  min-height: 300px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 24px;
+}
+.mentor-chat-empty {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  padding: 10px 0;
+  gap: 16px;
+}
+.mentor-chat-empty h3 {
+  font-size: clamp(21px, 2vw, 27px);
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+  font-weight: 750;
+}
+.mentor-chat-empty > p {
+  max-width: 360px;
+  color: var(--mentor-muted);
+  line-height: 1.7;
+  font-size: 13px;
+}
+.mentor-suggestions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  width: 100%;
+  margin-top: 6px;
+}
+.mentor-suggestions button {
+  display: flex;
+  text-align: left;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--mentor-border);
+  font-size: 12px;
+  font-weight: 650;
+}
+.mentor-suggestions button:hover {
+  background: var(--mentor-tint);
+  border-color: var(--mentor-accent);
+}
+.mentor-suggestions svg {
+  flex-shrink: 0;
+}
+.mentor-message {
+  max-width: 94%;
+  margin-bottom: 18px;
+  padding: 15px 17px;
+  border-radius: 16px;
+  background: var(--mentor-soft);
+  font-size: 14px;
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.mentor-message-user {
+  margin-left: auto;
+  background: var(--mentor-tint);
+}
+.mentor-message-author {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--mentor-muted);
+  margin-bottom: 5px;
+}
+.mentor-chat-bottom {
+  border-top: 1px solid var(--mentor-border);
+  padding: 14px 20px;
+}
+.mentor-status {
+  font-size: 12px;
+  color: var(--mentor-muted);
+  min-height: 20px;
+  margin-bottom: 8px;
+}
+.mentor-composer {
+  border: 1px solid var(--mentor-border);
+  border-radius: 16px;
+  padding: 8px 12px 10px;
+  background: var(--mentor-soft);
+}
+.mentor-composer:focus-within {
+  border-color: var(--mentor-accent);
+}
+.mentor-composer textarea {
+  border: 0;
+  margin: 0;
+  padding: 6px 0;
+  min-height: 56px;
+  max-height: 180px;
+  resize: vertical;
+}
+.mentor-composer > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+.mentor-disclaimer {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 10px;
+}
+.mentor-review-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 0;
+  color: var(--mentor-accent);
+  font-size: 13px;
+  font-weight: 700;
+}

@@ -14,6 +14,7 @@ import LearnerOnboarding from "./LearnerOnboarding";
 import LearningPathPanel from "./LearningPathPanel";
 import { goalLabels, type DemoScenario } from "./mentor-demo";
 import { useMentorPreview } from "./useMentorPreview";
+import { useMentorSaved } from "./useMentorSaved";
 
 const scenarios: { value: DemoScenario; label: string }[] = [
   { value: "normal", label: "Normal response" },
@@ -26,10 +27,14 @@ const scenarios: { value: DemoScenario; label: string }[] = [
 
 export default function MentorWorkspace({
   onExpire,
+  sample,
 }: {
   onExpire: () => void;
+  sample: boolean;
 }) {
-  const mentor = useMentorPreview();
+  const preview = useMentorPreview();
+  const saved = useMentorSaved(!sample, onExpire);
+  const mentor = sample ? preview : saved;
   const [editing, setEditing] = useState(false);
   const [tab, setTab] = useState<"chat" | "path">("chat");
   const [draft, setDraft] = useState("");
@@ -46,13 +51,29 @@ export default function MentorWorkspace({
       scroll.current.scrollTop = scroll.current.scrollHeight;
   }, [mentor.messages]);
   const { profile } = mentor;
+  if (!sample && saved.loading)
+    return (
+      <div className="mentor-panel mentor-loading" role="status">
+        Restoring your workspace…
+      </div>
+    );
+  if (!sample && saved.bootError)
+    return (
+      <div className="mentor-panel mentor-loading" role="alert">
+        <p>{saved.error}</p>
+        <button className="mentor-button" onClick={saved.reload}>
+          Retry loading workspace
+        </button>
+      </div>
+    );
   if (!profile || editing)
     return (
       <LearnerOnboarding
         initial={profile}
+        persistent={!sample}
         onCancel={profile ? () => setEditing(false) : undefined}
-        onComplete={(value) => {
-          mentor.setProfile(value);
+        onComplete={async (value) => {
+          await mentor.setProfile(value);
           setEditing(false);
           setTab("chat");
         }}
@@ -104,6 +125,11 @@ export default function MentorWorkspace({
       {profile.outcome && (
         <p className="mentor-outcome">Your goal: {profile.outcome}</p>
       )}
+      {tab === "path" && mentor.error && (
+        <div className="mentor-error" role="alert">
+          {mentor.error}
+        </div>
+      )}
       <div
         className="mentor-mobile-tabs"
         role="group"
@@ -144,7 +170,7 @@ export default function MentorWorkspace({
           {history && (
             <aside className="mentor-history" aria-label="Conversation history">
               <div>
-                <strong>This visit</strong>
+                <strong>{sample ? "This visit" : "Saved conversations"}</strong>
                 <button
                   aria-label="Close conversation history"
                   className="mentor-icon-button"
@@ -158,10 +184,40 @@ export default function MentorWorkspace({
                 {mentor.messages.filter((m) => m.role === "user").length}{" "}
                 messages
               </p>
-              <p className="mentor-small mentor-muted">
-                Preview history is temporary. Starting over clears this
-                conversation, but keeps your accepted path.
-              </p>
+              {sample ? (
+                <p className="mentor-small mentor-muted">
+                  Preview history is temporary. Starting over clears this
+                  conversation, but keeps your accepted path.
+                </p>
+              ) : (
+                <>
+                  {saved.conversations.map((conversation) => (
+                    <button
+                      key={conversation.id}
+                      className="mentor-history-entry"
+                      aria-current={
+                        saved.conversationId === conversation.id
+                          ? "true"
+                          : undefined
+                      }
+                      onClick={() => {
+                        void saved.openConversation(conversation.id);
+                        setHistory(false);
+                      }}
+                    >
+                      {conversation.title}
+                    </button>
+                  ))}
+                  {saved.conversationCursor && (
+                    <button
+                      className="mentor-button"
+                      onClick={() => void saved.loadMoreConversations()}
+                    >
+                      Load more conversations
+                    </button>
+                  )}
+                </>
+              )}
               <button
                 className="mentor-button"
                 onClick={() => {
@@ -183,6 +239,14 @@ export default function MentorWorkspace({
                 el.scrollHeight - el.scrollTop - el.clientHeight < 72;
             }}
           >
+            {!sample && saved.messageCursor !== null && (
+              <button
+                className="mentor-button"
+                onClick={() => void saved.loadOlderMessages()}
+              >
+                Load earlier messages
+              </button>
+            )}
             {mentor.messages.length === 0 ? (
               <div className="mentor-chat-empty">
                 <div className="mentor-icon mentor-icon-large">
@@ -306,8 +370,10 @@ export default function MentorWorkspace({
               </div>
             </form>
             <p className="mentor-small mentor-muted mentor-disclaimer">
-              Example responses · No live AI calls · Verify suggestions as you
-              learn.
+              Example responses · No live AI calls ·{" "}
+              {sample
+                ? "Changes reset when you leave."
+                : "Your profile, conversation and path are saved to your account."}
             </p>
           </div>
         </div>
@@ -329,35 +395,37 @@ export default function MentorWorkspace({
           />
         </div>
       </div>
-      <details className="mentor-preview-controls">
-        <summary>Preview controls</summary>
-        <p>
-          Explore the recovery states. No real AI usage or saved progress is
-          affected.
-        </p>
-        <label>
-          Next response
-          <select
-            disabled={Boolean(mentor.busy)}
-            value={mentor.scenario}
-            onChange={(e) => {
-              const value = scenarios.find(
-                (s) => s.value === e.target.value
-              )?.value;
-              if (value) mentor.setScenario(value);
-            }}
-          >
-            {scenarios.map((s) => (
-              <option value={s.value} key={s.value}>
-                {s.label}
-              </option>
-            ))}
-          </select>
-        </label>
-        <button className="mentor-button" onClick={onExpire}>
-          Preview expired session
-        </button>
-      </details>
+      {sample && (
+        <details className="mentor-preview-controls">
+          <summary>Preview controls</summary>
+          <p>
+            Explore the recovery states. No real AI usage or saved progress is
+            affected.
+          </p>
+          <label>
+            Next response
+            <select
+              disabled={Boolean(mentor.busy)}
+              value={mentor.scenario}
+              onChange={(e) => {
+                const value = scenarios.find(
+                  (s) => s.value === e.target.value
+                )?.value;
+                if (value) mentor.setScenario(value);
+              }}
+            >
+              {scenarios.map((s) => (
+                <option value={s.value} key={s.value}>
+                  {s.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <button className="mentor-button" onClick={onExpire}>
+            Preview expired session
+          </button>
+        </details>
+      )}
     </>
   );
 }

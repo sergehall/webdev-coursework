@@ -54,12 +54,14 @@ function MentorPreviewPage() {
       <div className="mentor-preview-banner">
         <span className="mentor-preview-tag">Interactive preview</span>
         <span>
-          Example responses. Changes are temporary and reset when you leave or
-          reload.
+          {sample
+            ? "Example responses. Changes reset when you leave or reload."
+            : "Example responses. Your signed-in profile, conversations, path and progress are saved."}
         </span>
       </div>
       {open ? (
         <MentorWorkspace
+          sample={sample}
           key={
             sample
               ? "sample"
@@ -107,8 +109,9 @@ function MentorPreviewPage() {
             </ul>
             {expired ? (
               <p role="alert" className="mentor-error">
-                Your preview session expired. The conversation and personal path
-                have been cleared.
+                {authenticated
+                  ? "Your account session ended. Sign in again to restore your saved workspace."
+                  : "Your preview session expired. The conversation and personal path have been cleared."}
               </p>
             ) : (
               status === "error" && (
