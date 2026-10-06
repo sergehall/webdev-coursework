@@ -19,12 +19,19 @@ export type SavedProposal = {
   base_revision: number;
   profile_version: number;
   content: Milestone[];
+  metadata?: {
+    goal: string;
+    assumptions: string[];
+    rationale: string;
+    sources: { sourceId: string; title: string; href: string }[];
+  } | null;
 };
 export type SavedPath = {
   id: string;
   version: number;
   revisionId: string;
   milestones: Milestone[];
+  metadata?: SavedProposal["metadata"];
   progress: {
     milestone_id: string;
     status: "pending" | "done";

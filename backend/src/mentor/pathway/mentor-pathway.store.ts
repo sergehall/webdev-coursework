@@ -8,6 +8,7 @@ import { randomUUID } from "crypto";
 import { DataSource, QueryRunner } from "typeorm";
 import type { MilestoneInput } from "../api/mentor-input";
 import { returnedRows } from "../mentor-sql";
+import { KnowledgeCatalog } from "../knowledge/knowledge-catalog";
 
 type PathRow = { id: string; current_revision: number };
 type RevisionRow = {
@@ -18,10 +19,13 @@ type RevisionRow = {
   profile_version: number;
   state: string;
   content: MilestoneInput[];
+  metadata?: Record<string, unknown> | null;
+  catalog_version?: string | null;
   created_at: string;
 };
 @Injectable()
 export class MentorPathwayStore {
+  private readonly catalog = new KnowledgeCatalog();
   constructor(@InjectDataSource() private readonly db: DataSource) {}
   async current(accountId: string) {
     const paths: PathRow[] = await this.db.query(
@@ -31,7 +35,7 @@ export class MentorPathwayStore {
     const path = paths[0];
     if (!path || !path.current_revision) return null;
     const revisions: RevisionRow[] = await this.db.query(
-      `SELECT id,revision,content FROM webdev_learning_path_revisions
+      `SELECT id,revision,content,metadata FROM webdev_learning_path_revisions
        WHERE path_id=$1 AND account_id=$2 AND revision=$3 AND state='accepted'`,
       [path.id, accountId, path.current_revision]
     );
@@ -48,6 +52,7 @@ export class MentorPathwayStore {
       version: path.current_revision,
       revisionId: revisions[0].id,
       milestones: revisions[0].content,
+      metadata: revisions[0].metadata ?? null,
       progress,
     };
   }
@@ -66,7 +71,7 @@ export class MentorPathwayStore {
   }
   async proposal(accountId: string, proposalId: string) {
     const rows: RevisionRow[] = await this.db.query(
-      `SELECT id,path_id,base_revision,profile_version,state,content,created_at
+      `SELECT id,path_id,base_revision,profile_version,state,content,metadata,created_at
        FROM webdev_learning_path_revisions WHERE id=$1 AND account_id=$2`,
       [proposalId, accountId]
     );
@@ -75,7 +80,7 @@ export class MentorPathwayStore {
   }
   async latestProposal(accountId: string) {
     const rows: RevisionRow[] = await this.db.query(
-      `SELECT id,path_id,base_revision,profile_version,state,content,created_at
+      `SELECT id,path_id,base_revision,profile_version,state,content,metadata,created_at
        FROM webdev_learning_path_revisions WHERE account_id=$1 AND state='proposed'
        ORDER BY created_at DESC,id DESC LIMIT 1`,
       [accountId]
@@ -136,12 +141,17 @@ export class MentorPathwayStore {
       );
       if (!path) throw new NotFoundException("Proposal not found");
       const rows: RevisionRow[] = await runner.query(
-        `SELECT id,base_revision,profile_version,state,content FROM webdev_learning_path_revisions
+        `SELECT id,base_revision,profile_version,state,content,catalog_version FROM webdev_learning_path_revisions
          WHERE id=$1 AND path_id=$2 AND account_id=$3 FOR UPDATE`,
         [proposalId, path.id, accountId]
       );
       const proposal = rows[0];
       if (!proposal) throw new NotFoundException("Proposal not found");
+      if (
+        proposal.catalog_version &&
+        proposal.catalog_version !== this.catalog.version
+      )
+        throw new ConflictException("Catalog version changed");
       const profiles: { version: number }[] = await runner.query(
         `SELECT version FROM webdev_learner_profiles WHERE account_id=$1`,
         [accountId]

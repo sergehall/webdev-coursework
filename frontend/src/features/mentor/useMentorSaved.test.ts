@@ -161,6 +161,88 @@ describe("saved mentor workspace", () => {
     expect(calls.some((call) => call.includes("preview"))).toBe(false);
   });
 
+  it("loads a validated plan draft after the structured generation completes", async () => {
+    const calls: string[] = [];
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (url: string, options: RequestInit) => {
+        const path = new URL(url, "http://localhost").pathname;
+        calls.push(`${options.method ?? "GET"} ${path}`);
+        if (path.endsWith("/bootstrap"))
+          return Response.json({
+            profile: {
+              goal: "frontend",
+              level: "beginner",
+              hours: 4,
+              outcome: "A site",
+              version: 1,
+            },
+            pathway: null,
+            proposal: null,
+            conversations: [
+              {
+                id: conversationId,
+                title: "Plan",
+                updated_at: "2026-10-05T00:00:00Z",
+              },
+            ],
+            generationEnabled: true,
+          });
+        if (
+          path.endsWith(`/conversations/${conversationId}/messages`) &&
+          options.method !== "POST"
+        )
+          return Response.json({ entries: [], nextCursor: null });
+        if (path.endsWith(`/conversations/${conversationId}/messages`)) {
+          expect(JSON.parse(String(options.body)).intent).toBe("propose_plan");
+          return new Response(
+            [
+              'event: accepted\ndata: {"event":"accepted","generationId":"g","userMessageId":"u"}\n\n',
+              'event: progress\ndata: {"event":"progress","stage":"planning"}\n\n',
+              'event: completed\ndata: {"event":"completed","messageId":"a","proposalId":"p","remaining":14}\n\n',
+            ].join(""),
+            { headers: { "Content-Type": "text/event-stream" } }
+          );
+        }
+        if (path.endsWith("/proposals/p"))
+          return Response.json({
+            id: "p",
+            base_revision: 0,
+            profile_version: 1,
+            content: [{ ...milestone, sourceIds: ["course:CS56"] }],
+            metadata: {
+              goal: "frontend",
+              assumptions: [],
+              rationale: "Start small.",
+              sources: [
+                {
+                  sourceId: "course:CS56",
+                  title: "Course",
+                  href: "/courses/cs56",
+                },
+              ],
+            },
+          });
+        throw new Error(`Unexpected path ${path}`);
+      })
+    );
+    const hook = renderHook(() => useMentorSaved(true));
+    await waitFor(() => expect(hook.result.current.loading).toBe(false));
+    await act(async () => {
+      await hook.result.current.send("Build my plan", "plan");
+    });
+    await waitFor(() =>
+      expect(hook.result.current.proposal?.[0].id).toBe("step-1")
+    );
+    expect(hook.result.current.pathMetadata?.sources[0].sourceId).toBe(
+      "course:CS56"
+    );
+    expect(hook.result.current.messages.at(-1)?.text).toContain(
+      "draft is ready"
+    );
+    expect(calls.some((call) => call.includes("preview"))).toBe(false);
+  });
+
   it("reuses the request ID after a lost response and restores the receipt", async () => {
     const requestIds: string[] = [];
     vi.stubGlobal(

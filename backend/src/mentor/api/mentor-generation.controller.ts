@@ -41,15 +41,16 @@ export class MentorGenerationController {
     const conversationId = uuid(id);
     const input = record(body);
     exact(input, ["content", "clientRequestId", "intent"]);
-    if (input.intent !== "chat")
-      throw new BadRequestException("Only chat is available");
+    if (input.intent !== "chat" && input.intent !== "propose_plan")
+      throw new BadRequestException("Invalid generation intent");
     const content = string(input.content, 4000);
     const requestId = uuid(input.clientRequestId);
     const started = await this.generation.start(
       accountId,
       conversationId,
       requestId,
-      content
+      content,
+      input.intent
     );
     if (started.duplicate) {
       res
@@ -80,14 +81,22 @@ export class MentorGenerationController {
       userMessageId: started.row.user_message_id,
     });
     try {
-      for await (const event of this.generation.run(
-        accountId,
-        conversationId,
-        idOfGeneration,
-        content,
-        started.remaining
-      ))
-        write(event);
+      const stream =
+        input.intent === "propose_plan"
+          ? this.generation.runPlan(
+              accountId,
+              idOfGeneration,
+              content,
+              started.remaining
+            )
+          : this.generation.run(
+              accountId,
+              conversationId,
+              idOfGeneration,
+              content,
+              started.remaining
+            );
+      for await (const event of stream) write(event);
     } catch {
       write({
         event: "failed",

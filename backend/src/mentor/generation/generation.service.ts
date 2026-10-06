@@ -4,11 +4,20 @@ import { CloudflareProvider } from "./cloudflare-provider";
 import { assertGenerationReady, DEADLINE_MS } from "./generation-config";
 import { GenerationPrompt } from "./generation-prompt";
 import { GenerationStore } from "./generation.store";
+import { PlanPrompt } from "../pathway/plan-prompt";
+import { PlanGenerationStore } from "../pathway/plan-generation.store";
+import { validatePlanProposal } from "../pathway/plan-proposal";
 
 export type AppEvent =
   | { event: "accepted"; generationId: string; userMessageId: string | null }
   | { event: "text_delta"; delta: string; sequence: number }
-  | { event: "completed"; messageId: string | null; remaining: number }
+  | { event: "progress"; stage: "planning" }
+  | {
+      event: "completed";
+      messageId: string | null;
+      remaining: number;
+      proposalId?: string;
+    }
   | { event: "failed"; code: string; partial: boolean; canRetry: boolean }
   | { event: "cancelled"; partial: boolean };
 
@@ -18,25 +27,29 @@ export class GenerationService {
   constructor(
     private readonly store: GenerationStore,
     private readonly prompt: GenerationPrompt,
-    private readonly provider: CloudflareProvider
+    private readonly provider: CloudflareProvider,
+    private readonly planPrompt: PlanPrompt,
+    private readonly planStore: PlanGenerationStore
   ) {}
 
   async start(
     accountId: string,
     conversationId: string,
     requestId: string,
-    content: string
+    content: string,
+    intent: "chat" | "propose_plan" = "chat"
   ) {
     assertGenerationReady(accountId);
     const hash = createHash("sha256")
-      .update(JSON.stringify({ conversationId, content, intent: "chat" }))
+      .update(JSON.stringify({ conversationId, content, intent }))
       .digest("hex");
     return this.store.start(
       accountId,
       conversationId,
       requestId,
       hash,
-      content
+      content,
+      intent
     );
   }
 
@@ -48,6 +61,131 @@ export class GenerationService {
 
   receipt(accountId: string, id: string) {
     return this.store.receipt(accountId, id);
+  }
+
+  async *runPlan(
+    accountId: string,
+    id: string,
+    request: string,
+    remaining: number
+  ): AsyncGenerator<AppEvent> {
+    const controller = new AbortController();
+    this.running.set(id, controller);
+    let timedOut = false;
+    const deadline = setTimeout(() => {
+      timedOut = true;
+      controller.abort("timeout");
+    }, DEADLINE_MS);
+    const cancelPoll = setInterval(() => {
+      void this.store
+        .cancelled(accountId, id)
+        .then((cancelled) => {
+          if (cancelled) controller.abort("cancelled");
+        })
+        .catch(() => controller.abort("storage"));
+    }, 500);
+    try {
+      const context = await this.planPrompt.build(accountId, request);
+      if (
+        controller.signal.aborted ||
+        !(await this.store.markDispatched(accountId, id))
+      ) {
+        await this.store.finish(accountId, id, "cancelled", "");
+        yield { event: "cancelled", partial: false };
+        return;
+      }
+      yield { event: "progress", stage: "planning" };
+      const response = this.provider.completePlan(
+        context.messages,
+        controller.signal
+      );
+      let result: Awaited<
+        ReturnType<CloudflareProvider["completePlan"]>
+      > | null = null;
+      while (!result) {
+        let timer: ReturnType<typeof setTimeout> | undefined;
+        try {
+          result = await Promise.race([
+            response,
+            new Promise<null>((resolve) => {
+              timer = setTimeout(() => resolve(null), 10_000);
+            }),
+          ]);
+        } finally {
+          clearTimeout(timer);
+        }
+        if (!result) yield { event: "progress", stage: "planning" };
+      }
+      if (
+        controller.signal.aborted ||
+        (await this.store.cancelled(accountId, id))
+      ) {
+        await this.store.finish(accountId, id, "cancelled", "", result.usage);
+        yield { event: "cancelled", partial: false };
+        return;
+      }
+      const plan = validatePlanProposal(
+        result.value,
+        context.profile,
+        context.evidence
+      );
+      const saved = await this.planStore.complete(
+        accountId,
+        id,
+        plan,
+        context.profile.version,
+        context.baseRevision,
+        context.evidence.catalogVersion,
+        result.usage
+      );
+      if (saved.state === "cancelled") {
+        await this.store.finish(accountId, id, "cancelled", "", result.usage);
+        yield { event: "cancelled", partial: false };
+      } else if (saved.state === "failed") {
+        yield {
+          event: "failed",
+          code: "AI_TIMEOUT",
+          partial: false,
+          canRetry: true,
+        };
+      } else {
+        yield {
+          event: "completed",
+          messageId: saved.messageId!,
+          proposalId: saved.proposalId,
+          remaining,
+        };
+      }
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : "";
+      const code =
+        timedOut || reason === "AI_TIMEOUT"
+          ? "AI_TIMEOUT"
+          : [
+                "INVALID_PLAN",
+                "PROFILE_CHANGED",
+                "PATH_CHANGED",
+                "WORKSPACE_CHANGED",
+              ].includes(reason)
+            ? reason
+            : "AI_UNAVAILABLE";
+      const cancelled = controller.signal.reason === "cancelled";
+      const row = await this.store.finish(
+        accountId,
+        id,
+        cancelled ? "cancelled" : "failed",
+        "",
+        undefined,
+        cancelled ? undefined : code
+      );
+      if (row.state === "cancelled")
+        yield { event: "cancelled", partial: false };
+      else yield { event: "failed", code, partial: false, canRetry: true };
+    } finally {
+      clearTimeout(deadline);
+      clearInterval(cancelPoll);
+      this.running.delete(id);
+    }
   }
 
   async *run(

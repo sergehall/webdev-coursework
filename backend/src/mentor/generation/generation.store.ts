@@ -16,6 +16,7 @@ export type GenerationRow = {
   conversation_id: string | null;
   user_message_id: string | null;
   assistant_message_id: string | null;
+  proposal_id: string | null;
   payload_hash: string;
   state:
     | "reserved"
@@ -117,7 +118,8 @@ export class GenerationStore {
     conversationId: string,
     requestId: string,
     hash: string,
-    content: string
+    content: string,
+    intent: "chat" | "propose_plan" = "chat"
   ): Promise<StartResult> {
     const q = this.db.createQueryRunner();
     await q.connect();
@@ -211,8 +213,8 @@ export class GenerationStore {
       );
       const rows: GenerationRow[] = await q.query(
         `INSERT INTO webdev_mentor_generations
-         (id,account_id,conversation_id,client_request_id,payload_hash,user_message_id,state,model,reserved_neurons,budget_day,lease_until)
-         VALUES($1,$2,$3,$4,$5,$6,'reserved',$7,$8,$9,now()+interval '55 seconds') RETURNING *`,
+         (id,account_id,conversation_id,client_request_id,payload_hash,user_message_id,state,model,reserved_neurons,budget_day,lease_until,intent)
+         VALUES($1,$2,$3,$4,$5,$6,'reserved',$7,$8,$9,now()+interval '55 seconds',$10) RETURNING *`,
         [
           randomUUID(),
           accountId,
@@ -223,6 +225,7 @@ export class GenerationStore {
           MODEL,
           RESERVATION_NEURONS,
           day,
+          intent,
         ]
       );
       for (const [scope, subject, period] of keys)
@@ -257,7 +260,7 @@ export class GenerationStore {
 
   async get(accountId: string, generationId: string): Promise<GenerationRow> {
     const rows: GenerationRow[] = await this.db.query(
-      `SELECT id,account_id,conversation_id,user_message_id,assistant_message_id,payload_hash,state,failure_kind,created_at
+      `SELECT id,account_id,conversation_id,user_message_id,assistant_message_id,proposal_id,payload_hash,state,failure_kind,created_at
        FROM webdev_mentor_generations WHERE id=$1 AND account_id=$2`,
       [generationId, accountId]
     );
@@ -419,6 +422,7 @@ export class GenerationStore {
       state: row.state,
       userMessageId: row.user_message_id,
       messageId: row.assistant_message_id,
+      proposalId: row.proposal_id,
       content: messages[0]?.content ?? null,
       partial: messages[0]?.status === "partial",
       failureCode: row.failure_kind,

@@ -17,6 +17,7 @@ import { AddAccountSessions1790920800000 } from "../../db/migrations/2026/10/179
 import { AddAccountProviders1790924400000 } from "../../db/migrations/2026/10/1790924400000-AddAccountProviders";
 import { AddMentorWorkspace1791244800000 } from "../../db/migrations/2026/10/1791244800000-AddMentorWorkspace";
 import { AddMentorGenerations1791248400000 } from "../../db/migrations/2026/10/1791248400000-AddMentorGenerations";
+import { AddMentorPlanGeneration1791252000000 } from "../../db/migrations/2026/10/1791252000000-AddMentorPlanGeneration";
 import { MentorConversationStore } from "../conversation/mentor-conversation.store";
 import { MentorProfileStore } from "../profile/mentor-profile.store";
 import { MentorAccountAccess } from "../access/mentor-account-access";
@@ -25,6 +26,9 @@ import { GenerationStore } from "./generation.store";
 import { GenerationPrompt } from "./generation-prompt";
 import { CloudflareProvider, type PromptMessage } from "./cloudflare-provider";
 import { GenerationService } from "./generation.service";
+import { PlanPrompt } from "../pathway/plan-prompt";
+import { PlanGenerationStore } from "../pathway/plan-generation.store";
+import { MentorPathwayStore } from "../pathway/mentor-pathway.store";
 import type { ProviderUpdate } from "./provider-sse";
 
 const integration =
@@ -50,6 +54,7 @@ integration("mentor generation ledger in disposable PostgreSQL", () => {
         AddAccountProviders1790924400000,
         AddMentorWorkspace1791244800000,
         AddMentorGenerations1791248400000,
+        AddMentorPlanGeneration1791252000000,
       ],
     });
     await db.initialize();
@@ -256,7 +261,9 @@ integration("mentor generation ledger in disposable PostgreSQL", () => {
     const service = new GenerationService(
       store,
       new GenerationPrompt(profiles, conversations),
-      new WaitingProvider()
+      new WaitingProvider(),
+      new PlanPrompt(profiles, new MentorPathwayStore(db)),
+      new PlanGenerationStore(db)
     );
     const started = await store.start(
       account,
@@ -325,7 +332,9 @@ integration("mentor generation ledger in disposable PostgreSQL", () => {
     const generation = new GenerationService(
       store,
       new GenerationPrompt(profiles, conversations),
-      new CloudflareProvider()
+      new CloudflareProvider(),
+      new PlanPrompt(profiles, new MentorPathwayStore(db)),
+      new PlanGenerationStore(db)
     );
     const module = await Test.createTestingModule({
       controllers: [MentorGenerationController],

@@ -5,7 +5,13 @@ import { buildApiUrl } from "@/api/request-url";
 export type GenerationEvent =
   | { event: "accepted"; generationId: string; userMessageId: string }
   | { event: "text_delta"; delta: string; sequence: number }
-  | { event: "completed"; messageId: string; remaining: number }
+  | { event: "progress"; stage: "planning" }
+  | {
+      event: "completed";
+      messageId: string;
+      remaining: number;
+      proposalId?: string;
+    }
   | { event: "failed"; code: string; partial: boolean; canRetry: boolean }
   | { event: "cancelled"; partial: boolean };
 export type GenerationReceipt = {
@@ -13,6 +19,7 @@ export type GenerationReceipt = {
   state: string;
   userMessageId: string | null;
   messageId: string | null;
+  proposalId: string | null;
   content: string | null;
   partial: boolean;
   failureCode: string | null;
@@ -55,6 +62,7 @@ export async function* parseGenerationStream(
           ![
             "accepted",
             "text_delta",
+            "progress",
             "completed",
             "failed",
             "cancelled",
@@ -75,6 +83,7 @@ export async function sendGeneration(
   conversationId: string,
   content: string,
   clientRequestId: string,
+  intent: "chat" | "propose_plan",
   signal: AbortSignal,
   onEvent: (event: GenerationEvent) => void
 ): Promise<GenerationReceipt | null> {
@@ -90,7 +99,7 @@ export async function sendGeneration(
         "Content-Type": "application/json",
         Accept: "text/event-stream, application/json",
       },
-      body: JSON.stringify({ content, clientRequestId, intent: "chat" }),
+      body: JSON.stringify({ content, clientRequestId, intent }),
       signal: AbortSignal.any([signal, AbortSignal.timeout(60_000)]),
     });
   } catch {

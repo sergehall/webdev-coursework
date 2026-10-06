@@ -2,10 +2,12 @@ import { ArrowUpRight, Check, Flag, Route } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import type { Milestone } from "./mentor-demo";
+import type { SavedProposal } from "./mentor-api";
 
 type Props = {
   path: Milestone[] | null;
   proposal: Milestone[] | null;
+  metadata: SavedProposal["metadata"];
   done: string[];
   busy: boolean;
   onCreate: () => void;
@@ -17,6 +19,7 @@ type Props = {
 export default function LearningPathPanel({
   path,
   proposal,
+  metadata,
   done,
   busy,
   onCreate,
@@ -60,6 +63,10 @@ export default function LearningPathPanel({
                   ? "Review this replacement. Your current path stays active until you accept it."
                   : "Make this path yours when you're ready. Accepting it does not mark any skills complete."}
               </p>
+              {metadata?.rationale && <p>{metadata.rationale}</p>}
+              {metadata?.assumptions?.length ? (
+                <p>Assumptions: {metadata.assumptions.join(" ")}</p>
+              ) : null}
               <div className="mentor-actions">
                 <button
                   className="mentor-button mentor-primary"
@@ -117,6 +124,16 @@ export default function LearningPathPanel({
                     <p>
                       <strong>Done when:</strong> {step.doneWhen}
                     </p>
+                    {step.sourceIds?.map((id) => {
+                      const source = metadata?.sources.find(
+                        (item) => item.sourceId === id
+                      );
+                      return source ? (
+                        <Link key={id} to={source.href}>
+                          {source.title}
+                        </Link>
+                      ) : null;
+                    })}
                     {!proposal && (
                       <div className="mentor-step-actions">
                         <label>

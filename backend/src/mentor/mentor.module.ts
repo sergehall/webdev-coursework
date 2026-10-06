@@ -9,6 +9,8 @@ import { GenerationStore } from "./generation/generation.store";
 import { GenerationPrompt } from "./generation/generation-prompt";
 import { CloudflareProvider } from "./generation/cloudflare-provider";
 import { GenerationService } from "./generation/generation.service";
+import { PlanPrompt } from "./pathway/plan-prompt";
+import { PlanGenerationStore } from "./pathway/plan-generation.store";
 
 @Module({
   imports: [AnalyticsModule],
@@ -21,6 +23,8 @@ import { GenerationService } from "./generation/generation.service";
     GenerationPrompt,
     CloudflareProvider,
     GenerationService,
+    PlanPrompt,
+    PlanGenerationStore,
   ],
 })
 export class MentorModule {}

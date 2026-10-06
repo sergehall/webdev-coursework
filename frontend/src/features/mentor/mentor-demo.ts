@@ -16,6 +16,7 @@ export type Milestone = {
   title: string;
   doneWhen: string;
   hours: number;
+  sourceIds?: string[];
 };
 export type DemoScenario =
   | "normal"

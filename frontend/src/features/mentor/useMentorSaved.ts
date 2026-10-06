@@ -1,12 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 
 import {
-  createExamplePath,
-  exampleReply,
   type DemoScenario,
   type LearnerProfile,
   type Message,
-  type Milestone,
 } from "./mentor-demo";
 import {
   mentorRequest,
@@ -29,8 +26,9 @@ import {
   type LastMentorRequest,
   type MentorRequestKind as Kind,
 } from "./mentor-message-map";
-import { previewFailure } from "./mentor-preview-failures";
 import { mergeGenerationReceipt } from "./mentor-generation-receipt";
+import { runMentorPreview } from "./mentor-preview-flow";
+import { toggleSavedProgress } from "./mentor-progress";
 export function useMentorSaved(
   enabled: boolean,
   onSessionExpired?: () => void
@@ -196,17 +194,15 @@ export function useMentorSaved(
     if (liveGenerationId.current)
       void cancelGeneration(liveGenerationId.current).catch(() => undefined);
     setBusy(null);
+    if (busy === "plan")
+      setMessages((old) =>
+        old.filter((message) => !String(message.id).startsWith("pending-"))
+      );
     setNotice("Response stopped. Saved messages remain in your history.");
   };
   const send = async (text: string, kind: Kind = "chat", retryId?: string) => {
     const input = text.trim();
     if (!profile || !input || input.length > 4000 || busy) return;
-    if (generationEnabled && kind === "plan") {
-      setNotice(
-        "Personal plan generation is coming in the next stage. You can ask the mentor for guidance now."
-      );
-      return;
-    }
     const request = ++sequence.current;
     const clientRequestId = retryId ?? crypto.randomUUID();
     lastRequest.current = { text: input, kind, requestId: clientRequestId };
@@ -229,10 +225,24 @@ export function useMentorSaved(
         const controller = new AbortController();
         liveController.current = controller;
         const pendingId = `pending-${clientRequestId}`;
-        const showReceipt = (receipt: GenerationReceipt) => {
+        const loadProposal = async (proposalId: string | null) => {
+          if (kind === "plan" && proposalId)
+            setProposal(
+              await mentorRequest<SavedProposal>(`proposals/${proposalId}`)
+            );
+        };
+        const showReceipt = async (receipt: GenerationReceipt) => {
           setMessages((old) =>
             mergeGenerationReceipt(old, receipt, input, pendingId)
           );
+          if (
+            kind === "plan" &&
+            ["failed", "cancelled", "abandoned"].includes(receipt.state)
+          )
+            setMessages((old) =>
+              old.filter((message) => message.id !== pendingId)
+            );
+          await loadProposal(receipt.proposalId);
           if (receipt.state === "completed" || receipt.state === "cancelled") {
             lastRequest.current = null;
             setError("");
@@ -259,6 +269,7 @@ export function useMentorSaved(
             id,
             input,
             clientRequestId,
+            kind === "plan" ? "propose_plan" : "chat",
             controller.signal,
             (event) => {
               if (sequence.current !== request) return;
@@ -267,9 +278,18 @@ export function useMentorSaved(
                 setMessages((old) => [
                   ...old,
                   { id: event.userMessageId, role: "user", text: input },
-                  { id: pendingId, role: "assistant", text: "" },
+                  {
+                    id: pendingId,
+                    role: "assistant",
+                    text:
+                      kind === "plan" ? "Building your four-week draft…" : "",
+                  },
                 ]);
-                setNotice("Generating an English response…");
+                setNotice(
+                  kind === "plan"
+                    ? "Checking your learning plan…"
+                    : "Generating an English response…"
+                );
               } else if (event.event === "text_delta") {
                 setMessages((old) =>
                   old.map((m) =>
@@ -278,19 +298,34 @@ export function useMentorSaved(
                       : m
                   )
                 );
+              } else if (event.event === "progress") {
+                setNotice("Building and validating your four-week draft…");
               } else if (event.event === "completed") {
                 setMessages((old) =>
                   old.map((m) =>
-                    m.id === pendingId ? { ...m, id: event.messageId } : m
+                    m.id === pendingId
+                      ? {
+                          ...m,
+                          id: event.messageId,
+                          text: event.proposalId
+                            ? "Your four-week draft is ready. Review the milestones and sources in My path before accepting it."
+                            : m.text,
+                        }
+                      : m
                   )
                 );
+                if (event.proposalId)
+                  void loadProposal(event.proposalId).catch(fail);
                 setNotice(
-                  `Response saved. ${event.remaining} daily requests remain.`
+                  `${event.proposalId ? "Draft saved" : "Response saved"}. ${event.remaining} daily requests remain.`
                 );
                 lastRequest.current = null;
               } else if (event.event === "failed") {
                 setMessages((old) =>
-                  old.map((m) =>
+                  (kind === "plan"
+                    ? old.filter((m) => m.id !== pendingId)
+                    : old
+                  ).map((m) =>
                     m.id === pendingId ? { ...m, partial: Boolean(m.text) } : m
                   )
                 );
@@ -303,7 +338,10 @@ export function useMentorSaved(
                 lastRequest.current = { text: input, kind, requestId: null };
               } else if (event.event === "cancelled") {
                 setMessages((old) =>
-                  old.map((m) =>
+                  (kind === "plan"
+                    ? old.filter((m) => m.id !== pendingId)
+                    : old
+                  ).map((m) =>
                     m.id === pendingId ? { ...m, partial: Boolean(m.text) } : m
                   )
                 );
@@ -312,11 +350,14 @@ export function useMentorSaved(
               }
             }
           );
-          if (receipt && sequence.current === request) showReceipt(receipt);
+          if (receipt && sequence.current === request)
+            await showReceipt(receipt);
         } catch (reason) {
           if (sequence.current === request && liveGenerationId.current) {
             try {
-              showReceipt(await generationStatus(liveGenerationId.current));
+              await showReceipt(
+                await generationStatus(liveGenerationId.current)
+              );
             } catch {
               fail(reason);
             }
@@ -327,46 +368,17 @@ export function useMentorSaved(
         }
         return;
       }
-      const user = await mentorRequest<SavedMessage>(
-        `conversations/${id}/preview-messages`,
-        "POST",
-        { content: input }
+      const previewProposal = await runMentorPreview(
+        id,
+        input,
+        kind,
+        profile,
+        scenario,
+        () => sequence.current === request,
+        (message) => setMessages((old) => [...old, mapMessage(message)])
       );
-      setMessages((old) => [...old, mapMessage(user)]);
       if (sequence.current !== request) return;
-      if (scenario !== "normal") {
-        setError(previewFailure(scenario));
-        setNotice("");
-        return;
-      }
-      const reply =
-        kind === "plan"
-          ? "Your four-week example path is ready to review. Check each practice step before accepting it."
-          : exampleReply(input, profile);
-      const assistant = await mentorRequest<SavedMessage>(
-        `conversations/${id}/preview-replies`,
-        "POST",
-        { content: reply }
-      );
-      setMessages((old) => [...old, mapMessage(assistant)]);
-      if (sequence.current !== request) return;
-      if (kind === "plan") {
-        const saved = await mentorRequest<{
-          id: string;
-          baseRevision: number;
-          profileVersion: number;
-          milestones: Milestone[];
-        }>("proposals", "POST", {
-          milestones: createExamplePath(profile),
-          expectedProfileVersion: profile.version,
-        });
-        setProposal({
-          id: saved.id,
-          base_revision: saved.baseRevision,
-          profile_version: saved.profileVersion,
-          content: saved.milestones,
-        });
-      }
+      if (previewProposal) setProposal(previewProposal);
       setNotice(
         kind === "plan"
           ? "Draft saved. Review it in My path."
@@ -399,34 +411,8 @@ export function useMentorSaved(
   };
   const toggleDone = async (id: string) => {
     if (!pathRecord) return;
-    const current = pathRecord.progress.find(
-      (entry) => entry.milestone_id === id
-    );
     try {
-      const updated = await mentorRequest<{
-        milestoneId: string;
-        status: "done" | "pending";
-        version: number;
-      }>(`pathway/milestones/${encodeURIComponent(id)}`, "PATCH", {
-        status: current?.status === "done" ? "pending" : "done",
-        expectedVersion: current?.version ?? null,
-        expectedPathVersion: pathRecord.version,
-      });
-      setPath((old) =>
-        old
-          ? {
-              ...old,
-              progress: [
-                ...old.progress.filter((entry) => entry.milestone_id !== id),
-                {
-                  milestone_id: id,
-                  status: updated.status,
-                  version: updated.version,
-                },
-              ],
-            }
-          : old
-      );
+      setPath(await toggleSavedProgress(pathRecord, id));
     } catch (reason) {
       fail(reason);
     }
@@ -446,6 +432,7 @@ export function useMentorSaved(
     setProfile,
     messages,
     proposal: proposalRecord?.content ?? null,
+    pathMetadata: proposalRecord?.metadata ?? pathRecord?.metadata ?? null,
     path: pathRecord?.milestones ?? null,
     done:
       pathRecord?.progress

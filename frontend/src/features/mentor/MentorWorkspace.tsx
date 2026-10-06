@@ -50,6 +50,9 @@ export default function MentorWorkspace({
     if (scroll.current && follow.current)
       scroll.current.scrollTop = scroll.current.scrollHeight;
   }, [mentor.messages]);
+  useEffect(() => {
+    if (!sample && saved.proposal) setTab("path");
+  }, [sample, saved.proposal]);
   const { profile } = mentor;
   if (!sample && saved.loading)
     return (
@@ -262,12 +265,10 @@ export default function MentorWorkspace({
                   more manageable.
                 </p>
                 <div className="mentor-suggestions">
-                  {(sample || !saved.generationEnabled) && (
-                    <button onClick={createPlan}>
-                      Build my four-week plan
-                      <ArrowRight size={16} aria-hidden="true" />
-                    </button>
-                  )}
+                  <button onClick={createPlan}>
+                    Build my four-week plan
+                    <ArrowRight size={16} aria-hidden="true" />
+                  </button>
                   {[
                     "Explain my next step",
                     "Make this easier",
@@ -389,6 +390,7 @@ export default function MentorWorkspace({
           <LearningPathPanel
             path={mentor.path}
             proposal={mentor.proposal}
+            metadata={sample ? null : saved.pathMetadata}
             done={mentor.done}
             busy={Boolean(mentor.busy)}
             onCreate={createPlan}
