@@ -37,6 +37,7 @@ const existingNames = [
   "AddAccountPreferences1790917200000",
   "AddAccountSessions1790920800000",
   "AddAccountProviders1790924400000",
+  "AddMentorWorkspace1791244800000",
 ];
 
 function writeMigration(root: string, timestamp: number, name = "First") {
