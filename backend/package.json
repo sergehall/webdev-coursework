@@ -10,7 +10,7 @@
     "node": "24.x"
   },
   "scripts": {
-    "build": "rimraf dist && nest build",
+    "build": "yarn knowledge:check && rimraf dist && nest build",
     "start:prod": "node dist/main.js",
     "start": "nest start",
     "build2": "rimraf dist && tsc -p tsconfig.json",
@@ -37,7 +37,9 @@
     "migration:show": "typeorm-ts-node-commonjs migration:show -d src/db/data-source.ts",
     "owner:configure:local": "node scripts/configure-local-owner.cjs",
     "migration:run:local": "node scripts/run-local-migrations.cjs",
-    "migration:run:accounts": "node scripts/run-account-migrations.cjs"
+    "migration:run:accounts": "node scripts/run-account-migrations.cjs",
+    "knowledge:generate": "node -r ts-node/register scripts/mentor/build-catalog.ts --write",
+    "knowledge:check": "node -r ts-node/register scripts/mentor/build-catalog.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1146.0",

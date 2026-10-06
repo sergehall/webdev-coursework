@@ -1,0 +1,295 @@
+{
+  "course:CS56": {
+    "skillIds": ["java", "sql", "networking"],
+    "goals": ["backend", "full-stack"],
+    "difficulty": "advanced",
+    "learningOutcomes": [
+      "Explore Java exceptions, concurrency, I/O and network APIs.",
+      "Relate JDBC and Servlets to server application development."
+    ],
+    "reviewedAt": "2026-10-05",
+    "sourceHashes": {
+      "frontend/src/courses/catalog/webDeveloperCourses.ts": "e5395954031b2ec03900732196ce3141c1764884abbc136f433e81e3706100e9",
+      "frontend/src/courses/catalog/activeCourses.ts": "daafee9d01c8591ed608bbd5a7bf5b09d8db870a43c28c73f6e62c8fa4dd1053"
+    }
+  },
+  "course:CS60": {
+    "skillIds": ["sql", "data-modeling"],
+    "goals": ["backend", "full-stack"],
+    "difficulty": "foundation",
+    "learningOutcomes": [
+      "Describe relational data modeling and normalization.",
+      "Use SQL to create, retrieve and manipulate data."
+    ],
+    "reviewedAt": "2026-10-05",
+    "sourceHashes": {
+      "frontend/src/courses/catalog/webDeveloperCourses.ts": "e5395954031b2ec03900732196ce3141c1764884abbc136f433e81e3706100e9",
+      "frontend/src/courses/catalog/activeCourses.ts": "daafee9d01c8591ed608bbd5a7bf5b09d8db870a43c28c73f6e62c8fa4dd1053"
+    }
+  },
+  "course:CS70": {
+    "skillIds": ["networking"],
+    "goals": ["backend", "full-stack"],
+    "difficulty": "foundation",
+    "learningOutcomes": [
+      "Explain addressing, protocols and network architectures.",
+      "Relate subnetting and server services to connected applications."
+    ],
+    "reviewedAt": "2026-10-05",
+    "sourceHashes": {
+      "frontend/src/courses/catalog/webDeveloperCourses.ts": "e5395954031b2ec03900732196ce3141c1764884abbc136f433e81e3706100e9",
+      "frontend/src/courses/catalog/activeCourses.ts": "daafee9d01c8591ed608bbd5a7bf5b09d8db870a43c28c73f6e62c8fa4dd1053"
+    }
+  },
+  "course:CS79A": {
+    "skillIds": ["cloud", "aws"],
+    "goals": ["frontend", "backend", "full-stack", "explore"],
+    "difficulty": "foundation",
+    "learningOutcomes": [
+      "Compare cloud services and deployment concepts.",
+      "Evaluate technical and business benefits of cloud computing."
+    ],
+    "reviewedAt": "2026-10-05",
+    "sourceHashes": {
+      "frontend/src/courses/catalog/webDeveloperCourses.ts": "e5395954031b2ec03900732196ce3141c1764884abbc136f433e81e3706100e9",
+      "frontend/src/courses/catalog/activeCourses.ts": "daafee9d01c8591ed608bbd5a7bf5b09d8db870a43c28c73f6e62c8fa4dd1053"
+    }
+  },
+  "course:CS80": {
+    "skillIds": ["html", "css", "javascript", "dom"],
+    "goals": ["frontend", "full-stack", "explore"],
+    "difficulty": "foundation",
+    "learningOutcomes": [
+      "Identify HTML, CSS and JavaScript roles in web applications.",
+      "Practice browser-based page structure and interactions."
+    ],
+    "reviewedAt": "2026-10-05",
+    "sourceHashes": {
+      "frontend/src/courses/catalog/webDeveloperCourses.ts": "e5395954031b2ec03900732196ce3141c1764884abbc136f433e81e3706100e9",
+      "frontend/src/courses/catalog/activeCourses.ts": "daafee9d01c8591ed608bbd5a7bf5b09d8db870a43c28c73f6e62c8fa4dd1053"
+    }
+  },
+  "course:CS81": {
+    "skillIds": ["javascript", "dom"],
+    "goals": ["frontend", "full-stack", "explore"],
+    "difficulty": "foundation",
+    "learningOutcomes": [
+      "Use JavaScript programming concepts.",
+      "Connect client-side JavaScript to the document object model."
+    ],
+    "reviewedAt": "2026-10-05",
+    "sourceHashes": {
+      "frontend/src/courses/catalog/webDeveloperCourses.ts": "e5395954031b2ec03900732196ce3141c1764884abbc136f433e81e3706100e9",
+      "frontend/src/courses/catalog/activeCourses.ts": "daafee9d01c8591ed608bbd5a7bf5b09d8db870a43c28c73f6e62c8fa4dd1053"
+    }
+  },
+  "course:CS85": {
+    "skillIds": ["php", "sql"],
+    "goals": ["backend", "full-stack"],
+    "difficulty": "intermediate",
+    "learningOutcomes": [
+      "Explain server-side form processing with PHP.",
+      "Connect dynamic web pages to backend data."
+    ],
+    "reviewedAt": "2026-10-05",
+    "sourceHashes": {
+      "frontend/src/courses/catalog/webDeveloperCourses.ts": "e5395954031b2ec03900732196ce3141c1764884abbc136f433e81e3706100e9",
+      "frontend/src/courses/catalog/activeCourses.ts": "daafee9d01c8591ed608bbd5a7bf5b09d8db870a43c28c73f6e62c8fa4dd1053"
+    }
+  },
+  "course:CS87A": {
+    "skillIds": ["python"],
+    "goals": ["backend", "full-stack", "explore"],
+    "difficulty": "foundation",
+    "learningOutcomes": [
+      "Use Python syntax, control flow, strings and I/O.",
+      "Describe classes and regular expressions."
+    ],
+    "reviewedAt": "2026-10-05",
+    "sourceHashes": {
+      "frontend/src/courses/catalog/webDeveloperCourses.ts": "e5395954031b2ec03900732196ce3141c1764884abbc136f433e81e3706100e9",
+      "frontend/src/courses/catalog/activeCourses.ts": "daafee9d01c8591ed608bbd5a7bf5b09d8db870a43c28c73f6e62c8fa4dd1053"
+    }
+  },
+  "course:CS79C": {
+    "skillIds": ["aws", "cloud"],
+    "goals": ["backend", "full-stack"],
+    "difficulty": "intermediate",
+    "learningOutcomes": [
+      "Describe EC2 and Elastic Beanstalk application deployment.",
+      "Explain load balancing and scalability in distributed cloud systems."
+    ],
+    "reviewedAt": "2026-10-05",
+    "sourceHashes": {
+      "frontend/src/courses/catalog/webDeveloperCourses.ts": "e5395954031b2ec03900732196ce3141c1764884abbc136f433e81e3706100e9",
+      "frontend/src/courses/catalog/activeCourses.ts": "daafee9d01c8591ed608bbd5a7bf5b09d8db870a43c28c73f6e62c8fa4dd1053"
+    }
+  },
+  "course:CS79D": {
+    "skillIds": ["aws", "cloud", "security"],
+    "goals": ["backend", "full-stack"],
+    "difficulty": "intermediate",
+    "learningOutcomes": [
+      "Explain the AWS Shared Responsibility Model.",
+      "Relate layered controls to confidentiality, integrity and availability."
+    ],
+    "reviewedAt": "2026-10-05",
+    "sourceHashes": {
+      "frontend/src/courses/catalog/webDeveloperCourses.ts": "e5395954031b2ec03900732196ce3141c1764884abbc136f433e81e3706100e9",
+      "frontend/src/courses/catalog/activeCourses.ts": "daafee9d01c8591ed608bbd5a7bf5b09d8db870a43c28c73f6e62c8fa4dd1053"
+    }
+  },
+  "module:CS80:1": {
+    "skillIds": ["html", "web-development"],
+    "goals": ["frontend", "full-stack", "explore"],
+    "difficulty": "foundation",
+    "learningOutcomes": [
+      "Distinguish browser and server responsibilities.",
+      "Describe lists and form controls in an HTML page."
+    ],
+    "reviewedAt": "2026-10-05",
+    "sourceHashes": {
+      "frontend/src/courses/CS80/assignments/mod1/AssignmentMod1.tsx": "4e83dc0644bda71e2a67901ce27f140653b9a21d0d980558f7dfd445832e1660"
+    },
+    "title": "Introduction to HTML5 and web concepts",
+    "summary": "Introduces client-side versus server-side programming, HTML lists and forms."
+  },
+  "module:CS80:2": {
+    "skillIds": ["css"],
+    "goals": ["frontend", "full-stack", "explore"],
+    "difficulty": "foundation",
+    "learningOutcomes": ["Explain the role of CSS in page presentation."],
+    "reviewedAt": "2026-10-05",
+    "sourceHashes": {
+      "frontend/src/courses/CS80/assignments/mod2/AssignmentMod2.tsx": "7ce30d22268341cc4ee036d5dc71d0af4e753be65af5755f3b06851d79e37f55"
+    },
+    "title": "Styling web pages with CSS3",
+    "summary": "Introduces styling web pages using Cascading Style Sheets."
+  },
+  "module:CS80:3": {
+    "skillIds": ["javascript"],
+    "goals": ["frontend", "full-stack", "explore"],
+    "difficulty": "foundation",
+    "learningOutcomes": ["Use conditions and loops for small browser interactions."],
+    "reviewedAt": "2026-10-05",
+    "sourceHashes": {
+      "frontend/src/courses/CS80/assignments/mod3/AssignmentMod3.tsx": "76cbc635e9c22c115292114db9bb4d1cce2c568990af19fec7fba9d0fcc5e7c2"
+    },
+    "title": "JavaScript interactions and control flow",
+    "summary": "Practices browser prompts, alerts, conditions, loops and output."
+  },
+  "module:CS80:4": {
+    "skillIds": ["javascript", "dom"],
+    "goals": ["frontend", "full-stack", "explore"],
+    "difficulty": "foundation",
+    "learningOutcomes": ["Explain how the DOM represents page content."],
+    "reviewedAt": "2026-10-05",
+    "sourceHashes": {
+      "frontend/src/courses/CS80/assignments/mod4/AssignmentMod4.tsx": "b63bc790eef8ef564e34f383ddd0f63704b3231eb04b5bf85fb48fc72335f4b0"
+    },
+    "title": "Document Object Model",
+    "summary": "Introduces the Document Object Model through a web programming assignment."
+  },
+  "module:CS80:5": {
+    "skillIds": ["javascript", "dom"],
+    "goals": ["frontend", "full-stack", "explore"],
+    "difficulty": "foundation",
+    "learningOutcomes": [
+      "Compare XML and JSON as data representations.",
+      "Identify the role of jQuery in browser scripting."
+    ],
+    "reviewedAt": "2026-10-05",
+    "sourceHashes": {
+      "frontend/src/courses/CS80/assignments/mod5/AssignmentMod5.tsx": "f0a1f5a0b44610c8d3b9001aad3957cee0e2735187efb3536e49db962b7ad72e"
+    },
+    "title": "jQuery, XML and JSON",
+    "summary": "Introduces jQuery and the XML and JSON data formats."
+  },
+  "module:CS81:1": {
+    "skillIds": ["javascript"],
+    "goals": ["frontend", "full-stack", "explore"],
+    "difficulty": "foundation",
+    "learningOutcomes": ["Recognize JavaScript values, types and operators."],
+    "reviewedAt": "2026-10-05",
+    "sourceHashes": {
+      "frontend/src/courses/CS81/assignments/mod1/AssignmentMod1.tsx": "645aab9a6493b02d19b4767629ca4b59efb9b5de7a84e27bfcb67beb803d01ee"
+    },
+    "title": "JavaScript values, types and operators",
+    "summary": "Introduces JavaScript values, types and operators, alongside development environment setup."
+  },
+  "module:CS81:2": {
+    "skillIds": ["javascript"],
+    "goals": ["frontend", "full-stack", "explore"],
+    "difficulty": "foundation",
+    "learningOutcomes": ["Organize a small JavaScript program with conditions and loops."],
+    "reviewedAt": "2026-10-05",
+    "sourceHashes": {
+      "frontend/src/courses/CS81/assignments/mod2/AssignmentMod2.tsx": "877b3d968781eafa3dd40c5b0e257c3715830cb3780feaf38f95562f44c4dec2"
+    },
+    "title": "JavaScript program structure",
+    "summary": "Practices external JavaScript, FizzBuzz, conditions and loops."
+  },
+  "module:CS81:3": {
+    "skillIds": ["javascript", "git"],
+    "goals": ["frontend", "full-stack", "explore"],
+    "difficulty": "foundation",
+    "learningOutcomes": [
+      "Break small calculations into functions.",
+      "Describe a Git-based development workflow."
+    ],
+    "reviewedAt": "2026-10-05",
+    "sourceHashes": {
+      "frontend/src/courses/CS81/assignments/mod3/AssignmentMod3.tsx": "cc150fd40e5f84f90437008d2e8ea9316a24f68516ac2bd3bb93ac83d91a2c9c"
+    },
+    "title": "Functions and Git workflow",
+    "summary": "Introduces functions through a math toolkit exercise and covers Git and GitHub workflow."
+  },
+  "module:CS81:4": {
+    "skillIds": ["javascript"],
+    "goals": ["frontend", "full-stack", "explore"],
+    "difficulty": "foundation",
+    "learningOutcomes": ["Represent structured data with objects and arrays."],
+    "reviewedAt": "2026-10-05",
+    "sourceHashes": {
+      "frontend/src/courses/CS81/assignments/mod4/AssignmentMod4.tsx": "4916cb80b3bbab9c3f8b978ca4cd4cb17ba8035edcd752e48f0ca7909a2aea69"
+    },
+    "title": "JavaScript objects and arrays",
+    "summary": "Explores data structures through reading-tracker review and personal data object exercises."
+  },
+  "module:CS79A:1": {
+    "skillIds": ["cloud", "aws"],
+    "goals": ["frontend", "backend", "full-stack", "explore"],
+    "difficulty": "foundation",
+    "learningOutcomes": ["Identify the starting materials for studying cloud computing."],
+    "reviewedAt": "2026-10-05",
+    "sourceHashes": {
+      "frontend/src/courses/CS79A/assignments/mod1/AssignmentMod1.tsx": "3a95383625e94c8a9ca98d141082fe6af43f2d61ab79ab558b7eb3c150bcf66a"
+    },
+    "title": "Cloud course introduction and learner lab orientation",
+    "summary": "Provides a course introduction and an AWS learner-lab orientation. External lab participation may require separate course access."
+  },
+  "roadmap:web-developer": {
+    "skillIds": [
+      "web-development",
+      "html",
+      "css",
+      "javascript",
+      "cloud",
+      "networking",
+      "data-modeling",
+      "security"
+    ],
+    "goals": ["frontend", "backend", "full-stack", "explore"],
+    "difficulty": "foundation",
+    "learningOutcomes": [
+      "Understand the breadth of frontend and backend web engineering.",
+      "Distinguish a personal learning plan from academic program requirements."
+    ],
+    "reviewedAt": "2026-10-05",
+    "sourceHashes": {
+      "frontend/src/features/pathway/programSections.tsx": "f01df1e95e4ea96e98c93270a16fa73320f3b9639d96afd382fae76699c6a4ea"
+    },
+    "title": "Web developer program overview",
+    "summary": "The published roadmap describes frontend and backend web development across browser technologies, frameworks, cloud hosting, networks, databases and security. It presents a course-taking sequence and recommends an academic counselor for an individual educational plan. Program information is labeled effective Fall 2023; it is not a current enrollment or graduation eligibility determination."
+  }
+}

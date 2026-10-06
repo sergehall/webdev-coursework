@@ -1,0 +1,1327 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "skillIds": ["java", "sql", "networking"],
+      "goals": ["backend", "full-stack"],
+      "difficulty": "advanced",
+      "learningOutcomes": [
+        "Explore Java exceptions, concurrency, I/O and network APIs.",
+        "Relate JDBC and Servlets to server application development."
+      ],
+      "reviewedAt": "2026-10-05",
+      "sourcePaths": [
+        "frontend/src/courses/catalog/activeCourses.ts",
+        "frontend/src/courses/catalog/webDeveloperCourses.ts"
+      ],
+      "availability": "published",
+      "id": "course:CS56",
+      "kind": "course",
+      "courseId": "CS56",
+      "title": "Advanced Java Programming",
+      "summary": "Continues Java programming beyond CS 55 with advanced APIs and platform-independent application development. Covers exceptions, multithreading, multimedia, I/O, JDBC, Servlets, RMI, and networking.",
+      "href": "/coursework/CS56/assignment",
+      "prerequisites": [
+        {
+          "kind": "advisory",
+          "description": "CS 55"
+        }
+      ],
+      "access": {
+        "kind": "public"
+      }
+    },
+    {
+      "skillIds": ["sql", "data-modeling"],
+      "goals": ["backend", "full-stack"],
+      "difficulty": "foundation",
+      "learningOutcomes": [
+        "Describe relational data modeling and normalization.",
+        "Use SQL to create, retrieve and manipulate data."
+      ],
+      "reviewedAt": "2026-10-05",
+      "sourcePaths": [
+        "frontend/src/courses/catalog/activeCourses.ts",
+        "frontend/src/courses/catalog/webDeveloperCourses.ts"
+      ],
+      "availability": "published",
+      "id": "course:CS60",
+      "kind": "course",
+      "courseId": "CS60",
+      "title": "Database Concepts & Applications",
+      "summary": "Explores relational database design, normalization, data integrity, and concurrency control. Students apply concepts using MySQL, creating and managing data with SQL and stored programs.",
+      "href": "/coursework/CS60/assignment",
+      "prerequisites": [
+        {
+          "kind": "advisory",
+          "description": "CS 3"
+        }
+      ],
+      "access": {
+        "kind": "public"
+      }
+    },
+    {
+      "skillIds": ["networking"],
+      "goals": ["backend", "full-stack"],
+      "difficulty": "foundation",
+      "learningOutcomes": [
+        "Explain addressing, protocols and network architectures.",
+        "Relate subnetting and server services to connected applications."
+      ],
+      "reviewedAt": "2026-10-05",
+      "sourcePaths": [
+        "frontend/src/courses/catalog/activeCourses.ts",
+        "frontend/src/courses/catalog/webDeveloperCourses.ts"
+      ],
+      "availability": "published",
+      "id": "course:CS70",
+      "kind": "course",
+      "courseId": "CS70",
+      "title": "Network Fundamentals and Architecture",
+      "summary": "Covers core networking concepts and architectures, including topologies, protocols, addressing, subnetting, and distributed systems. Includes hands-on labs with server tools and real-world services.",
+      "href": "/coursework/CS70/assignment",
+      "prerequisites": [
+        {
+          "kind": "advisory",
+          "description": "One programming course."
+        }
+      ],
+      "access": {
+        "kind": "public"
+      }
+    },
+    {
+      "skillIds": ["cloud", "aws"],
+      "goals": ["frontend", "backend", "full-stack", "explore"],
+      "difficulty": "foundation",
+      "learningOutcomes": [
+        "Compare cloud services and deployment concepts.",
+        "Evaluate technical and business benefits of cloud computing."
+      ],
+      "reviewedAt": "2026-10-05",
+      "sourcePaths": [
+        "frontend/src/courses/catalog/activeCourses.ts",
+        "frontend/src/courses/catalog/webDeveloperCourses.ts"
+      ],
+      "availability": "published",
+      "id": "course:CS79A",
+      "kind": "course",
+      "courseId": "CS79A",
+      "title": "Introduction to Cloud Computing",
+      "summary": "Introduces cloud computing and its shift from local infrastructure to scalable internet-based systems. Covers cloud technologies, services, providers, career paths, and industry demand.",
+      "href": "/coursework/CS79A/assignment",
+      "prerequisites": [
+        {
+          "kind": "official",
+          "description": "CS 3"
+        }
+      ],
+      "access": {
+        "kind": "public"
+      }
+    },
+    {
+      "skillIds": ["aws", "cloud"],
+      "goals": ["backend", "full-stack"],
+      "difficulty": "intermediate",
+      "learningOutcomes": [
+        "Describe EC2 and Elastic Beanstalk application deployment.",
+        "Explain load balancing and scalability in distributed cloud systems."
+      ],
+      "reviewedAt": "2026-10-05",
+      "sourcePaths": [
+        "frontend/src/courses/catalog/activeCourses.ts",
+        "frontend/src/courses/catalog/webDeveloperCourses.ts"
+      ],
+      "availability": "published",
+      "id": "course:CS79C",
+      "kind": "course",
+      "courseId": "CS79C",
+      "title": "Compute Engines in Amazon Web Services",
+      "summary": "Explores cloud architecture using AWS services like EC2 and Elastic Beanstalk. Focuses on distributed systems, scalability, and core design principles for building cloud-native applications.",
+      "href": "/coursework/CS79C/assignment",
+      "prerequisites": [
+        {
+          "kind": "advisory",
+          "description": "CS 79A and (CS 55 or CS 87A or CS 83R or CS 85)"
+        }
+      ],
+      "access": {
+        "kind": "public"
+      }
+    },
+    {
+      "skillIds": ["aws", "cloud", "security"],
+      "goals": ["backend", "full-stack"],
+      "difficulty": "intermediate",
+      "learningOutcomes": [
+        "Explain the AWS Shared Responsibility Model.",
+        "Relate layered controls to confidentiality, integrity and availability."
+      ],
+      "reviewedAt": "2026-10-05",
+      "sourcePaths": [
+        "frontend/src/courses/catalog/activeCourses.ts",
+        "frontend/src/courses/catalog/webDeveloperCourses.ts"
+      ],
+      "availability": "published",
+      "id": "course:CS79D",
+      "kind": "course",
+      "courseId": "CS79D",
+      "title": "Security in Amazon Web Services",
+      "summary": "Focuses on securing systems and data in AWS. Covers the Shared Responsibility Model, AWS security tools, and how automation and layered controls protect cloud infrastructure.",
+      "href": "/coursework/CS79D/assignment",
+      "prerequisites": [
+        {
+          "kind": "advisory",
+          "description": "CS 79A",
+          "sourceId": "course:CS79A"
+        }
+      ],
+      "access": {
+        "kind": "public"
+      }
+    },
+    {
+      "skillIds": ["html", "css", "javascript", "dom"],
+      "goals": ["frontend", "full-stack", "explore"],
+      "difficulty": "foundation",
+      "learningOutcomes": [
+        "Identify HTML, CSS and JavaScript roles in web applications.",
+        "Practice browser-based page structure and interactions."
+      ],
+      "reviewedAt": "2026-10-05",
+      "sourcePaths": [
+        "frontend/src/courses/catalog/activeCourses.ts",
+        "frontend/src/courses/catalog/webDeveloperCourses.ts"
+      ],
+      "availability": "published",
+      "id": "course:CS80",
+      "kind": "course",
+      "courseId": "CS80",
+      "title": "Internet Programming",
+      "summary": "This course covers the basic technologies used to program Web-based applications. Topics include: HTML5, Cascading Style Sheets (CSS), XML and JavaScript, along with a basic survey of the latest extensions on JS.",
+      "href": "/coursework/CS80/assignment",
+      "prerequisites": [
+        {
+          "kind": "advisory",
+          "description": "CS 3"
+        }
+      ],
+      "access": {
+        "kind": "public"
+      }
+    },
+    {
+      "skillIds": ["javascript", "dom"],
+      "goals": ["frontend", "full-stack", "explore"],
+      "difficulty": "foundation",
+      "learningOutcomes": [
+        "Use JavaScript programming concepts.",
+        "Connect client-side JavaScript to the document object model."
+      ],
+      "reviewedAt": "2026-10-05",
+      "sourcePaths": [
+        "frontend/src/courses/catalog/activeCourses.ts",
+        "frontend/src/courses/catalog/webDeveloperCourses.ts"
+      ],
+      "availability": "published",
+      "id": "course:CS81",
+      "kind": "course",
+      "courseId": "CS81",
+      "title": "JavaScript Programming",
+      "summary": "Introduces core programming concepts using JavaScript for client-side web development. Covers the DOM and building interactive, high-performance websites with visual or audible outputs.",
+      "href": "/coursework/CS81/assignment",
+      "prerequisites": [
+        {
+          "kind": "advisory",
+          "description": "CS 3"
+        }
+      ],
+      "access": {
+        "kind": "public"
+      }
+    },
+    {
+      "skillIds": ["php", "sql"],
+      "goals": ["backend", "full-stack"],
+      "difficulty": "intermediate",
+      "learningOutcomes": [
+        "Explain server-side form processing with PHP.",
+        "Connect dynamic web pages to backend data."
+      ],
+      "reviewedAt": "2026-10-05",
+      "sourcePaths": [
+        "frontend/src/courses/catalog/activeCourses.ts",
+        "frontend/src/courses/catalog/webDeveloperCourses.ts"
+      ],
+      "availability": "published",
+      "id": "course:CS85",
+      "kind": "course",
+      "courseId": "CS85",
+      "title": "PHP Programming",
+      "summary": "Introduces PHP for server-side web development, focusing on processing form data, accessing databases, and generating dynamic web pages with embedded PHP in HTML.",
+      "href": "/coursework/CS85/assignment",
+      "prerequisites": [
+        {
+          "kind": "advisory",
+          "description": "CS 81",
+          "sourceId": "course:CS81"
+        }
+      ],
+      "access": {
+        "kind": "public"
+      }
+    },
+    {
+      "skillIds": ["python"],
+      "goals": ["backend", "full-stack", "explore"],
+      "difficulty": "foundation",
+      "learningOutcomes": [
+        "Use Python syntax, control flow, strings and I/O.",
+        "Describe classes and regular expressions."
+      ],
+      "reviewedAt": "2026-10-05",
+      "sourcePaths": [
+        "frontend/src/courses/catalog/activeCourses.ts",
+        "frontend/src/courses/catalog/webDeveloperCourses.ts"
+      ],
+      "availability": "published",
+      "id": "course:CS87A",
+      "kind": "course",
+      "courseId": "CS87A",
+      "title": "Python Programming",
+      "summary": "Introduces Python programming, covering syntax, control flow, I/O, strings, classes, and regular expressions across various application domains using Windows or Mac environments.",
+      "href": "/coursework/CS87A/assignment",
+      "prerequisites": [
+        {
+          "kind": "advisory",
+          "description": "CS 3"
+        }
+      ],
+      "access": {
+        "kind": "public"
+      }
+    },
+    {
+      "skillIds": ["cloud", "aws"],
+      "goals": ["frontend", "backend", "full-stack", "explore"],
+      "difficulty": "foundation",
+      "learningOutcomes": ["Identify the starting materials for studying cloud computing."],
+      "reviewedAt": "2026-10-05",
+      "sourcePaths": ["frontend/src/courses/CS79A/assignments/mod1/AssignmentMod1.tsx"],
+      "availability": "published",
+      "id": "module:CS79A:1",
+      "kind": "module",
+      "courseId": "CS79A",
+      "moduleId": "1",
+      "title": "Cloud course introduction and learner lab orientation",
+      "summary": "Provides a course introduction and an AWS learner-lab orientation. External lab participation may require separate course access.",
+      "href": "/coursework/CS79A/assignment/1",
+      "prerequisites": [],
+      "access": {
+        "kind": "public"
+      }
+    },
+    {
+      "skillIds": ["html", "web-development"],
+      "goals": ["frontend", "full-stack", "explore"],
+      "difficulty": "foundation",
+      "learningOutcomes": [
+        "Distinguish browser and server responsibilities.",
+        "Describe lists and form controls in an HTML page."
+      ],
+      "reviewedAt": "2026-10-05",
+      "sourcePaths": ["frontend/src/courses/CS80/assignments/mod1/AssignmentMod1.tsx"],
+      "availability": "published",
+      "id": "module:CS80:1",
+      "kind": "module",
+      "courseId": "CS80",
+      "moduleId": "1",
+      "title": "Introduction to HTML5 and web concepts",
+      "summary": "Introduces client-side versus server-side programming, HTML lists and forms.",
+      "href": "/coursework/CS80/assignment/1",
+      "prerequisites": [],
+      "access": {
+        "kind": "public"
+      }
+    },
+    {
+      "skillIds": ["css"],
+      "goals": ["frontend", "full-stack", "explore"],
+      "difficulty": "foundation",
+      "learningOutcomes": ["Explain the role of CSS in page presentation."],
+      "reviewedAt": "2026-10-05",
+      "sourcePaths": ["frontend/src/courses/CS80/assignments/mod2/AssignmentMod2.tsx"],
+      "availability": "published",
+      "id": "module:CS80:2",
+      "kind": "module",
+      "courseId": "CS80",
+      "moduleId": "2",
+      "title": "Styling web pages with CSS3",
+      "summary": "Introduces styling web pages using Cascading Style Sheets.",
+      "href": "/coursework/CS80/assignment/2",
+      "prerequisites": [
+        {
+          "kind": "learning",
+          "sourceId": "module:CS80:1",
+          "description": "Suggested learning sequence within this course, not an official enrollment prerequisite."
+        }
+      ],
+      "access": {
+        "kind": "course-progress",
+        "previousSourceId": "module:CS80:1"
+      }
+    },
+    {
+      "skillIds": ["javascript"],
+      "goals": ["frontend", "full-stack", "explore"],
+      "difficulty": "foundation",
+      "learningOutcomes": ["Use conditions and loops for small browser interactions."],
+      "reviewedAt": "2026-10-05",
+      "sourcePaths": ["frontend/src/courses/CS80/assignments/mod3/AssignmentMod3.tsx"],
+      "availability": "published",
+      "id": "module:CS80:3",
+      "kind": "module",
+      "courseId": "CS80",
+      "moduleId": "3",
+      "title": "JavaScript interactions and control flow",
+      "summary": "Practices browser prompts, alerts, conditions, loops and output.",
+      "href": "/coursework/CS80/assignment/3",
+      "prerequisites": [
+        {
+          "kind": "learning",
+          "sourceId": "module:CS80:2",
+          "description": "Suggested learning sequence within this course, not an official enrollment prerequisite."
+        }
+      ],
+      "access": {
+        "kind": "course-progress",
+        "previousSourceId": "module:CS80:2"
+      }
+    },
+    {
+      "skillIds": ["javascript", "dom"],
+      "goals": ["frontend", "full-stack", "explore"],
+      "difficulty": "foundation",
+      "learningOutcomes": ["Explain how the DOM represents page content."],
+      "reviewedAt": "2026-10-05",
+      "sourcePaths": ["frontend/src/courses/CS80/assignments/mod4/AssignmentMod4.tsx"],
+      "availability": "published",
+      "id": "module:CS80:4",
+      "kind": "module",
+      "courseId": "CS80",
+      "moduleId": "4",
+      "title": "Document Object Model",
+      "summary": "Introduces the Document Object Model through a web programming assignment.",
+      "href": "/coursework/CS80/assignment/4",
+      "prerequisites": [
+        {
+          "kind": "learning",
+          "sourceId": "module:CS80:3",
+          "description": "Suggested learning sequence within this course, not an official enrollment prerequisite."
+        }
+      ],
+      "access": {
+        "kind": "course-progress",
+        "previousSourceId": "module:CS80:3"
+      }
+    },
+    {
+      "skillIds": ["javascript", "dom"],
+      "goals": ["frontend", "full-stack", "explore"],
+      "difficulty": "foundation",
+      "learningOutcomes": [
+        "Compare XML and JSON as data representations.",
+        "Identify the role of jQuery in browser scripting."
+      ],
+      "reviewedAt": "2026-10-05",
+      "sourcePaths": ["frontend/src/courses/CS80/assignments/mod5/AssignmentMod5.tsx"],
+      "availability": "published",
+      "id": "module:CS80:5",
+      "kind": "module",
+      "courseId": "CS80",
+      "moduleId": "5",
+      "title": "jQuery, XML and JSON",
+      "summary": "Introduces jQuery and the XML and JSON data formats.",
+      "href": "/coursework/CS80/assignment/5",
+      "prerequisites": [
+        {
+          "kind": "learning",
+          "sourceId": "module:CS80:4",
+          "description": "Suggested learning sequence within this course, not an official enrollment prerequisite."
+        }
+      ],
+      "access": {
+        "kind": "course-progress",
+        "previousSourceId": "module:CS80:4"
+      }
+    },
+    {
+      "skillIds": ["javascript"],
+      "goals": ["frontend", "full-stack", "explore"],
+      "difficulty": "foundation",
+      "learningOutcomes": ["Recognize JavaScript values, types and operators."],
+      "reviewedAt": "2026-10-05",
+      "sourcePaths": ["frontend/src/courses/CS81/assignments/mod1/AssignmentMod1.tsx"],
+      "availability": "published",
+      "id": "module:CS81:1",
+      "kind": "module",
+      "courseId": "CS81",
+      "moduleId": "1",
+      "title": "JavaScript values, types and operators",
+      "summary": "Introduces JavaScript values, types and operators, alongside development environment setup.",
+      "href": "/coursework/CS81/assignment/1",
+      "prerequisites": [],
+      "access": {
+        "kind": "public"
+      }
+    },
+    {
+      "skillIds": ["javascript"],
+      "goals": ["frontend", "full-stack", "explore"],
+      "difficulty": "foundation",
+      "learningOutcomes": ["Organize a small JavaScript program with conditions and loops."],
+      "reviewedAt": "2026-10-05",
+      "sourcePaths": ["frontend/src/courses/CS81/assignments/mod2/AssignmentMod2.tsx"],
+      "availability": "published",
+      "id": "module:CS81:2",
+      "kind": "module",
+      "courseId": "CS81",
+      "moduleId": "2",
+      "title": "JavaScript program structure",
+      "summary": "Practices external JavaScript, FizzBuzz, conditions and loops.",
+      "href": "/coursework/CS81/assignment/2",
+      "prerequisites": [
+        {
+          "kind": "learning",
+          "sourceId": "module:CS81:1",
+          "description": "Suggested learning sequence within this course, not an official enrollment prerequisite."
+        }
+      ],
+      "access": {
+        "kind": "course-progress",
+        "previousSourceId": "module:CS81:1"
+      }
+    },
+    {
+      "skillIds": ["javascript", "git"],
+      "goals": ["frontend", "full-stack", "explore"],
+      "difficulty": "foundation",
+      "learningOutcomes": [
+        "Break small calculations into functions.",
+        "Describe a Git-based development workflow."
+      ],
+      "reviewedAt": "2026-10-05",
+      "sourcePaths": ["frontend/src/courses/CS81/assignments/mod3/AssignmentMod3.tsx"],
+      "availability": "published",
+      "id": "module:CS81:3",
+      "kind": "module",
+      "courseId": "CS81",
+      "moduleId": "3",
+      "title": "Functions and Git workflow",
+      "summary": "Introduces functions through a math toolkit exercise and covers Git and GitHub workflow.",
+      "href": "/coursework/CS81/assignment/3",
+      "prerequisites": [
+        {
+          "kind": "learning",
+          "sourceId": "module:CS81:2",
+          "description": "Suggested learning sequence within this course, not an official enrollment prerequisite."
+        }
+      ],
+      "access": {
+        "kind": "course-progress",
+        "previousSourceId": "module:CS81:2"
+      }
+    },
+    {
+      "skillIds": ["javascript"],
+      "goals": ["frontend", "full-stack", "explore"],
+      "difficulty": "foundation",
+      "learningOutcomes": ["Represent structured data with objects and arrays."],
+      "reviewedAt": "2026-10-05",
+      "sourcePaths": ["frontend/src/courses/CS81/assignments/mod4/AssignmentMod4.tsx"],
+      "availability": "published",
+      "id": "module:CS81:4",
+      "kind": "module",
+      "courseId": "CS81",
+      "moduleId": "4",
+      "title": "JavaScript objects and arrays",
+      "summary": "Explores data structures through reading-tracker review and personal data object exercises.",
+      "href": "/coursework/CS81/assignment/4",
+      "prerequisites": [
+        {
+          "kind": "learning",
+          "sourceId": "module:CS81:3",
+          "description": "Suggested learning sequence within this course, not an official enrollment prerequisite."
+        }
+      ],
+      "access": {
+        "kind": "course-progress",
+        "previousSourceId": "module:CS81:3"
+      }
+    },
+    {
+      "skillIds": [
+        "web-development",
+        "html",
+        "css",
+        "javascript",
+        "cloud",
+        "networking",
+        "data-modeling",
+        "security"
+      ],
+      "goals": ["frontend", "backend", "full-stack", "explore"],
+      "difficulty": "foundation",
+      "learningOutcomes": [
+        "Understand the breadth of frontend and backend web engineering.",
+        "Distinguish a personal learning plan from academic program requirements."
+      ],
+      "reviewedAt": "2026-10-05",
+      "sourcePaths": ["frontend/src/features/pathway/programSections.tsx"],
+      "availability": "published",
+      "id": "roadmap:web-developer",
+      "kind": "resource",
+      "title": "Web developer program overview",
+      "summary": "The published roadmap describes frontend and backend web development across browser technologies, frameworks, cloud hosting, networks, databases and security. It presents a course-taking sequence and recommends an academic counselor for an individual educational plan. Program information is labeled effective Fall 2023; it is not a current enrollment or graduation eligibility determination.",
+      "href": "/web-developer-path",
+      "prerequisites": [],
+      "access": {
+        "kind": "public"
+      }
+    }
+  ],
+  "skills": [
+    "html",
+    "css",
+    "javascript",
+    "dom",
+    "git",
+    "java",
+    "sql",
+    "data-modeling",
+    "networking",
+    "cloud",
+    "aws",
+    "php",
+    "python",
+    "security",
+    "web-development"
+  ],
+  "coverage": {
+    "activeCourses": 10,
+    "reviewedCourses": 10,
+    "registeredModules": 103,
+    "reviewedModules": 10,
+    "courses": [
+      {
+        "courseId": "CS56",
+        "declaredSlots": 15,
+        "registered": 15,
+        "reviewed": 0
+      },
+      {
+        "courseId": "CS60",
+        "declaredSlots": 10,
+        "registered": 10,
+        "reviewed": 0
+      },
+      {
+        "courseId": "CS70",
+        "declaredSlots": 16,
+        "registered": 16,
+        "reviewed": 0
+      },
+      {
+        "courseId": "CS79A",
+        "declaredSlots": 8,
+        "registered": 8,
+        "reviewed": 1
+      },
+      {
+        "courseId": "CS79C",
+        "declaredSlots": 10,
+        "registered": 10,
+        "reviewed": 0
+      },
+      {
+        "courseId": "CS79D",
+        "declaredSlots": 8,
+        "registered": 8,
+        "reviewed": 0
+      },
+      {
+        "courseId": "CS80",
+        "declaredSlots": 6,
+        "registered": 6,
+        "reviewed": 5
+      },
+      {
+        "courseId": "CS81",
+        "declaredSlots": 12,
+        "registered": 12,
+        "reviewed": 4
+      },
+      {
+        "courseId": "CS85",
+        "declaredSlots": 12,
+        "registered": 12,
+        "reviewed": 0
+      },
+      {
+        "courseId": "CS87A",
+        "declaredSlots": 6,
+        "registered": 6,
+        "reviewed": 0
+      }
+    ],
+    "excluded": [
+      {
+        "id": "module:CS56:1",
+        "sourcePath": "frontend/src/courses/CS56/assignments/mod1/AssignmentMod1.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS56:2",
+        "sourcePath": "frontend/src/courses/CS56/assignments/mod2/AssignmentMod2.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS56:3",
+        "sourcePath": "frontend/src/courses/CS56/assignments/mod3/AssignmentMod3.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS56:4",
+        "sourcePath": "frontend/src/courses/CS56/assignments/mod4/AssignmentMod4.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS56:5",
+        "sourcePath": "frontend/src/courses/CS56/assignments/mod5/AssignmentMod5.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS56:6",
+        "sourcePath": "frontend/src/courses/CS56/assignments/mod6/AssignmentMod6.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS56:7",
+        "sourcePath": "frontend/src/courses/CS56/assignments/mod7/AssignmentMod7.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS56:8",
+        "sourcePath": "frontend/src/courses/CS56/assignments/mod8/AssignmentMod8.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS56:9",
+        "sourcePath": "frontend/src/courses/CS56/assignments/mod9/AssignmentMod9.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS56:10",
+        "sourcePath": "frontend/src/courses/CS56/assignments/mod10/AssignmentMod10.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS56:11",
+        "sourcePath": "frontend/src/courses/CS56/assignments/mod11/AssignmentMod11.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS56:12",
+        "sourcePath": "frontend/src/courses/CS56/assignments/mod12/AssignmentMod12.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS56:13",
+        "sourcePath": "frontend/src/courses/CS56/assignments/mod13/AssignmentMod13.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS56:14",
+        "sourcePath": "frontend/src/courses/CS56/assignments/mod14/AssignmentMod14.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS56:15",
+        "sourcePath": "frontend/src/courses/CS56/assignments/mod15/AssignmentMod15.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS60:1",
+        "sourcePath": "frontend/src/courses/CS60/assignments/mod1/AssignmentMod1.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS60:2",
+        "sourcePath": "frontend/src/courses/CS60/assignments/mod2/AssignmentMod2.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS60:3",
+        "sourcePath": "frontend/src/courses/CS60/assignments/mod3/AssignmentMod3.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS60:4",
+        "sourcePath": "frontend/src/courses/CS60/assignments/mod4/AssignmentMod4.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS60:5",
+        "sourcePath": "frontend/src/courses/CS60/assignments/mod5/AssignmentMod5.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS60:6",
+        "sourcePath": "frontend/src/courses/CS60/assignments/mod6/AssignmentMod6.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS60:7",
+        "sourcePath": "frontend/src/courses/CS60/assignments/mod7/AssignmentMod7.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS60:8",
+        "sourcePath": "frontend/src/courses/CS60/assignments/mod8/AssignmentMod8.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS60:9",
+        "sourcePath": "frontend/src/courses/CS60/assignments/mod9/AssignmentMod9.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS60:10",
+        "sourcePath": "frontend/src/courses/CS60/assignments/mod10/AssignmentMod10.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS70:1",
+        "sourcePath": "frontend/src/courses/CS70/assignments/mod1/AssignmentMod1.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS70:2",
+        "sourcePath": "frontend/src/courses/CS70/assignments/mod2/AssignmentMod2.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS70:3",
+        "sourcePath": "frontend/src/courses/CS70/assignments/mod3/AssignmentMod3.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS70:4",
+        "sourcePath": "frontend/src/courses/CS70/assignments/mod4/AssignmentMod4.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS70:5",
+        "sourcePath": "frontend/src/courses/CS70/assignments/mod5/AssignmentMod5.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS70:6",
+        "sourcePath": "frontend/src/courses/CS70/assignments/mod6/AssignmentMod6.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS70:7",
+        "sourcePath": "frontend/src/courses/CS70/assignments/mod7/AssignmentMod7.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS70:8",
+        "sourcePath": "frontend/src/courses/CS70/assignments/mod8/AssignmentMod8.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS70:9",
+        "sourcePath": "frontend/src/courses/CS70/assignments/mod9/AssignmentMod9.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS70:10",
+        "sourcePath": "frontend/src/courses/CS70/assignments/mod10/AssignmentMod10.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS70:11",
+        "sourcePath": "frontend/src/courses/CS70/assignments/mod11/AssignmentMod11.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS70:12",
+        "sourcePath": "frontend/src/courses/CS70/assignments/mod12/AssignmentMod12.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS70:13",
+        "sourcePath": "frontend/src/courses/CS70/assignments/mod13/AssignmentMod13.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS70:14",
+        "sourcePath": "frontend/src/courses/CS70/assignments/mod14/AssignmentMod14.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS70:15",
+        "sourcePath": "frontend/src/courses/CS70/assignments/mod15/AssignmentMod15.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS70:16",
+        "sourcePath": "frontend/src/courses/CS70/assignments/mod16/AssignmentMod16.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS79A:2",
+        "sourcePath": "frontend/src/courses/CS79A/assignments/mod2/AssignmentMod2.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS79A:3",
+        "sourcePath": "frontend/src/courses/CS79A/assignments/mod3/AssignmentMod3.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS79A:4",
+        "sourcePath": "frontend/src/courses/CS79A/assignments/mod4/AssignmentMod4.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS79A:5",
+        "sourcePath": "frontend/src/courses/CS79A/assignments/mod5/AssignmentMod5.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS79A:6",
+        "sourcePath": "frontend/src/courses/CS79A/assignments/mod6/AssignmentMod6.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS79A:7",
+        "sourcePath": "frontend/src/courses/CS79A/assignments/mod7/AssignmentMod7.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS79A:8",
+        "sourcePath": "frontend/src/courses/CS79A/assignments/mod8/AssignmentMod8.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS79C:1",
+        "sourcePath": "frontend/src/courses/CS79C/assignments/mod1/AssignmentMod1.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS79C:2",
+        "sourcePath": "frontend/src/courses/CS79C/assignments/mod2/AssignmentMod2.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS79C:3",
+        "sourcePath": "frontend/src/courses/CS79C/assignments/mod3/AssignmentMod3.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS79C:4",
+        "sourcePath": "frontend/src/courses/CS79C/assignments/mod4/AssignmentMod4.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS79C:5",
+        "sourcePath": "frontend/src/courses/CS79C/assignments/mod5/AssignmentMod5.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS79C:6",
+        "sourcePath": "frontend/src/courses/CS79C/assignments/mod6/AssignmentMod6.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS79C:7",
+        "sourcePath": "frontend/src/courses/CS79C/assignments/mod7/AssignmentMod7.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS79C:8",
+        "sourcePath": "frontend/src/courses/CS79C/assignments/mod8/AssignmentMod8.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS79C:9",
+        "sourcePath": "frontend/src/courses/CS79C/assignments/mod9/AssignmentMod9.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS79C:10",
+        "sourcePath": "frontend/src/courses/CS79C/assignments/mod10/AssignmentMod10.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS79D:1",
+        "sourcePath": "frontend/src/courses/CS79D/assignments/mod1/AssignmentMod1.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS79D:2",
+        "sourcePath": "frontend/src/courses/CS79D/assignments/mod2/AssignmentMod2.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS79D:3",
+        "sourcePath": "frontend/src/courses/CS79D/assignments/mod3/AssignmentMod3.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS79D:4",
+        "sourcePath": "frontend/src/courses/CS79D/assignments/mod4/AssignmentMod4.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS79D:5",
+        "sourcePath": "frontend/src/courses/CS79D/assignments/mod5/AssignmentMod5.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS79D:6",
+        "sourcePath": "frontend/src/courses/CS79D/assignments/mod6/AssignmentMod6.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS79D:7",
+        "sourcePath": "frontend/src/courses/CS79D/assignments/mod7/AssignmentMod7.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS79D:8",
+        "sourcePath": "frontend/src/courses/CS79D/assignments/mod8/AssignmentMod8.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS80:6",
+        "sourcePath": "frontend/src/courses/CS80/assignments/mod6/AssignmentMod6.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS81:5",
+        "sourcePath": "frontend/src/courses/CS81/assignments/mod5/AssignmentMod5.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS81:6",
+        "sourcePath": "frontend/src/courses/CS81/assignments/mod6/AssignmentMod6.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS81:7",
+        "sourcePath": "frontend/src/courses/CS81/assignments/mod7/AssignmentMod7.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS81:8",
+        "sourcePath": "frontend/src/courses/CS81/assignments/mod8/AssignmentMod8.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS81:9",
+        "sourcePath": "frontend/src/courses/CS81/assignments/mod9/AssignmentMod9.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS81:10",
+        "sourcePath": "frontend/src/courses/CS81/assignments/mod10/AssignmentMod10.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS81:11",
+        "sourcePath": "frontend/src/courses/CS81/assignments/mod11/AssignmentMod11.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS81:12",
+        "sourcePath": "frontend/src/courses/CS81/assignments/mod12/AssignmentMod12.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS85:1",
+        "sourcePath": "frontend/src/courses/CS85/assignments/mod1/AssignmentMod1.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS85:2",
+        "sourcePath": "frontend/src/courses/CS85/assignments/mod2/AssignmentMod2.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS85:3",
+        "sourcePath": "frontend/src/courses/CS85/assignments/mod3/AssignmentMod3.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS85:4",
+        "sourcePath": "frontend/src/courses/CS85/assignments/mod4/AssignmentMod4.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS85:5",
+        "sourcePath": "frontend/src/courses/CS85/assignments/mod5/AssignmentMod5.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS85:6",
+        "sourcePath": "frontend/src/courses/CS85/assignments/mod6/AssignmentMod6.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS85:7",
+        "sourcePath": "frontend/src/courses/CS85/assignments/mod7/AssignmentMod7.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS85:8",
+        "sourcePath": "frontend/src/courses/CS85/assignments/mod8/AssignmentMod8.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS85:9",
+        "sourcePath": "frontend/src/courses/CS85/assignments/mod9/AssignmentMod9.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS85:10",
+        "sourcePath": "frontend/src/courses/CS85/assignments/mod10/AssignmentMod10.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS85:11",
+        "sourcePath": "frontend/src/courses/CS85/assignments/mod11/AssignmentMod11.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS85:12",
+        "sourcePath": "frontend/src/courses/CS85/assignments/mod12/AssignmentMod12.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS87A:1",
+        "sourcePath": "frontend/src/courses/CS87A/assignments/mod1/AssignmentMod1.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS87A:2",
+        "sourcePath": "frontend/src/courses/CS87A/assignments/mod2/AssignmentMod2.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS87A:3",
+        "sourcePath": "frontend/src/courses/CS87A/assignments/mod3/AssignmentMod3.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS87A:4",
+        "sourcePath": "frontend/src/courses/CS87A/assignments/mod4/AssignmentMod4.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS87A:5",
+        "sourcePath": "frontend/src/courses/CS87A/assignments/mod5/AssignmentMod5.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "module:CS87A:6",
+        "sourcePath": "frontend/src/courses/CS87A/assignments/mod6/AssignmentMod6.tsx",
+        "reason": "not-reviewed: no approved summary; content availability is not inferred from registration"
+      },
+      {
+        "id": "course:CS82",
+        "reason": "roadmap-option-only: no active coursework component"
+      },
+      {
+        "id": "course:CS83",
+        "reason": "roadmap-option-only: no active coursework component"
+      },
+      {
+        "id": "course:CS83R",
+        "reason": "roadmap-option-only: no active coursework component"
+      },
+      {
+        "id": "course:CS73A",
+        "reason": "roadmap-option-only: no active coursework component"
+      },
+      {
+        "id": "course:CS73B",
+        "reason": "roadmap-option-only: no active coursework component"
+      },
+      {
+        "id": "course:CS73C",
+        "reason": "roadmap-option-only: no active coursework component"
+      },
+      {
+        "id": "course:CS73L",
+        "reason": "roadmap-option-only: no active coursework component"
+      },
+      {
+        "id": "course:CS77A",
+        "reason": "roadmap-option-only: no active coursework component"
+      },
+      {
+        "id": "course:CS77B",
+        "reason": "roadmap-option-only: no active coursework component"
+      },
+      {
+        "id": "course:CS79B",
+        "reason": "roadmap-option-only: no active coursework component"
+      },
+      {
+        "id": "course:CS79E",
+        "reason": "roadmap-option-only: no active coursework component"
+      },
+      {
+        "id": "course:CS79Y",
+        "reason": "roadmap-option-only: no active coursework component"
+      },
+      {
+        "id": "course:CS79Z",
+        "reason": "roadmap-option-only: no active coursework component"
+      },
+      {
+        "id": "course:CIS67",
+        "reason": "roadmap-option-only: no active coursework component"
+      }
+    ]
+  },
+  "inputHashes": {
+    "backend/src/mentor/knowledge/reviews.json": "9ef1464898387058e597f6494dec96d6e621aebbf032c8c2d115b7b45b3118f3",
+    "frontend/src/courses/assignment-registry/assignmentCS56Components.ts": "ee80625068af5485e4bfbe001d24e03c54b27394a5b89a0db9ff4c21305e27a8",
+    "frontend/src/courses/assignment-registry/assignmentCS60Components.ts": "b2655f10ea34010d6fb644ca71dcafac8f2487c1a02cc0b0fc47902943e2a3a8",
+    "frontend/src/courses/assignment-registry/assignmentCS70Components.ts": "ef5f2f634e2a0b21b3a70a87674430274185205d6b70a5db1eaac7f862840b66",
+    "frontend/src/courses/assignment-registry/assignmentCS79AComponents.ts": "525ddb53796d5e90ac3361ed23d363387bd9b0e3d30da8e17124e651156e3a09",
+    "frontend/src/courses/assignment-registry/assignmentCS79CComponents.ts": "2bf267256798a3583aad683f912437aeb8874b36915b40eaea3d7e6595536ce4",
+    "frontend/src/courses/assignment-registry/assignmentCS79DComponents.ts": "19bc9ffc3cde8663bf2600ae82191421b3cc95af51f55ec463e8343b099e48e7",
+    "frontend/src/courses/assignment-registry/assignmentCS80Components.ts": "637714b700f3c917d71a4106d54219ab72a51d756eb26118db9d9134a7f441c2",
+    "frontend/src/courses/assignment-registry/assignmentCS81Components.ts": "c8d8df9088aa692c9da232985e869106949a4d821b9f6460399904537c3f59fd",
+    "frontend/src/courses/assignment-registry/assignmentCS85Components.ts": "1b1893a5e24b33e1e3e88307051a7cc227fa9c251ab5d30684f8585bc38f72a8",
+    "frontend/src/courses/assignment-registry/assignmentCS87AComponents.ts": "49ee0150a1c0d17555c74c6bfea5fdea3ad1db1c21ed7338d8be7cd7da422185",
+    "frontend/src/courses/assignment-registry/completedCourseComponents.ts": "ec3654d96109152df5b7f7485f9f915d486381437e9a1c392105d630a62d4908",
+    "frontend/src/courses/assignment-registry/courseAssignmentRegistries.ts": "31e16a31ee37fa70e795cd735a29e9d6e7d3105c526e8bbc7153d8333865bba7",
+    "frontend/src/courses/catalog/activeCourses.ts": "daafee9d01c8591ed608bbd5a7bf5b09d8db870a43c28c73f6e62c8fa4dd1053",
+    "frontend/src/courses/catalog/webDeveloperCourses.ts": "e5395954031b2ec03900732196ce3141c1764884abbc136f433e81e3706100e9",
+    "frontend/src/courses/CS56/assignments/mod1/AssignmentMod1.tsx": "229f4aed04dc7cb488752f4a9ee16f3215fb331490765138c343f8fc68acc8d2",
+    "frontend/src/courses/CS56/assignments/mod10/AssignmentMod10.tsx": "b22418dfa6d874b82d86895ac9042201fc95587fb28c9058c631c35e485499a0",
+    "frontend/src/courses/CS56/assignments/mod11/AssignmentMod11.tsx": "ac4cb64dc50913a81c36292fbbd7154e9c48d7d15f012d4b6a3afd941bbbac2a",
+    "frontend/src/courses/CS56/assignments/mod12/AssignmentMod12.tsx": "d43a972b17e56a382d3548a59f8d396d82a8c2e8938a269189be7d3a5ed8be8c",
+    "frontend/src/courses/CS56/assignments/mod13/AssignmentMod13.tsx": "c41b3ba615c86967b270930150b108ca38f329cc9e14fc2d41823ed740744471",
+    "frontend/src/courses/CS56/assignments/mod14/AssignmentMod14.tsx": "4cc12ef925541440ec27c35873b33777c4384a7aac6b68db4d893d2e1baf047f",
+    "frontend/src/courses/CS56/assignments/mod15/AssignmentMod15.tsx": "8bf2064e41f337d168614ffee223efc6538e80295f3d33676a6b82f1836ffe5c",
+    "frontend/src/courses/CS56/assignments/mod2/AssignmentMod2.tsx": "40af45a952f88884f0db1bacc2e18da69debea531b02767ca4481bcb2eb9d8af",
+    "frontend/src/courses/CS56/assignments/mod3/AssignmentMod3.tsx": "b728fabcbd0927d641173b6679ca77e9f5c3c939949e9ccf082c7db251ad4c11",
+    "frontend/src/courses/CS56/assignments/mod4/AssignmentMod4.tsx": "509bae880a63d6163fb366ff8599f5c468bcee885ec2d371984e1e65c489e325",
+    "frontend/src/courses/CS56/assignments/mod5/AssignmentMod5.tsx": "4dc883da2e701f62790fb3f13722d2b9278ce1110248b867be0d09d65a5a3a3d",
+    "frontend/src/courses/CS56/assignments/mod6/AssignmentMod6.tsx": "e70fbaa9edb2a6a73962e89e62af2d29c0181ec0784262e0a964cbc31af2edc6",
+    "frontend/src/courses/CS56/assignments/mod7/AssignmentMod7.tsx": "6ee46d7d0767f9e6a081184b516d78c43939c7d34a498daf7729ad80616e3aab",
+    "frontend/src/courses/CS56/assignments/mod8/AssignmentMod8.tsx": "dd3742ab2712ce0185153e967bf32d35d7873db3aca62ba1f63062fc4e649c1e",
+    "frontend/src/courses/CS56/assignments/mod9/AssignmentMod9.tsx": "83000818ad2259213ec8bbaf2e4b57488af0711a0fbc94e6e30e0251f7131505",
+    "frontend/src/courses/CS60/assignments/mod1/AssignmentMod1.tsx": "92c663456ff8e8816400c215a3aa17e88547b1cdbe3b689c6c310c0c6f052d95",
+    "frontend/src/courses/CS60/assignments/mod10/AssignmentMod10.tsx": "b314f13af3b0cda6f2eb91841a4a4a6a7b7ec01d8dcd8e2c9e0578a1eb850ec1",
+    "frontend/src/courses/CS60/assignments/mod2/AssignmentMod2.tsx": "fa8f7ba600f79d2174d28364c05ab045d6bc810e0a7b5d2bd616899b7b570db4",
+    "frontend/src/courses/CS60/assignments/mod3/AssignmentMod3.tsx": "58b76eedaa3c368e562ebf6aa445ee9708adc152cf0b7177170bfe26a0437545",
+    "frontend/src/courses/CS60/assignments/mod4/AssignmentMod4.tsx": "5b01892c13d2b96abd83c0d6ce59dbb9f61e6a060f3403b7b0fb220242da9ca5",
+    "frontend/src/courses/CS60/assignments/mod5/AssignmentMod5.tsx": "43f5d4dbebb46118f4ee1e2612bc38815bb8f7494c3ecc5b98ff9b1ea28fb67b",
+    "frontend/src/courses/CS60/assignments/mod6/AssignmentMod6.tsx": "9b348c44c2a5c509f4a752d0b7712c25b83df74b28601852b955800dec28e311",
+    "frontend/src/courses/CS60/assignments/mod7/AssignmentMod7.tsx": "de7925da5b00fd8b8eab4721b33afaaec6f452b1e49f107230e11b8ad7f95a95",
+    "frontend/src/courses/CS60/assignments/mod8/AssignmentMod8.tsx": "f63b107c29c2795d6c59915d0d717f2fb965070505390e32d8c21ccbb9b17187",
+    "frontend/src/courses/CS60/assignments/mod9/AssignmentMod9.tsx": "f19a2af5b9872da1de1976104380eac90f0b4b88bb95b3944e3e8b96ca8aeee1",
+    "frontend/src/courses/CS70/assignments/mod1/AssignmentMod1.tsx": "951fe4169de71b73bd146175994aebd4bbd3443b36ab1136f14634f7d4fc20e6",
+    "frontend/src/courses/CS70/assignments/mod10/AssignmentMod10.tsx": "43bedb9e3adbc95daf5f16015befa82a36e0e062aec4bc7fa804201df36a5f96",
+    "frontend/src/courses/CS70/assignments/mod11/AssignmentMod11.tsx": "4c94dc50b730d495c14e9ce8bec4c5644871b9a78ba70aaf267efd2704eb8ad8",
+    "frontend/src/courses/CS70/assignments/mod12/AssignmentMod12.tsx": "1c4270b4ffe109c93b033bcb7dc97d4f322affe237bd28b229077ffde7cdfb90",
+    "frontend/src/courses/CS70/assignments/mod13/AssignmentMod13.tsx": "09c253cdd5b05f8dcf698fdbd5d5df4a6e9face78a77a8fac620ec9a8e7e4ebf",
+    "frontend/src/courses/CS70/assignments/mod14/AssignmentMod14.tsx": "8b2d9c6fcd0521540595affa0ca00d67914e915fce42800335412ac947ca1021",
+    "frontend/src/courses/CS70/assignments/mod15/AssignmentMod15.tsx": "4942bffe6feffff68f722a7edce88a7eb5ebdf080ede923e9240ddbae1506b1e",
+    "frontend/src/courses/CS70/assignments/mod16/AssignmentMod16.tsx": "2616495cc6722ebb107dcd4eb45c0cd814bc9e018959bb68263a4ca9e8d081f7",
+    "frontend/src/courses/CS70/assignments/mod2/AssignmentMod2.tsx": "55bfa03440bc1d63ae2371917bb9e50761459a454e533b5f3e691cf939a78f96",
+    "frontend/src/courses/CS70/assignments/mod3/AssignmentMod3.tsx": "c6d9d71a8b7fa53ceec1106b9cacb04465ecd77351ba08cc9ba89e4c00a4fe77",
+    "frontend/src/courses/CS70/assignments/mod4/AssignmentMod4.tsx": "6e7048ab287c5af352c233785f3d6ada48e453a3932f444d436fb0ccb596e76d",
+    "frontend/src/courses/CS70/assignments/mod5/AssignmentMod5.tsx": "d184fee30fdfe98b0748a8a267841cf31369c8143f39ff1bd1d617fc6bb57e66",
+    "frontend/src/courses/CS70/assignments/mod6/AssignmentMod6.tsx": "9149eac20eb97a733f4705cbca06538708542103bfcb87b8699fd8a60e1de8d4",
+    "frontend/src/courses/CS70/assignments/mod7/AssignmentMod7.tsx": "9cba6c32484eefe887bc3e78492003fc3c6dbf1f7c283bf34526dec5e214e9c0",
+    "frontend/src/courses/CS70/assignments/mod8/AssignmentMod8.tsx": "8b6b4fc273babe1bc9f2d924c5bf95b170f2d23ea99bf761ede132f2c7ddaab1",
+    "frontend/src/courses/CS70/assignments/mod9/AssignmentMod9.tsx": "d2c32ec7ddbf6528df875c70dfe45050d80c769db40167639ed404cc4234db0a",
+    "frontend/src/courses/CS79A/assignments/mod1/AssignmentMod1.tsx": "3a95383625e94c8a9ca98d141082fe6af43f2d61ab79ab558b7eb3c150bcf66a",
+    "frontend/src/courses/CS79A/assignments/mod2/AssignmentMod2.tsx": "ca8f1fe0f17840cba4eede322c740bcd2bd03f8334c25652b6a9fe061308e977",
+    "frontend/src/courses/CS79A/assignments/mod3/AssignmentMod3.tsx": "fab2e076988f1263d56dfa97f6dbfb8620955841ef27c302020a15b9243f4a05",
+    "frontend/src/courses/CS79A/assignments/mod4/AssignmentMod4.tsx": "4922f629d0b1a322533bc892387fb12039e977b292f9822594af0af015039a66",
+    "frontend/src/courses/CS79A/assignments/mod5/AssignmentMod5.tsx": "3514c396dafb2f2d04346ffc0b9817da06da973747314c943783a6c49b9a8ff1",
+    "frontend/src/courses/CS79A/assignments/mod6/AssignmentMod6.tsx": "cdf2010ed2a85c55fed83c382f0f105d8f736d61111a73a1c1829a87210b95dd",
+    "frontend/src/courses/CS79A/assignments/mod7/AssignmentMod7.tsx": "8aa82513784233edb6c856eebe3b1484d1862cf88b6dc6c8dcf74e1c8df5ed73",
+    "frontend/src/courses/CS79A/assignments/mod8/AssignmentMod8.tsx": "a72fba16f1da64fc20724b917472c9c7679208c11dff68e799dd15e1a3a2c10d",
+    "frontend/src/courses/CS79C/assignments/mod1/AssignmentMod1.tsx": "4654d83a47b3ba011cf2ca9cbbd1acbaec4676de51f4c4cf107c22ea75e1bb2d",
+    "frontend/src/courses/CS79C/assignments/mod10/AssignmentMod10.tsx": "f8722db6a7e400b8124e7f60f182a7d9af07c63678d8542935c741f677b35f32",
+    "frontend/src/courses/CS79C/assignments/mod2/AssignmentMod2.tsx": "c5964a3b936f13a975c2d1175d00be6a95026ddc71c3d9a7d29287191ff8205a",
+    "frontend/src/courses/CS79C/assignments/mod3/AssignmentMod3.tsx": "9d96139ecf943938a7e9e6d442b80d82bac868237ce2a4a9a30ef79d5a02db70",
+    "frontend/src/courses/CS79C/assignments/mod4/AssignmentMod4.tsx": "00552d197392291dae353a58ea76f3390126edbe605a95ce5f58735c30ed3bf5",
+    "frontend/src/courses/CS79C/assignments/mod5/AssignmentMod5.tsx": "db8c454aeea7e43bf208ca0adec26773ad9832ef5be9e514754165f3a46dbb82",
+    "frontend/src/courses/CS79C/assignments/mod6/AssignmentMod6.tsx": "462743cb175f40befadfe4d796864bcd4eabb085bb693c48c409420473d8233a",
+    "frontend/src/courses/CS79C/assignments/mod7/AssignmentMod7.tsx": "2f1592d91ff40c478fcb03d6675c48874379968c01c022bf776ad57e94c5c35f",
+    "frontend/src/courses/CS79C/assignments/mod8/AssignmentMod8.tsx": "e970e0f951851d102dc12001c5c31dd54ddb2c05fb8a6b2c6a859fd24ee7eec6",
+    "frontend/src/courses/CS79C/assignments/mod9/AssignmentMod9.tsx": "7ccf320cda67ec887280ca210ba5ec18adaceeedaa9815a9f214cdc3e2172593",
+    "frontend/src/courses/CS79D/assignments/mod1/AssignmentMod1.tsx": "a13de78d12e62ad991e598fc4a54def5312c0355d69c8202278f794c92884b50",
+    "frontend/src/courses/CS79D/assignments/mod2/AssignmentMod2.tsx": "708f0de2e183a94afaf4c1ff37d4f47da7014188c717f4586a4504ea7d0bce2e",
+    "frontend/src/courses/CS79D/assignments/mod3/AssignmentMod3.tsx": "5d4643d01439b46b4b03267df6f37734d219242e42c62cc58ae024f0d518eb2a",
+    "frontend/src/courses/CS79D/assignments/mod4/AssignmentMod4.tsx": "c6f2928ed1d41928eecf9b405dfa851f759d8622ef50b1f149569a325fe158cd",
+    "frontend/src/courses/CS79D/assignments/mod5/AssignmentMod5.tsx": "6d42e7e594ccb41e6340805fd9c8b504a251ea6a7fc649f661e4183f6ed08b19",
+    "frontend/src/courses/CS79D/assignments/mod6/AssignmentMod6.tsx": "e8f91c045723f549a51a7269dd964aaafe9d6e05e2af33d1b9705319e4e958ba",
+    "frontend/src/courses/CS79D/assignments/mod7/AssignmentMod7.tsx": "6a43e6de548f5c0d765586ac60f7fd166794c65c0cf9b2d751c11a1b16ea90aa",
+    "frontend/src/courses/CS79D/assignments/mod8/AssignmentMod8.tsx": "7e2f44a3628969221df02bf3ec54a7056e42133ff445e41e3c18256e49f94607",
+    "frontend/src/courses/CS80/assignments/mod1/AssignmentMod1.tsx": "4e83dc0644bda71e2a67901ce27f140653b9a21d0d980558f7dfd445832e1660",
+    "frontend/src/courses/CS80/assignments/mod2/AssignmentMod2.tsx": "7ce30d22268341cc4ee036d5dc71d0af4e753be65af5755f3b06851d79e37f55",
+    "frontend/src/courses/CS80/assignments/mod3/AssignmentMod3.tsx": "76cbc635e9c22c115292114db9bb4d1cce2c568990af19fec7fba9d0fcc5e7c2",
+    "frontend/src/courses/CS80/assignments/mod4/AssignmentMod4.tsx": "b63bc790eef8ef564e34f383ddd0f63704b3231eb04b5bf85fb48fc72335f4b0",
+    "frontend/src/courses/CS80/assignments/mod5/AssignmentMod5.tsx": "f0a1f5a0b44610c8d3b9001aad3957cee0e2735187efb3536e49db962b7ad72e",
+    "frontend/src/courses/CS80/assignments/mod6/AssignmentMod6.tsx": "48059e86b69216fd87cda557d8cc63ae8c6b615d50183467d6a9892532db555e",
+    "frontend/src/courses/CS81/assignments/mod1/AssignmentMod1.tsx": "645aab9a6493b02d19b4767629ca4b59efb9b5de7a84e27bfcb67beb803d01ee",
+    "frontend/src/courses/CS81/assignments/mod10/AssignmentMod10.tsx": "170c8d4813da52831650193fac48e051e242783ad4b92b63782d853279d87c97",
+    "frontend/src/courses/CS81/assignments/mod11/AssignmentMod11.tsx": "54d10ef665f65133f621fe2d6c731d81baa1a1edced1d93c075fb34f21f307ff",
+    "frontend/src/courses/CS81/assignments/mod12/AssignmentMod12.tsx": "2ff0d45bc9486bf9757ca9fd66119477597d3ad261f8d74c3c0426d9d65617c8",
+    "frontend/src/courses/CS81/assignments/mod2/AssignmentMod2.tsx": "877b3d968781eafa3dd40c5b0e257c3715830cb3780feaf38f95562f44c4dec2",
+    "frontend/src/courses/CS81/assignments/mod3/AssignmentMod3.tsx": "cc150fd40e5f84f90437008d2e8ea9316a24f68516ac2bd3bb93ac83d91a2c9c",
+    "frontend/src/courses/CS81/assignments/mod4/AssignmentMod4.tsx": "4916cb80b3bbab9c3f8b978ca4cd4cb17ba8035edcd752e48f0ca7909a2aea69",
+    "frontend/src/courses/CS81/assignments/mod5/AssignmentMod5.tsx": "511004c0013fd579d1f658d1506e82e644693354354f3ef44881cf03f7b267bb",
+    "frontend/src/courses/CS81/assignments/mod6/AssignmentMod6.tsx": "5d4e7462ff14c2122ad5c8c2f4bfebea601e6e1741d19f8fab6c30f052be1972",
+    "frontend/src/courses/CS81/assignments/mod7/AssignmentMod7.tsx": "fe585f1151c4b1d27e5bbeec23c3ec8a3e78ed7e49f6855120436728231df14c",
+    "frontend/src/courses/CS81/assignments/mod8/AssignmentMod8.tsx": "2436486c0590a9d52ba061c18b644527dcd95f3ac6422b0329cfc55f1efbf3c2",
+    "frontend/src/courses/CS81/assignments/mod9/AssignmentMod9.tsx": "4fdac4aba37a319ab5a4441de4353fba29196dc133aef17670d6f933ea630ac0",
+    "frontend/src/courses/CS85/assignments/mod1/AssignmentMod1.tsx": "4559ac392adaccb839c7afde75f0c375e76e383581242f2edac43a51609fab11",
+    "frontend/src/courses/CS85/assignments/mod10/AssignmentMod10.tsx": "bc263607579bc2eb360b8e4e0642e0c56027a735b228e1d589e883619ac37f43",
+    "frontend/src/courses/CS85/assignments/mod11/AssignmentMod11.tsx": "bbcc77656ec5c773b30fd1b1d787dec95b7f27034cf702226201405b241dd472",
+    "frontend/src/courses/CS85/assignments/mod12/AssignmentMod12.tsx": "4d0875c71ec1c0ff4918e52052709b8e8bb1a921e06981ba8669640df0289ced",
+    "frontend/src/courses/CS85/assignments/mod2/AssignmentMod2.tsx": "406ebf987d2f3ffa6d4a195ed275f046807f4116cd0e074dcf7efacb6b26fb0a",
+    "frontend/src/courses/CS85/assignments/mod3/AssignmentMod3.tsx": "5e177b89107020f875766fb0aca91ef3ca054cab652291552fe4b883ecbfa2b4",
+    "frontend/src/courses/CS85/assignments/mod4/AssignmentMod4.tsx": "ad38185d6a33e3299c999a14a79e6222b6b83a7a087609981d8442d2061af37e",
+    "frontend/src/courses/CS85/assignments/mod5/AssignmentMod5.tsx": "d68eef7406cbdaf0a82fe01a0977faeb4e389f09d69cafc32e76d98042657be0",
+    "frontend/src/courses/CS85/assignments/mod6/AssignmentMod6.tsx": "891d22ef918eb6beb008d4aa880305bc04302f4147ffa962c62ab56a51807eee",
+    "frontend/src/courses/CS85/assignments/mod7/AssignmentMod7.tsx": "2a62e26628abc886a4a06526824d949401add06becb36b24a5e9ea891251bb3f",
+    "frontend/src/courses/CS85/assignments/mod8/AssignmentMod8.tsx": "1d0c6886bf0bfa9eaeb03b0fd1089e637326cd8cc38ae992e2b1e72a07c10650",
+    "frontend/src/courses/CS85/assignments/mod9/AssignmentMod9.tsx": "2f2496d4f9784f4b7ebfa0e65ba3dd474ba2eb1f18a0ac1f32b019729fb5fd29",
+    "frontend/src/courses/CS87A/assignments/mod1/AssignmentMod1.tsx": "66025b598e5d69dc6ecff99061a8fcfe99d2545c3b5ea01a02bd92a6023f427f",
+    "frontend/src/courses/CS87A/assignments/mod2/AssignmentMod2.tsx": "d3dcd809a042bf0648aed63c89cb4cd85f0394fa71c11eab29979c798a257eea",
+    "frontend/src/courses/CS87A/assignments/mod3/AssignmentMod3.tsx": "49afa9331a917ae57728c6c93e2b35f2d284b82e0c0348095d8a11727a253a65",
+    "frontend/src/courses/CS87A/assignments/mod4/AssignmentMod4.tsx": "704d1d43e754bc16b337930fc10f7b6e99494f4b4dd58c8a4ec85a1fd67fd362",
+    "frontend/src/courses/CS87A/assignments/mod5/AssignmentMod5.tsx": "7baaed7afda069afd122c6ad032514cb71f5322992a04a6814daf0883a8e12c5",
+    "frontend/src/courses/CS87A/assignments/mod6/AssignmentMod6.tsx": "6480bae2d2963390fdf1c3083968242732505463bbdc510ec408680670cb7d19",
+    "frontend/src/features/pathway/programSections.tsx": "f01df1e95e4ea96e98c93270a16fa73320f3b9639d96afd382fae76699c6a4ea",
+    "frontend/src/routes/AppRoutes.tsx": "2e72539e475bae7b4fb830ac8977731fc6f85f430374edd8e80b2a4d8bc2fe1d",
+    "frontend/src/routes/AutoAssignmentRouter.tsx": "ca398e8e318c49a31219d2a685d1b522633ef3729782acbb2d236f669289e17e"
+  },
+  "version": "fd96e875c1cb89723f157d4d3d08842deb61cba64e87b36639a74c16e2413a7c"
+}
