@@ -62,6 +62,11 @@ port 587 requires STARTTLS. TLS certificates are verified. The existing sender
 address remains configured for the SMTP service; the display name is Web
 Engineering Portfolio.
 
+Verification, password-reset and recovery-email messages share a responsive
+HTML layout and have plain-text alternatives. Rendering and SMTP transport
+are separate from the outbox worker. See [account email templates](account-emails.md)
+for template ownership and local previews.
+
 Registration and its email intent commit in one transaction. Accounts stay
 unverified until the user submits the confirmation page. Password login requires
 confirmed email, except the primary administrator's pre-existing backup

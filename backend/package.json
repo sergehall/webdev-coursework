@@ -23,6 +23,7 @@
     "test:cov": "node scripts/run-jest.cjs --coverage",
     "test:debug": "node --inspect-brk scripts/run-jest.cjs --runInBand",
     "typecheck": "tsc --noEmit",
+    "mail:preview": "node scripts/preview-auth-mail.cjs",
     "lint": "yarn node ../scripts/run-eslint.mjs backend",
     "lint:fix": "yarn node ../scripts/run-eslint.mjs backend --fix",
     "check": "tsc --noEmit && yarn lint && yarn migration:check",

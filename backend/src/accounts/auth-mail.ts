@@ -15,53 +15,19 @@ import {
 } from "crypto";
 import { DataSource, type EntityManager } from "typeorm";
 import * as nodemailer from "nodemailer";
-import type { Transporter } from "nodemailer";
+import {
+  AUTH_MAIL_BRAND,
+  AUTH_MAIL_TTL_SECONDS,
+  type AuthMailPurpose,
+  type MailProvider,
+} from "./mail/auth-mail.contract";
+import { SmtpProvider } from "./mail/smtp-mail.provider";
+import { renderAuthMail } from "./mail/templates/auth-mail.templates";
 
-type Purpose = "verify" | "reset" | "add-email";
-export type AuthMail = {
-  id: string;
-  recipient: string;
-  subject: string;
-  html: string;
-  text: string;
-};
-export interface MailProvider {
-  send(mail: AuthMail): Promise<void>;
-}
-export class SmtpProvider implements MailProvider {
-  constructor(
-    private readonly transport: Transporter,
-    private readonly from: { name: string; address: string }
-  ) {}
-  async send(mail: AuthMail): Promise<void> {
-    await this.transport.sendMail({
-      from: this.from,
-      to: mail.recipient,
-      subject: mail.subject,
-      html: mail.html,
-      text: mail.text,
-      messageId: `<${mail.id}@webdev-coursework.com>`,
-    });
-  }
-}
-const escapeHtml = (text: string) =>
-  text.replace(
-    /[&<>"']/g,
-    (c) =>
-      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[
-        c
-      ]!
-  );
-export function renderAuthMail(purpose: Purpose, name: string, url: string) {
-  const subject =
-    purpose !== "reset"
-      ? "Confirm your Web Engineering Portfolio account"
-      : "Reset your portfolio password";
-  const action = purpose !== "reset" ? "Confirm email" : "Reset password";
-  const text = `Hello ${name},\n\n${action}: ${url}\n\nThis link expires ${purpose !== "reset" ? "in 24 hours" : "in one hour"}. If you did not request this, ignore this message.\n\nWeb Engineering Portfolio`;
-  const html = `<div style="font-family:Arial,sans-serif;max-width:560px;margin:auto;color:#102539"><h1>${subject}</h1><p>Hello ${escapeHtml(name)},</p><p><a href="${escapeHtml(url)}" style="display:inline-block;padding:14px 24px;background:#d9fa86;color:#102539;border-radius:24px;font-weight:bold">${action}</a></p><p>This link expires ${purpose !== "reset" ? "in 24 hours" : "in one hour"}. If you did not request this, ignore this message.</p><p>Web Engineering Portfolio</p></div>`;
-  return { subject, text, html };
-}
+// Preserve the existing imports while keeping rendering and SMTP independent.
+export type { AuthMail, MailProvider } from "./mail/auth-mail.contract";
+export { SmtpProvider } from "./mail/smtp-mail.provider";
+export { renderAuthMail } from "./mail/templates/auth-mail.templates";
 export function mailFailure(error: unknown): "transient" | "permanent" {
   const code = (error as { responseCode?: number })?.responseCode;
   return code && code >= 500 ? "permanent" : "transient";
@@ -141,7 +107,7 @@ export class AuthMailService implements OnModuleInit, OnModuleDestroy {
     });
     this.provider = new SmtpProvider(transport, {
       address: from,
-      name: "Web Engineering Portfolio",
+      name: AUTH_MAIL_BRAND,
     });
     this.timer = setInterval(() => {
       if (this.busy) return;
@@ -163,13 +129,11 @@ export class AuthMailService implements OnModuleInit, OnModuleDestroy {
     q: EntityManager,
     accountId: string,
     revision: string,
-    purpose: Purpose,
+    purpose: AuthMailPurpose,
     recipient?: string
   ): Promise<void> {
     const token = randomBytes(32).toString("base64url"),
-      expires = new Date(
-        Date.now() + (purpose !== "reset" ? 86400 : 3600) * 1000
-      );
+      expires = new Date(Date.now() + AUTH_MAIL_TTL_SECONDS[purpose] * 1000);
     await q.query(
       "INSERT INTO webdev_account_tokens(token_hash,account_id,purpose,expires_at,revision,target_email) VALUES($1,$2,$3,$4,$5,$6)",
       [
@@ -239,7 +203,12 @@ export class AuthMailService implements OnModuleInit, OnModuleDestroy {
       await this.provider.send({
         id: mail.id,
         recipient: mail.recipient ?? account.email,
-        ...renderAuthMail(mail.template, account.display_name, url.href),
+        ...renderAuthMail(
+          mail.template,
+          account.display_name,
+          url.href,
+          new Date(mail.expires_at)
+        ),
       });
       await this.db.query(
         "UPDATE webdev_mail_outbox SET status='sent',sent_at=now(),lease_until=NULL,token_ciphertext=NULL WHERE id=$1 AND attempts=$2",
