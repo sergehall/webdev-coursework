@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   ServiceUnavailableException,
 } from "@nestjs/common";
@@ -57,8 +58,31 @@ export class AccountService {
         "INSERT INTO webdev_accounts(id,role,username,email,password_hash,revision,display_name) VALUES($1,'client',$2,$3,$4,$5,$2) ON CONFLICT DO NOTHING RETURNING id",
         [id, dto.username, email, passwordHash, revision]
       );
-      // The same generic response is returned for existing email addresses/usernames.
-      if (rows.length) await this.mail.enqueue(q, id, revision, "verify");
+      if (rows.length) {
+        await this.mail.enqueue(q, id, revision, "verify");
+        return;
+      }
+      // Local diagnostics clarify why no mail was queued. Production stays
+      // indistinguishable to avoid exposing registered identities.
+      if (process.env.NODE_ENV !== "development") return;
+      const [existing] = await q.query(
+        "SELECT EXISTS(SELECT 1 FROM webdev_accounts WHERE lower(email)=$1) AS email_taken, EXISTS(SELECT 1 FROM webdev_accounts WHERE lower(username)=$2) AS username_taken",
+        [email, dto.username.toLowerCase()]
+      );
+      if (existing?.email_taken)
+        throw new ConflictException({
+          code: "EMAIL_ALREADY_REGISTERED",
+          message: "This email is already registered locally.",
+        });
+      if (existing?.username_taken)
+        throw new ConflictException({
+          code: "USERNAME_TAKEN",
+          message: "This username is already taken locally.",
+        });
+      throw new ConflictException({
+        code: "REGISTRATION_CONFLICT",
+        message: "No new account was created. Try another username or email.",
+      });
     });
   }
   async requestEmail(

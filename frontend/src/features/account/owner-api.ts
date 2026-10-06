@@ -109,6 +109,12 @@ export async function ownerRequest<T>(
         "This account already has an email address. It cannot be replaced here.",
       EMAIL_UNAVAILABLE:
         "This email cannot be added. Request another confirmation.",
+      EMAIL_ALREADY_REGISTERED:
+        "This email is already registered locally. Sign in or resend confirmation.",
+      USERNAME_TAKEN:
+        "This username is already taken locally. Choose another username or sign in.",
+      REGISTRATION_CONFLICT:
+        "No new account was created. Try another username or email.",
       PASSWORD_TOO_COMMON:
         "Choose a less common password, such as a unique passphrase or one from a password manager.",
     };

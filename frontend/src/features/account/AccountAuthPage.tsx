@@ -204,7 +204,11 @@ export default function AccountAuthPage({ mode }: { mode: AuthMode }) {
     } catch (err) {
       const signInRejected =
         isLogin && err instanceof OwnerApiError && err.status === 401;
-      setShowVerificationHelp(signInRejected);
+      const emailAlreadyRegistered =
+        mode === "register" &&
+        err instanceof OwnerApiError &&
+        err.code === "EMAIL_ALREADY_REGISTERED";
+      setShowVerificationHelp(signInRejected || emailAlreadyRegistered);
       setError(
         err instanceof OwnerApiError && err.status === 401
           ? "Unable to sign in. Check your username/email and password, and confirm your email first."

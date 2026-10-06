@@ -19,6 +19,92 @@ function service() {
   );
 }
 describe("Account registration human verification", () => {
+  it.each([
+    [{ email_taken: true, username_taken: false }, "EMAIL_ALREADY_REGISTERED"],
+    [{ email_taken: false, username_taken: true }, "USERNAME_TAKEN"],
+  ])(
+    "explains a local registration conflict without queuing mail",
+    async (existing, code) => {
+      const previousEnvironment = process.env.NODE_ENV;
+      process.env.NODE_ENV = "development";
+      const query = jest
+        .fn()
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce([existing]);
+      const mail = { enabled: true, enqueue: jest.fn() };
+      const hash = jest
+        .spyOn(ownerPassword, "hashOwnerPassword")
+        .mockResolvedValue("hash");
+      try {
+        const account = new AccountService(
+          {
+            assertOrigin: jest.fn(),
+            rateLimit: jest.fn(),
+            digest: () => "digest",
+          } as unknown as AnalyticsService,
+          {
+            db: {
+              transaction: (work: (q: { query: typeof query }) => unknown) =>
+                work({ query }),
+            },
+          } as unknown as AccountStore,
+          mail as unknown as AuthMailService,
+          { verify: jest.fn() } as unknown as TurnstileService
+        );
+        await expect(
+          account.register({ ip: "127.0.0.1" } as Request, {
+            email: "student@example.test",
+            username: "student",
+            password: "distinct-passphrase-5821",
+          })
+        ).rejects.toMatchObject({ response: { code } });
+        expect(mail.enqueue).not.toHaveBeenCalled();
+      } finally {
+        hash.mockRestore();
+        process.env.NODE_ENV = previousEnvironment;
+      }
+    }
+  );
+
+  it("keeps duplicate registration indistinguishable in production", async () => {
+    const previousEnvironment = process.env.NODE_ENV;
+    process.env.NODE_ENV = "production";
+    const query = jest.fn().mockResolvedValue([]);
+    const mail = { enabled: true, enqueue: jest.fn() };
+    const hash = jest
+      .spyOn(ownerPassword, "hashOwnerPassword")
+      .mockResolvedValue("hash");
+    try {
+      const account = new AccountService(
+        {
+          assertOrigin: jest.fn(),
+          rateLimit: jest.fn(),
+          digest: () => "digest",
+        } as unknown as AnalyticsService,
+        {
+          db: {
+            transaction: (work: (q: { query: typeof query }) => unknown) =>
+              work({ query }),
+          },
+        } as unknown as AccountStore,
+        mail as unknown as AuthMailService,
+        { verify: jest.fn() } as unknown as TurnstileService
+      );
+      await expect(
+        account.register({ ip: "127.0.0.1" } as Request, {
+          email: "student@example.test",
+          username: "student",
+          password: "distinct-passphrase-5821",
+        })
+      ).resolves.toBeUndefined();
+      expect(query).toHaveBeenCalledTimes(1);
+      expect(mail.enqueue).not.toHaveBeenCalled();
+    } finally {
+      hash.mockRestore();
+      process.env.NODE_ENV = previousEnvironment;
+    }
+  });
+
   it("blocks registration before password hashing or account/email persistence", async () => {
     const auth = {
       assertOrigin: jest.fn(),
