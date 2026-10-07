@@ -1,0 +1,162 @@
+/* Administration density is scoped away from personal account forms. */
+.owner-administration {
+  display: grid;
+  min-width: 0;
+  gap: 1rem;
+}
+.owner-administration .owner-page-header > p:last-child {
+  margin-top: 0.4rem;
+}
+.owner-administration .owner-admin-tabs {
+  gap: 0.25rem;
+  padding-block: 0 0.65rem;
+}
+.owner-administration .owner-admin-tabs .owner-tab {
+  font-size: 0.75rem;
+}
+.owner-administration .owner-card {
+  border-radius: 0.5rem;
+}
+.owner-administration :is(summary, [tabindex="0"]):focus-visible {
+  outline: 3px solid var(--owner-accent);
+  outline-offset: 3px;
+}
+.owner-admin-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+.owner-administration .owner-report-controls {
+  justify-content: flex-start;
+}
+.owner-administration .owner-report-controls label {
+  font-size: 0.75rem;
+}
+.owner-administration .owner-table-scroll {
+  max-height: 32rem;
+  border: 1px solid var(--owner-border);
+  border-radius: 0.4rem;
+}
+.owner-administration .owner-table th {
+  position: sticky;
+  z-index: 1;
+  top: 0;
+  padding: 0.6rem 0.75rem;
+  background: var(--owner-card);
+  white-space: nowrap;
+}
+.owner-administration .owner-table td {
+  padding: 0.65rem 0.75rem;
+}
+.owner-administration .owner-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+.owner-administration .owner-table .owner-button {
+  min-height: 2rem;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.7rem;
+}
+.owner-admin-badge {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 0.15rem 0.4rem;
+  border: 1px solid var(--owner-border);
+  border-radius: 0.25rem;
+  background: var(--owner-card);
+  color: var(--owner-muted);
+  font-size: 0.65rem;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+.owner-admin-badge--danger {
+  border-color: var(--owner-danger-border);
+  color: var(--owner-danger);
+  background: var(--owner-danger-bg);
+}
+.owner-admin-table-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  margin-top: 0.75rem;
+}
+.owner-admin-pagination {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-left: auto;
+}
+.owner-admin-pagination > span {
+  min-width: 3.5rem;
+  color: var(--owner-muted);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+.owner-admin-page-button {
+  width: 2rem;
+  min-height: 2rem;
+  padding: 0.35rem;
+}
+.owner-administration .owner-admin-link {
+  height: 100%;
+  padding: 1rem;
+}
+.owner-administration .owner-admin-link:hover {
+  border-color: var(--owner-accent);
+}
+.owner-admin-card-icon {
+  display: inline-flex;
+  margin-bottom: 0.65rem;
+  padding: 0.5rem;
+  border: 1px solid var(--owner-border);
+  border-radius: 0.4rem;
+  color: var(--owner-accent);
+  background: var(--owner-card);
+}
+.owner-administration .owner-admin-summary-value {
+  color: var(--owner-text);
+  font-size: 1.15rem;
+}
+.owner-administration .owner-activity-filters {
+  padding: 0.75rem;
+  border: 1px solid var(--owner-border);
+  border-radius: 0.4rem;
+  background: var(--owner-card);
+}
+.owner-administration .owner-audit {
+  padding-inline: 0.75rem;
+  border: 1px solid var(--owner-border);
+  border-radius: 0.4rem;
+}
+.owner-administration .owner-audit li {
+  padding-block: 0.65rem;
+}
+.owner-administration .owner-audit li:last-child {
+  border-bottom: 0;
+}
+@media (max-width: 600px) {
+  .owner-administration .owner-admin-tabs .owner-tab {
+    padding: 0.5rem 0.65rem;
+  }
+  .owner-administration .owner-metrics {
+    gap: 0.5rem;
+  }
+  .owner-administration .owner-metric {
+    font-size: 1.25rem;
+  }
+}
+@media (pointer: coarse) {
+  .owner-administration .owner-table .owner-button,
+  .owner-admin-page-button {
+    min-height: 2.75rem;
+  }
+  .owner-admin-page-button {
+    width: 2.75rem;
+  }
+}

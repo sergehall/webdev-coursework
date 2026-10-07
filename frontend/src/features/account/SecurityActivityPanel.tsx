@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
+import { RefreshCw } from "lucide-react";
 
+import AdminPagination from "./admin/AdminPagination";
 import { formatAccountTime } from "./account-time";
 import { ownerRequest, OwnerApiError, type AuditEntry } from "./owner-api";
 import { useOwner } from "./owner-context";
@@ -163,25 +165,7 @@ export default function SecurityActivityPanel() {
           </ul>
         )
       )}
-      <div className="owner-actions owner-activity-pages">
-        <button
-          className="owner-button"
-          disabled={busy || cursors.length === 1}
-          onClick={() => setCursors((old) => old.slice(0, -1))}
-        >
-          Previous page
-        </button>
-        <span aria-live="polite">Page {cursors.length}</span>
-        <button
-          className="owner-button"
-          disabled={busy || !data?.nextCursor}
-          onClick={() => {
-            if (data?.nextCursor)
-              setCursors((old) => [...old, data.nextCursor!]);
-          }}
-        >
-          Next page
-        </button>
+      <div className="owner-admin-table-footer">
         <button
           className="owner-button"
           disabled={busy}
@@ -190,8 +174,22 @@ export default function SecurityActivityPanel() {
             setRevision((old) => old + 1);
           }}
         >
+          <RefreshCw size={14} aria-hidden="true" />
           Refresh activity
         </button>
+        <AdminPagination
+          page={cursors.length}
+          hasMore={Boolean(data?.nextCursor)}
+          busy={busy}
+          label="Security activity pages"
+          previousLabel="Previous page"
+          nextLabel="Next page"
+          onPrevious={() => setCursors((old) => old.slice(0, -1))}
+          onNext={() => {
+            if (data?.nextCursor)
+              setCursors((old) => [...old, data.nextCursor!]);
+          }}
+        />
       </div>
     </section>
   );

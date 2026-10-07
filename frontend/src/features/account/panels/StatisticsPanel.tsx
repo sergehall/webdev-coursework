@@ -1,4 +1,5 @@
 import { Link, Navigate, useLocation } from "react-router-dom";
+import { Bot, LayoutDashboard, QrCode, ShieldCheck, Users } from "lucide-react";
 
 import AccountRolesPanel from "../AccountRolesPanel";
 import MentorUsagePanel from "../admin/MentorUsagePanel";
@@ -9,10 +10,12 @@ import { useOwner } from "../owner-context";
 
 import AdministrationOverview from "./AdministrationOverview";
 import QrReportPanel from "./QrReportPanel";
+import "../admin/administration.css";
 
 const sections = [
   {
     id: "overview",
+    icon: LayoutDashboard,
     label: "Overview",
     title: "Overview",
     description: "Choose an administration report or account control.",
@@ -20,6 +23,7 @@ const sections = [
   },
   {
     id: "ai-mentor",
+    icon: Bot,
     label: "AI Mentor",
     title: "AI Pathway Mentor",
     description: "Review usage, reported tokens, and per-account AI access.",
@@ -27,6 +31,7 @@ const sections = [
   },
   {
     id: "qr-report",
+    icon: QrCode,
     label: "QR report",
     title: "About this QR report",
     description: "Explore QR-link visits, devices, and report details.",
@@ -34,6 +39,7 @@ const sections = [
   },
   {
     id: "security-activity",
+    icon: ShieldCheck,
     label: "Security activity",
     title: "Security activity",
     description: "Review account actions and analytics access.",
@@ -41,6 +47,7 @@ const sections = [
   },
   {
     id: "account-roles",
+    icon: Users,
     label: "Account roles",
     title: "Clients and administrators",
     description: "Review accounts and manage their roles.",
@@ -64,10 +71,10 @@ export function StatisticsPanel({ profile }: { profile: OwnerProfile }) {
     return <Navigate to={sectionPath("overview")} replace />;
 
   return (
-    <>
+    <div className="owner-administration">
       <PageHeader
         title="Administration"
-        description="AI Mentor usage, QR-link analytics, account activity, and access controls."
+        description="Usage reports, security monitoring, and account access."
       />
       <nav
         aria-label="Administration sections"
@@ -80,6 +87,7 @@ export function StatisticsPanel({ profile }: { profile: OwnerProfile }) {
             to={sectionPath(section.id)}
             aria-current={section.id === activeId ? "page" : undefined}
           >
+            <section.icon size={15} aria-hidden="true" />
             {section.label}
           </Link>
         ))}
@@ -98,6 +106,6 @@ export function StatisticsPanel({ profile }: { profile: OwnerProfile }) {
       ) : (
         <AccountRolesPanel />
       )}
-    </>
+    </div>
   );
 }

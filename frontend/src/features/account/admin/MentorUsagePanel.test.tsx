@@ -227,9 +227,20 @@ it("shows ten accounts before Next requests the following page", async () => {
   );
   await screen.findByText("client-1-9");
   expect(screen.getAllByRole("row")).toHaveLength(11);
+  expect(
+    screen.getByRole("navigation", { name: "AI usage pages" })
+  ).toHaveTextContent("Page 1");
+  expect(screen.getByRole("button", { name: "Previous" })).toBeDisabled();
+  expect(
+    screen.queryByText(/up to 10 accounts per page/)
+  ).not.toBeInTheDocument();
   fireEvent.click(screen.getByRole("button", { name: "Next" }));
   await screen.findByText("client-2-0");
   expect(screen.getAllByRole("row")).toHaveLength(2);
   expect(screen.getByRole("button", { name: "Next" })).toBeDisabled();
   expect(fetcher.mock.calls.at(-1)?.[0]).toContain("page=2");
+  fireEvent.click(screen.getByRole("button", { name: "Previous" }));
+  await screen.findByText("client-1-9");
+  expect(screen.getByRole("button", { name: "Previous" })).toBeDisabled();
+  expect(fetcher.mock.calls.at(-1)?.[0]).toContain("page=1");
 });

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, RefreshCw } from "lucide-react";
 
 import { Message } from "../OwnerPageElements";
 import { formatAccountTime } from "../account-time";
@@ -50,29 +50,32 @@ export default function QrReportPanel({ profile }: { profile: OwnerProfile }) {
   );
   return (
     <>
-      <div className="owner-report-heading">
-        <h2>QR report</h2>
-        <p className="owner-muted">
-          Visits through the coursework presentation’s QR link.
-        </p>
-      </div>
-      <div className="owner-actions owner-report-controls">
-        <label>
-          Report period{" "}
-          <select
-            value={days}
-            onChange={(e) => setDays(Number(e.target.value))}
-          >
-            {[7, 30, 90].map((n) => (
-              <option key={n} value={n}>
-                Last {n} days
-              </option>
-            ))}
-          </select>
-        </label>
-        <button className="owner-button" onClick={retry}>
-          Refresh
-        </button>
+      <div className="owner-admin-toolbar">
+        <div className="owner-report-heading">
+          <h2>QR report</h2>
+          <p className="owner-muted">
+            Visits through the coursework presentation’s QR link.
+          </p>
+        </div>
+        <div className="owner-actions owner-report-controls">
+          <label>
+            Report period{" "}
+            <select
+              value={days}
+              onChange={(e) => setDays(Number(e.target.value))}
+            >
+              {[7, 30, 90].map((n) => (
+                <option key={n} value={n}>
+                  Last {n} days
+                </option>
+              ))}
+            </select>
+          </label>
+          <button className="owner-button" onClick={retry}>
+            <RefreshCw size={14} aria-hidden="true" />
+            Refresh
+          </button>
+        </div>
       </div>
       {error ? (
         <Message error>{error}</Message>

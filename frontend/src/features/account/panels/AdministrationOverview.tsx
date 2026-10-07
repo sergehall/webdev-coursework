@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, type LucideIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { formatAccountTime } from "../account-time";
@@ -16,6 +16,7 @@ import { mentorRequest, MentorApiError } from "@/features/mentor/mentor-api";
 
 type Section = {
   id: string;
+  icon: LucideIcon;
   title: string;
   description: string;
 };
@@ -111,6 +112,9 @@ function OverviewCard({
       to={`/account/administration/${section.id}`}
     >
       <span className="owner-admin-link-content">
+        <span className="owner-admin-card-icon">
+          <section.icon size={18} aria-hidden="true" />
+        </span>
         <strong>{section.title}</strong>
         <span className="owner-muted">{section.description}</span>
         <span className="owner-admin-summary" aria-live="polite">
@@ -135,10 +139,6 @@ export default function AdministrationOverview({
 }) {
   return (
     <section aria-label="Administration overview">
-      <p className="owner-muted owner-admin-intro">
-        A quick look at AI usage, QR traffic, security activity, and account
-        access. Open a card for details.
-      </p>
       <div className="owner-grid owner-admin-overview">
         {sections.map((section) => (
           <OverviewCard key={section.id} section={section} profile={profile} />
