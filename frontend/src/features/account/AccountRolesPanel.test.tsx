@@ -5,13 +5,23 @@ import {
   screen,
   waitFor,
 } from "@testing-library/react";
-import { afterEach, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, expect, it, vi } from "vitest";
 
 import AccountRolesPanel from "./AccountRolesPanel";
+
+beforeEach(() => {
+  Object.defineProperty(HTMLDialogElement.prototype, "showModal", {
+    configurable: true,
+    value(this: HTMLDialogElement) {
+      this.setAttribute("open", "");
+    },
+  });
+});
 
 afterEach(() => {
   cleanup();
   vi.unstubAllGlobals();
+  delete (HTMLDialogElement.prototype as { showModal?: () => void }).showModal;
 });
 
 it("recovers from a failed load and shows an empty account list", async () => {
@@ -64,6 +74,13 @@ it("protects the primary admin and confirms before changing a client role", asyn
   expect(
     screen.queryByRole("button", { name: "Make client" })
   ).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole("button", { name: "Make admin" }));
+  const dialog = screen.getByRole("dialog", {
+    name: "Change alex to admin?",
+  });
+  expect(dialog).toHaveAttribute("open");
+  fireEvent(dialog, new Event("cancel", { cancelable: true }));
+  expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   fireEvent.click(screen.getByRole("button", { name: "Make admin" }));
   expect(fetcher).toHaveBeenCalledTimes(1);
   fireEvent.click(screen.getByRole("button", { name: "Confirm role change" }));

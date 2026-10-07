@@ -41,6 +41,10 @@
   min-width: min(100%, 18rem);
   font-size: 0.75rem;
 }
+.owner-role-dialog .owner-actions {
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
 .owner-administration .owner-report-controls {
   justify-content: flex-start;
 }

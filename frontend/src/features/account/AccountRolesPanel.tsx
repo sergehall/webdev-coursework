@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { ownerRequest } from "./owner-api";
 import { useOwnerResource } from "./application/useOwnerResource";
@@ -19,6 +19,11 @@ export default function AccountRolesPanel() {
   const [actionError, setActionError] = useState("");
   const [busy, setBusy] = useState(false);
   const [selected, setSelected] = useState<Entry | null>(null);
+  const dialog = useRef<HTMLDialogElement>(null);
+  useEffect(() => {
+    if (selected && dialog.current && !dialog.current.open)
+      dialog.current.showModal();
+  }, [selected]);
   const params = new URLSearchParams({ page: String(page) });
   if (search) params.set("search", search);
   const path = `accounts/page?${params}`;
@@ -164,29 +169,37 @@ export default function AccountRolesPanel() {
         </div>
       )}
       {data && !error && (
-        <AdminPagination
-          page={page}
-          hasMore={data.hasMore}
-          busy={loading || busy}
-          label="Account pages"
-          onPrevious={() => setPage((current) => current - 1)}
-          onNext={() => setPage((current) => current + 1)}
-        />
+        <div className="owner-admin-table-footer">
+          <AdminPagination
+            page={page}
+            hasMore={data.hasMore}
+            busy={loading || busy}
+            label="Account pages"
+            onPrevious={() => setPage((current) => current - 1)}
+            onNext={() => setPage((current) => current + 1)}
+          />
+        </div>
       )}
       {selected && (
-        <div
-          className="owner-message"
-          role="group"
-          aria-label="Confirm role change"
+        <dialog
+          ref={dialog}
+          className="owner-dialog owner-role-dialog"
+          aria-labelledby="owner-role-dialog-title"
+          onCancel={(event) => {
+            event.preventDefault();
+            if (!busy) setSelected(null);
+          }}
+          onClose={() => setSelected(null)}
         >
-          <p>
+          <h2 id="owner-role-dialog-title">
             Change {selected.username} to{" "}
             {selected.role === "client" ? "admin" : "client"}?
-          </p>
+          </h2>
           <div className="owner-actions">
             <button
               className="owner-button"
               disabled={busy}
+              autoFocus
               onClick={() => setSelected(null)}
             >
               Cancel
@@ -199,7 +212,7 @@ export default function AccountRolesPanel() {
               {busy ? "Saving…" : "Confirm role change"}
             </button>
           </div>
-        </div>
+        </dialog>
       )}
     </section>
   );
