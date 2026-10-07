@@ -109,4 +109,11 @@ describe("Account overview", () => {
       screen.queryByRole("link", { name: "Two-factor settings" })
     ).not.toBeInTheDocument();
   });
+
+  it("keeps the learner pathway card out of an admin overview", () => {
+    show({ ...session, role: "admin" });
+    expect(
+      screen.queryByRole("region", { name: "AI Pathway Mentor" })
+    ).not.toBeInTheDocument();
+  });
 });

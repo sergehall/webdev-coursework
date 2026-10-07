@@ -27,6 +27,32 @@ type RevisionRow = {
 export class MentorPathwayStore {
   private readonly catalog = new KnowledgeCatalog();
   constructor(@InjectDataSource() private readonly db: DataSource) {}
+  async summary(accountId: string) {
+    const rows: {
+      version: number;
+      total: number;
+      completed: number;
+      draftReady: boolean;
+    }[] = await this.db.query(
+      `SELECT p.current_revision AS version,
+         COALESCE((SELECT jsonb_array_length(r.content)
+           FROM webdev_learning_path_revisions r
+           WHERE r.path_id=p.id AND r.account_id=$1
+             AND r.revision=p.current_revision AND r.state='accepted'),0) AS total,
+         (SELECT count(*)::integer FROM webdev_learning_milestone_progress m
+           WHERE m.path_id=p.id AND m.account_id=$1 AND m.status='done') AS completed,
+         EXISTS(SELECT 1 FROM webdev_learning_path_revisions r
+           JOIN webdev_learner_profiles learner
+             ON learner.account_id=r.account_id
+           WHERE r.path_id=p.id AND r.account_id=$1 AND r.state='proposed'
+             AND r.base_revision=p.current_revision
+             AND r.profile_version=learner.version
+             AND (r.catalog_version IS NULL OR r.catalog_version=$2)) AS "draftReady"
+       FROM webdev_learning_paths p WHERE p.account_id=$1`,
+      [accountId, this.catalog.version]
+    );
+    return rows[0] ?? { version: 0, total: 0, completed: 0, draftReady: false };
+  }
   async current(accountId: string) {
     const paths: PathRow[] = await this.db.query(
       `SELECT id,current_revision FROM webdev_learning_paths WHERE account_id=$1`,
@@ -58,7 +84,7 @@ export class MentorPathwayStore {
   }
   async revisions(accountId: string, limit: number, cursor: string | null) {
     const rows: RevisionRow[] = await this.db.query(
-      `SELECT id,revision,content,created_at FROM webdev_learning_path_revisions
+      `SELECT id,revision,content,progress_snapshot,created_at FROM webdev_learning_path_revisions
        WHERE account_id=$1 AND state='accepted' AND
        ($2::uuid IS NULL OR (created_at,id)<(SELECT created_at,id FROM webdev_learning_path_revisions WHERE id=$2 AND account_id=$1))
        ORDER BY created_at DESC,id DESC LIMIT $3`,
@@ -165,6 +191,18 @@ export class MentorPathwayStore {
       )
         throw new ConflictException("Path or profile version changed");
       const revision = path.current_revision + 1;
+      if (path.current_revision > 0)
+        await runner.query(
+          `UPDATE webdev_learning_path_revisions r SET progress_snapshot =
+             COALESCE((SELECT jsonb_agg(jsonb_build_object(
+               'milestoneId', p.milestone_id, 'status', p.status,
+               'updatedAt', p.updated_at
+             ) ORDER BY p.milestone_id)
+             FROM webdev_learning_milestone_progress p
+             WHERE p.path_id=$1 AND p.account_id=$2), '[]'::jsonb)
+           WHERE r.path_id=$1 AND r.account_id=$2 AND r.revision=$3 AND r.state='accepted'`,
+          [path.id, accountId, path.current_revision]
+        );
       await runner.query(
         `UPDATE webdev_learning_path_revisions SET state='accepted',revision=$3,accepted_at=now()
          WHERE id=$1 AND account_id=$2`,

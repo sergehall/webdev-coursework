@@ -1,8 +1,8 @@
 # Mentor knowledge catalog
 
 This is the server-owned English evidence boundary for AI Pathway Mentor. It has
-no HTTP endpoint and makes no model calls. Import `KnowledgeCatalog` when the
-mentor backend is wired in P3/P4; construction validates the bundled artifact and
+no HTTP endpoint and makes no model calls. The Mentor backend uses
+`KnowledgeCatalog`; construction validates the bundled artifact and
 fails closed if it is missing, malformed or inconsistent.
 
 ## Sources and scope
@@ -69,9 +69,12 @@ not a semantic search service or an assessed pedagogical ranking system.
 
 Only module 1 is initially accessible. Later reviewed modules require the
 previous module in `completedSourceIds`, matching the current coursework route.
-The caller must derive this from the authenticated learner's authorized state;
-never pass model claims, the portfolio author's progress, or unvalidated client
-input. P3 must define the account/progress adapter before real mentor use.
+The production chat and plan prompts do not supply `completedSourceIds`, so
+later modules are currently excluded from AI recommendations. Browser-only
+coursework progress is not imported into the account. A future adapter must
+derive completion from authenticated, authorized learner data; never pass model
+claims, the portfolio author's progress, or unvalidated client input.
+Extending the reviewed catalog still requires checking each source and route.
 Academic advisories are evidence, not access-control gates or admission advice.
 
 Keep each evidence selection on the server for its generation. Pass model
@@ -79,4 +82,4 @@ citation IDs through `resolveCitations(ids, selection)`; URLs are resolved from
 the validated catalog, not accepted from model output. A source outside the
 selected evidence or an old catalog version is rejected. The service returns
 copies so consumers cannot mutate the catalog. Retrieved text remains evidence,
-not instructions; the P4 prompt must preserve that separation.
+not instructions; the production prompt preserves that separation.

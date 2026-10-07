@@ -2,6 +2,9 @@
   align-items: stretch;
   grid-auto-rows: 1fr;
 }
+.owner-grid.owner-overview-with-mentor {
+  grid-template-rows: auto;
+}
 @media (max-width: 600px) {
   .owner-grid.owner-overview-grid {
     grid-auto-rows: auto;
@@ -59,6 +62,22 @@
 }
 .owner-overview-preferences-link {
   margin-left: auto;
+}
+.owner-mentor-card {
+  grid-column: 1 / -1;
+}
+.owner-mentor-status {
+  margin-block: 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+.owner-mentor-card .owner-overview-footer {
+  margin-top: 1rem;
+}
+.owner-mentor-card .owner-text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 @media (max-width: 400px) {
   .owner-overview-grid .owner-overview-details {

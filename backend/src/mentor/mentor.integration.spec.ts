@@ -19,6 +19,7 @@ import { AddMentorWorkspace1791244800000 } from "../db/migrations/2026/10/179124
 import { AddMentorGenerations1791248400000 } from "../db/migrations/2026/10/1791248400000-AddMentorGenerations";
 import { AddMentorPlanGeneration1791252000000 } from "../db/migrations/2026/10/1791252000000-AddMentorPlanGeneration";
 import { AddMentorGenerationPause1791255600000 } from "../db/migrations/2026/10/1791255600000-AddMentorGenerationPause";
+import { ArchiveMentorPathProgress1791331200000 } from "../db/migrations/2026/10/1791331200000-ArchiveMentorPathProgress";
 import { MentorProfileStore } from "./profile/mentor-profile.store";
 import { MentorConversationStore } from "./conversation/mentor-conversation.store";
 import { MentorPathwayStore } from "./pathway/mentor-pathway.store";
@@ -54,6 +55,7 @@ integration("mentor workspace PostgreSQL integration", () => {
         AddMentorGenerations1791248400000,
         AddMentorPlanGeneration1791252000000,
         AddMentorGenerationPause1791255600000,
+        ArchiveMentorPathProgress1791331200000,
       ],
     });
     await db.initialize();
@@ -129,6 +131,12 @@ integration("mentor workspace PostgreSQL integration", () => {
   });
 
   it("accepts immutable revisions and checks profile, path, and progress versions", async () => {
+    expect(await paths.summary(alice)).toEqual({
+      version: 0,
+      total: 0,
+      completed: 0,
+      draftReady: false,
+    });
     const milestones = Array.from({ length: 8 }, (_, i) => ({
       id: `step-${i}`,
       week: Math.floor(i / 2) + 1,
@@ -137,6 +145,10 @@ integration("mentor workspace PostgreSQL integration", () => {
       hours: 2.5,
     }));
     const proposal = await paths.propose(alice, milestones, 1);
+    expect(await paths.summary(alice)).toMatchObject({
+      version: 0,
+      draftReady: true,
+    });
     await expect(paths.proposal(bob, proposal.id)).rejects.toThrow();
     await expect(paths.accept(bob, proposal.id, 0, 1)).rejects.toThrow();
     await expect(paths.accept(alice, proposal.id, 1, 1)).rejects.toThrow();
@@ -146,6 +158,12 @@ integration("mentor workspace PostgreSQL integration", () => {
     await expect(paths.accept(alice, proposal.id, 0, 1)).rejects.toThrow();
     const first = await paths.progress(alice, "step-0", "done", null, 1);
     expect(first.version).toBe(1);
+    expect(await paths.summary(alice)).toEqual({
+      version: 1,
+      total: 8,
+      completed: 1,
+      draftReady: false,
+    });
     await expect(
       paths.progress(alice, "step-0", "pending", null, 1)
     ).rejects.toThrow();
@@ -157,12 +175,15 @@ integration("mentor workspace PostgreSQL integration", () => {
     ).rejects.toThrow();
     expect((await paths.current(alice))?.progress).toHaveLength(1);
     expect(await paths.current(bob)).toBeNull();
+    await paths.propose(alice, milestones, 1);
+    expect((await paths.summary(alice)).draftReady).toBe(true);
     const revised = await profiles.save(
       alice,
       { goal: "backend", level: "foundations", hours: 6, outcome: "An API" },
       1
     );
     expect(revised?.version).toBe(2);
+    expect((await paths.summary(alice)).draftReady).toBe(false);
     await expect(paths.propose(alice, milestones, 1)).rejects.toThrow();
     expect((await paths.revisions(alice, 10, null)).entries).toHaveLength(1);
     expect((await paths.revisions(bob, 10, null)).entries).toHaveLength(0);
@@ -228,6 +249,13 @@ integration("mentor workspace PostgreSQL integration", () => {
         .expect(401);
       expect(denied.body.code).toBe("SIGN_IN_REQUIRED");
       expect(denied.headers["cache-control"]).toContain("no-store");
+      await request(server).get("/api/mentor/pathway/summary").expect(401);
+      const emptySummary = await request(server)
+        .get("/api/mentor/pathway/summary")
+        .set("x-test-account", charlie)
+        .expect(200);
+      expect(emptySummary.body).toMatchObject({ version: 0, total: 0 });
+      expect(emptySummary.headers["cache-control"]).toContain("no-store");
       await request(server)
         .put("/api/mentor/profile")
         .set("x-test-account", charlie)

@@ -38,6 +38,19 @@ export type SavedPath = {
     version: number;
   }[];
 };
+export type SavedPathRevision = {
+  id: string;
+  revision: number;
+  content: Milestone[];
+  created_at: string;
+  progress_snapshot:
+    | {
+        milestoneId: string;
+        status: "pending" | "done";
+        updatedAt: string;
+      }[]
+    | null;
+};
 export type MentorBootstrap = {
   profile: SavedProfile | null;
   pathway: SavedPath | null;

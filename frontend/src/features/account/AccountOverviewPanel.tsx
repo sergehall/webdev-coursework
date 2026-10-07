@@ -2,7 +2,10 @@ import { Link } from "react-router-dom";
 import { Monitor, Settings2, ShieldCheck, UserRound } from "lucide-react";
 
 import { formatAccountTime } from "./account-time";
+import AccountMentorCard from "./AccountMentorCard";
 import type { OwnerSession } from "./owner-api";
+
+import { mentorPublicEntryEnabled } from "@/features/mentor/mentor-preview";
 import "./account-overview.css";
 
 function enabledLabel(value: boolean | undefined) {
@@ -29,9 +32,13 @@ export default function AccountOverviewPanel({
       ? "No email linked"
       : "Not available";
   const dateExample = formatAccountTime(session.issuedAt, profile);
+  const showMentor = session.role === "client" && mentorPublicEntryEnabled();
 
   return (
-    <div className="owner-grid owner-overview-grid">
+    <div
+      className={`owner-grid owner-overview-grid${showMentor ? "owner-overview-with-mentor" : ""}`}
+    >
+      {showMentor && <AccountMentorCard />}
       <section className="owner-card" aria-labelledby="overview-profile-title">
         <div className="owner-overview-heading">
           <UserRound size={18} aria-hidden="true" />

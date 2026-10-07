@@ -435,6 +435,7 @@ export function useMentorSaved(
     pathMetadata: proposalRecord?.metadata ?? pathRecord?.metadata ?? null,
     acceptedPathMetadata: pathRecord?.metadata ?? null,
     path: pathRecord?.milestones ?? null,
+    pathVersion: pathRecord?.version,
     done:
       pathRecord?.progress
         .filter((entry) => entry.status === "done")

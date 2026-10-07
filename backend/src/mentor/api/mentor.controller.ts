@@ -186,6 +186,10 @@ export class MentorController {
   async pathway(@Req() req: Request) {
     return this.paths.current(await this.access.accountId(req, "pathway.view"));
   }
+  @Get("pathway/summary")
+  async pathwaySummary(@Req() req: Request) {
+    return this.paths.summary(await this.access.accountId(req, "pathway.view"));
+  }
   @Get("pathway/revisions")
   async revisions(
     @Req() req: Request,

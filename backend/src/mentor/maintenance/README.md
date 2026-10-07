@@ -1,5 +1,35 @@
 # Mentor operations
 
+## Production status at the 2026-10-06 P9 rollout
+
+The owner approved public access for registered accounts and enabled the
+backend/frontend public switches. A client outside the former beta allowlist
+received an English answer, saved a four-week draft with reviewed coursework
+links, and saw both after a page reload. The draft remains unaccepted for
+review. Reload in one browser does not verify recovery in a second browser or
+on another device; final acceptance is still open. The daily limits are 15
+accepted generations per account and 8,000 reserved/accounted Mentor Neurons
+globally. The shared Cloudflare account can have other Workers AI usage.
+
+The quota-pause/outbox path was tested against a disposable database and fake
+provider. A separate owner delivery test confirmed SMTP delivery, but no live
+quota-exhaustion event was forced. Do not infer that the live pause-to-email
+chain was exercised. The private local acceptance record and product plan are
+ignored by Git. The public rollout can be reversed using the flags below.
+
+Current regression evidence: Mentor integration covers account isolation,
+versioned acceptance, revision progress, SSE/Stop, idempotency, retention, and
+the last daily request across two independent database pools. Account
+integration covers MFA/OAuth and revoked sessions. The 40-case pre-beta model
+review passed its 90% quality threshold; a later CSS origin scenario still
+fails for the raw model, so the production application answers that narrow case
+from a verified reference without calling Workers AI. The raw model failure is
+not a model pass. A goal change retains progress for unchanged milestone IDs;
+different milestones do not inherit completion. Previous accepted revisions
+remain listed, but completion of removed milestones is not shown in the
+current path. Cross-device restoration and owner acceptance of the production
+draft require separate user checks.
+
 ## Closed-beta release order
 
 Keep `AI_MENTOR_ENABLED` and `AI_GENERATION_ENABLED` unset during the backend
@@ -10,8 +40,9 @@ that no Mentor migration is pending before enabling the workspace.
 Set `AI_MENTOR_BETA_ACCOUNT_IDS` to the selected production account UUIDs,
 `AI_PROVIDER_MODE=cloudflare`, and `AI_MODEL=@cf/openai/gpt-oss-20b`. The
 backend requires both flags to be `true` for generation; every Mentor API route
-also requires `AI_MENTOR_ENABLED=true` and an allowlisted signed-in account in
-production. Enable the frontend route with `VITE_AI_MENTOR_ENABLED=true` in its
+also requires `AI_MENTOR_ENABLED=true` and a signed-in account permitted by the
+beta allowlist or the explicit public switch. Enable the frontend route with
+`VITE_AI_MENTOR_ENABLED=true` in its
 production build and share its direct URL only with beta testers. The public
 entry card stays hidden until the separate public launch.
 
@@ -30,7 +61,7 @@ shows the home and Roadmap entry cards. Neither switch overrides
 `AI_MENTOR_ENABLED`, `AI_GENERATION_ENABLED`, the account session check, or the
 budget ledger.
 
-After the owner reviews beta results and approves public rollout, check current
+For a future rollout or repeat verification, check current
 Workers AI billing/usage and the rollback path. Enable
 `AI_MENTOR_PUBLIC_ENABLED=true` for the backend and
 `VITE_AI_MENTOR_PUBLIC_ENABLED=true` in a new frontend build. Verify the

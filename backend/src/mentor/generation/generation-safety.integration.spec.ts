@@ -233,4 +233,70 @@ integration("mentor global budget pause and owner alert", () => {
     );
     expect(count.count).toBe(2);
   });
+
+  it("keeps the last per-account daily slot atomic across independent pools", async () => {
+    const account = randomUUID();
+    await db.query(
+      `INSERT INTO webdev_accounts(id,role,username,revision,display_name)
+       VALUES($1,'client',$2,$3,'Boundary learner')`,
+      [account, `boundary_${account.slice(0, 8)}`, randomUUID()]
+    );
+    const conversation = (
+      await new MentorConversationStore(db).create(account, "Daily boundary")
+    ).id;
+    const day = new Date();
+    day.setUTCHours(0, 0, 0, 0);
+    await db.query(
+      `INSERT INTO webdev_ai_budget_buckets
+       (scope,subject_key,period_start,request_count)
+       VALUES('account-day',$1,$2,14)
+       ON CONFLICT(scope,subject_key,period_start)
+       DO UPDATE SET request_count=14`,
+      [account, day.toISOString()]
+    );
+    await db.query(
+      "UPDATE webdev_ai_generation_control SET muted_at=NULL,reason=NULL WHERE id=1"
+    );
+    const attempts = await Promise.allSettled([
+      store.start(account, conversation, randomUUID(), "e".repeat(64), "One"),
+      new GenerationStore(second).start(
+        account,
+        conversation,
+        randomUUID(),
+        "f".repeat(64),
+        "Two"
+      ),
+    ]);
+    const admitted = attempts.filter(
+      (
+        result
+      ): result is PromiseFulfilledResult<
+        Awaited<ReturnType<GenerationStore["start"]>>
+      > => result.status === "fulfilled"
+    );
+    expect(admitted).toHaveLength(1);
+    expect(
+      attempts.filter((result) => result.status === "rejected")
+    ).toHaveLength(1);
+    await store.finish(account, admitted[0].value.row.id, "cancelled", "");
+    await expect(
+      new GenerationStore(second).start(
+        account,
+        conversation,
+        randomUUID(),
+        "a".repeat(64),
+        "Three"
+      )
+    ).rejects.toMatchObject({
+      status: 429,
+      response: { code: "USER_LIMIT_REACHED" },
+    });
+    expect((await store.limits(account)).dailyRemaining).toBe(0);
+    const [bucket] = await db.query(
+      `SELECT request_count FROM webdev_ai_budget_buckets
+       WHERE scope='account-day' AND subject_key=$1 AND period_start=$2`,
+      [account, day.toISOString()]
+    );
+    expect(bucket.request_count).toBe(15);
+  });
 });

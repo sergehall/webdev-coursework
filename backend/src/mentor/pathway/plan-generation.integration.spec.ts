@@ -12,6 +12,7 @@ import { AddMentorWorkspace1791244800000 } from "../../db/migrations/2026/10/179
 import { AddMentorGenerations1791248400000 } from "../../db/migrations/2026/10/1791248400000-AddMentorGenerations";
 import { AddMentorPlanGeneration1791252000000 } from "../../db/migrations/2026/10/1791252000000-AddMentorPlanGeneration";
 import { AddMentorGenerationPause1791255600000 } from "../../db/migrations/2026/10/1791255600000-AddMentorGenerationPause";
+import { ArchiveMentorPathProgress1791331200000 } from "../../db/migrations/2026/10/1791331200000-ArchiveMentorPathProgress";
 import { MentorProfileStore } from "../profile/mentor-profile.store";
 import { MentorConversationStore } from "../conversation/mentor-conversation.store";
 import { MentorPathwayStore } from "./mentor-pathway.store";
@@ -58,6 +59,7 @@ integration("mentor plan generation in disposable PostgreSQL", () => {
         AddMentorGenerations1791248400000,
         AddMentorPlanGeneration1791252000000,
         AddMentorGenerationPause1791255600000,
+        ArchiveMentorPathProgress1791331200000,
       ],
     });
     await db.initialize();
@@ -312,5 +314,59 @@ integration("mentor plan generation in disposable PostgreSQL", () => {
       state: "failed",
       proposalId: null,
     });
+  });
+
+  it("does not apply completed work to different milestones after a goal change", async () => {
+    const previous = await pathways.current(account);
+    expect(previous?.version).toBe(2);
+    if (!previous) throw new Error("Missing accepted path");
+    const completedId = previous?.progress[0].milestone_id;
+    expect(completedId).toBeDefined();
+    const changed = await profiles.save(
+      account,
+      {
+        goal: "backend",
+        level: "foundations",
+        hours: 3,
+        outcome: "Build an API",
+      },
+      1
+    );
+    expect(changed?.version).toBe(2);
+    if (!changed) throw new Error("Missing updated profile");
+    const revision = await generate();
+    const completed = revision.events.find(
+      (event) => event.event === "completed"
+    );
+    if (!completed || completed.event !== "completed" || !completed.proposalId)
+      throw new Error("Missing revised proposal");
+    const accepted = await pathways.accept(
+      account,
+      completed.proposalId,
+      previous.version,
+      changed.version
+    );
+    expect(accepted?.version).toBe(3);
+    expect(accepted?.milestones.some((step) => step.id === completedId)).toBe(
+      false
+    );
+    expect(accepted?.progress).toEqual([]);
+    const history = (await pathways.revisions(account, 10, null)).entries;
+    expect(history).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          revision: 2,
+          progress_snapshot: expect.arrayContaining([
+            expect.objectContaining({
+              milestoneId: completedId,
+              status: "done",
+            }),
+          ]),
+        }),
+      ])
+    );
+    expect((await pathways.revisions(other, 10, null)).entries).not.toEqual(
+      expect.arrayContaining([expect.objectContaining({ revision: 2 })])
+    );
   });
 });

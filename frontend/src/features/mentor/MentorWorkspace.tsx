@@ -392,6 +392,7 @@ export default function MentorWorkspace({
             metadata={sample ? null : saved.pathMetadata}
             acceptedMetadata={sample ? null : saved.acceptedPathMetadata}
             done={mentor.done}
+            currentVersion={sample ? undefined : saved.pathVersion}
             busy={Boolean(mentor.busy)}
             canGenerate={!requestBlocked}
             onCreate={createPlan}

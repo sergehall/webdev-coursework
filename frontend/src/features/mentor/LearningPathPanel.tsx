@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 import type { LearnerProfile, Milestone } from "./mentor-demo";
 import type { SavedProposal } from "./mentor-api";
 import { downloadPlan, printPlan } from "./mentor-plan-export";
+import PathRevisionHistory from "./PathRevisionHistory";
 
 type Props = {
   profile: LearnerProfile;
@@ -20,6 +21,7 @@ type Props = {
   metadata: SavedProposal["metadata"];
   acceptedMetadata: SavedProposal["metadata"];
   done: string[];
+  currentVersion?: number;
   busy: boolean;
   canGenerate?: boolean;
   onCreate: () => void;
@@ -35,6 +37,7 @@ export default function LearningPathPanel({
   metadata,
   acceptedMetadata,
   done,
+  currentVersion,
   busy,
   canGenerate = true,
   onCreate,
@@ -252,6 +255,15 @@ export default function LearningPathPanel({
               <Flag size={18} aria-hidden="true" />
               You finished this path. Take a moment to review what you learned.
             </p>
+          )}
+          {currentVersion && currentVersion > 0 && (
+            <details className="mentor-path-history">
+              <summary>Earlier plans and progress</summary>
+              <PathRevisionHistory
+                key={currentVersion}
+                currentVersion={currentVersion}
+              />
+            </details>
           )}
           <Link className="mentor-material-link" to="/coursework">
             Browse coursework <ArrowUpRight size={16} aria-hidden="true" />

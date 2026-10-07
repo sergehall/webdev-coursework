@@ -207,3 +207,31 @@
   color: var(--mentor-accent);
   font-size: 13px;
 }
+.mentor-path-history {
+  margin: 18px 24px 0;
+  padding: 14px 16px;
+  border: 1px solid var(--mentor-border);
+  border-radius: 12px;
+}
+.mentor-path-history summary {
+  color: var(--mentor-accent);
+  cursor: pointer;
+  font-weight: 700;
+}
+.mentor-revision-history {
+  display: grid;
+  gap: 12px;
+  margin-top: 14px;
+}
+.mentor-revision-history details {
+  padding: 10px 12px;
+  border: 1px solid var(--mentor-border);
+  border-radius: 10px;
+}
+.mentor-revision-history ol {
+  padding-left: 22px;
+  font-size: 13px;
+}
+.mentor-revision-history li + li {
+  margin-top: 6px;
+}

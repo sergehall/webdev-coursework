@@ -16,6 +16,9 @@ action names retain `login` and `register` for compatibility.
 - `panels/StatisticsPanel.tsx` owns QR reporting and administration content.
 - `application/useOwnerResource.ts` owns report loading, retry, and clearing the
   account state on an expired session.
+- `AccountMentorCard.tsx` shows a client-only AI Pathway status and a direct
+  link to the saved path or first-plan setup. It reads the account-scoped,
+  no-store Mentor summary; an unavailable response is shown as unavailable.
 - `OwnerPageElements.tsx` holds the page heading and status/error message used
   by those panels.
 - `auth/AccountAuthFields.tsx` renders the fields shared by account auth modes;
