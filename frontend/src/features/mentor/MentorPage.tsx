@@ -28,6 +28,7 @@ export default function MentorPage() {
 
 function MentorPreviewPage() {
   const owner = useOwner();
+  const publicAccess = import.meta.env.VITE_AI_MENTOR_PUBLIC_ENABLED === "true";
   const [sample, setSample] = useState(false);
   const [expired, setExpired] = useState(false);
   const [expiredAccount, setExpiredAccount] = useState(false);
@@ -54,7 +55,11 @@ function MentorPreviewPage() {
       </nav>
       <div className="mentor-preview-banner">
         <span className="mentor-preview-tag">
-          {sample ? "Interactive preview" : "Private beta"}
+          {sample
+            ? "Interactive preview"
+            : publicAccess
+              ? "AI learning workspace"
+              : "Private beta"}
         </span>
         <span>
           {sample
@@ -143,7 +148,7 @@ function MentorPreviewPage() {
                 Sign in to build my path
                 <ArrowRight size={16} aria-hidden="true" />
               </Link>
-              {import.meta.env.DEV && (
+              {(import.meta.env.DEV || publicAccess) && (
                 <Link
                   className="mentor-button"
                   to="/account/sign-up"
@@ -153,7 +158,7 @@ function MentorPreviewPage() {
                 </Link>
               )}
             </div>
-            {!import.meta.env.DEV && (
+            {!import.meta.env.DEV && !publicAccess && (
               <p className="mentor-muted mentor-small">
                 Private beta access requires an invited account.
               </p>

@@ -14,6 +14,7 @@ afterEach(() => {
   cleanup();
   sessionStorage.clear();
   vi.unstubAllGlobals();
+  vi.unstubAllEnvs();
 });
 function show(status: OwnerState["status"] = "anonymous") {
   const state: OwnerState = {
@@ -43,6 +44,17 @@ describe("mentor entry and session boundary", () => {
       screen.getByRole("link", { name: "Sign in to build my path" })
     );
     expect(hasMentorReturn()).toBe(true);
+  });
+  it("shows registration without a beta notice when public access is enabled", () => {
+    vi.stubEnv("VITE_AI_MENTOR_PUBLIC_ENABLED", "true");
+    show();
+    expect(screen.getByText("AI learning workspace")).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: "Create an account" })
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText("Private beta access requires an invited account.")
+    ).not.toBeInTheDocument();
   });
   it("offers an explicit retry after an account check fails", () => {
     const state = show("error");
