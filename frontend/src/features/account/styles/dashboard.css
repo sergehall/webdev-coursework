@@ -59,6 +59,9 @@
 .owner-admin-overview {
   align-items: stretch;
 }
+.owner-admin-intro {
+  margin-bottom: 0.8rem;
+}
 .owner-admin-link {
   display: flex;
   align-items: flex-start;
@@ -76,6 +79,22 @@
 }
 .owner-admin-link .owner-muted {
   margin-top: 0.35rem;
+}
+.owner-admin-link-content {
+  min-width: 0;
+}
+.owner-admin-summary {
+  display: block;
+  margin-top: 1rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--owner-border);
+}
+.owner-admin-summary-value {
+  display: block;
+  color: var(--owner-accent);
+  font-size: 1.05rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
 .owner-report-heading h2 {
   font-size: 1rem;

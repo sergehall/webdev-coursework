@@ -1,4 +1,3 @@
-import { ArrowUpRight } from "lucide-react";
 import { Link, Navigate, useLocation } from "react-router-dom";
 
 import AccountRolesPanel from "../AccountRolesPanel";
@@ -8,6 +7,7 @@ import SecurityActivityPanel from "../SecurityActivityPanel";
 import type { OwnerProfile } from "../owner-api";
 import { useOwner } from "../owner-context";
 
+import AdministrationOverview from "./AdministrationOverview";
 import QrReportPanel from "./QrReportPanel";
 
 const sections = [
@@ -85,21 +85,10 @@ export function StatisticsPanel({ profile }: { profile: OwnerProfile }) {
         ))}
       </nav>
       {activeId === "overview" ? (
-        <div className="owner-grid owner-admin-overview">
-          {available.slice(1).map((section) => (
-            <Link
-              key={section.id}
-              className="owner-card owner-admin-link"
-              to={sectionPath(section.id)}
-            >
-              <span>
-                <strong>{section.title}</strong>
-                <span className="owner-muted">{section.description}</span>
-              </span>
-              <ArrowUpRight size={18} aria-hidden="true" />
-            </Link>
-          ))}
-        </div>
+        <AdministrationOverview
+          sections={available.slice(1)}
+          profile={profile}
+        />
       ) : activeId === "ai-mentor" ? (
         <MentorUsagePanel profile={profile} />
       ) : activeId === "qr-report" ? (
