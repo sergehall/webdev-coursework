@@ -43,12 +43,18 @@ const report = (disabled: boolean) => ({
       role: "client",
       requestCount: 2,
       completedCount: 1,
+      failedCount: 0,
+      cancelledCount: 1,
+      activeCount: 0,
+      chatCount: 2,
+      planCount: 0,
       inputTokens: 24,
       outputTokens: 8,
       tokenReportedCount: 1,
       accountedNeurons: 800,
       lastUsedAt: "2026-10-06T21:00:00.000Z",
       disabledAt: disabled ? "2026-10-06T22:00:00.000Z" : null,
+      disabledComment: disabled ? "Repeated automated requests" : null,
     },
     {
       id: rootId,
@@ -58,12 +64,18 @@ const report = (disabled: boolean) => ({
       role: "admin",
       requestCount: 0,
       completedCount: 0,
+      failedCount: 0,
+      cancelledCount: 0,
+      activeCount: 0,
+      chatCount: 0,
+      planCount: 0,
       inputTokens: 0,
       outputTokens: 0,
       tokenReportedCount: 0,
       accountedNeurons: 0,
       lastUsedAt: null,
       disabledAt: null,
+      disabledComment: null,
     },
   ],
   hasMore: false,
@@ -112,12 +124,22 @@ it("shows known token coverage and protects primary admin AI access", async () =
   expect(
     screen.queryByRole("button", { name: "Disable AI for sergehall" })
   ).not.toBeInTheDocument();
-  fireEvent.click(screen.getByRole("button", { name: "Disable AI for alex" }));
+  const disable = screen.getByRole("button", { name: "Disable AI for alex" });
+  expect(disable).toHaveTextContent(/^Disable AI$/);
+  expect(disable).toHaveClass("owner-button--danger");
+  fireEvent.click(disable);
   expect(
     screen.getByText(
       /New requests will stop and an active response will be cancelled/
     )
   ).toBeInTheDocument();
+  expect(
+    screen.getByRole("button", { name: "Confirm AI access change" })
+  ).toBeDisabled();
+  fireEvent.change(
+    screen.getByRole("textbox", { name: "Admin comment for disabling AI" }),
+    { target: { value: "Repeated automated requests" } }
+  );
   fireEvent.click(
     screen.getByRole("button", { name: "Confirm AI access change" })
   );
@@ -132,5 +154,82 @@ it("shows known token coverage and protects primary admin AI access", async () =
   expect(put?.[0]).toContain(
     `/api/mentor/admin/accounts/${clientId}/generation`
   );
-  expect(JSON.parse(String(put?.[1].body))).toEqual({ enabled: false });
+  expect(JSON.parse(String(put?.[1].body))).toEqual({
+    enabled: false,
+    comment: "Repeated automated requests",
+  });
+  expect(await screen.findByText("Admin comment")).toBeInTheDocument();
+
+  fireEvent.change(screen.getByRole("searchbox", { name: "Find account" }), {
+    target: { value: "alex@example.test" },
+  });
+  fireEvent.change(screen.getByRole("combobox", { name: "Role" }), {
+    target: { value: "client" },
+  });
+  fireEvent.change(screen.getByRole("combobox", { name: "AI access" }), {
+    target: { value: "disabled" },
+  });
+  fireEvent.change(screen.getByRole("combobox", { name: "Activity" }), {
+    target: { value: "used" },
+  });
+  fireEvent.click(screen.getByRole("button", { name: "Apply filters" }));
+  await waitFor(() => {
+    const gets = fetcher.mock.calls.filter(
+      ([, options]) => options.method === "GET"
+    );
+    const query = new URL(String(gets.at(-1)?.[0]), "http://localhost")
+      .searchParams;
+    expect(query.get("search")).toBe("alex@example.test");
+    expect(query.get("role")).toBe("client");
+    expect(query.get("access")).toBe("disabled");
+    expect(query.get("activity")).toBe("used");
+  });
+});
+
+it("shows ten accounts before Next requests the following page", async () => {
+  const fetcher = vi.fn(async (url: string) => {
+    const page = Number(
+      new URL(url, "http://localhost").searchParams.get("page")
+    );
+    const sample = report(false).entries[0];
+    return new Response(
+      JSON.stringify({
+        ...report(false),
+        page,
+        hasMore: page === 1,
+        entries: Array.from({ length: page === 1 ? 10 : 1 }, (_, index) => ({
+          ...sample,
+          id: `123e4567-e89b-42d3-a456-${String(page * 10 + index).padStart(12, "0")}`,
+          username: `client-${page}-${index}`,
+        })),
+      })
+    );
+  });
+  vi.stubGlobal("fetch", fetcher);
+  const owner: OwnerState = {
+    session: {
+      role: "admin",
+      canManageRoles: true,
+      issuedAt: "2026-10-06T21:00:00.000Z",
+      expiresAt: "2026-10-06T23:00:00.000Z",
+      profile,
+    },
+    status: "authenticated",
+    error: "",
+    refresh: vi.fn(),
+    logout: vi.fn(),
+    clear: vi.fn(),
+  };
+  render(
+    <OwnerContext.Provider value={owner}>
+      <MentorUsagePanel profile={profile} />
+    </OwnerContext.Provider>
+  );
+  await screen.findByText("client-1-9");
+  expect(screen.getAllByRole("row")).toHaveLength(11);
+  fireEvent.click(screen.getByRole("button", { name: "Next" }));
+  await screen.findByText("client-2-0");
+  expect(screen.getAllByRole("row")).toHaveLength(2);
+  expect(screen.getByRole("button", { name: "Next" })).toBeDisabled();
+  expect(fetcher.mock.calls.at(-1)?.[0]).toContain("page=2");
 });

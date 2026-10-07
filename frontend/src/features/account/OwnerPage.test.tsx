@@ -221,7 +221,7 @@ describe("Owner account", () => {
         )
       )
     );
-    show("/owner/administration");
+    show("/owner/administration/qr-report");
     expect(
       await screen.findByText("Your first QR visit will appear here")
     ).toBeInTheDocument();
@@ -233,7 +233,7 @@ describe("Owner account", () => {
       "fetch",
       vi.fn().mockResolvedValue(new Response("{}", { status: 401 }))
     );
-    const state = show("/owner/administration");
+    const state = show("/owner/administration/qr-report");
     await waitFor(() => expect(state.clear).toHaveBeenCalled());
   });
 });

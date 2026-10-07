@@ -49,6 +49,8 @@ const db = new DataSource({
       .ArchiveMentorPathProgress1791331200000,
     require("../dist/db/migrations/2026/10/1791334800000-AddMentorAccountControls")
       .AddMentorAccountControls1791334800000,
+    require("../dist/db/migrations/2026/10/1791352400000-AddMentorAccessComments")
+      .AddMentorAccessComments1791352400000,
   ],
 });
 (async () => {

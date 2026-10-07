@@ -16,8 +16,14 @@ const entrySchema = z.object({
   email: z.string().nullable(),
   role: z.enum(["admin", "client"]),
   ...usageNumbers,
+  failedCount: z.number().int().nonnegative(),
+  cancelledCount: z.number().int().nonnegative(),
+  activeCount: z.number().int().nonnegative(),
+  chatCount: z.number().int().nonnegative(),
+  planCount: z.number().int().nonnegative(),
   lastUsedAt: z.string().datetime().nullable(),
   disabledAt: z.string().datetime().nullable(),
+  disabledComment: z.string().nullable(),
 });
 
 const reportSchema = z.object({

@@ -13,7 +13,9 @@ action names retain `login` and `register` for compatibility.
 - `panels/ProfilePanel.tsx` owns display-name and username editing.
 - `panels/SecurityPanel.tsx` owns password changes, MFA and session navigation,
   and session revocation confirmation.
-- `panels/StatisticsPanel.tsx` owns QR reporting and administration content.
+- `panels/StatisticsPanel.tsx` owns administration subroutes and their overview.
+  `panels/QrReportPanel.tsx` owns QR reporting; AI usage, security activity, and
+  account roles load only on their own administration pages.
 - `application/useOwnerResource.ts` owns report loading, retry, and clearing the
   account state on an expired session.
 - `AccountMentorCard.tsx` shows a client-only AI Pathway status and a direct

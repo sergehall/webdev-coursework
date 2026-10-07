@@ -43,6 +43,7 @@ const existingNames = [
   "AddMentorGenerationPause1791255600000",
   "ArchiveMentorPathProgress1791331200000",
   "AddMentorAccountControls1791334800000",
+  "AddMentorAccessComments1791352400000",
 ];
 
 function writeMigration(root: string, timestamp: number, name = "First") {

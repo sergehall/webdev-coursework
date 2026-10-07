@@ -53,15 +53,52 @@ describe("Mentor administration authorization", () => {
       status: 400,
     });
     await controller.usage(req, "7", "2");
-    expect(usage).toHaveBeenCalledWith(7, 2);
+    expect(usage).toHaveBeenCalledWith(7, 2, {
+      search: "",
+      role: "all",
+      access: "all",
+      activity: "all",
+    });
+    await controller.usage(
+      req,
+      "30",
+      "1",
+      " alice@example.test ",
+      "client",
+      "disabled",
+      "used"
+    );
+    expect(usage).toHaveBeenLastCalledWith(30, 1, {
+      search: "alice@example.test",
+      role: "client",
+      access: "disabled",
+      activity: "used",
+    });
+    await expect(
+      controller.usage(req, "30", "1", "x", "client", "unknown")
+    ).rejects.toMatchObject({ status: 400 });
     await expect(
       controller.setGenerationEnabled(req, clientId, { enabled: "false" })
     ).rejects.toMatchObject({ status: 400 });
-    await controller.setGenerationEnabled(req, clientId, { enabled: false });
+    await expect(
+      controller.setGenerationEnabled(req, clientId, { enabled: false })
+    ).rejects.toMatchObject({ status: 400 });
+    await controller.setGenerationEnabled(req, clientId, {
+      enabled: false,
+      comment: "Repeated automated requests",
+    });
     expect(setGenerationEnabled).toHaveBeenCalledWith(
       clientId,
       false,
-      AccountStore.ROOT_ID
+      AccountStore.ROOT_ID,
+      "Repeated automated requests"
+    );
+    await controller.setGenerationEnabled(req, clientId, { enabled: true });
+    expect(setGenerationEnabled).toHaveBeenLastCalledWith(
+      clientId,
+      true,
+      AccountStore.ROOT_ID,
+      null
     );
   });
 });

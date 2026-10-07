@@ -15,6 +15,7 @@ import { AddMentorPlanGeneration1791252000000 } from "../../db/migrations/2026/1
 import { AddMentorGenerationPause1791255600000 } from "../../db/migrations/2026/10/1791255600000-AddMentorGenerationPause";
 import { ArchiveMentorPathProgress1791331200000 } from "../../db/migrations/2026/10/1791331200000-ArchiveMentorPathProgress";
 import { AddMentorAccountControls1791334800000 } from "../../db/migrations/2026/10/1791334800000-AddMentorAccountControls";
+import { AddMentorAccessComments1791352400000 } from "../../db/migrations/2026/10/1791352400000-AddMentorAccessComments";
 import { MentorConversationStore } from "../conversation/mentor-conversation.store";
 import { GenerationStore } from "../generation/generation.store";
 import { MentorAdminStore } from "./mentor-admin.store";
@@ -50,6 +51,7 @@ integration("Mentor admin usage and per-account controls", () => {
         AddMentorGenerationPause1791255600000,
         ArchiveMentorPathProgress1791331200000,
         AddMentorAccountControls1791334800000,
+        AddMentorAccessComments1791352400000,
       ],
     });
     await db.initialize();
@@ -108,7 +110,12 @@ integration("Mentor admin usage and per-account controls", () => {
     await generations.markDispatched(alice, second.row.id);
     await generations.finish(alice, second.row.id, "cancelled", "");
 
-    const report = await admin.usage(30, 1);
+    const report = await admin.usage(30, 1, {
+      search: "",
+      role: "all",
+      access: "all",
+      activity: "all",
+    });
     expect(report.totals).toMatchObject({
       requestCount: 2,
       completedCount: 1,
@@ -122,9 +129,28 @@ integration("Mentor admin usage and per-account controls", () => {
       id: alice,
       requestCount: 2,
       tokenReportedCount: 1,
+      completedCount: 1,
+      cancelledCount: 1,
+      chatCount: 2,
+      planCount: 0,
       disabledAt: null,
     });
     expect(report.entries.some((entry) => entry.id === bob)).toBe(true);
+    const filtered = await admin.usage(30, 1, {
+      search: "MENTOR_ALICE",
+      role: "client",
+      access: "enabled",
+      activity: "used",
+    });
+    expect(filtered.entries.map((entry) => entry.id)).toEqual([alice]);
+    expect(filtered.totals.requestCount).toBe(2);
+    const inactive = await admin.usage(30, 1, {
+      search: "",
+      role: "client",
+      access: "all",
+      activity: "never",
+    });
+    expect(inactive.entries.map((entry) => entry.id)).toEqual([bob]);
   });
 
   it("blocks new generation and cancels active work while preserving saved history", async () => {
@@ -136,8 +162,26 @@ integration("Mentor admin usage and per-account controls", () => {
       "c".repeat(64),
       "Explain CSS"
     );
-    expect(await admin.setGenerationEnabled(alice, false, root)).toEqual({
+    expect(
+      await admin.setGenerationEnabled(
+        alice,
+        false,
+        root,
+        "Repeated automated requests"
+      )
+    ).toEqual({
       enabled: false,
+    });
+    const disabledReport = await admin.usage(30, 1, {
+      search: "",
+      role: "client",
+      access: "disabled",
+      activity: "all",
+    });
+    expect(disabledReport.entries).toHaveLength(1);
+    expect(disabledReport.entries[0]).toMatchObject({
+      id: alice,
+      disabledComment: "Repeated automated requests",
     });
     expect((await generations.get(alice, active.row.id)).state).toBe(
       "cancel_requested"
@@ -157,7 +201,7 @@ integration("Mentor admin usage and per-account controls", () => {
       (await conversations.messages(alice, conversation.id, 10, null)).entries
     ).toHaveLength(1);
     await generations.finish(alice, active.row.id, "cancelled", "");
-    expect(await admin.setGenerationEnabled(alice, true, root)).toEqual({
+    expect(await admin.setGenerationEnabled(alice, true, root, null)).toEqual({
       enabled: true,
     });
     expect((await generations.limits(alice)).accountDisabled).toBe(false);
@@ -170,13 +214,21 @@ integration("Mentor admin usage and per-account controls", () => {
     );
     await generations.finish(alice, resumed.row.id, "cancelled", "");
     await expect(
-      admin.setGenerationEnabled(root, false, root)
+      admin.setGenerationEnabled(root, false, root, "Administrative review")
     ).rejects.toMatchObject({ status: 400 });
     const [{ count }]: { count: string }[] = await db.query(
       "SELECT count(*)::text AS count FROM webdev_ai_account_control_audit WHERE account_id=$1",
       [alice]
     );
     expect(Number(count)).toBe(2);
+    const audit: { enabled: boolean; admin_comment: string | null }[] =
+      await db.query(
+        "SELECT enabled,admin_comment FROM webdev_ai_account_control_audit WHERE account_id=$1 ORDER BY occurred_at,id",
+        [alice]
+      );
+    expect(audit.map((row) => row.admin_comment)).toContain(
+      "Repeated automated requests"
+    );
   });
 
   it("serializes a generation start against an administrator disable", async () => {
@@ -194,7 +246,12 @@ integration("Mentor admin usage and per-account controls", () => {
         "f".repeat(64),
         "Can I learn CSS?"
       );
-      const disabled = admin.setGenerationEnabled(bob, false, root);
+      const disabled = admin.setGenerationEnabled(
+        bob,
+        false,
+        root,
+        "Concurrent access test"
+      );
       const [attempt] = await Promise.allSettled([started, disabled] as const);
       expect(await disabled).toEqual({ enabled: false });
       if (attempt.status === "fulfilled") {
@@ -217,5 +274,29 @@ integration("Mentor admin usage and per-account controls", () => {
     } finally {
       await second.destroy();
     }
+  });
+
+  it("filters before returning at most ten accounts per page", async () => {
+    for (let index = 0; index < 9; index++)
+      await db.query(
+        `INSERT INTO webdev_accounts(id,role,username,revision,display_name)
+         VALUES($1,'client',$2,$3,$2)`,
+        [randomUUID(), `page_client_${index}`, randomUUID()]
+      );
+    const filters = {
+      search: "",
+      role: "all" as const,
+      access: "all" as const,
+      activity: "all" as const,
+    };
+    const first = await admin.usage(30, 1, filters);
+    const second = await admin.usage(30, 2, filters);
+    expect(first.entries).toHaveLength(10);
+    expect(first.hasMore).toBe(true);
+    expect(second.entries).toHaveLength(2);
+    expect(second.hasMore).toBe(false);
+    expect(
+      new Set([...first.entries, ...second.entries].map((row) => row.id)).size
+    ).toBe(12);
   });
 });

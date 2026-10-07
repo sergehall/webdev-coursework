@@ -53,6 +53,34 @@
 .owner-report-metadata {
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
 }
+.owner-admin-tabs {
+  padding-top: 0;
+}
+.owner-admin-overview {
+  align-items: stretch;
+}
+.owner-admin-link {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--owner-text);
+  text-decoration: none;
+}
+.owner-admin-link:hover {
+  background: var(--owner-hover);
+}
+.owner-admin-link strong,
+.owner-admin-link .owner-muted {
+  display: block;
+}
+.owner-admin-link .owner-muted {
+  margin-top: 0.35rem;
+}
+.owner-report-heading h2 {
+  font-size: 1rem;
+  font-weight: 700;
+}
 .owner-report-metadata dd {
   font-size: 0.85rem;
 }

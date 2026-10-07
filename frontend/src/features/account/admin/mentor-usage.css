@@ -35,6 +35,26 @@
 .owner-mentor-usage-note {
   margin: 0.9rem 0;
 }
+.owner-mentor-usage-filters {
+  display: grid;
+  grid-template-columns: minmax(12rem, 2fr) repeat(3, minmax(8rem, 1fr)) auto;
+  align-items: end;
+  gap: 0.7rem;
+  margin-bottom: 1rem;
+}
+.owner-mentor-usage-filters label {
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+}
+.owner-mentor-usage-filters input,
+.owner-mentor-usage-filters select {
+  min-width: 0;
+  width: 100%;
+}
+.owner-mentor-usage-filters .owner-actions {
+  flex-wrap: nowrap;
+}
 .owner-mentor-usage-scroll {
   max-height: 32rem;
 }
@@ -51,9 +71,36 @@
 .owner-mentor-usage-table .owner-button {
   white-space: nowrap;
 }
+.owner-mentor-usage-detail {
+  display: block;
+  margin-top: 0.25rem;
+}
+.owner-mentor-usage-disable {
+  background: var(--owner-danger-bg);
+}
 .owner-mentor-usage-off {
   display: block;
   margin-top: 0.3rem;
+}
+.owner-mentor-usage-comment {
+  max-width: 17rem;
+  margin-top: 0.35rem;
+  overflow-wrap: anywhere;
+}
+.owner-mentor-usage-comment summary {
+  cursor: pointer;
+  color: var(--owner-muted);
+}
+.owner-mentor-usage-comment p {
+  margin-top: 0.35rem;
+}
+.owner-mentor-usage-comment-field {
+  display: grid;
+  gap: 0.3rem;
+  margin: 0.8rem 0;
+}
+.owner-mentor-usage-comment-field small {
+  color: var(--owner-muted);
 }
 .owner-mentor-usage-pages {
   align-items: center;
@@ -63,5 +110,18 @@
 @media (max-width: 700px) {
   .owner-mentor-usage-metrics {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 1100px) {
+  .owner-mentor-usage-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  .owner-mentor-usage-filters {
+    grid-template-columns: 1fr;
+  }
+  .owner-mentor-usage-filters .owner-actions {
+    flex-wrap: wrap;
   }
 }

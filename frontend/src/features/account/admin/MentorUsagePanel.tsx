@@ -13,6 +13,13 @@ import {
 import { mentorRequest, MentorApiError } from "@/features/mentor/mentor-api";
 import "./mentor-usage.css";
 
+const emptyFilters = {
+  search: "",
+  role: "all",
+  access: "all",
+  activity: "all",
+};
+
 export default function MentorUsagePanel({
   profile,
 }: {
@@ -22,17 +29,25 @@ export default function MentorUsagePanel({
   const clear = owner?.clear;
   const [days, setDays] = useState<7 | 30>(30);
   const [page, setPage] = useState(1);
+  const [draftFilters, setDraftFilters] = useState(emptyFilters);
+  const [filters, setFilters] = useState(emptyFilters);
   const [revision, setRevision] = useState(0);
   const [report, setReport] = useState<MentorUsageReport | null>(null);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [selected, setSelected] = useState<MentorUsageEntry | null>(null);
+  const [comment, setComment] = useState("");
 
   useEffect(() => {
     let active = true;
     setReport(null);
     setError("");
-    void mentorRequest<unknown>(`admin/usage?days=${days}&page=${page}`)
+    const query = new URLSearchParams({
+      days: String(days),
+      page: String(page),
+      ...filters,
+    });
+    void mentorRequest<unknown>(`admin/usage?${query}`)
       .then((value) => {
         if (active) setReport(parseMentorUsage(value));
       })
@@ -46,17 +61,28 @@ export default function MentorUsagePanel({
     return () => {
       active = false;
     };
-  }, [days, page, revision, clear]);
+  }, [days, page, filters, revision, clear]);
+
+  function updateFilter(key: keyof typeof emptyFilters, value: string) {
+    setDraftFilters((current) => ({ ...current, [key]: value }));
+  }
+
+  function applyFilters() {
+    setPage(1);
+    setFilters({ ...draftFilters, search: draftFilters.search.trim() });
+  }
 
   async function changeAccess() {
-    if (!selected || busy) return;
+    if (!selected || busy || (!selected.disabledAt && !comment.trim())) return;
     setBusy(true);
     setError("");
     try {
       await mentorRequest(`admin/accounts/${selected.id}/generation`, "PUT", {
         enabled: Boolean(selected.disabledAt),
+        ...(!selected.disabledAt ? { comment: comment.trim() } : {}),
       });
       setSelected(null);
+      setComment("");
       setRevision((value) => value + 1);
     } catch (reason) {
       if (reason instanceof MentorApiError && reason.status === 401) clear?.();
@@ -135,8 +161,78 @@ export default function MentorUsagePanel({
             {report.totals.tokenReportedCount} of {report.totals.requestCount}{" "}
             requests included token counts. Neurons are this app’s conservative
             budget accounting, not a Cloudflare bill. Generation records are
-            retained for 30 days; all times use {profile.timeZone}.
+            retained for 30 days; all times use {profile.timeZone}. Totals
+            include all accounts; filters apply to the table below.
           </p>
+          <form
+            className="owner-mentor-usage-filters"
+            onSubmit={(event) => {
+              event.preventDefault();
+              applyFilters();
+            }}
+          >
+            <label>
+              Find account
+              <input
+                type="search"
+                value={draftFilters.search}
+                maxLength={80}
+                placeholder="Name, username, or email"
+                onChange={(event) => updateFilter("search", event.target.value)}
+              />
+            </label>
+            <label>
+              Role
+              <select
+                value={draftFilters.role}
+                onChange={(event) => updateFilter("role", event.target.value)}
+              >
+                <option value="all">All roles</option>
+                <option value="client">Clients</option>
+                <option value="admin">Administrators</option>
+              </select>
+            </label>
+            <label>
+              AI access
+              <select
+                value={draftFilters.access}
+                onChange={(event) => updateFilter("access", event.target.value)}
+              >
+                <option value="all">All access</option>
+                <option value="enabled">Enabled</option>
+                <option value="disabled">Disabled</option>
+              </select>
+            </label>
+            <label>
+              Activity
+              <select
+                value={draftFilters.activity}
+                onChange={(event) =>
+                  updateFilter("activity", event.target.value)
+                }
+              >
+                <option value="all">All accounts</option>
+                <option value="used">Used in period</option>
+                <option value="never">No requests in period</option>
+              </select>
+            </label>
+            <div className="owner-actions">
+              <button className="owner-button" type="submit">
+                Apply filters
+              </button>
+              <button
+                className="owner-button"
+                type="button"
+                onClick={() => {
+                  setDraftFilters(emptyFilters);
+                  setFilters(emptyFilters);
+                  setPage(1);
+                }}
+              >
+                Reset
+              </button>
+            </div>
+          </form>
           <div className="owner-table-scroll owner-mentor-usage-scroll">
             <table className="owner-table owner-mentor-usage-table">
               <thead>
@@ -177,8 +273,21 @@ export default function MentorUsagePanel({
                       )}
                     </td>
                     <td>
-                      {entry.requestCount}{" "}
-                      <small>({entry.completedCount} completed)</small>
+                      <strong>{entry.requestCount}</strong>
+                      {entry.requestCount > 0 && (
+                        <>
+                          <small className="owner-mentor-usage-detail">
+                            {entry.completedCount} completed ·{" "}
+                            {entry.failedCount} failed · {entry.cancelledCount}{" "}
+                            cancelled
+                            {entry.activeCount > 0 &&
+                              ` · ${entry.activeCount} active`}
+                          </small>
+                          <small className="owner-mentor-usage-detail">
+                            {entry.chatCount} chat · {entry.planCount} plans
+                          </small>
+                        </>
+                      )}
                     </td>
                     <td>
                       {entry.tokenReportedCount
@@ -189,13 +298,15 @@ export default function MentorUsagePanel({
                     <td>
                       {entry.id !== "00000000-0000-4000-8000-000000000001" ? (
                         <button
-                          className="owner-button"
+                          className={`owner-button ${entry.disabledAt ? "" : "owner-button--danger owner-mentor-usage-disable"}`}
                           disabled={busy}
-                          onClick={() => setSelected(entry)}
+                          aria-label={`${entry.disabledAt ? "Enable AI" : "Disable AI"} for ${entry.username}`}
+                          onClick={() => {
+                            setSelected(entry);
+                            setComment("");
+                          }}
                         >
-                          {entry.disabledAt
-                            ? `Enable AI for ${entry.username}`
-                            : `Disable AI for ${entry.username}`}
+                          {entry.disabledAt ? "Enable AI" : "Disable AI"}
                         </button>
                       ) : (
                         "Primary admin"
@@ -206,6 +317,12 @@ export default function MentorUsagePanel({
                           {formatAccountTime(entry.disabledAt, profile)}
                         </small>
                       )}
+                      {entry.disabledComment && (
+                        <details className="owner-mentor-usage-comment">
+                          <summary>Admin comment</summary>
+                          <p>{entry.disabledComment}</p>
+                        </details>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -213,7 +330,7 @@ export default function MentorUsagePanel({
             </table>
           </div>
           {!report.entries.length && (
-            <p className="owner-muted">No accounts on this page.</p>
+            <p className="owner-muted">No accounts match these filters.</p>
           )}
           <div className="owner-actions owner-mentor-usage-pages">
             <button
@@ -223,7 +340,7 @@ export default function MentorUsagePanel({
             >
               Previous
             </button>
-            <span>Page {page}</span>
+            <span>Page {page} · up to 10 accounts per page</span>
             <button
               className="owner-button"
               disabled={!report.hasMore}
@@ -247,17 +364,37 @@ export default function MentorUsagePanel({
               ? " Their saved work will remain available."
               : " New requests will stop and an active response will be cancelled. Saved work remains available."}
           </p>
+          {!selected.disabledAt && (
+            <div className="owner-mentor-usage-comment-field">
+              <label htmlFor="mentor-disable-comment">
+                Admin comment for disabling AI
+              </label>
+              <textarea
+                id="mentor-disable-comment"
+                value={comment}
+                maxLength={500}
+                required
+                rows={3}
+                placeholder="Explain why access is being disabled"
+                onChange={(event) => setComment(event.target.value)}
+              />
+              <small>Visible only to the primary administrator.</small>
+            </div>
+          )}
           <div className="owner-actions">
             <button
               className="owner-button"
               disabled={busy}
-              onClick={() => setSelected(null)}
+              onClick={() => {
+                setSelected(null);
+                setComment("");
+              }}
             >
               Cancel
             </button>
             <button
-              className="owner-button owner-button--primary"
-              disabled={busy}
+              className={`owner-button ${selected.disabledAt ? "owner-button--primary" : "owner-button--danger owner-mentor-usage-disable"}`}
+              disabled={busy || (!selected.disabledAt && !comment.trim())}
               onClick={() => void changeAccess()}
             >
               {busy ? "Saving…" : "Confirm AI access change"}
