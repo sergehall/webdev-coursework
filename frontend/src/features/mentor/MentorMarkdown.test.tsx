@@ -25,4 +25,21 @@ describe("mentor answer formatting", () => {
     expect(container.querySelector("img")).toBeNull();
     expect(container).toHaveTextContent("<img src=x onerror=alert(1)>");
   });
+
+  it("links only the reviewed CSS specification URL among external sources", () => {
+    render(
+      <MemoryRouter>
+        <MentorMarkdown text="[CSS Cascade](https://www.w3.org/TR/css-cascade-5/#cascade-sort) [Spoof](https://www.w3.org.evil.test/TR/css-cascade-5/#cascade-sort)" />
+      </MemoryRouter>
+    );
+    expect(screen.getByRole("link", { name: "CSS Cascade" })).toHaveAttribute(
+      "href",
+      "https://www.w3.org/TR/css-cascade-5/#cascade-sort"
+    );
+    expect(screen.getByRole("link", { name: "CSS Cascade" })).toHaveAttribute(
+      "rel",
+      "noopener noreferrer"
+    );
+    expect(screen.queryByRole("link", { name: "Spoof" })).toBeNull();
+  });
 });

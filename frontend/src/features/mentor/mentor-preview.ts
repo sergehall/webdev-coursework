@@ -2,6 +2,13 @@
 export const MENTOR_PATH = "/web-developer-path/mentor";
 export const mentorPreviewEnabled =
   import.meta.env.DEV || import.meta.env.VITE_AI_MENTOR_ENABLED === "true";
+export function mentorPublicEntryEnabled(): boolean {
+  return (
+    import.meta.env.DEV ||
+    (import.meta.env.VITE_AI_MENTOR_ENABLED === "true" &&
+      import.meta.env.VITE_AI_MENTOR_PUBLIC_ENABLED === "true")
+  );
+}
 const returnKey = "mentor-preview-return";
 
 export function rememberMentorReturn() {

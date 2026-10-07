@@ -2,6 +2,9 @@ import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
 const inlineToken = /(\[([^\]]+)\]\(([^\s)]+)\)|\*\*([^*]+)\*\*|`([^`]+)`)/g;
+const verifiedExternalSources = new Set([
+  "https://www.w3.org/TR/css-cascade-5/#cascade-sort",
+]);
 
 function safeSourceLink(href: string, allowed: ReadonlySet<string>) {
   return (
@@ -21,17 +24,21 @@ function inline(text: string, allowed: ReadonlySet<string>): ReactNode[] {
     const index = match.index ?? 0;
     if (index > cursor) result.push(text.slice(cursor, index));
     const [raw, , label, href, strong, code] = match;
-    if (label && href)
+    if (label && href) {
       result.push(
         safeSourceLink(href, allowed) ? (
           <Link key={index} to={href}>
             {label}
           </Link>
+        ) : verifiedExternalSources.has(href) ? (
+          <a key={index} href={href} target="_blank" rel="noopener noreferrer">
+            {label}
+          </a>
         ) : (
           label
         )
       );
-    else if (strong) result.push(<strong key={index}>{strong}</strong>);
+    } else if (strong) result.push(<strong key={index}>{strong}</strong>);
     else if (code) result.push(<code key={index}>{code}</code>);
     else result.push(raw);
     cursor = index + raw.length;

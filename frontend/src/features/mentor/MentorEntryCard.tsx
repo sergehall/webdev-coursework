@@ -1,11 +1,10 @@
 import { ArrowUpRight, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 
-import { MENTOR_PATH, mentorPreviewEnabled } from "./mentor-preview";
+import { MENTOR_PATH, mentorPublicEntryEnabled } from "./mentor-preview";
 
 export default function MentorEntryCard() {
-  // Closed-beta testers receive a direct route; the public entry opens in P9.
-  if (!mentorPreviewEnabled || !import.meta.env.DEV) return null;
+  if (!mentorPublicEntryEnabled()) return null;
   return (
     <section
       aria-labelledby="mentor-entry-title"
@@ -18,7 +17,7 @@ export default function MentorEntryCard() {
         />
         <div>
           <p className="mb-2 text-xs font-bold tracking-widest text-cyan-700 uppercase dark:text-cyan-300">
-            AI pathway mentor · Preview
+            AI pathway mentor{import.meta.env.DEV ? " · Preview" : ""}
           </p>
           <h2
             id="mentor-entry-title"

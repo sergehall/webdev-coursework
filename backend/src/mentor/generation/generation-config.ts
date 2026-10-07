@@ -1,4 +1,5 @@
 import { ServiceUnavailableException } from "@nestjs/common";
+import { mentorAudienceAllows } from "../access/mentor-audience";
 
 export const MODEL = "@cf/openai/gpt-oss-20b";
 export const VERIFIED_CSS_CASCADE_MODEL = "verified-css-cascade-v1";
@@ -9,14 +10,10 @@ export const PLAN_OUTPUT_TOKENS = 4096;
 export const DEADLINE_MS = 45_000;
 
 export function generationEnabled(accountId?: string): boolean {
-  const beta = (process.env.AI_MENTOR_BETA_ACCOUNT_IDS ?? "")
-    .split(",")
-    .map((id) => id.trim())
-    .filter(Boolean);
   return (
     process.env.AI_MENTOR_ENABLED === "true" &&
     process.env.AI_GENERATION_ENABLED === "true" &&
-    (accountId === undefined || beta.includes(accountId)) &&
+    (accountId === undefined || mentorAudienceAllows(accountId)) &&
     (!process.env.AI_MODEL || process.env.AI_MODEL === MODEL) &&
     (process.env.AI_PROVIDER_MODE === "cloudflare"
       ? Boolean(

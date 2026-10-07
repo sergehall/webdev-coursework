@@ -1,4 +1,4 @@
-# Mentor operations (private beta)
+# Mentor operations
 
 ## Closed-beta release order
 
@@ -14,6 +14,27 @@ also requires `AI_MENTOR_ENABLED=true` and an allowlisted signed-in account in
 production. Enable the frontend route with `VITE_AI_MENTOR_ENABLED=true` in its
 production build and share its direct URL only with beta testers. The public
 entry card stays hidden until the separate public launch.
+
+## Public launch (P9)
+
+Ship the public-audience code with `AI_MENTOR_PUBLIC_ENABLED` unset on Heroku
+and `VITE_AI_MENTOR_PUBLIC_ENABLED` unset in the Vercel production build. The
+existing beta allowlist stays in force. The public switches are independent:
+the backend switch controls access to private APIs; the frontend switch only
+shows the home and Roadmap entry cards. Neither switch overrides
+`AI_MENTOR_ENABLED`, `AI_GENERATION_ENABLED`, the account session check, or the
+budget ledger.
+
+After the owner reviews beta results and approves public rollout, check current
+Workers AI billing/usage and the rollback path. Enable
+`AI_MENTOR_PUBLIC_ENABLED=true` for the backend and
+`VITE_AI_MENTOR_PUBLIC_ENABLED=true` in a new frontend build. Verify the
+home → sign-in → Mentor path with an ordinary client account outside the beta
+allowlist, then check a bounded chat, plan acceptance, saved-work reload,
+generation limits, and the account-wide Cloudflare usage. Keep the beta
+allowlist configured until the rollout is stable. If access or cost is
+unexpected, set `AI_GENERATION_ENABLED=false` first so saved work remains
+readable; then turn off the public switches to return to the closed beta.
 
 Before enabling generation, inspect Cloudflare's current account-wide Workers
 AI usage, Workers plan, token status, and other workloads. Confirm the SMTP
