@@ -128,10 +128,10 @@ const totalTechnologyCount = homeCourses.reduce(
 export const homeStats = [
   {
     value: String(homeCourses.length),
-    label: "SMC courses",
+    label: "SMC classes",
     description: "A documented Web Development pathway.",
     href: "/coursework",
-    action: "Explore the courses",
+    action: "Explore the classes",
   },
   {
     value: String(totalModuleCount),
@@ -143,7 +143,7 @@ export const homeStats = [
   {
     value: String(totalTechnologyCount),
     label: "Technologies mapped",
-    description: "Skills connected directly to course evidence.",
+    description: "Skills connected directly to class evidence.",
     href: "/web-developer-path",
     action: "See the learning path",
   },

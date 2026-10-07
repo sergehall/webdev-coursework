@@ -208,7 +208,7 @@ export default function CourseExplorer({
           Santa Monica College coursework
         </h2>
         <p className="mt-3 leading-7 text-slate-600 dark:text-slate-300">
-          Open a course to review its focus, mapped technology stack, and direct
+          Open a class to review its focus, mapped technology stack, and direct
           path to assignments, labs, reports, quizzes, and final projects.
         </p>
       </div>

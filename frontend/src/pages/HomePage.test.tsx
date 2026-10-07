@@ -62,7 +62,7 @@ describe("<HomePage />", () => {
     });
 
     for (const [name, href] of [
-      [/10 SMC courses/i, "/coursework"],
+      [/10 SMC classes/i, "/coursework"],
       [/103 Learning modules/i, "/coursework"],
       [/128 Technologies mapped/i, "/web-developer-path"],
       [/9 Projects showcased/i, "/projects"],
