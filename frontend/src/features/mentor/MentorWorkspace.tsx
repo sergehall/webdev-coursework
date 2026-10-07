@@ -386,9 +386,11 @@ export default function MentorWorkspace({
         </div>
         <div className={tab !== "path" ? "mentor-mobile-hidden" : ""}>
           <LearningPathPanel
+            profile={profile}
             path={mentor.path}
             proposal={mentor.proposal}
             metadata={sample ? null : saved.pathMetadata}
+            acceptedMetadata={sample ? null : saved.acceptedPathMetadata}
             done={mentor.done}
             busy={Boolean(mentor.busy)}
             canGenerate={!requestBlocked}

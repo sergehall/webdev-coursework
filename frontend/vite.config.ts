@@ -69,6 +69,17 @@ export default defineConfig(({ mode }) => {
         name: "preview-content-security-policy",
         configureServer(server) {
           server.middlewares.use((request, response, next) => {
+            if (
+              request.method === "GET" &&
+              request.headers.host === "localhost:3000" &&
+              request.headers.accept?.includes("text/html")
+            ) {
+              response.writeHead(307, {
+                Location: `http://127.0.0.1:3000${request.url ?? "/"}`,
+              });
+              response.end();
+              return;
+            }
             const policy = workerContentSecurityPolicy(
               request.url?.split("?", 1)[0] ?? ""
             );
@@ -106,7 +117,7 @@ export default defineConfig(({ mode }) => {
       port: 3000,
       strictPort: true,
       hmr: false,
-      open: "http://localhost:3000",
+      open: "http://127.0.0.1:3000",
       headers: developmentSecurityHeaders,
       proxy: {
         "/api": {

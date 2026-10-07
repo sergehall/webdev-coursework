@@ -20,6 +20,23 @@
   color: var(--mentor-muted);
   font-size: 12px;
 }
+.mentor-export-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0 24px 18px;
+}
+.mentor-export-actions .mentor-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+}
+.mentor-export-actions p {
+  width: 100%;
+  color: var(--mentor-muted);
+  font-size: 11px;
+}
 .mentor-path progress {
   display: block;
   margin: 0 24px 22px;

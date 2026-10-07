@@ -1,13 +1,24 @@
-import { ArrowUpRight, Check, Flag, Route } from "lucide-react";
+import { useState } from "react";
+import {
+  ArrowUpRight,
+  Check,
+  Download,
+  Flag,
+  Printer,
+  Route,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 
-import type { Milestone } from "./mentor-demo";
+import type { LearnerProfile, Milestone } from "./mentor-demo";
 import type { SavedProposal } from "./mentor-api";
+import { downloadPlan, printPlan } from "./mentor-plan-export";
 
 type Props = {
+  profile: LearnerProfile;
   path: Milestone[] | null;
   proposal: Milestone[] | null;
   metadata: SavedProposal["metadata"];
+  acceptedMetadata: SavedProposal["metadata"];
   done: string[];
   busy: boolean;
   canGenerate?: boolean;
@@ -18,9 +29,11 @@ type Props = {
   onExplain: (title: string) => void;
 };
 export default function LearningPathPanel({
+  profile,
   path,
   proposal,
   metadata,
+  acceptedMetadata,
   done,
   busy,
   canGenerate = true,
@@ -30,8 +43,17 @@ export default function LearningPathPanel({
   onToggle,
   onExplain,
 }: Props) {
+  const [printBlocked, setPrintBlocked] = useState(false);
   const steps = proposal ?? path;
   const next = path?.find((step) => !done.includes(step.id));
+  const exportData = steps
+    ? { profile, steps, metadata, done, draft: Boolean(proposal) }
+    : null;
+  const acceptedExport =
+    proposal && path
+      ? { profile, steps: path, metadata: acceptedMetadata, done, draft: false }
+      : null;
+  const exportLabel = proposal ? "draft" : "plan";
   return (
     <section
       className="mentor-path mentor-panel"
@@ -58,6 +80,59 @@ export default function LearningPathPanel({
                 : "Progress you report yourself"}
             </span>
           </div>
+          {exportData && (
+            <div className="mentor-export-actions">
+              <button
+                className="mentor-button"
+                type="button"
+                onClick={() => downloadPlan(exportData, window.location.origin)}
+              >
+                <Download size={15} aria-hidden="true" />
+                Download {exportLabel} (.md)
+              </button>
+              <button
+                className="mentor-button"
+                type="button"
+                onClick={() =>
+                  setPrintBlocked(
+                    !printPlan(exportData, window.location.origin)
+                  )
+                }
+              >
+                <Printer size={15} aria-hidden="true" />
+                Print / save PDF
+              </button>
+              {acceptedExport && (
+                <>
+                  <button
+                    className="mentor-button"
+                    type="button"
+                    onClick={() =>
+                      downloadPlan(acceptedExport, window.location.origin)
+                    }
+                  >
+                    <Download size={15} aria-hidden="true" />
+                    Download accepted plan (.md)
+                  </button>
+                  <button
+                    className="mentor-button"
+                    type="button"
+                    onClick={() =>
+                      setPrintBlocked(
+                        !printPlan(acceptedExport, window.location.origin)
+                      )
+                    }
+                  >
+                    <Printer size={15} aria-hidden="true" />
+                    Print accepted plan / save PDF
+                  </button>
+                </>
+              )}
+              {printBlocked && (
+                <p role="alert">Allow pop-ups to print or save this plan.</p>
+              )}
+            </div>
+          )}
           {proposal && (
             <div className="mentor-draft-notice">
               <p>

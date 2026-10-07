@@ -433,6 +433,7 @@ export function useMentorSaved(
     messages,
     proposal: proposalRecord?.content ?? null,
     pathMetadata: proposalRecord?.metadata ?? pathRecord?.metadata ?? null,
+    acceptedPathMetadata: pathRecord?.metadata ?? null,
     path: pathRecord?.milestones ?? null,
     done:
       pathRecord?.progress

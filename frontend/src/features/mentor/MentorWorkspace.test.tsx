@@ -114,6 +114,9 @@ describe("saved mentor journey", () => {
     expect(
       await screen.findByRole("button", { name: /Accept this path/ })
     ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Download draft (.md)" })
+    ).toBeInTheDocument();
     expect(screen.getByText(/14 AI requests left today/)).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: /Accept this path/ }));
     await waitFor(() =>
@@ -122,6 +125,9 @@ describe("saved mentor journey", () => {
       ).toBeInTheDocument()
     );
     expect(screen.getByText("Build a page")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Download plan (.md)" })
+    ).toBeInTheDocument();
     expect(calls).toEqual(
       expect.arrayContaining([
         "PUT /api/mentor/profile",
