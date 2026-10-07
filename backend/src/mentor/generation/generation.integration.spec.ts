@@ -185,6 +185,42 @@ integration("mentor generation ledger in disposable PostgreSQL", () => {
     });
   });
 
+  it("saves a verified CSS answer without charging the Workers AI budget", async () => {
+    const account = randomUUID();
+    await db.query(
+      `INSERT INTO webdev_accounts(id,role,username,revision,display_name)
+       VALUES($1,'client',$2,$3,'Reference')`,
+      [account, `generation_reference_${account.slice(0, 8)}`, randomUUID()]
+    );
+    const conversation = await conversations.create(account, "CSS origins");
+    const before = (await store.limits(account)).globalNeuronsRemaining;
+    const started = await store.start(
+      account,
+      conversation.id,
+      randomUUID(),
+      "3".repeat(64),
+      "How do normal and important author and user CSS styles rank?"
+    );
+    const answer = "Normal author beats normal user.";
+    const result = await store.completeVerifiedCss(
+      account,
+      started.row.id,
+      answer
+    );
+    expect(result.state).toBe("completed");
+    expect((await store.receipt(account, started.row.id)).content).toBe(answer);
+    expect((await store.limits(account)).globalNeuronsRemaining).toBe(before);
+    const [generation] = await db.query(
+      `SELECT model,accounted_neurons,dispatched_at FROM webdev_mentor_generations WHERE id=$1`,
+      [started.row.id]
+    );
+    expect(generation).toMatchObject({
+      model: "verified-css-cascade-v1",
+      accounted_neurons: 0,
+      dispatched_at: null,
+    });
+  });
+
   it("rejects a sixth request in one UTC minute", async () => {
     const account = randomUUID();
     await db.query(

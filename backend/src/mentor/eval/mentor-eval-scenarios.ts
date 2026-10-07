@@ -244,6 +244,14 @@ export const mentorEvalScenarios: MentorEvalScenario[] = [
     "Do not claim to have changed the saved path; explain that a new draft needs review."
   ),
   scenario(
+    "chat-21",
+    "chat",
+    "cssReady",
+    "Explain how normal and important user and author CSS declarations are ordered in the cascade.",
+    "css",
+    "Normal author declarations outrank normal user declarations; important user declarations outrank important author declarations. If mentioned, important user-agent declarations rank above important user declarations, and browser defaults are user-agent styles."
+  ),
+  scenario(
     "plan-01",
     "plan",
     "newFrontend",

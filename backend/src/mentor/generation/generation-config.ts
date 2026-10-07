@@ -1,6 +1,7 @@
 import { ServiceUnavailableException } from "@nestjs/common";
 
 export const MODEL = "@cf/openai/gpt-oss-20b";
+export const VERIFIED_CSS_CASCADE_MODEL = "verified-css-cascade-v1";
 export const RESERVATION_NEURONS = 400;
 export const MAX_OUTPUT_TOKENS = 1200;
 // Allow room for reasoning and eight concise milestones in structured output.

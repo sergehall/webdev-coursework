@@ -8,6 +8,7 @@ import { PlanPrompt } from "../pathway/plan-prompt";
 import { PlanGenerationStore } from "../pathway/plan-generation.store";
 import { validatePlanProposal } from "../pathway/plan-proposal";
 import { CloudflareQuotaExhaustedError } from "./provider-errors";
+import { verifiedCssCascadeAnswer } from "../knowledge/verified-css-cascade";
 
 export type AppEvent =
   | { event: "accepted"; generationId: string; userMessageId: string | null }
@@ -232,6 +233,40 @@ export class GenerationService {
         conversationId,
         question
       );
+      const verifiedAnswer = verifiedCssCascadeAnswer(question);
+      if (verifiedAnswer) {
+        if (
+          controller.signal.aborted ||
+          (await this.store.cancelled(accountId, id))
+        ) {
+          await this.store.finish(accountId, id, "cancelled", "");
+          yield { event: "cancelled", partial: false };
+          return;
+        }
+        const row = await this.store.completeVerifiedCss(
+          accountId,
+          id,
+          verifiedAnswer
+        );
+        if (row.state === "cancelled")
+          yield { event: "cancelled", partial: false };
+        else if (row.state !== "completed")
+          yield {
+            event: "failed",
+            code: row.state === "abandoned" ? "AI_TIMEOUT" : "AI_UNAVAILABLE",
+            partial: false,
+            canRetry: true,
+          };
+        else {
+          yield { event: "text_delta", delta: verifiedAnswer, sequence: 1 };
+          yield {
+            event: "completed",
+            messageId: row.assistant_message_id,
+            remaining,
+          };
+        }
+        return;
+      }
       if (
         controller.signal.aborted ||
         !(await this.store.markDispatched(accountId, id))

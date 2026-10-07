@@ -9,7 +9,11 @@ import { InjectDataSource } from "@nestjs/typeorm";
 import { randomUUID } from "crypto";
 import { DataSource, type QueryRunner } from "typeorm";
 import { returnedRows } from "../mentor-sql";
-import { MODEL, RESERVATION_NEURONS } from "./generation-config";
+import {
+  MODEL,
+  RESERVATION_NEURONS,
+  VERIFIED_CSS_CASCADE_MODEL,
+} from "./generation-config";
 import {
   GLOBAL_DAILY_NEURON_LIMIT,
   generationPaused,
@@ -359,7 +363,8 @@ export class GenerationStore {
     outcome: "completed" | "failed" | "cancelled",
     content: string,
     usage?: { inputTokens: number; outputTokens: number; neurons?: number },
-    failureKind?: string
+    failureKind?: string,
+    modelOverride?: typeof VERIFIED_CSS_CASCADE_MODEL
   ): Promise<GenerationRow> {
     const q = this.db.createQueryRunner();
     await q.connect();
@@ -380,7 +385,11 @@ export class GenerationStore {
       const finalState =
         row.state === "cancel_requested" ? "cancelled" : outcome;
       let messageId: string | null = null;
-      if (content && row.conversation_id) {
+      if (
+        content &&
+        row.conversation_id &&
+        (finalState !== "cancelled" || row.dispatched_at)
+      ) {
         const owners: { id: string }[] = await q.query(
           `SELECT id FROM webdev_mentor_conversations WHERE id=$1 AND account_id=$2 FOR UPDATE`,
           [row.conversation_id, accountId]
@@ -409,7 +418,7 @@ export class GenerationStore {
       await q.query(
         `UPDATE webdev_mentor_generations SET state=$3,assistant_message_id=$4,
          accounted_neurons=$5,input_tokens=$6,output_tokens=$7,failure_kind=$8,
-         reported_neurons=$9,updated_at=now()
+         reported_neurons=$9,model=coalesce($10,model),updated_at=now()
          WHERE id=$1 AND account_id=$2`,
         [
           id,
@@ -421,6 +430,7 @@ export class GenerationStore {
           usage?.outputTokens ?? null,
           failureKind ?? null,
           usage?.neurons ?? null,
+          modelOverride ?? null,
         ]
       );
       await this.settle(q, row, bill);
@@ -437,6 +447,18 @@ export class GenerationStore {
     } finally {
       await q.release();
     }
+  }
+
+  async completeVerifiedCss(accountId: string, id: string, content: string) {
+    return this.finish(
+      accountId,
+      id,
+      "completed",
+      content,
+      undefined,
+      undefined,
+      VERIFIED_CSS_CASCADE_MODEL
+    );
   }
 
   async receipt(accountId: string, id: string) {

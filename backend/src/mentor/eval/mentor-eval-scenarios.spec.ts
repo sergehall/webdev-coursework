@@ -3,13 +3,13 @@ import { join } from "node:path";
 import { mentorEvalScenarios } from "./mentor-eval-scenarios";
 
 describe("mentor model evaluation fixtures", () => {
-  it("contains 40 distinct English cases with real catalog sources and a review criterion", () => {
+  it("contains 41 distinct English cases with real catalog sources and a review criterion", () => {
     const ids = new Set(mentorEvalScenarios.map((item) => item.id));
-    expect(mentorEvalScenarios).toHaveLength(40);
-    expect(ids.size).toBe(40);
+    expect(mentorEvalScenarios).toHaveLength(41);
+    expect(ids.size).toBe(41);
     expect(
       mentorEvalScenarios.filter((item) => item.mode === "chat")
-    ).toHaveLength(20);
+    ).toHaveLength(21);
     expect(
       mentorEvalScenarios.filter((item) => item.mode === "plan")
     ).toHaveLength(20);
