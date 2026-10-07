@@ -381,8 +381,16 @@ describe("Public accounts", () => {
   });
   it.each(["client", "admin"] as const)(
     "shows the same personal overview without report requests for %s",
-    (role) => {
-      const fetcher = vi.fn();
+    async (role) => {
+      const summaryResponse = new Response(
+        JSON.stringify({
+          version: 0,
+          total: 0,
+          completed: 0,
+          draftReady: false,
+        })
+      );
+      const fetcher = vi.fn().mockResolvedValue(summaryResponse);
       vi.stubGlobal("fetch", fetcher);
       render(
         <MemoryRouter initialEntries={["/account/overview"]}>
@@ -431,7 +439,13 @@ describe("Public accounts", () => {
       expect(screen.queryByText("QR-link visits")).not.toBeInTheDocument();
       expect(screen.queryByText("Security activity")).not.toBeInTheDocument();
       expect(screen.queryByLabelText("Report period")).not.toBeInTheDocument();
-      expect(fetcher).not.toHaveBeenCalled();
+      if (role === "client") {
+        await screen.findByRole("link", { name: "Create my learning plan" });
+        expect(fetcher).toHaveBeenCalledOnce();
+        expect(fetcher.mock.calls[0][0]).toContain(
+          "/api/mentor/pathway/summary"
+        );
+      } else expect(fetcher).not.toHaveBeenCalled();
     }
   );
   it("waits for an explicit email confirmation click instead of consuming links on load", async () => {

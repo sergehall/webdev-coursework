@@ -1,0 +1,67 @@
+.owner-mentor-usage-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: start;
+  justify-content: space-between;
+}
+.owner-mentor-usage-header .owner-actions {
+  align-items: end;
+}
+.owner-mentor-usage-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.owner-mentor-usage-metrics > div {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.8rem;
+  border: 1px solid var(--owner-border);
+  border-radius: 0.6rem;
+}
+.owner-mentor-usage-metrics span,
+.owner-mentor-usage-note,
+.owner-mentor-usage-table small {
+  color: var(--owner-muted);
+  font-size: 0.75rem;
+}
+.owner-mentor-usage-metrics strong {
+  font-size: 1.05rem;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.owner-mentor-usage-note {
+  margin: 0.9rem 0;
+}
+.owner-mentor-usage-scroll {
+  max-height: 32rem;
+}
+.owner-mentor-usage-table {
+  min-width: 48rem;
+}
+.owner-mentor-usage-table th,
+.owner-mentor-usage-table td {
+  vertical-align: top;
+}
+.owner-mentor-usage-table td:first-child {
+  overflow-wrap: anywhere;
+}
+.owner-mentor-usage-table .owner-button {
+  white-space: nowrap;
+}
+.owner-mentor-usage-off {
+  display: block;
+  margin-top: 0.3rem;
+}
+.owner-mentor-usage-pages {
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 0.8rem;
+}
+@media (max-width: 700px) {
+  .owner-mentor-usage-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

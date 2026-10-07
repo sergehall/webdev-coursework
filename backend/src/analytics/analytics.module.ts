@@ -36,6 +36,6 @@ import { AccountStore } from "../accounts/store/account.store";
     MfaCrypto,
     AccountProvidersService,
   ],
-  exports: [MentorAccountAccess],
+  exports: [MentorAccountAccess, AnalyticsService],
 })
 export class AnalyticsModule {}

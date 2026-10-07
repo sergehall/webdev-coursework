@@ -38,6 +38,11 @@ const existingNames = [
   "AddAccountSessions1790920800000",
   "AddAccountProviders1790924400000",
   "AddMentorWorkspace1791244800000",
+  "AddMentorGenerations1791248400000",
+  "AddMentorPlanGeneration1791252000000",
+  "AddMentorGenerationPause1791255600000",
+  "ArchiveMentorPathProgress1791331200000",
+  "AddMentorAccountControls1791334800000",
 ];
 
 function writeMigration(root: string, timestamp: number, name = "First") {

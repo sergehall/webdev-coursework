@@ -12,6 +12,7 @@ import { AddMentorWorkspace1791244800000 } from "../../db/migrations/2026/10/179
 import { AddMentorGenerations1791248400000 } from "../../db/migrations/2026/10/1791248400000-AddMentorGenerations";
 import { AddMentorPlanGeneration1791252000000 } from "../../db/migrations/2026/10/1791252000000-AddMentorPlanGeneration";
 import { AddMentorGenerationPause1791255600000 } from "../../db/migrations/2026/10/1791255600000-AddMentorGenerationPause";
+import { AddMentorAccountControls1791334800000 } from "../../db/migrations/2026/10/1791334800000-AddMentorAccountControls";
 import type { MailProvider } from "../../accounts/mail/auth-mail.contract";
 import {
   BudgetAlertDelivery,
@@ -51,6 +52,7 @@ integration("mentor global budget pause and owner alert", () => {
         AddMentorGenerations1791248400000,
         AddMentorPlanGeneration1791252000000,
         AddMentorGenerationPause1791255600000,
+        AddMentorAccountControls1791334800000,
       ],
     });
     second = new DataSource({ type: "postgres", url });

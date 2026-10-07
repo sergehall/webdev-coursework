@@ -13,10 +13,16 @@ import { PlanPrompt } from "./pathway/plan-prompt";
 import { PlanGenerationStore } from "./pathway/plan-generation.store";
 import { MentorMaintenanceService } from "./maintenance/mentor-maintenance.service";
 import { BudgetAlertMailWorker } from "./alerts/budget-alert-mail";
+import { MentorAdminController } from "./admin/mentor-admin.controller";
+import { MentorAdminStore } from "./admin/mentor-admin.store";
 
 @Module({
   imports: [AnalyticsModule],
-  controllers: [MentorController, MentorGenerationController],
+  controllers: [
+    MentorController,
+    MentorGenerationController,
+    MentorAdminController,
+  ],
   providers: [
     MentorProfileStore,
     MentorConversationStore,
@@ -29,6 +35,7 @@ import { BudgetAlertMailWorker } from "./alerts/budget-alert-mail";
     PlanGenerationStore,
     MentorMaintenanceService,
     BudgetAlertMailWorker,
+    MentorAdminStore,
   ],
 })
 export class MentorModule {}

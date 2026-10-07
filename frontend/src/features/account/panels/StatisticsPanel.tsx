@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 
 import AccountRolesPanel from "../AccountRolesPanel";
+import MentorUsagePanel from "../admin/MentorUsagePanel";
 import { Message, PageHeader } from "../OwnerPageElements";
 import SecurityActivityPanel from "../SecurityActivityPanel";
 import { formatAccountTime } from "../account-time";
@@ -56,8 +57,9 @@ export function StatisticsPanel({ profile }: { profile: OwnerProfile }) {
     <>
       <PageHeader
         title="Administration"
-        description="QR-link analytics and account activity."
+        description="AI Mentor usage, QR-link analytics, and account activity."
       />
+      {canManageRoles && <MentorUsagePanel profile={profile} />}
       <div className="owner-actions owner-report-controls">
         <label>
           Report period{" "}

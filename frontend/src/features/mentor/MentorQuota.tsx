@@ -23,8 +23,9 @@ export default function MentorQuota({
   if (!enabled)
     return (
       <p className="mentor-quota mentor-quota-blocked" role="status">
-        AI responses are unavailable for this account. Your saved path and
-        conversations remain readable.
+        {limits?.accountDisabled
+          ? "AI generation has been disabled for this account by the site administrator. Your saved path and conversations remain readable."
+          : "AI responses are unavailable for this account. Your saved path and conversations remain readable."}
       </p>
     );
   return (

@@ -90,11 +90,14 @@ export class MentorController {
       conversations: conversations.entries,
       limits,
       generationEnabled:
-        generationEnabled(accountId) && !limits.generationPaused,
+        generationEnabled(accountId) &&
+        !limits.generationPaused &&
+        !limits.accountDisabled,
       previewEnabled:
         process.env.NODE_ENV !== "production" &&
         !generationEnabled(accountId) &&
-        !limits.generationPaused,
+        !limits.generationPaused &&
+        !limits.accountDisabled,
     };
   }
   @Put("profile")

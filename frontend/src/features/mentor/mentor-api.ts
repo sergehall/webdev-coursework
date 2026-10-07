@@ -64,6 +64,7 @@ export type MentorLimits = {
   dailyRemaining: number;
   minuteRemaining: number;
   globalNeuronsRemaining?: number;
+  accountDisabled?: boolean;
   resetAt: string;
 };
 export class MentorApiError extends Error {
@@ -90,9 +91,11 @@ export async function mentorResponseError(
   const betaMessage =
     code === "BETA_ACCESS_REQUIRED"
       ? "The mentor beta is available to invited accounts only."
-      : code === "MENTOR_DISABLED"
-        ? "The mentor workspace is not enabled yet."
-        : null;
+      : code === "GENERATION_ACCOUNT_DISABLED"
+        ? "AI generation is disabled for this account. Your saved work is available."
+        : code === "MENTOR_DISABLED"
+          ? "The mentor workspace is not enabled yet."
+          : null;
   return new MentorApiError(
     response.status,
     betaMessage ??

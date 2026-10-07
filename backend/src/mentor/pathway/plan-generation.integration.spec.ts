@@ -12,6 +12,7 @@ import { AddMentorWorkspace1791244800000 } from "../../db/migrations/2026/10/179
 import { AddMentorGenerations1791248400000 } from "../../db/migrations/2026/10/1791248400000-AddMentorGenerations";
 import { AddMentorPlanGeneration1791252000000 } from "../../db/migrations/2026/10/1791252000000-AddMentorPlanGeneration";
 import { AddMentorGenerationPause1791255600000 } from "../../db/migrations/2026/10/1791255600000-AddMentorGenerationPause";
+import { AddMentorAccountControls1791334800000 } from "../../db/migrations/2026/10/1791334800000-AddMentorAccountControls";
 import { ArchiveMentorPathProgress1791331200000 } from "../../db/migrations/2026/10/1791331200000-ArchiveMentorPathProgress";
 import { MentorProfileStore } from "../profile/mentor-profile.store";
 import { MentorConversationStore } from "../conversation/mentor-conversation.store";
@@ -59,6 +60,7 @@ integration("mentor plan generation in disposable PostgreSQL", () => {
         AddMentorGenerations1791248400000,
         AddMentorPlanGeneration1791252000000,
         AddMentorGenerationPause1791255600000,
+        AddMentorAccountControls1791334800000,
         ArchiveMentorPathProgress1791331200000,
       ],
     });

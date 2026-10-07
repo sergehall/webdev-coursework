@@ -20,6 +20,7 @@ import { AddMentorGenerations1791248400000 } from "../db/migrations/2026/10/1791
 import { AddMentorPlanGeneration1791252000000 } from "../db/migrations/2026/10/1791252000000-AddMentorPlanGeneration";
 import { AddMentorGenerationPause1791255600000 } from "../db/migrations/2026/10/1791255600000-AddMentorGenerationPause";
 import { ArchiveMentorPathProgress1791331200000 } from "../db/migrations/2026/10/1791331200000-ArchiveMentorPathProgress";
+import { AddMentorAccountControls1791334800000 } from "../db/migrations/2026/10/1791334800000-AddMentorAccountControls";
 import { MentorProfileStore } from "./profile/mentor-profile.store";
 import { MentorConversationStore } from "./conversation/mentor-conversation.store";
 import { MentorPathwayStore } from "./pathway/mentor-pathway.store";
@@ -56,6 +57,7 @@ integration("mentor workspace PostgreSQL integration", () => {
         AddMentorPlanGeneration1791252000000,
         AddMentorGenerationPause1791255600000,
         ArchiveMentorPathProgress1791331200000,
+        AddMentorAccountControls1791334800000,
       ],
     });
     await db.initialize();

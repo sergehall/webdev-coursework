@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  ForbiddenException,
   HttpException,
   Injectable,
   NotFoundException,
@@ -14,6 +15,7 @@ import {
   RESERVATION_NEURONS,
   VERIFIED_CSS_CASCADE_MODEL,
 } from "./generation-config";
+import { generationLimits, periods } from "./generation-limits";
 import {
   GLOBAL_DAILY_NEURON_LIMIT,
   generationPaused,
@@ -53,56 +55,12 @@ const active = "('reserved','dispatched','streaming','cancel_requested')";
 function limit(code: string, retryAfterSeconds: number): never {
   throw new HttpException({ code, retryAfterSeconds }, 429);
 }
-function periods(now: Date) {
-  const day = new Date(now);
-  day.setUTCHours(0, 0, 0, 0);
-  const minute = new Date(now);
-  minute.setUTCSeconds(0, 0);
-  return { day: day.toISOString(), minute: minute.toISOString() };
-}
-
 @Injectable()
 export class GenerationStore {
   constructor(@InjectDataSource() private readonly db: DataSource) {}
 
   async limits(accountId: string) {
-    const now = new Date();
-    const { day, minute } = periods(now);
-    const rows: {
-      scope: string;
-      request_count: number;
-      reserved_neurons: number;
-      consumed_neurons: number;
-    }[] = await this.db.query(
-      `SELECT scope,request_count,reserved_neurons,consumed_neurons FROM webdev_ai_budget_buckets
-         WHERE (scope='global-day' AND subject_key='all' AND period_start=$2)
-            OR (scope='account-day' AND subject_key=$1 AND period_start=$2)
-            OR (scope='account-minute' AND subject_key=$1 AND period_start=$3)`,
-      [accountId, day, minute]
-    );
-    const bucket = (scope: string) => rows.find((row) => row.scope === scope);
-    const global = bucket("global-day");
-    const paused = await generationPaused(this.db);
-    return {
-      dailyRemaining: Math.max(
-        0,
-        15 - (bucket("account-day")?.request_count ?? 0)
-      ),
-      minuteRemaining: Math.max(
-        0,
-        5 - (bucket("account-minute")?.request_count ?? 0)
-      ),
-      globalNeuronsRemaining: Math.max(
-        0,
-        paused
-          ? 0
-          : GLOBAL_DAILY_NEURON_LIMIT -
-              (global?.reserved_neurons ?? 0) -
-              (global?.consumed_neurons ?? 0)
-      ),
-      generationPaused: paused,
-      resetAt: new Date(new Date(day).getTime() + 86_400_000).toISOString(),
-    };
+    return generationLimits(this.db, accountId);
   }
 
   private async settle(q: QueryRunner, row: GenerationRow, bill: boolean) {
@@ -162,6 +120,12 @@ export class GenerationStore {
       }
       if (await generationPaused(q))
         throw new ServiceUnavailableException({ code: "GENERATION_PAUSED" });
+      const disabled: { account_id: string }[] = await q.query(
+        "SELECT account_id FROM webdev_ai_account_controls WHERE account_id=$1",
+        [accountId]
+      );
+      if (disabled.length)
+        throw new ForbiddenException({ code: "GENERATION_ACCOUNT_DISABLED" });
       const owners: { id: string }[] = await q.query(
         `SELECT id FROM webdev_mentor_conversations WHERE id=$1 AND account_id=$2 AND status='active' FOR UPDATE`,
         [conversationId, accountId]
@@ -320,6 +284,8 @@ export class GenerationStore {
        WHERE id=$1 AND account_id=$2 AND state='reserved'
          AND NOT EXISTS (SELECT 1 FROM webdev_ai_generation_control
                          WHERE id=1 AND muted_at IS NOT NULL)
+         AND NOT EXISTS (SELECT 1 FROM webdev_ai_account_controls
+                         WHERE account_id=$2)
        RETURNING id`,
         [id, accountId]
       )
