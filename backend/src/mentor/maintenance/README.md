@@ -17,6 +17,11 @@ entry card stays hidden until the separate public launch.
 
 ## Public launch (P9)
 
+The owner approved the existing release limits: 15 accepted generations per
+account per UTC day and 8,000 reserved/accounted Neurons for Mentor per UTC day.
+The global cap covers this app, not other workloads in the Cloudflare account.
+These are daily limits; credential expiration is managed separately.
+
 Ship the public-audience code with `AI_MENTOR_PUBLIC_ENABLED` unset on Heroku
 and `VITE_AI_MENTOR_PUBLIC_ENABLED` unset in the Vercel production build. The
 existing beta allowlist stays in force. The public switches are independent:
