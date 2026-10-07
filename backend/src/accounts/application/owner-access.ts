@@ -22,6 +22,7 @@ import { normalizeDevice } from "../../security/device";
 import { hashOwnerPassword, verifyOwnerPassword } from "../owner-password";
 import { assertAcceptablePassword } from "../password-policy";
 import type { PostgresState } from "../../analytics/postgres-state";
+import { parseAccountPageQuery } from "./account-page-query";
 
 export type OwnerSession = {
   accountId: string;
@@ -228,9 +229,12 @@ export class OwnerAccess {
   }
   async accounts(req: Request) {
     await this.principal(req, "accounts.list");
-    return this.context.store.db.query(
-      'SELECT id,username,display_name AS "displayName",role,email,email_verified_at IS NOT NULL AS "emailVerified",created_at AS "createdAt" FROM webdev_accounts ORDER BY created_at DESC LIMIT 100'
-    );
+    return this.context.store.listForAdministration();
+  }
+  async accountPage(req: Request, rawSearch?: string, rawPage?: string) {
+    await this.principal(req, "accounts.list");
+    const { search, page } = parseAccountPageQuery(rawSearch, rawPage);
+    return this.context.store.pageForAdministration(search, page);
   }
   async accountRole(
     req: Request,

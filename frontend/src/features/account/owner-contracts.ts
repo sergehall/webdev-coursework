@@ -104,6 +104,11 @@ const accountsSchema = z.array(
     createdAt: z.string(),
   })
 );
+const accountPageSchema = z.object({
+  entries: accountsSchema,
+  page: z.number().int().positive(),
+  hasMore: z.boolean(),
+});
 
 const qrStatisticsSchema = z.object({
   campaign: z.string(),
@@ -124,6 +129,8 @@ export const parseActiveSessionsPage = (value: unknown): ActiveSessionsPage =>
   activeSessionsPageSchema.parse(value);
 export const parseAuditPage = (value: unknown) => auditPageSchema.parse(value);
 export const parseAccounts = (value: unknown) => accountsSchema.parse(value);
+export const parseAccountPage = (value: unknown) =>
+  accountPageSchema.parse(value);
 export const parseQrStatistics = (value: unknown): QrStatistics =>
   qrStatisticsSchema.parse(value);
 export const parseLoginOptions = (value: unknown) =>

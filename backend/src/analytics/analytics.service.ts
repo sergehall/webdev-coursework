@@ -260,6 +260,10 @@ export class AnalyticsService implements OnModuleInit, OnModuleDestroy {
     return this.ownerAccess().accounts(req);
   }
 
+  async accountPage(req: Request, search?: string, page?: string) {
+    return this.ownerAccess().accountPage(req, search, page);
+  }
+
   async accountRole(
     req: Request,
     id: string,

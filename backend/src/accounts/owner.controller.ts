@@ -11,6 +11,7 @@ import {
   LoginOptionsDto,
   ProviderRedirectDto,
   AdminAccountDto,
+  AdminAccountPageDto,
   LoginResponseDto,
   AccountSessionResponseDto,
   SessionsPageDto,
@@ -249,13 +250,30 @@ export class OwnerController {
   @Get("accounts")
   @ApiContract(
     "List accounts for primary administration",
-    "Only the primary administrator with fresh MFA when enabled. Returns at most 100 accounts, newest first, with public administrative fields.",
+    "Only the primary administrator with fresh MFA when enabled. Returns at most 100 latest accounts for the administration overview.",
     AdminAccountDto,
     { auth: "session", isArray: true }
   )
   @ApiTags("Administration")
   accounts(@Req() req: Request) {
     return this.analytics.accounts(req);
+  }
+  @Get("accounts/page")
+  @ApiContract(
+    "Page through accounts for primary administration",
+    "Search by name, username, or email before pagination. Returns ten newest matching accounts and whether another page exists.",
+    AdminAccountPageDto,
+    { auth: "session" }
+  )
+  @ApiQuery({ name: "search", required: false, type: String, maxLength: 80 })
+  @ApiQuery({ name: "page", required: false, type: Number, minimum: 1 })
+  @ApiTags("Administration")
+  accountPage(
+    @Req() req: Request,
+    @Query("search") search?: string,
+    @Query("page") page?: string
+  ) {
+    return this.analytics.accountPage(req, search, page);
   }
   @Put("accounts/:id/role")
   @ApiContract(

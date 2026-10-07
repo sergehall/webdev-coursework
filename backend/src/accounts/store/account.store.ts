@@ -66,6 +66,26 @@ export class AccountStore {
     );
     return rows[0] ?? null;
   }
+  async listForAdministration() {
+    return this.db.query(
+      `SELECT id,username,display_name AS "displayName",role,email,
+        email_verified_at IS NOT NULL AS "emailVerified",created_at AS "createdAt"
+       FROM webdev_accounts ORDER BY created_at DESC,id DESC LIMIT 100`
+    );
+  }
+  async pageForAdministration(search: string, page: number) {
+    const rows = await this.db.query(
+      `SELECT id,username,display_name AS "displayName",role,email,
+        email_verified_at IS NOT NULL AS "emailVerified",created_at AS "createdAt"
+       FROM webdev_accounts
+       WHERE $1::text='' OR strpos(lower(username),lower($1))>0
+         OR strpos(lower(display_name),lower($1))>0
+         OR strpos(lower(coalesce(email,'')),lower($1))>0
+       ORDER BY created_at DESC,id DESC LIMIT 11 OFFSET $2`,
+      [search, (page - 1) * 10]
+    );
+    return { page, entries: rows.slice(0, 10), hasMore: rows.length > 10 };
+  }
   async githubAccount(
     identity: { id: number; login: string; name?: string | null },
     ownerId: string

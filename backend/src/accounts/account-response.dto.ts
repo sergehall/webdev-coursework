@@ -212,3 +212,11 @@ export class AdminAccountDto {
   @ApiProperty({ format: "date-time", example: "2026-10-02T17:00:00.000Z" })
   createdAt!: string;
 }
+export class AdminAccountPageDto {
+  @ApiProperty({ type: [AdminAccountDto], maxItems: 10 })
+  entries!: AdminAccountDto[];
+  @ApiProperty({ type: Number, example: 1, minimum: 1 })
+  page!: number;
+  @ApiProperty({ type: Boolean, example: false })
+  hasMore!: boolean;
+}

@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { ownerRequest } from "./owner-api";
-import { parseAccounts } from "./owner-contracts";
+import { useOwnerResource } from "./application/useOwnerResource";
+import AdminPagination from "./admin/AdminPagination";
+import { parseAccountPage } from "./owner-contracts";
 type Entry = {
   id: string;
   username: string;
@@ -11,42 +13,45 @@ type Entry = {
   createdAt: string;
 };
 export default function AccountRolesPanel() {
-  const [entries, setEntries] = useState<Entry[]>([]),
-    [error, setError] = useState(""),
-    [loading, setLoading] = useState(true),
-    [busy, setBusy] = useState(false),
-    [selected, setSelected] = useState<Entry | null>(null);
-  async function load() {
-    setLoading(true);
-    setError("");
-    try {
-      setEntries(
-        await ownerRequest<Entry[]>("accounts", {
-          parseResponse: parseAccounts,
-        })
-      );
-    } catch {
-      setError("Unable to load accounts.");
-    } finally {
-      setLoading(false);
-    }
+  const [page, setPage] = useState(1);
+  const [draftSearch, setDraftSearch] = useState("");
+  const [search, setSearch] = useState("");
+  const [actionError, setActionError] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [selected, setSelected] = useState<Entry | null>(null);
+  const params = new URLSearchParams({ page: String(page) });
+  if (search) params.set("search", search);
+  const path = `accounts/page?${params}`;
+  const { data, error, retry } = useOwnerResource<{
+    entries: Entry[];
+    page: number;
+    hasMore: boolean;
+  }>(path, parseAccountPage);
+  const entries = data?.entries ?? [];
+  const loading = !data && !error;
+
+  function applySearch(value: string) {
+    const next = value.trim();
+    setSelected(null);
+    setActionError("");
+    setPage(1);
+    if (next === search && page === 1) retry();
+    else setSearch(next);
   }
-  useEffect(() => {
-    void load();
-  }, []);
+
   async function change() {
     if (!selected) return;
     setBusy(true);
-    setError("");
+    setActionError("");
     try {
       await ownerRequest(`accounts/${selected.id}/role`, {
         method: "PUT",
         body: { role: selected.role === "client" ? "admin" : "client" },
       });
       setSelected(null);
-      await load();
+      retry();
     } catch {
-      setError("Unable to change this role. Please try again.");
+      setActionError("Unable to change this role. Please try again.");
     } finally {
       setBusy(false);
     }
@@ -54,24 +59,61 @@ export default function AccountRolesPanel() {
   return (
     <section className="owner-card" aria-labelledby="account-roles-title">
       <h2 id="account-roles-title">Clients and administrators</h2>
-      <p className="owner-muted">
-        New accounts are clients. Only your primary administrator account can
-        change roles. A role change ends that account’s existing sessions.
-        Showing the latest 100 accounts.
-      </p>
+      <form
+        className="owner-admin-account-search"
+        role="search"
+        onSubmit={(event) => {
+          event.preventDefault();
+          applySearch(draftSearch);
+        }}
+      >
+        <label>
+          Search users
+          <input
+            type="search"
+            value={draftSearch}
+            maxLength={80}
+            placeholder="Name, username, or email"
+            onChange={(event) => setDraftSearch(event.target.value)}
+          />
+        </label>
+        <button className="owner-button" type="submit" disabled={busy}>
+          Search
+        </button>
+        {(draftSearch || search) && (
+          <button
+            className="owner-button"
+            type="button"
+            disabled={busy}
+            onClick={() => {
+              setDraftSearch("");
+              applySearch("");
+            }}
+          >
+            Clear
+          </button>
+        )}
+      </form>
       {error && (
         <p role="alert" className="owner-message owner-message--error">
-          {error}
+          Unable to load accounts.
+        </p>
+      )}
+      {actionError && (
+        <p role="alert" className="owner-message owner-message--error">
+          {actionError}
         </p>
       )}
       {loading && <p role="status">Loading accounts…</p>}
       {!loading && error && !entries.length && (
-        <button className="owner-button" onClick={() => void load()}>
+        <button className="owner-button" onClick={retry}>
           Retry
         </button>
       )}
       {!loading && !error && !entries.length && (
-        <p className="owner-muted">No accounts found.</p>
+        <p className="owner-muted">
+          {search ? `No accounts match “${search}”.` : "No accounts found."}
+        </p>
       )}
       {!!entries.length && (
         <div className="owner-table-scroll">
@@ -90,6 +132,12 @@ export default function AccountRolesPanel() {
                     <strong>{entry.displayName}</strong>
                     <br />
                     <small>{entry.username}</small>
+                    {entry.email && (
+                      <>
+                        <br />
+                        <small>{entry.email}</small>
+                      </>
+                    )}
                   </td>
                   <td>
                     <span className="owner-admin-badge">
@@ -114,6 +162,16 @@ export default function AccountRolesPanel() {
             </tbody>
           </table>
         </div>
+      )}
+      {data && !error && (
+        <AdminPagination
+          page={page}
+          hasMore={data.hasMore}
+          busy={loading || busy}
+          label="Account pages"
+          onPrevious={() => setPage((current) => current - 1)}
+          onNext={() => setPage((current) => current + 1)}
+        />
       )}
       {selected && (
         <div
