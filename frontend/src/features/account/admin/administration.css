@@ -50,8 +50,8 @@
   outline: none;
 }
 .owner-dialog.owner-role-dialog::backdrop {
-  background: rgb(32 32 32 / 78%);
-  backdrop-filter: none;
+  background: rgb(32 32 32 / 30%);
+  backdrop-filter: blur(2px);
 }
 .owner-dialog.owner-role-dialog h2 {
   line-height: 1.4;
