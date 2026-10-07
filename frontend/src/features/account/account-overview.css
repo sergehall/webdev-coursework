@@ -64,20 +64,78 @@
   margin-left: auto;
 }
 .owner-mentor-card {
+  --owner-mentor-accent: #0369a1;
   grid-column: 1 / -1;
+  gap: 0.28rem;
+  padding: 0.65rem 1rem;
+  overflow: hidden;
+  border-color: rgb(56 189 248 / 0.45);
+  background:
+    radial-gradient(circle at 95% -35%, rgb(56 189 248 / 0.2), transparent 36%),
+    linear-gradient(115deg, rgb(14 165 233 / 0.08), rgb(99 102 241 / 0.05)),
+    var(--owner-panel);
+  box-shadow: inset 3px 0 0 #38bdf8;
+  color: var(--owner-text);
+  text-decoration: none;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
 }
-.owner-mentor-status {
-  margin-block: 0.5rem;
-  font-size: 1.1rem;
+.owner-mentor-card:hover,
+.owner-mentor-card:focus-visible {
+  border-color: var(--owner-mentor-accent);
+  box-shadow:
+    inset 3px 0 0 #38bdf8,
+    0 0 0 2px rgb(56 189 248 / 0.22);
+}
+.owner-mentor-card:focus-visible {
+  outline: 2px solid var(--owner-mentor-accent);
+  outline-offset: 2px;
+}
+.dark .owner-mentor-card {
+  --owner-mentor-accent: #67d6f5;
+}
+.owner-mentor-card .owner-overview-heading {
+  margin: 0;
+}
+.owner-mentor-card .owner-overview-heading svg,
+.owner-mentor-action {
+  color: var(--owner-mentor-accent);
+}
+.owner-mentor-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.65rem;
+  align-items: baseline;
+  margin: 0;
+  font-size: 0.82rem;
+}
+.owner-mentor-summary strong {
   font-weight: 700;
 }
-.owner-mentor-card .owner-overview-footer {
-  margin-top: 1rem;
+.owner-mentor-summary span {
+  color: var(--owner-muted);
 }
-.owner-mentor-card .owner-text-link {
+.owner-mentor-action {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.45rem;
+  width: fit-content;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+.owner-mentor-action svg {
+  transition: transform 160ms ease;
+}
+.owner-mentor-card:hover .owner-mentor-action svg,
+.owner-mentor-card:focus-visible .owner-mentor-action svg {
+  transform: translateX(3px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .owner-mentor-card,
+  .owner-mentor-action svg {
+    transition: none;
+  }
 }
 @media (max-width: 400px) {
   .owner-overview-grid .owner-overview-details {

@@ -1,4 +1,10 @@
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import {
+  cleanup,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
@@ -28,10 +34,16 @@ describe("client AI pathway navigation", () => {
       completed: 0,
       draftReady: false,
     });
+    const card = await screen.findByRole("link", {
+      name: "Create my learning plan",
+    });
+    expect(card).toHaveAttribute("href", "/web-developer-path/mentor");
     expect(
-      await screen.findByRole("link", { name: "Create my learning plan" })
-    ).toHaveAttribute("href", "/web-developer-path/mentor");
-    expect(screen.getByText("Start your learning path")).toBeInTheDocument();
+      within(card).getByRole("heading", { name: "AI Pathway Mentor" })
+    ).toBeInTheDocument();
+    expect(
+      within(card).getByText("Start your learning path")
+    ).toBeInTheDocument();
     expect(fetcher).toHaveBeenCalledWith(
       expect.stringContaining("/api/mentor/pathway/summary"),
       expect.objectContaining({ credentials: "include", cache: "no-store" })
@@ -43,9 +55,7 @@ describe("client AI pathway navigation", () => {
     expect(
       await screen.findByRole("link", { name: "Review my draft" })
     ).toBeInTheDocument();
-    expect(
-      screen.getByText(/3 of 8 steps marked done by you/)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/3 of 8 steps done/)).toBeInTheDocument();
     expect(
       screen.getByText(/current path stays active until you accept/)
     ).toBeInTheDocument();
@@ -56,13 +66,15 @@ describe("client AI pathway navigation", () => {
     expect(
       await screen.findByRole("link", { name: "Continue my path" })
     ).toHaveAttribute("href", "/web-developer-path/mentor");
-    expect(screen.getByText(/2 of 8 steps marked done/)).toBeInTheDocument();
+    expect(screen.getByText(/2 of 8 steps done/)).toBeInTheDocument();
   });
 
   it("does not claim a plan exists when its private status is unavailable", async () => {
     show({ code: "MENTOR_DISABLED" }, 503);
     await waitFor(() =>
-      expect(screen.getByText(/temporarily unavailable/)).toBeInTheDocument()
+      expect(
+        screen.getByText("Learning status unavailable")
+      ).toBeInTheDocument()
     );
     expect(
       screen.queryByRole("link", { name: /my path|learning plan|draft/i })

@@ -36,7 +36,11 @@ export default function AccountOverviewPanel({
 
   return (
     <div
-      className={`owner-grid owner-overview-grid${showMentor ? "owner-overview-with-mentor" : ""}`}
+      className={
+        showMentor
+          ? "owner-grid owner-overview-grid owner-overview-with-mentor"
+          : "owner-grid owner-overview-grid"
+      }
     >
       {showMentor && <AccountMentorCard />}
       <section className="owner-card" aria-labelledby="overview-profile-title">

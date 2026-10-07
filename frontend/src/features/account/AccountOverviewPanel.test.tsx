@@ -38,6 +38,9 @@ afterEach(cleanup);
 describe("Account overview", () => {
   it("guides a GitHub-only account to recovery and two-factor settings", () => {
     show(session);
+    expect(
+      screen.getByRole("region", { name: "Your profile" }).parentElement
+    ).toHaveClass("owner-overview-grid", "owner-overview-with-mentor");
     expect(screen.getByText("No email linked")).toBeInTheDocument();
     expect(screen.getByText("@alex-dev")).toBeInTheDocument();
     expect(
