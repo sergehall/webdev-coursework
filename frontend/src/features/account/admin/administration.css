@@ -43,7 +43,36 @@
 }
 .owner-role-dialog .owner-actions {
   justify-content: flex-end;
+  gap: 1.25rem;
   margin-top: 1.5rem;
+}
+.owner-role-dialog:focus {
+  outline: none;
+}
+.owner-dialog.owner-role-dialog::backdrop {
+  background: rgb(32 32 32 / 78%);
+  backdrop-filter: none;
+}
+.owner-dialog.owner-role-dialog h2 {
+  line-height: 1.4;
+}
+.owner-role-dialog h2 strong {
+  color: var(--owner-accent);
+  overflow-wrap: anywhere;
+}
+.owner-role-dialog .owner-button {
+  transition:
+    background-color 160ms ease,
+    color 160ms ease;
+}
+.owner-role-dialog .owner-role-dialog-cancel {
+  border-color: transparent;
+  background: transparent;
+  color: var(--owner-muted);
+}
+.owner-role-dialog .owner-role-dialog-cancel:hover:not(:disabled) {
+  background: var(--owner-hover);
+  color: var(--owner-text);
 }
 .owner-administration .owner-report-controls {
   justify-content: flex-start;

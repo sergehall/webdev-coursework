@@ -21,8 +21,10 @@ export default function AccountRolesPanel() {
   const [selected, setSelected] = useState<Entry | null>(null);
   const dialog = useRef<HTMLDialogElement>(null);
   useEffect(() => {
-    if (selected && dialog.current && !dialog.current.open)
+    if (selected && dialog.current && !dialog.current.open) {
       dialog.current.showModal();
+      dialog.current.focus();
+    }
   }, [selected]);
   const params = new URLSearchParams({ page: String(page) });
   if (search) params.set("search", search);
@@ -185,6 +187,7 @@ export default function AccountRolesPanel() {
           ref={dialog}
           className="owner-dialog owner-role-dialog"
           aria-labelledby="owner-role-dialog-title"
+          tabIndex={-1}
           onCancel={(event) => {
             event.preventDefault();
             if (!busy) setSelected(null);
@@ -192,14 +195,13 @@ export default function AccountRolesPanel() {
           onClose={() => setSelected(null)}
         >
           <h2 id="owner-role-dialog-title">
-            Change {selected.username} to{" "}
+            Change <strong>{selected.username}</strong> to{" "}
             {selected.role === "client" ? "admin" : "client"}?
           </h2>
           <div className="owner-actions">
             <button
-              className="owner-button"
+              className="owner-button owner-role-dialog-cancel"
               disabled={busy}
-              autoFocus
               onClick={() => setSelected(null)}
             >
               Cancel
