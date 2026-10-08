@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { BookOpenCheck, ExternalLink, Minus, Plus } from "lucide-react";
+import {
+  BookOpenCheck,
+  Download,
+  ExternalLink,
+  Minus,
+  Plus,
+} from "lucide-react";
 
 import GeneralEducationOptions from "./GeneralEducationOptions";
 import {
@@ -130,15 +136,25 @@ const WebDevMajorRequirements: React.FC = () => {
           </div>
         </div>
 
-        <a
-          href={programSource}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex min-h-10 items-center gap-2 self-start rounded-lg border border-slate-200 bg-white/75 px-3 py-2 text-xs font-bold text-slate-700 transition hover:border-cyan-300 hover:text-cyan-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 sm:self-auto dark:border-slate-700 dark:bg-slate-950/55 dark:text-slate-200 dark:hover:border-cyan-700 dark:hover:text-cyan-300"
-        >
-          Official SMC program
-          <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
-        </a>
+        <div className="flex flex-wrap gap-2 sm:justify-end">
+          <a
+            href="/program-documents/smc-web-developer-program-pathway.pdf"
+            download="SMC-Web-Developer-Program-Pathway.pdf"
+            className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-cyan-200 bg-cyan-50/75 px-3 py-2 text-xs font-bold text-cyan-800 transition hover:border-cyan-400 hover:bg-cyan-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 dark:border-cyan-800 dark:bg-cyan-950/40 dark:text-cyan-200 dark:hover:border-cyan-600 dark:hover:bg-cyan-950/70"
+          >
+            <Download className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+            Download original SMC pathway (PDF)
+          </a>
+          <a
+            href={programSource}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-slate-200 bg-white/75 px-3 py-2 text-xs font-bold text-slate-700 transition hover:border-cyan-300 hover:text-cyan-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 dark:border-slate-700 dark:bg-slate-950/55 dark:text-slate-200 dark:hover:border-cyan-700 dark:hover:text-cyan-300"
+          >
+            Official SMC program
+            <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+          </a>
+        </div>
       </div>
 
       <p className="mb-4 max-w-4xl text-sm leading-6 text-slate-600 dark:text-slate-400">
