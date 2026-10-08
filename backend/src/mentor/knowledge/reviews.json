@@ -7,9 +7,9 @@
       "Explore Java exceptions, concurrency, I/O and network APIs.",
       "Relate JDBC and Servlets to server application development."
     ],
-    "reviewedAt": "2026-10-05",
+    "reviewedAt": "2026-10-08",
     "sourceHashes": {
-      "frontend/src/courses/catalog/webDeveloperCourses.ts": "e5395954031b2ec03900732196ce3141c1764884abbc136f433e81e3706100e9",
+      "frontend/src/courses/catalog/webDeveloperCourses.ts": "af807c79f47ba0383ce394aa067e89a5d78268144e77205bad03fd422425139e",
       "frontend/src/courses/catalog/activeCourses.ts": "daafee9d01c8591ed608bbd5a7bf5b09d8db870a43c28c73f6e62c8fa4dd1053"
     }
   },
@@ -21,9 +21,9 @@
       "Describe relational data modeling and normalization.",
       "Use SQL to create, retrieve and manipulate data."
     ],
-    "reviewedAt": "2026-10-05",
+    "reviewedAt": "2026-10-08",
     "sourceHashes": {
-      "frontend/src/courses/catalog/webDeveloperCourses.ts": "e5395954031b2ec03900732196ce3141c1764884abbc136f433e81e3706100e9",
+      "frontend/src/courses/catalog/webDeveloperCourses.ts": "af807c79f47ba0383ce394aa067e89a5d78268144e77205bad03fd422425139e",
       "frontend/src/courses/catalog/activeCourses.ts": "daafee9d01c8591ed608bbd5a7bf5b09d8db870a43c28c73f6e62c8fa4dd1053"
     }
   },
@@ -35,9 +35,9 @@
       "Explain addressing, protocols and network architectures.",
       "Relate subnetting and server services to connected applications."
     ],
-    "reviewedAt": "2026-10-05",
+    "reviewedAt": "2026-10-08",
     "sourceHashes": {
-      "frontend/src/courses/catalog/webDeveloperCourses.ts": "e5395954031b2ec03900732196ce3141c1764884abbc136f433e81e3706100e9",
+      "frontend/src/courses/catalog/webDeveloperCourses.ts": "af807c79f47ba0383ce394aa067e89a5d78268144e77205bad03fd422425139e",
       "frontend/src/courses/catalog/activeCourses.ts": "daafee9d01c8591ed608bbd5a7bf5b09d8db870a43c28c73f6e62c8fa4dd1053"
     }
   },
@@ -49,9 +49,9 @@
       "Compare cloud services and deployment concepts.",
       "Evaluate technical and business benefits of cloud computing."
     ],
-    "reviewedAt": "2026-10-05",
+    "reviewedAt": "2026-10-08",
     "sourceHashes": {
-      "frontend/src/courses/catalog/webDeveloperCourses.ts": "e5395954031b2ec03900732196ce3141c1764884abbc136f433e81e3706100e9",
+      "frontend/src/courses/catalog/webDeveloperCourses.ts": "af807c79f47ba0383ce394aa067e89a5d78268144e77205bad03fd422425139e",
       "frontend/src/courses/catalog/activeCourses.ts": "daafee9d01c8591ed608bbd5a7bf5b09d8db870a43c28c73f6e62c8fa4dd1053"
     }
   },
@@ -63,9 +63,9 @@
       "Identify HTML, CSS and JavaScript roles in web applications.",
       "Practice browser-based page structure and interactions."
     ],
-    "reviewedAt": "2026-10-05",
+    "reviewedAt": "2026-10-08",
     "sourceHashes": {
-      "frontend/src/courses/catalog/webDeveloperCourses.ts": "e5395954031b2ec03900732196ce3141c1764884abbc136f433e81e3706100e9",
+      "frontend/src/courses/catalog/webDeveloperCourses.ts": "af807c79f47ba0383ce394aa067e89a5d78268144e77205bad03fd422425139e",
       "frontend/src/courses/catalog/activeCourses.ts": "daafee9d01c8591ed608bbd5a7bf5b09d8db870a43c28c73f6e62c8fa4dd1053"
     }
   },
@@ -77,9 +77,9 @@
       "Use JavaScript programming concepts.",
       "Connect client-side JavaScript to the document object model."
     ],
-    "reviewedAt": "2026-10-05",
+    "reviewedAt": "2026-10-08",
     "sourceHashes": {
-      "frontend/src/courses/catalog/webDeveloperCourses.ts": "e5395954031b2ec03900732196ce3141c1764884abbc136f433e81e3706100e9",
+      "frontend/src/courses/catalog/webDeveloperCourses.ts": "af807c79f47ba0383ce394aa067e89a5d78268144e77205bad03fd422425139e",
       "frontend/src/courses/catalog/activeCourses.ts": "daafee9d01c8591ed608bbd5a7bf5b09d8db870a43c28c73f6e62c8fa4dd1053"
     }
   },
@@ -91,9 +91,9 @@
       "Explain server-side form processing with PHP.",
       "Connect dynamic web pages to backend data."
     ],
-    "reviewedAt": "2026-10-05",
+    "reviewedAt": "2026-10-08",
     "sourceHashes": {
-      "frontend/src/courses/catalog/webDeveloperCourses.ts": "e5395954031b2ec03900732196ce3141c1764884abbc136f433e81e3706100e9",
+      "frontend/src/courses/catalog/webDeveloperCourses.ts": "af807c79f47ba0383ce394aa067e89a5d78268144e77205bad03fd422425139e",
       "frontend/src/courses/catalog/activeCourses.ts": "daafee9d01c8591ed608bbd5a7bf5b09d8db870a43c28c73f6e62c8fa4dd1053"
     }
   },
@@ -105,9 +105,9 @@
       "Use Python syntax, control flow, strings and I/O.",
       "Describe classes and regular expressions."
     ],
-    "reviewedAt": "2026-10-05",
+    "reviewedAt": "2026-10-08",
     "sourceHashes": {
-      "frontend/src/courses/catalog/webDeveloperCourses.ts": "e5395954031b2ec03900732196ce3141c1764884abbc136f433e81e3706100e9",
+      "frontend/src/courses/catalog/webDeveloperCourses.ts": "af807c79f47ba0383ce394aa067e89a5d78268144e77205bad03fd422425139e",
       "frontend/src/courses/catalog/activeCourses.ts": "daafee9d01c8591ed608bbd5a7bf5b09d8db870a43c28c73f6e62c8fa4dd1053"
     }
   },
@@ -119,9 +119,9 @@
       "Describe EC2 and Elastic Beanstalk application deployment.",
       "Explain load balancing and scalability in distributed cloud systems."
     ],
-    "reviewedAt": "2026-10-05",
+    "reviewedAt": "2026-10-08",
     "sourceHashes": {
-      "frontend/src/courses/catalog/webDeveloperCourses.ts": "e5395954031b2ec03900732196ce3141c1764884abbc136f433e81e3706100e9",
+      "frontend/src/courses/catalog/webDeveloperCourses.ts": "af807c79f47ba0383ce394aa067e89a5d78268144e77205bad03fd422425139e",
       "frontend/src/courses/catalog/activeCourses.ts": "daafee9d01c8591ed608bbd5a7bf5b09d8db870a43c28c73f6e62c8fa4dd1053"
     }
   },
@@ -133,9 +133,9 @@
       "Explain the AWS Shared Responsibility Model.",
       "Relate layered controls to confidentiality, integrity and availability."
     ],
-    "reviewedAt": "2026-10-05",
+    "reviewedAt": "2026-10-08",
     "sourceHashes": {
-      "frontend/src/courses/catalog/webDeveloperCourses.ts": "e5395954031b2ec03900732196ce3141c1764884abbc136f433e81e3706100e9",
+      "frontend/src/courses/catalog/webDeveloperCourses.ts": "af807c79f47ba0383ce394aa067e89a5d78268144e77205bad03fd422425139e",
       "frontend/src/courses/catalog/activeCourses.ts": "daafee9d01c8591ed608bbd5a7bf5b09d8db870a43c28c73f6e62c8fa4dd1053"
     }
   },
@@ -285,9 +285,9 @@
       "Understand the breadth of frontend and backend web engineering.",
       "Distinguish a personal learning plan from academic program requirements."
     ],
-    "reviewedAt": "2026-10-05",
+    "reviewedAt": "2026-10-08",
     "sourceHashes": {
-      "frontend/src/features/pathway/programSections.tsx": "f01df1e95e4ea96e98c93270a16fa73320f3b9639d96afd382fae76699c6a4ea"
+      "frontend/src/features/pathway/programSections.tsx": "7179d29fcd07956d7f1d3261dad6dcd0a920b146767e1d8d9330b082dc15dc99"
     },
     "title": "Web developer program overview",
     "summary": "The published roadmap describes frontend and backend web development across browser technologies, frameworks, cloud hosting, networks, databases and security. It presents a course-taking sequence and recommends an academic counselor for an individual educational plan. Program information is labeled effective Fall 2023; it is not a current enrollment or graduation eligibility determination."
