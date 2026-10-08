@@ -25,7 +25,7 @@ describe("WebDeveloperPathPage", () => {
       screen.getByRole("heading", { name: /Course notation/i })
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { name: /Major requirements/i })
+      screen.getByRole("heading", { name: /Coursework plan/i })
     ).toBeInTheDocument();
   });
 });

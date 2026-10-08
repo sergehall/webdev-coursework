@@ -1,6 +1,8 @@
 // courseCodes.ts
 
 export const courseCodes = [
+  "CS 3",
+  "COUNS 20",
   "CS 56",
   "CS 60",
   "CS 70",

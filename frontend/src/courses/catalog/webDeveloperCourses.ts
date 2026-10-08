@@ -30,10 +30,32 @@ export const isBaseCourse = (course: Course): course is BaseCourse =>
 
 export const courses: Course[] = [
   {
+    code: "CS 3",
+    title: "Introduction To Computer Systems",
+    units: 3,
+    tags: [
+      "Available Online",
+      "Appropriate for Intersession",
+      "Gateway Course",
+    ],
+    description:
+      "An introductory foundation for further computer science study. Topics include program design, coding and testing, hardware, operating systems, compilers, databases, the Internet, cybersecurity, and cloud computing.",
+    transfersTo: "UC",
+  },
+  {
+    code: "COUNS 20",
+    title: "Student Success Seminar",
+    units: 3,
+    tags: ["Available Online", "Appropriate for Intersession"],
+    description:
+      "Explores how intellectual, psychological, social, and physical factors shape learning, well-being, and success. Topics include motivation, critical thinking, academic integrity, study strategies, health, global citizenship, communication, time management, career exploration, and educational planning.",
+    transfersTo: "UC",
+  },
+  {
     code: "CS 56",
     title: "Advanced Java Programming",
     units: 3,
-    tags: ["Program Requirement"],
+    tags: [],
     description:
       "Java is a general-purpose language for writing platform-independent robust, secure programs. This course continues where CS 55 leaves off in developing mastery of the use of Java programming language and its extensive APIs. Topics covered include exceptions, multithreading, multimedia, Input/Output, Java Database Connectivity (JDBC), Servlets, Remote Method Invocation (RMI), and networking.",
     descriptionSummary:

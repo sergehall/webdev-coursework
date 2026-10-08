@@ -40,7 +40,8 @@ const WebDeveloperPathPage = () => {
 
             <p className="mt-4 max-w-3xl text-base leading-7 text-slate-600 dark:text-slate-300">
               A structured view of the program, learning outcomes, major
-              requirements, and flexible specialization options.
+              requirements, General Education, electives, and flexible
+              specialization options.
             </p>
 
             <div
