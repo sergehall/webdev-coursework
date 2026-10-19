@@ -75,9 +75,36 @@ describe("HTTP logging", () => {
 
       expect(next).toHaveBeenCalledTimes(1);
       expect(log).toHaveBeenCalledWith(
-        expect.stringContaining("GET /quizzes/progress 200")
+        expect.stringContaining("GET /quizzes/progress -> 200 OK")
       );
       expect(log.mock.calls[0][0]).not.toContain("private-client-id");
+    } finally {
+      log.mockRestore();
+    }
+  });
+
+  it("labels health-check response details and normalizes a local IPv4 address", () => {
+    const log = jest.spyOn(Logger.prototype, "log").mockImplementation();
+    try {
+      const response = new EventEmitter() as Response;
+      response.statusCode = 200;
+      response.statusMessage = "OK";
+      response.getHeader = jest.fn().mockReturnValue(115);
+      const request = {
+        method: "GET",
+        originalUrl: "/health",
+        ip: "::ffff:127.0.0.1",
+        get: jest.fn().mockReturnValue("curl/8.7.1"),
+      } as unknown as Request;
+
+      new HttpLoggingMiddleware().use(request, response, jest.fn());
+      response.emit("finish");
+
+      expect(log).toHaveBeenCalledWith(
+        expect.stringMatching(
+          /^GET \/health -> 200 OK \| \d+ ms \| size: 115 B \| IP: 127\.0\.0\.1 \| agent: "curl\/8\.7\.1"$/
+        )
+      );
     } finally {
       log.mockRestore();
     }

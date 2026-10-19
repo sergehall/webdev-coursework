@@ -28,10 +28,18 @@ export async function bootstrap() {
   const resolvedPort =
     Number.isNaN(port) || port < 1 || port > 65535 ? 5050 : port;
 
-  await app.listen(resolvedPort);
+  const server = await app.listen(resolvedPort);
 
   const baseUrl = await app.getUrl();
-  startupLogger.log(`App is reachable at: ${baseUrl}`);
+  const address = server.address();
+  const host = typeof address === "string" ? address : address?.address;
+  const listeningPort =
+    typeof address === "string"
+      ? resolvedPort
+      : (address?.port ?? resolvedPort);
+  startupLogger.log(
+    `Backend listening | host: ${host ?? "unknown"} | port: ${listeningPort} | URL: ${baseUrl}`
+  );
 }
 
 if (process.env.NODE_ENV !== "test") {

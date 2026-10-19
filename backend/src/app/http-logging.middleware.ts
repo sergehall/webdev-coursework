@@ -50,10 +50,11 @@ export class HttpLoggingMiddleware implements NestMiddleware {
     }
     const userAgent = req.get("user-agent") || "";
     const ip = req.ip ? req.ip : "";
+    const started = Date.now();
 
     // Log request details when response finishes
     res.on("finish", () => {
-      this.logRequest(ip, method, path, userAgent, res);
+      this.logRequest(ip, method, path, userAgent, res, Date.now() - started);
     });
 
     // Handle errors and log details
@@ -71,12 +72,16 @@ export class HttpLoggingMiddleware implements NestMiddleware {
     method: string,
     url: string,
     userAgent: string,
-    res: Response
+    res: Response,
+    durationMs: number
   ) {
     const { statusCode } = res;
     const statusMessage = res.statusMessage ?? "";
-    const contentLength = res.getHeader("content-length") ?? "-";
-    const logMessage = `${method} ${url} ${statusCode} ${statusMessage} ${contentLength} - ${userAgent} ${ip}`;
+    const contentLength = res.getHeader("content-length");
+    const size = contentLength === undefined ? "unknown" : `${contentLength} B`;
+    const clientIp = ip.replace(/^::ffff:/, "") || "unknown";
+    const agent = JSON.stringify(userAgent || "unknown");
+    const logMessage = `${method} ${url} -> ${statusCode} ${statusMessage} | ${durationMs} ms | size: ${size} | IP: ${clientIp} | agent: ${agent}`;
     this.logger.log(logMessage);
   }
 
