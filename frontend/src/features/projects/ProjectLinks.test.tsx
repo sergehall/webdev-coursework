@@ -8,6 +8,9 @@ import ProjectLinks from "@/features/projects/ProjectLinks";
 const hexGateProject = projectShowcaseItems.find(
   (project) => project.id === "hex-gate"
 );
+const infrastructureConsoleProject = projectShowcaseItems.find(
+  (project) => project.id === "infrastructure-console"
+);
 const lavovalProject = projectShowcaseItems.find(
   (project) => project.id === "lavoval"
 );
@@ -25,6 +28,58 @@ const cs85PhpProgrammingProject = projectShowcaseItems.find(
 );
 
 describe("<ProjectLinks /> project resources", () => {
+  it("presents private Infrastructure Console docs and architecture in safe dialogs", async () => {
+    if (!infrastructureConsoleProject) {
+      throw new Error("Infrastructure Console project data was not found");
+    }
+
+    const user = userEvent.setup();
+    render(<ProjectLinks project={infrastructureConsoleProject} />);
+
+    expect(
+      screen.queryByRole("link", {
+        name: /Live site|Source|Docs|Architecture/i,
+      })
+    ).not.toBeInTheDocument();
+
+    const docsButton = screen.getByRole("button", { name: "Docs" });
+    await user.click(docsButton);
+    const docsDialog = screen.getByRole("dialog", {
+      name: "Infrastructure Console documentation",
+    });
+    expect(
+      within(docsDialog).getByRole("heading", { name: "Health and evidence" })
+    ).toBeInTheDocument();
+    expect(
+      within(docsDialog).getByText(/private, local-only workspace/i)
+    ).toBeInTheDocument();
+    await user.keyboard("{Escape}");
+    expect(docsButton).toHaveFocus();
+
+    const architectureButton = screen.getByRole("button", {
+      name: "Architecture",
+    });
+    await user.click(architectureButton);
+    const architectureDialog = screen.getByRole("dialog", {
+      name: "Infrastructure Console architecture",
+    });
+    expect(
+      within(architectureDialog).getByRole("heading", {
+        name: "Federated boundary",
+      })
+    ).toBeInTheDocument();
+    expect(
+      within(architectureDialog).getByRole("heading", {
+        name: "Local trust model",
+      })
+    ).toBeInTheDocument();
+    expect(
+      within(architectureDialog).getByText(
+        /excludes source code, credentials, infrastructure identifiers/i
+      )
+    ).toBeInTheDocument();
+  });
+
   it("keeps Hex Gate source private and presents safe modal summaries", async () => {
     if (!hexGateProject) {
       throw new Error("Hex Gate project data was not found");
@@ -178,10 +233,9 @@ describe("<ProjectLinks /> project resources", () => {
 
     render(<ProjectLinks project={awsLearningPortalProject} />);
 
-    expect(screen.getByRole("link", { name: /Live site/i })).toHaveAttribute(
-      "href",
-      "https://awsawesome.com"
-    );
+    expect(
+      screen.queryByRole("link", { name: /Live site/i })
+    ).not.toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Source/i })).toHaveAttribute(
       "href",
       "https://github.com/sergehall/final-project-CS79D"

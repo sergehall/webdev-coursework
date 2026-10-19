@@ -47,7 +47,7 @@ export const projectShowcaseStats = [
   {
     value: `${publishedProjectCount} live`,
     label: "Published systems",
-    description: `${localProjectCount} local application projects with source and architecture notes.`,
+    description: `${localProjectCount} local application projects with stack and engineering notes.`,
   },
   {
     value: representedLanguages,

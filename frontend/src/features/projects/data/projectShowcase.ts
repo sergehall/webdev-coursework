@@ -1,6 +1,7 @@
 import { lensLoungeProject } from "@/features/projects/data/projects/lensLoungeProject";
 import { sergioartgProject } from "@/features/projects/data/projects/sergioartgProject";
 import { hexGateProject } from "@/features/projects/data/projects/hexGateProject";
+import { infrastructureConsoleProject } from "@/features/projects/data/projects/infrastructureConsoleProject";
 import { lavovalProject } from "@/features/projects/data/projects/lavovalProject";
 import { javaStartProject } from "@/features/projects/data/projects/javaStartProject";
 import { awsLearningPortalProject } from "@/features/projects/data/projects/awsLearningPortalProject";
@@ -61,6 +62,7 @@ export const projectShowcaseItems = [
   sergioartgProject,
   opCosmetologyProject,
   hexGateProject,
+  infrastructureConsoleProject,
   lavovalProject,
   javaStartProject,
   awsLearningPortalProject,

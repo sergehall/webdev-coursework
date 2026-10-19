@@ -41,7 +41,7 @@ export default function ProjectsHero() {
           <p className="mt-6 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg dark:text-slate-300">
             A curated view of applications I designed and built across frontend,
             backend, cloud infrastructure, security, payments, and realtime
-            systems. Every project includes source, architecture, and the
+            systems. Each project outlines its stack, architecture, and the
             engineering decisions behind it.
           </p>
 

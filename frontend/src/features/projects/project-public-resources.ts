@@ -2,6 +2,10 @@ import {
   opCosmetologyArchitecture,
   opCosmetologyDocumentation,
 } from "@/features/projects/op-cosmetology-public-resources";
+import {
+  infrastructureConsoleArchitecture,
+  infrastructureConsoleDocumentation,
+} from "@/features/projects/infrastructure-console-public-resources";
 
 export type PublicResourceSection = {
   readonly title: string;
@@ -21,6 +25,7 @@ export const publicProjectDocsById: Readonly<
   Partial<Record<string, PublicProjectResource>>
 > = {
   "op-cosmetology": opCosmetologyDocumentation,
+  "infrastructure-console": infrastructureConsoleDocumentation,
   "hex-gate": {
     kind: "documentation",
     title: "Hex Gate documentation",
@@ -204,6 +209,7 @@ export const publicProjectArchitectureById: Readonly<
   Partial<Record<string, PublicProjectResource>>
 > = {
   "op-cosmetology": opCosmetologyArchitecture,
+  "infrastructure-console": infrastructureConsoleArchitecture,
   "hex-gate": {
     kind: "architecture",
     title: "Hex Gate architecture",

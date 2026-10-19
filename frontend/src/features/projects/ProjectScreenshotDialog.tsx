@@ -1,5 +1,5 @@
-import { useRef } from "react";
-import { X } from "lucide-react";
+import { useRef, useState } from "react";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 
 import type { ProjectShowcaseItem } from "@/features/projects/data/projectShowcase";
 import { useProjectDialogFocus } from "@/features/projects/useProjectDialogFocus";
@@ -13,19 +13,36 @@ export default function ProjectScreenshotDialog({
   project,
   onClose,
 }: ProjectScreenshotDialogProps) {
+  if (!project) {
+    return null;
+  }
+
+  return (
+    <ProjectScreenshotContent
+      key={project.id}
+      project={project}
+      onClose={onClose}
+    />
+  );
+}
+
+function ProjectScreenshotContent({
+  project,
+  onClose,
+}: {
+  readonly project: ProjectShowcaseItem;
+  readonly onClose: () => void;
+}) {
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   useProjectDialogFocus({
-    isOpen: project !== null,
+    isOpen: true,
     onClose,
     dialogRef,
     initialFocusRef: closeButtonRef,
   });
-
-  if (!project) {
-    return null;
-  }
 
   const screenshots = [
     {
@@ -34,6 +51,14 @@ export default function ProjectScreenshotDialog({
     },
     ...(project.galleryImages ?? []),
   ];
+  const hasMultipleScreenshots = screenshots.length > 1;
+  const activeScreenshot = screenshots[activeIndex];
+  const showPrevious = () =>
+    setActiveIndex(
+      (index) => (index - 1 + screenshots.length) % screenshots.length
+    );
+  const showNext = () =>
+    setActiveIndex((index) => (index + 1) % screenshots.length);
 
   return (
     <div
@@ -45,6 +70,16 @@ export default function ProjectScreenshotDialog({
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) {
           onClose();
+        }
+      }}
+      onKeyDown={(event) => {
+        if (!hasMultipleScreenshots) return;
+        if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          showPrevious();
+        } else if (event.key === "ArrowRight") {
+          event.preventDefault();
+          showNext();
         }
       }}
     >
@@ -69,31 +104,49 @@ export default function ProjectScreenshotDialog({
           </button>
         </div>
         <div className="max-h-[calc(92vh-4.5rem)] overflow-auto bg-slate-100 p-3 dark:bg-slate-950">
-          <div className="mx-auto grid w-full max-w-[1200px] gap-3">
-            {screenshots.map((screenshot, index) => (
-              <figure
-                key={screenshot.src}
-                className="overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900"
+          <figure className="mx-auto max-w-[1200px] overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
+            <img
+              src={activeScreenshot.src}
+              alt={
+                activeIndex === 0
+                  ? `${project.title} enlarged website preview`
+                  : `${project.title} additional website preview ${activeIndex + 1}`
+              }
+              width={1200}
+              height={900}
+              className="mx-auto h-auto max-h-[calc(92vh-12rem)] w-full object-contain"
+            />
+            {hasMultipleScreenshots && (
+              <figcaption className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 px-3 py-2 text-xs font-bold text-slate-600 dark:border-slate-700 dark:text-slate-300">
+                <span>{activeScreenshot.caption}</span>
+                <span aria-live="polite">
+                  {activeIndex + 1} of {screenshots.length}
+                </span>
+              </figcaption>
+            )}
+          </figure>
+          {hasMultipleScreenshots && (
+            <div className="mx-auto mt-3 flex max-w-[1200px] items-center justify-center gap-3">
+              <button
+                type="button"
+                onClick={showPrevious}
+                aria-label="Previous screenshot"
+                className="inline-flex min-h-10 items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 text-sm font-bold text-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
               >
-                <img
-                  src={screenshot.src}
-                  alt={
-                    index === 0
-                      ? `${project.title} enlarged website preview`
-                      : `${project.title} additional website preview ${index + 1}`
-                  }
-                  width={1200}
-                  height={900}
-                  className="h-auto w-full object-contain"
-                />
-                {screenshots.length > 1 && (
-                  <figcaption className="border-t border-slate-200 px-3 py-2 text-xs font-bold text-slate-600 dark:border-slate-700 dark:text-slate-300">
-                    {screenshot.caption}
-                  </figcaption>
-                )}
-              </figure>
-            ))}
-          </div>
+                <ChevronLeft className="h-4 w-4" aria-hidden="true" />
+                Previous
+              </button>
+              <button
+                type="button"
+                onClick={showNext}
+                aria-label="Next screenshot"
+                className="inline-flex min-h-10 items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 text-sm font-bold text-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+              >
+                Next
+                <ChevronRight className="h-4 w-4" aria-hidden="true" />
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

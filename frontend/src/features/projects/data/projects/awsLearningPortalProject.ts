@@ -70,7 +70,6 @@ export const awsLearningPortalProject: ProjectShowcaseItem = {
     "Bedrock / Nova Micro",
     "CloudFormation",
   ],
-  liveUrl: "https://awsawesome.com",
   videoUrl: "https://sergehall.github.io/final-project-CS79D/video.html",
   sourceUrl: "https://github.com/sergehall/final-project-CS79D",
   docsUrl: "https://sergehall.github.io/final-project-CS79D/",
