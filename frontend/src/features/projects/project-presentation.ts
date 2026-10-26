@@ -85,7 +85,12 @@ export const architectureFootprint = Array.from(
 
 export const orderedProjectShowcaseItems = [
   ...projectShowcaseItems.filter(({ id }) => id === "sergioartg"),
-  ...projectShowcaseItems.filter(({ id }) => id !== "sergioartg"),
+  ...projectShowcaseItems.filter(({ id }) => id === "op-cosmetology"),
+  ...projectShowcaseItems.filter(({ id }) => id === "mycasetrail"),
+  ...projectShowcaseItems.filter(
+    ({ id }) =>
+      id !== "sergioartg" && id !== "op-cosmetology" && id !== "mycasetrail"
+  ),
 ] satisfies readonly ProjectShowcaseItem[];
 
 export function projectMatchesType(

@@ -8,6 +8,7 @@ import { awsLearningPortalProject } from "@/features/projects/data/projects/awsL
 import { cs85PhpProgrammingProject } from "@/features/projects/data/projects/cs85PhpProgrammingProject";
 import { javaFxEventHandlingProject } from "@/features/projects/data/projects/javaFxEventHandlingProject";
 import { opCosmetologyProject } from "@/features/projects/data/projects/opCosmetologyProject";
+import { myCaseTrailProject } from "@/features/projects/data/projects/myCaseTrailProject";
 import type { ProjectShowcaseItem } from "@/features/projects/data/projectShowcase.types";
 
 export type {
@@ -61,6 +62,7 @@ export const projectShowcaseItems = [
   lensLoungeProject,
   sergioartgProject,
   opCosmetologyProject,
+  myCaseTrailProject,
   hexGateProject,
   infrastructureConsoleProject,
   lavovalProject,

@@ -6,6 +6,10 @@ import {
   infrastructureConsoleArchitecture,
   infrastructureConsoleDocumentation,
 } from "@/features/projects/infrastructure-console-public-resources";
+import {
+  myCaseTrailArchitecture,
+  myCaseTrailDocumentation,
+} from "@/features/projects/mycasetrail-public-resources";
 
 export type PublicResourceSection = {
   readonly title: string;
@@ -25,6 +29,7 @@ export const publicProjectDocsById: Readonly<
   Partial<Record<string, PublicProjectResource>>
 > = {
   "op-cosmetology": opCosmetologyDocumentation,
+  mycasetrail: myCaseTrailDocumentation,
   "infrastructure-console": infrastructureConsoleDocumentation,
   "hex-gate": {
     kind: "documentation",
@@ -209,6 +214,7 @@ export const publicProjectArchitectureById: Readonly<
   Partial<Record<string, PublicProjectResource>>
 > = {
   "op-cosmetology": opCosmetologyArchitecture,
+  mycasetrail: myCaseTrailArchitecture,
   "infrastructure-console": infrastructureConsoleArchitecture,
   "hex-gate": {
     kind: "architecture",

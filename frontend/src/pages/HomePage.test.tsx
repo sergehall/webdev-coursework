@@ -35,7 +35,8 @@ describe("<HomePage />", () => {
       name: /Academic portfolio snapshot/i,
     });
 
-    expect(within(snapshot).getAllByText("10")).toHaveLength(2);
+    expect(within(snapshot).getByText("10")).toBeInTheDocument();
+    expect(within(snapshot).getByText("11")).toBeInTheDocument();
     for (const value of ["103", "128"]) {
       expect(within(snapshot).getByText(value)).toBeInTheDocument();
     }
@@ -66,7 +67,7 @@ describe("<HomePage />", () => {
       [/10 SMC classes/i, "/coursework"],
       [/103 Learning modules/i, "/coursework"],
       [/128 Technologies mapped/i, "/web-developer-path"],
-      [/10 Projects showcased/i, "/projects"],
+      [/11 Projects showcased/i, "/projects"],
     ] as const) {
       expect(within(snapshot).getByRole("link", { name })).toHaveAttribute(
         "href",
