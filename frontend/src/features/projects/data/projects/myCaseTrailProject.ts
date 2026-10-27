@@ -1,7 +1,7 @@
 import type { ProjectShowcaseItem } from "@/features/projects/data/projectShowcase.types";
 
 // Bump when replacing these public assets so browser and CDN caches refresh.
-const screenshotVersion = "51a7a3b";
+const screenshotVersion = "ca75b9a975b0";
 
 export const myCaseTrailProject: ProjectShowcaseItem = {
   id: "mycasetrail",
@@ -18,12 +18,13 @@ export const myCaseTrailProject: ProjectShowcaseItem = {
   galleryImages: [
     {
       src: `/screenshots/projects/mycasetrail-2.webp?v=${screenshotVersion}`,
-      caption: "Citizenship study flashcards with illustrated civics questions",
+      caption:
+        "My forms overview with applicant details and separate form progress",
     },
     {
       src: `/screenshots/projects/mycasetrail-3.webp?v=${screenshotVersion}`,
       caption:
-        "My forms overview with applicant details and separate form progress",
+        "Filing Packages with fictional demo documents and preparation statuses",
     },
     {
       src: `/screenshots/projects/mycasetrail-4.webp?v=${screenshotVersion}`,
@@ -31,8 +32,7 @@ export const myCaseTrailProject: ProjectShowcaseItem = {
     },
     {
       src: `/screenshots/projects/mycasetrail-5.webp?v=${screenshotVersion}`,
-      caption:
-        "Filing Packages with fictional demo documents and preparation statuses",
+      caption: "Citizenship study flashcards with illustrated civics questions",
     },
     {
       src: `/screenshots/projects/mycasetrail-6.webp?v=${screenshotVersion}`,
