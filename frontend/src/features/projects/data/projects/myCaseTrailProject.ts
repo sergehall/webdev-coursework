@@ -1,5 +1,8 @@
 import type { ProjectShowcaseItem } from "@/features/projects/data/projectShowcase.types";
 
+// Bump when replacing these public assets so browser and CDN caches refresh.
+const screenshotVersion = "51a7a3b";
+
 export const myCaseTrailProject: ProjectShowcaseItem = {
   id: "mycasetrail",
   title: "MyCaseTrail",
@@ -10,29 +13,29 @@ export const myCaseTrailProject: ProjectShowcaseItem = {
   frameworks: ["Next.js", "NestJS"],
   summary:
     "A full-stack immigration preparation workspace that brings separate form drafts, supporting-document packages, citizenship study, and notes together in a private account, with multilingual navigation and original-PDF previews.",
-  imageUrl: "/screenshots/projects/mycasetrail-1.webp",
-  thumbnailUrl: "/screenshots/projects/mycasetrail-card.webp",
+  imageUrl: `/screenshots/projects/mycasetrail-1.webp?v=${screenshotVersion}`,
+  thumbnailUrl: `/screenshots/projects/mycasetrail-card.webp?v=${screenshotVersion}`,
   galleryImages: [
     {
-      src: "/screenshots/projects/mycasetrail-2.webp",
+      src: `/screenshots/projects/mycasetrail-2.webp?v=${screenshotVersion}`,
       caption: "Citizenship study flashcards with illustrated civics questions",
     },
     {
-      src: "/screenshots/projects/mycasetrail-3.webp",
+      src: `/screenshots/projects/mycasetrail-3.webp?v=${screenshotVersion}`,
       caption:
         "My forms overview with applicant details and separate form progress",
     },
     {
-      src: "/screenshots/projects/mycasetrail-4.webp",
+      src: `/screenshots/projects/mycasetrail-4.webp?v=${screenshotVersion}`,
       caption: "Citizenship study chapters with individual practice progress",
     },
     {
-      src: "/screenshots/projects/mycasetrail-5.webp",
+      src: `/screenshots/projects/mycasetrail-5.webp?v=${screenshotVersion}`,
       caption:
         "Filing Packages with fictional demo documents and preparation statuses",
     },
     {
-      src: "/screenshots/projects/mycasetrail-6.webp",
+      src: `/screenshots/projects/mycasetrail-6.webp?v=${screenshotVersion}`,
       caption:
         "Case overview with separate form and citizenship-study progress",
     },

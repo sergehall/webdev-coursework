@@ -86,7 +86,7 @@ describe("MyCaseTrail project showcase", () => {
     });
     expect(within(preview).getByRole("img")).toHaveAttribute(
       "src",
-      "/screenshots/projects/mycasetrail-card.webp"
+      "/screenshots/projects/mycasetrail-card.webp?v=51a7a3b"
     );
 
     await user.click(preview);
@@ -97,7 +97,7 @@ describe("MyCaseTrail project showcase", () => {
       expect(within(dialog).getByText(`${number} of 6`)).toBeInTheDocument();
       expect(within(dialog).getByRole("img")).toHaveAttribute(
         "src",
-        `/screenshots/projects/mycasetrail-${number}.webp`
+        `/screenshots/projects/mycasetrail-${number}.webp?v=51a7a3b`
       );
       await user.click(
         within(dialog).getByRole("button", { name: "Next screenshot" })
