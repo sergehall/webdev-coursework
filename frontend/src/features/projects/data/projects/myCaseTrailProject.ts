@@ -15,32 +15,31 @@ export const myCaseTrailProject: ProjectShowcaseItem = {
   galleryImages: [
     {
       src: "/screenshots/projects/mycasetrail-2.webp",
-      caption:
-        "Case overview with separate form and citizenship-study progress",
+      caption: "Citizenship study flashcards with illustrated civics questions",
     },
     {
       src: "/screenshots/projects/mycasetrail-3.webp",
       caption:
-        "Filing Packages with fictional demo documents and preparation statuses",
+        "My forms overview with applicant details and separate form progress",
     },
     {
       src: "/screenshots/projects/mycasetrail-4.webp",
-      caption:
-        "I-589 draft editor with the original PDF alongside saved answers",
+      caption: "Citizenship study chapters with individual practice progress",
     },
     {
       src: "/screenshots/projects/mycasetrail-5.webp",
-      caption: "About MyCaseTrail and the separate preparation workflows",
+      caption:
+        "Filing Packages with fictional demo documents and preparation statuses",
     },
     {
       src: "/screenshots/projects/mycasetrail-6.webp",
       caption:
-        "Private Notes & Reminders with search, filters, and contextual creation",
+        "Case overview with separate form and citizenship-study progress",
     },
   ],
   previewLabel: "Your immigration preparation workspace",
   previewDescription:
-    "Explore the public website, case overview, document packages, form editor, and private notes across six application views.",
+    "Explore the public website, form overview, citizenship study, document packages, and case progress across six application views.",
   architectureTags: [
     "TypeScript pnpm monorepo",
     "Next.js gateway / NestJS services",
