@@ -9,7 +9,11 @@ import { flushSync } from "react-dom";
 
 import { presentationSlides } from "../../courseContent";
 import { presentationImageUrl, slideDuration } from "../config";
-import { initialPlayback, type PlaybackState } from "../domain/playback";
+import {
+  initialPlayback,
+  type PlaybackState,
+  type PresentationSlide,
+} from "../domain/playback";
 
 import { usePresentationAudio } from "./usePresentationAudio";
 import { usePresentationMedia } from "./usePresentationMedia";
@@ -17,7 +21,17 @@ import { usePresentationFullscreen } from "./usePresentationFullscreen";
 
 const SWIPE_THRESHOLD = 50;
 
-export function usePresentationPlayback() {
+export interface PresentationPlaybackOptions {
+  readonly slides?: readonly PresentationSlide[];
+  readonly imageUrl?: (image: string) => string;
+  readonly duration?: (index: number) => number;
+}
+
+export function usePresentationPlayback({
+  slides = presentationSlides,
+  imageUrl = presentationImageUrl,
+  duration = slideDuration,
+}: PresentationPlaybackOptions = {}) {
   const [playback, setPlayback] = useState<PlaybackState>(initialPlayback);
 
   const touchStart = useRef<{ x: number; y: number } | null>(null);
@@ -30,7 +44,7 @@ export function usePresentationPlayback() {
 
   const targetSlideIndex = useRef(0);
 
-  const slide = presentationSlides[playback.slideIndex];
+  const slide = slides[playback.slideIndex];
 
   const slideVideo = "video" in slide ? slide.video : undefined;
 
@@ -42,7 +56,7 @@ export function usePresentationPlayback() {
   const { isFullscreen } = fullscreen;
   const audio = usePresentationAudio({ isOpening, isClosing });
   const { setMusicPaused, bookendAudioRef, storyAudioRef } = audio;
-  const media = usePresentationMedia(slideVideo);
+  const media = usePresentationMedia(slideVideo, slides, imageUrl);
   const { setVideoPlaying } = media;
 
   useEffect(() => {
@@ -75,24 +89,22 @@ export function usePresentationPlayback() {
         let slideIndex = current.slideIndex;
         let slideElapsedMs = current.slideElapsedMs + delta;
         while (
-          slideElapsedMs >= slideDuration(slideIndex) &&
-          slideIndex < presentationSlides.length - 1
+          slideElapsedMs >= duration(slideIndex) &&
+          slideIndex < slides.length - 1
         ) {
-          slideElapsedMs -= slideDuration(slideIndex);
+          slideElapsedMs -= duration(slideIndex);
           slideIndex += 1;
         }
 
         const finished =
-          slideIndex === presentationSlides.length - 1 &&
-          slideElapsedMs >= slideDuration(slideIndex);
-        const overshoot = finished
-          ? slideElapsedMs - slideDuration(slideIndex)
-          : 0;
+          slideIndex === slides.length - 1 &&
+          slideElapsedMs >= duration(slideIndex);
+        const overshoot = finished ? slideElapsedMs - duration(slideIndex) : 0;
 
         return {
           ...current,
           slideIndex,
-          slideElapsedMs: Math.min(slideElapsedMs, slideDuration(slideIndex)),
+          slideElapsedMs: Math.min(slideElapsedMs, duration(slideIndex)),
           elapsedMs: current.elapsedMs + delta - overshoot,
           playing: !finished,
         };
@@ -100,13 +112,13 @@ export function usePresentationPlayback() {
     }, 250);
 
     return () => window.clearInterval(interval);
-  }, [playback.playing]);
+  }, [playback.playing, slides, duration]);
 
   useEffect(() => {
     if (
       !playback.playing &&
-      playback.slideIndex === presentationSlides.length - 1 &&
-      playback.slideElapsedMs >= slideDuration(playback.slideIndex)
+      playback.slideIndex === slides.length - 1 &&
+      playback.slideElapsedMs >= duration(playback.slideIndex)
     ) {
       setMusicPaused(true);
     }
@@ -115,13 +127,12 @@ export function usePresentationPlayback() {
     playback.slideIndex,
     playback.slideElapsedMs,
     setMusicPaused,
+    slides,
+    duration,
   ]);
 
   const goToSlide = (index: number) => {
-    const nextIndex = Math.max(
-      0,
-      Math.min(index, presentationSlides.length - 1)
-    );
+    const nextIndex = Math.max(0, Math.min(index, slides.length - 1));
     if (nextIndex === targetSlideIndex.current) return;
 
     targetSlideIndex.current = nextIndex;
@@ -152,10 +163,10 @@ export function usePresentationPlayback() {
       isFullscreen
     );
     const transition = document.startViewTransition(async () => {
-      const nextSlide = presentationSlides[nextIndex];
+      const nextSlide = slides[nextIndex];
       if ("image" in nextSlide && !("video" in nextSlide)) {
         const image = new Image();
-        image.src = presentationImageUrl(nextSlide.image);
+        image.src = imageUrl(nextSlide.image);
         if (typeof image.decode === "function") {
           await image.decode().catch(() => {});
         }
@@ -180,8 +191,8 @@ export function usePresentationPlayback() {
   const togglePlayback = () => {
     if (
       !playback.playing &&
-      playback.slideIndex === presentationSlides.length - 1 &&
-      playback.slideElapsedMs >= slideDuration(playback.slideIndex)
+      playback.slideIndex === slides.length - 1 &&
+      playback.slideElapsedMs >= duration(playback.slideIndex)
     ) {
       restartPlayback();
       return;

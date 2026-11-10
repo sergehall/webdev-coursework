@@ -57,6 +57,15 @@ export function CourseOutline({ onOpenPresentationText }: CourseOutlineProps) {
                 Open Presentation 1 text →
               </button>
             )}
+            {week.number === 11 && (
+              <Link
+                to="/coursework/ESL10G/presentation-2"
+                onClick={resetPageScroll}
+                className="mt-3 inline-block text-sm font-semibold text-sky-700 hover:underline dark:text-sky-300"
+              >
+                Open Presentation 2 →
+              </Link>
+            )}
             {week.number === 5 && (
               <Link
                 to="/coursework/ESL10G/presentation-1"

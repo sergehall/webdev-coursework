@@ -1,6 +1,14 @@
 import type { presentationSlides } from "../../courseContent";
 
-export type PresentationSlide = (typeof presentationSlides)[number];
+export type PresentationSlide =
+  | (typeof presentationSlides)[number]
+  | {
+      readonly kind?: "opening" | "closing";
+      readonly title: string;
+      readonly text: string;
+      readonly image: string;
+      readonly alt: string;
+    };
 
 export type PlaybackState = {
   slideIndex: number;

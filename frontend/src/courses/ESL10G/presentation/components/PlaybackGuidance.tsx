@@ -1,7 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { Info } from "lucide-react";
 
-export function PlaybackGuidance() {
+export function PlaybackGuidance({
+  comic = false,
+}: {
+  readonly comic?: boolean;
+}) {
   const [infoOpen, setInfoOpen] = useState(false);
 
   const [suppressInfoHover, setSuppressInfoHover] = useState(false);
@@ -23,25 +27,71 @@ export function PlaybackGuidance() {
   return (
     <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
       <p className="text-xs leading-5 text-slate-500 dark:text-slate-400">
-        Music:{" "}
-        <a
-          href="https://pixabay.com/music/indie-pop-acoustic-153886/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="underline hover:text-sky-700 dark:hover:text-sky-300"
-        >
-          Acoustic by PaulYudin
-        </a>{" "}
-        ·{" "}
-        <a
-          href="https://pixabay.com/music/instrumental-upbeat-acoustic-593084/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="underline hover:text-sky-700 dark:hover:text-sky-300"
-        >
-          Upbeat Acoustic by The_Mountain
-        </a>{" "}
-        · Pixabay Content License
+        {comic ? (
+          <>
+            Music:{" "}
+            <a
+              href="https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100202"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-sky-700 dark:hover:text-sky-300"
+            >
+              Hot Swing
+            </a>
+            {" · "}
+            <a
+              href="https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1700068"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-sky-700 dark:hover:text-sky-300"
+            >
+              Backbay Lounge
+            </a>
+            {" by "}
+            <a
+              href="https://incompetech.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-sky-700 dark:hover:text-sky-300"
+            >
+              Kevin MacLeod (incompetech.com)
+            </a>
+            {" · Licensed under "}
+            <a
+              href="https://creativecommons.org/licenses/by/4.0/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-sky-700 dark:hover:text-sky-300"
+            >
+              Creative Commons Attribution 4.0
+            </a>
+            {
+              " · Playback uses excerpts, looping, volume adjustment, and crossfades."
+            }
+          </>
+        ) : (
+          <>
+            Music:{" "}
+            <a
+              href="https://pixabay.com/music/indie-pop-acoustic-153886/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-sky-700 dark:hover:text-sky-300"
+            >
+              Acoustic by PaulYudin
+            </a>{" "}
+            ·{" "}
+            <a
+              href="https://pixabay.com/music/instrumental-upbeat-acoustic-593084/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-sky-700 dark:hover:text-sky-300"
+            >
+              Upbeat Acoustic by The_Mountain
+            </a>{" "}
+            · Pixabay Content License
+          </>
+        )}
       </p>
       <div ref={infoContainer} className="relative">
         <button
@@ -66,13 +116,12 @@ export function PlaybackGuidance() {
           role="tooltip"
           className={`absolute right-0 bottom-full z-20 mb-2 w-[min(24rem,calc(100vw-2rem))] rounded-xl border border-slate-200 bg-white p-4 text-sm leading-6 text-slate-700 shadow-xl dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 ${infoOpen ? "block" : suppressInfoHover ? "hidden" : "hidden peer-hover:block peer-focus-visible:block"}`}
         >
-          Play shows the opening for 12 seconds, each story slide for 20
-          seconds, and the closing for 8 seconds in a 3-minute rehearsal. The
-          timer keeps running on the final slide so you can check your speaking
-          time. Manual navigation pauses the presentation timer. The Web
-          Development video loops automatically when you open that slide. Music
-          is off until you press Music; the volume slider starts at 12%. Pause
-          also pauses music during timed playback.
+          {comic
+            ? "Play shows the cover and ending for 10 seconds each. The six chapters share 3 minutes 10 seconds, with more time for longer paragraphs. Subtitles show the original PDF text below the artwork."
+            : "Play shows the opening and closing for 10 seconds each and each story slide for 23.75 seconds. The Web Development video loops automatically when you open that slide."}{" "}
+          Playback stops at 3:30. Manual navigation pauses the timer. Music is
+          off until you press Music. Volume starts at 12%. Pause also pauses
+          music during timed playback.
         </div>
       </div>
     </div>

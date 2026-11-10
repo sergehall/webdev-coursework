@@ -1,3 +1,51 @@
+.comic-ending {
+  isolation: isolate;
+  overflow: hidden;
+  background-color: #e9b852;
+  background-image:
+    radial-gradient(ellipse at center, transparent 35%, #713c1980 100%),
+    repeating-conic-gradient(
+      from -6deg at 50% 48%,
+      #e8b84e 0deg 8deg,
+      #143e49 8deg 15deg,
+      #e8b84e 15deg 16deg,
+      #225362 16deg 23deg
+    );
+}
+
+.comic-ending::before,
+.comic-ending::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+}
+
+.comic-ending::before {
+  background-image:
+    radial-gradient(#172d30b3 0.7px, transparent 0.9px),
+    radial-gradient(#ffe5a67a 0.7px, transparent 1px);
+  background-position:
+    0 0,
+    1px 2px;
+  background-size:
+    3px 3px,
+    5px 5px;
+  opacity: 0.65;
+}
+
+.comic-ending::after {
+  z-index: 1;
+  border: clamp(4px, 0.7vw, 10px) solid #e8c582;
+  box-shadow:
+    inset 0 0 0 2px #553b28,
+    inset 0 0 22px 5px #58351b99;
+}
+
+.comic-ending img {
+  filter: drop-shadow(0 0 14px #14282bc9);
+}
+
 .bookend {
   position: absolute;
   inset: 0;

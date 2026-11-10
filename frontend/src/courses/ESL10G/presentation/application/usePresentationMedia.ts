@@ -1,16 +1,27 @@
 import { useEffect, useRef, useState } from "react";
 
-import { storySlides } from "../../courseContent";
+import { presentationSlides, storySlides } from "../../courseContent";
 import { presentationImageUrl } from "../config";
+import type { PresentationSlide } from "../domain/playback";
 
-export function usePresentationMedia(slideVideo: string | undefined) {
+export function usePresentationMedia(
+  slideVideo: string | undefined,
+  slides: readonly PresentationSlide[] = presentationSlides,
+  imageUrl = presentationImageUrl
+) {
   const [videoPlaying, setVideoPlaying] = useState(true);
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
     // Two low-priority image requests at a time avoid flooding a slow connection.
-    const queue = [...new Set(storySlides.slice(1).map((item) => item.image))];
+    const imagesToLoad =
+      slides === presentationSlides ? storySlides.slice(1) : slides.slice(1);
+    const queue = [
+      ...new Set(
+        imagesToLoad.flatMap((item) => ("image" in item ? [item.image] : []))
+      ),
+    ];
     const images: HTMLImageElement[] = [];
     let cancelled = false;
     const loadNext = () => {
@@ -29,7 +40,7 @@ export function usePresentationMedia(slideVideo: string | undefined) {
         void decoded.catch(() => {}).then(loadNext);
       };
       image.onerror = loadNext;
-      image.src = presentationImageUrl(imageName);
+      image.src = imageUrl(imageName);
     };
     loadNext();
     loadNext();
@@ -40,7 +51,7 @@ export function usePresentationMedia(slideVideo: string | undefined) {
         image.onerror = null;
       });
     };
-  }, []);
+  }, [slides, imageUrl]);
 
   useEffect(() => {
     if (slideVideo && videoRef.current) videoRef.current.currentTime = 0;

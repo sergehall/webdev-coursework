@@ -37,3 +37,7 @@ export const WebDeveloperPathPage = lazy(
 export const MentorPage = mentorPreviewEnabled
   ? lazy(() => import("../features/mentor/MentorPage"))
   : () => null;
+
+export const ESL10GPresentation2Page = lazy(
+  () => import("../courses/ESL10G/presentation/ESL10GPresentation2Page")
+);

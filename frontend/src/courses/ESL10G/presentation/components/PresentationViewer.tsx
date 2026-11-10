@@ -7,13 +7,24 @@ import {
   VIDEO_SLIDE_COUNT,
 } from "../config";
 import { usePresentationPlayback } from "../application/usePresentationPlayback";
+import {
+  presentation2Slides,
+  presentation2Duration,
+  presentation2ImageUrl,
+} from "../presentation2";
 
+import { ComicPresentationStage } from "./ComicPresentationStage";
 import { PresentationStage } from "./PresentationStage";
 import { PresentationControls } from "./PresentationControls";
 import { PresentationProgress } from "./PresentationProgress";
 import { PlaybackGuidance } from "./PlaybackGuidance";
 
-export function PresentationViewer() {
+export function PresentationViewer({
+  comic = false,
+}: {
+  readonly comic?: boolean;
+}) {
+  const slides = comic ? presentation2Slides : presentationSlides;
   const [showSubtitles, setShowSubtitles] = useState(true);
   const {
     playback,
@@ -31,7 +42,15 @@ export function PresentationViewer() {
     audio,
     media,
     fullscreen,
-  } = usePresentationPlayback();
+  } = usePresentationPlayback(
+    comic
+      ? {
+          slides,
+          imageUrl: presentation2ImageUrl,
+          duration: presentation2Duration,
+        }
+      : undefined
+  );
   const {
     bookendAudioRef,
     storyAudioRef,
@@ -51,25 +70,31 @@ export function PresentationViewer() {
 
   return (
     <section
-      id="presentation-1"
+      id={comic ? "presentation-2" : "presentation-1"}
       aria-labelledby="presentation-heading"
       className="scroll-mt-24"
     >
       <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
         <div>
           <p className="text-sm font-semibold tracking-wide text-sky-700 uppercase dark:text-sky-300">
-            Introduced in Week 3 · Presented in Week 5
+            {comic
+              ? "Week 11 · November 10 & 12 · Presentation 2"
+              : "Introduced in Week 3 · Presented in Week 5"}
           </p>
           <h1
             id="presentation-heading"
             className="mt-1 text-2xl font-bold text-slate-900 sm:text-3xl dark:text-white"
           >
-            A little about myself
+            {comic
+              ? "The Flowers We Shouldn’t Have Taken"
+              : "A little about myself"}
           </h1>
         </div>
         <p className="text-sm text-slate-600 dark:text-slate-300">
-          {presentationSlides.length} slides · {PHOTO_SLIDE_COUNT} photos ·{" "}
-          {VIDEO_SLIDE_COUNT} video · target 2:30–3:30
+          {comic
+            ? "8 slides · 8 illustrations"
+            : `${presentationSlides.length} slides · ${PHOTO_SLIDE_COUNT} photos · ${VIDEO_SLIDE_COUNT} video`}{" "}
+          · target 2:30–3:30
         </p>
       </div>
       <div
@@ -78,20 +103,28 @@ export function PresentationViewer() {
         onKeyDown={handleKeyDown}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
-        aria-label="Presentation 1 slide viewer"
+        aria-label={`Presentation ${comic ? 2 : 1} slide viewer`}
         style={expanded && viewportBounds ? viewportBounds : undefined}
         className={`overflow-hidden rounded-2xl border border-slate-200 bg-slate-950 shadow-xl outline-none focus-visible:ring-4 focus-visible:ring-sky-400 dark:border-slate-700 ${isFullscreen ? "flex h-dvh h-screen w-full flex-col rounded-none border-0" : ""} ${expanded ? "fixed top-0 left-0 z-[100]" : "relative"}`}
       >
         <audio
           ref={bookendAudioRef}
-          src={`${MUSIC_BASE_PATH}/upbeat-acoustic-the-mountain.mp3`}
+          src={
+            comic
+              ? "/course-materials/esl10g/presentation-2/music/hot-swing-kevin-macleod.mp3"
+              : `${MUSIC_BASE_PATH}/upbeat-acoustic-the-mountain.mp3`
+          }
           preload={musicEnabled ? "auto" : "none"}
           loop
           aria-hidden="true"
         />
         <audio
           ref={storyAudioRef}
-          src={`${MUSIC_BASE_PATH}/acoustic-paulyudin.mp3`}
+          src={
+            comic
+              ? "/course-materials/esl10g/presentation-2/music/backbay-lounge-kevin-macleod.mp3"
+              : `${MUSIC_BASE_PATH}/acoustic-paulyudin.mp3`
+          }
           preload={musicEnabled ? "auto" : "none"}
           loop
           aria-hidden="true"
@@ -106,17 +139,27 @@ export function PresentationViewer() {
             ✕ Exit
           </button>
         )}
-        <PresentationStage
-          playback={playback}
-          slide={slide}
-          slideVideo={slideVideo}
-          videoRef={videoRef}
-          isOpening={isOpening}
-          isClosing={isClosing}
-          isFullscreen={isFullscreen}
-          showSubtitles={showSubtitles}
-        />
+        {comic ? (
+          <ComicPresentationStage
+            slide={slide}
+            playback={playback}
+            showSubtitles={showSubtitles}
+            isFullscreen={isFullscreen}
+          />
+        ) : (
+          <PresentationStage
+            playback={playback}
+            slide={slide}
+            slideVideo={slideVideo}
+            videoRef={videoRef}
+            isOpening={isOpening}
+            isClosing={isClosing}
+            isFullscreen={isFullscreen}
+            showSubtitles={showSubtitles}
+          />
+        )}
         <PresentationControls
+          slideCount={slides.length}
           playback={playback}
           showSubtitles={showSubtitles}
           musicEnabled={musicEnabled}
@@ -133,7 +176,17 @@ export function PresentationViewer() {
         />
         <PresentationProgress playback={playback} />
       </div>
-      <PlaybackGuidance />
+      <PlaybackGuidance comic={comic} />
+      {comic && (
+        <a
+          className="mt-3 inline-block text-sm font-semibold text-sky-700 underline dark:text-sky-300"
+          href="/course-materials/esl10g/presentation-2/Presentation_2.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Open Presentation 2 text (PDF) →
+        </a>
+      )}
     </section>
   );
 }
