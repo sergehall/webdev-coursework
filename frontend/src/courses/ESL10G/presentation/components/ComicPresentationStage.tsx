@@ -21,7 +21,7 @@ export function ComicPresentationStage({
       className={`esl10g-slide-stage flex flex-col ${isFullscreen ? "esl10g-slide-stage--fullscreen min-h-0 flex-1" : ""}`}
     >
       <div
-        className={`relative ${"kind" in slide && slide.kind === "closing" ? "comic-ending" : ""} ${isFullscreen ? "min-h-0 flex-1" : "aspect-video"}`}
+        className={`relative ${slide.kind === "closing" ? "comic-ending" : ""} ${isFullscreen ? "min-h-0 flex-1" : "aspect-video"}`}
       >
         {"image" in slide && (
           <img

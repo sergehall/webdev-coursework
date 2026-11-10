@@ -1,13 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 
 import { presentationSlides, storySlides } from "../../courseContent";
-import { presentationImageUrl } from "../config";
-import type { PresentationSlide } from "../domain/playback";
+import type { PresentationPlaybackConfig } from "../domain/playback";
 
 export function usePresentationMedia(
   slideVideo: string | undefined,
-  slides: readonly PresentationSlide[] = presentationSlides,
-  imageUrl = presentationImageUrl
+  slides: PresentationPlaybackConfig["slides"],
+  imageUrl: PresentationPlaybackConfig["imageUrl"]
 ) {
   const [videoPlaying, setVideoPlaying] = useState(true);
 

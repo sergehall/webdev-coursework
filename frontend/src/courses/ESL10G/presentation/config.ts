@@ -1,5 +1,7 @@
 import { presentationSlides, storySlides } from "../courseContent";
 
+import type { PresentationPlaybackConfig } from "./domain/playback";
+
 export const MIN_DURATION_MS = 2.5 * 60 * 1000;
 
 export const MAX_DURATION_MS = 3.5 * 60 * 1000;
@@ -44,3 +46,9 @@ export const ANIMATION_URL =
   ANIMATED_SLIDE && "video" in ANIMATED_SLIDE
     ? `/course-materials/esl10g/presentation/${ANIMATED_SLIDE.video}`
     : undefined;
+
+export const defaultPlaybackConfig = {
+  slides: presentationSlides,
+  imageUrl: presentationImageUrl,
+  duration: slideDuration,
+} satisfies PresentationPlaybackConfig;

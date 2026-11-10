@@ -1,3 +1,5 @@
+import type { PresentationSlides } from "./presentation/domain/playback";
+
 export type CourseWeek = {
   number: number;
   dates: string;
@@ -149,36 +151,42 @@ export const presentationTextParagraphs = [
 
 export const storySlides = [
   {
+    kind: "image",
     title: "Where I’m from",
     image: "belarus",
     alt: "A map of Europe highlighting Belarus",
     text: "I am from Belarus. Belarus is a small country in Eastern Europe. It is near Ukraine, Poland, Lithuania, and Russia.",
   },
   {
+    kind: "image",
     title: "My first years in the U.S.",
     image: "brooklyn",
     alt: "A street scene in Brooklyn, New York",
     text: "For my first three years, I lived in Brooklyn, New York.",
   },
   {
+    kind: "image",
     title: "Working in New York",
     image: "restaurant",
     alt: "A collage of restaurant staff and musicians at a Ukrainian restaurant",
     text: "I worked as a waiter and bartender in a Ukrainian restaurant, and most of our customers spoke Russian or Ukrainian.",
   },
   {
+    kind: "image",
     title: "A new start in Los Angeles",
     image: "los-angeles",
     alt: "A view of Los Angeles",
     text: "Later, I decided to move to Los Angeles. I had to use English much more.",
   },
   {
+    kind: "image",
     title: "Learning English at SMC",
     image: "classroom",
     alt: "Students learning together in a classroom",
     text: "I started taking free ESL classes at Santa Monica College. I started from the beginning and continued to higher levels.",
   },
   {
+    kind: "video",
     title: "Web Development",
     image: "web-development-video-poster",
     video: "web-development.mp4",
@@ -186,18 +194,20 @@ export const storySlides = [
     text: "I also study Web Development at SMC. I enjoy programming.",
   },
   {
+    kind: "image",
     title: "Life in California",
     image: "hiking",
     alt: "A collage of mountain views and a hiker in California",
     text: "One of my favorite activities in California is hiking. California has many beautiful trails.",
   },
   {
+    kind: "image",
     title: "Learning together",
     image: "learning-together-personalized",
     alt: "Students talking together on the Santa Monica College campus",
     text: "I also enjoy meeting people in our class. We have students from many different countries, and I think we can learn a lot from each other.",
   },
-] as const;
+] as const satisfies PresentationSlides;
 
 export const presentationSlides = [
   {
@@ -211,4 +221,4 @@ export const presentationSlides = [
     title: "Thank you for listening!",
     text: "Different journeys. One classroom. We learn more together.",
   },
-] as const;
+] as const satisfies PresentationSlides;

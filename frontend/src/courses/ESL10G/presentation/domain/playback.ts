@@ -1,14 +1,30 @@
-import type { presentationSlides } from "../../courseContent";
+interface SlideContent {
+  readonly title: string;
+  readonly text: string;
+}
+
+interface SlideImage {
+  readonly image: string;
+  readonly alt: string;
+}
 
 export type PresentationSlide =
-  | (typeof presentationSlides)[number]
-  | {
-      readonly kind?: "opening" | "closing";
-      readonly title: string;
-      readonly text: string;
-      readonly image: string;
-      readonly alt: string;
-    };
+  | (SlideContent & { readonly kind: "opening" | "closing" })
+  | (SlideContent &
+      SlideImage & { readonly kind: "image" | "opening" | "closing" })
+  | (SlideContent &
+      SlideImage & { readonly kind: "video"; readonly video: string });
+
+export type PresentationSlides = readonly [
+  PresentationSlide,
+  ...PresentationSlide[],
+];
+
+export interface PresentationPlaybackConfig {
+  readonly slides: PresentationSlides;
+  readonly imageUrl: (image: string) => string;
+  readonly duration: (index: number) => number;
+}
 
 export type PlaybackState = {
   slideIndex: number;

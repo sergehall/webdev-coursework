@@ -25,8 +25,8 @@ export function PlaybackGuidance({
     return () => document.removeEventListener("click", closeOnOutsideClick);
   }, [infoOpen]);
   return (
-    <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
-      <p className="text-xs leading-5 text-slate-500 dark:text-slate-400">
+    <div className="relative mt-3 flex items-start justify-between gap-3">
+      <p className="min-w-0 flex-1 text-xs leading-5 text-slate-500 dark:text-slate-400">
         {comic ? (
           <>
             Music:{" "}
@@ -93,7 +93,7 @@ export function PlaybackGuidance({
           </>
         )}
       </p>
-      <div ref={infoContainer} className="relative">
+      <div ref={infoContainer} className="shrink-0">
         <button
           type="button"
           aria-label="Playback instructions"
@@ -114,7 +114,7 @@ export function PlaybackGuidance({
         <div
           id="playback-instructions"
           role="tooltip"
-          className={`absolute right-0 bottom-full z-20 mb-2 w-[min(24rem,calc(100vw-2rem))] rounded-xl border border-slate-200 bg-white p-4 text-sm leading-6 text-slate-700 shadow-xl dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 ${infoOpen ? "block" : suppressInfoHover ? "hidden" : "hidden peer-hover:block peer-focus-visible:block"}`}
+          className={`absolute right-0 bottom-full z-20 mb-2 max-h-[60dvh] w-[min(24rem,100%)] overflow-y-auto rounded-xl border border-slate-200 bg-white p-4 text-sm leading-6 text-slate-700 shadow-xl dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 ${infoOpen ? "block" : suppressInfoHover ? "hidden" : "hidden peer-hover:block peer-focus-visible:block"}`}
         >
           {comic
             ? "Play shows the cover and ending for 10 seconds each. The six chapters share 3 minutes 10 seconds, with more time for longer paragraphs. Subtitles show the original PDF text below the artwork."

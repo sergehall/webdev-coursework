@@ -7,12 +7,11 @@ import {
 } from "react";
 import { flushSync } from "react-dom";
 
-import { presentationSlides } from "../../courseContent";
-import { presentationImageUrl, slideDuration } from "../config";
+import { defaultPlaybackConfig } from "../config";
 import {
   initialPlayback,
   type PlaybackState,
-  type PresentationSlide,
+  type PresentationPlaybackConfig,
 } from "../domain/playback";
 
 import { usePresentationAudio } from "./usePresentationAudio";
@@ -21,17 +20,11 @@ import { usePresentationFullscreen } from "./usePresentationFullscreen";
 
 const SWIPE_THRESHOLD = 50;
 
-export interface PresentationPlaybackOptions {
-  readonly slides?: readonly PresentationSlide[];
-  readonly imageUrl?: (image: string) => string;
-  readonly duration?: (index: number) => number;
-}
-
 export function usePresentationPlayback({
-  slides = presentationSlides,
-  imageUrl = presentationImageUrl,
-  duration = slideDuration,
-}: PresentationPlaybackOptions = {}) {
+  slides,
+  imageUrl,
+  duration,
+}: PresentationPlaybackConfig = defaultPlaybackConfig) {
   const [playback, setPlayback] = useState<PlaybackState>(initialPlayback);
 
   const touchStart = useRef<{ x: number; y: number } | null>(null);
@@ -46,11 +39,11 @@ export function usePresentationPlayback({
 
   const slide = slides[playback.slideIndex];
 
-  const slideVideo = "video" in slide ? slide.video : undefined;
+  const slideVideo = slide.kind === "video" ? slide.video : undefined;
 
-  const isOpening = "kind" in slide && slide.kind === "opening";
+  const isOpening = slide.kind === "opening";
 
-  const isClosing = "kind" in slide && slide.kind === "closing";
+  const isClosing = slide.kind === "closing";
 
   const fullscreen = usePresentationFullscreen();
   const { isFullscreen } = fullscreen;
