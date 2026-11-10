@@ -145,8 +145,8 @@
     "frontend/src/courses/CS87A/assignments/mod5/AssignmentMod5.tsx": "7baaed7afda069afd122c6ad032514cb71f5322992a04a6814daf0883a8e12c5",
     "frontend/src/courses/CS87A/assignments/mod6/AssignmentMod6.tsx": "6480bae2d2963390fdf1c3083968242732505463bbdc510ec408680670cb7d19",
     "frontend/src/features/pathway/programSections.tsx": "7179d29fcd07956d7f1d3261dad6dcd0a920b146767e1d8d9330b082dc15dc99",
-    "frontend/src/routes/AppRoutes.tsx": "52d5189ce3fe19e17243a4b0cb9a07d8bc8f5a7ee01d72461c20a35916227db7",
+    "frontend/src/routes/AppRoutes.tsx": "334ad23c014ea679435408d7309beedd8e72a9fd4a8ee9f21197dd5556e76608",
     "frontend/src/routes/AutoAssignmentRouter.tsx": "ca398e8e318c49a31219d2a685d1b522633ef3729782acbb2d236f669289e17e"
   },
-  "version": "fa2fcf2bde292aec7bcbb70256df810c514b3c05c18798cb831014503572987a"
+  "version": "4599ed9c445da1c60ae065c5bc50b3a125dab2515ba562e5bcc03301d0b0db71"
 }
