@@ -22,7 +22,7 @@ const Assignment9A = () => {
     {
       label:
         "Here is an example of the final component rendering multiple users inside a responsive modal.",
-      src: "/course-materials/CS81/mod-9/A/user-profiles.png",
+      src: "/course-materials/CS81/mod-9/A/user-profiles.webp",
     },
   ];
 
@@ -36,8 +36,8 @@ const Assignment9A = () => {
       filename: "module9a-firstreact.zip",
     },
     {
-      fileUrl: "/course-materials/CS81/mod-9/A/user-profiles.png",
-      filename: "user-profiles.png",
+      fileUrl: "/course-materials/CS81/mod-9/A/user-profiles.webp",
+      filename: "user-profiles.webp",
     },
     {
       fileUrl: "/course-materials/CS81/mod-9/A/README.md",
@@ -78,7 +78,7 @@ const Assignment9A = () => {
             .js, .css, and configuration files).
           </li>
           <li>
-            Files: UserProfile.jsx, README.md, user-profiles.png,
+            Files: UserProfile.jsx, README.md, user-profiles.webp,
             UserProfile.jsx, module9a-firstreact.zip
           </li>
         </ul>

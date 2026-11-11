@@ -45,7 +45,7 @@ This app is educational and includes a search input. Try typing one of these nam
 
 Below is a screenshot showing the `Profile.jsx` here showing a matched profile with visible bio and links:
 
-![Screenshot of commented StudentCard.jsx](./screenshots/profile.png)
+![Screenshot of commented StudentCard.jsx](./profile.webp)
 
 </details>
 

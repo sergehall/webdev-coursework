@@ -27,13 +27,13 @@ export default function Week6Deliverables() {
       filename: "wordPress-Site.png",
     },
     {
-      fileUrl: "/course-materials/CS79A/mod-6/VPC-Deliverables.png",
-      filename: "VPC-Deliverables.png",
+      fileUrl: "/course-materials/CS79A/mod-6/VPC-Deliverables.webp",
+      filename: "VPC-Deliverables.webp",
     },
     {
       fileUrl:
-        "/course-materials/CS79A/mod-6/Extra-Credit-Pinging-Using-ICMP.png",
-      filename: "Extra-Credit-Pinging-Using-ICMP.png",
+        "/course-materials/CS79A/mod-6/Extra-Credit-Pinging-Using-ICMP.webp",
+      filename: "Extra-Credit-Pinging-Using-ICMP.webp",
     },
   ];
 
@@ -47,11 +47,11 @@ export default function Week6Deliverables() {
       label: "WordPress site",
     },
     {
-      src: "/course-materials/CS79A/mod-6/VPC-Deliverables.png",
+      src: "/course-materials/CS79A/mod-6/VPC-Deliverables.webp",
       label: "VPC-Deliverables",
     },
     {
-      src: "/course-materials/CS79A/mod-6/Extra-Credit-Pinging-Using-ICMP.png",
+      src: "/course-materials/CS79A/mod-6/Extra-Credit-Pinging-Using-ICMP.webp",
       label: "Extra-Credit-Pinging-Using-ICMP",
     },
   ];

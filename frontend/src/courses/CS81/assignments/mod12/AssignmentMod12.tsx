@@ -27,7 +27,7 @@ export default function AssignmentMod12() {
         <FinalProjectReveal
           completedTasks={12}
           totalTasks={12}
-          imageUrl="/course-materials/CS81/mod-12/final-screenshot.png"
+          imageUrl="/course-materials/CS81/mod-12/final-screenshot.webp"
         />
       </AnimatedAccordionItem>
 

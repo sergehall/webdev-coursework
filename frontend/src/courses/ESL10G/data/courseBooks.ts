@@ -17,7 +17,7 @@ export const courseBooks = [
     publisher: "Oxford University Press",
     year: "2014",
     isbn: "9780194028202",
-    cover: "/course-materials/esl10g/books/elements-of-success-1.png",
+    cover: "/course-materials/esl10g/books/elements-of-success-1.webp",
     url: "https://elt.oup.com/catalogue/items/global/grammar_vocabulary/elements_of_success/elements_of_success_1/9780194028202?cc=us&selLanguage=en&mode=hub&srsltid=AU7gw4WvMd70KZJz1AXSikh6Tn7PnHXMvArghg_1VI8OS53eXtaX-52a",
   },
   {
@@ -28,7 +28,7 @@ export const courseBooks = [
     year: "2023",
     isbn: "9780357978733",
     cover:
-      "/course-materials/esl10g/books/pathways-listening-speaking-critical-thinking-1.png",
+      "/course-materials/esl10g/books/pathways-listening-speaking-critical-thinking-1.webp",
     url: "https://www.eltngl.com/products/9780357978733",
   },
 ] satisfies readonly CourseBook[];

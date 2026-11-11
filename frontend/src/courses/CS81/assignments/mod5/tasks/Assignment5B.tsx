@@ -16,7 +16,7 @@ const Assignment5B = () => {
   const screenshots = [
     {
       label: "Sample Console Output",
-      src: "/course-materials/CS81/mod-5/B/runTracker-output.png",
+      src: "/course-materials/CS81/mod-5/B/runTracker-output.webp",
     },
   ];
 

@@ -14,7 +14,7 @@ const Assignment4A = () => {
   const screenshots = [
     {
       label: "Test Case Results",
-      src: "/course-materials/CS81/mod-4/A/reading-test-result.png",
+      src: "/course-materials/CS81/mod-4/A/reading-test-result.webp",
     },
   ];
 

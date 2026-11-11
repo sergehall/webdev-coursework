@@ -19,22 +19,22 @@ export default function Week5Deliverables() {
 
   const files = [
     {
-      fileUrl: "/course-materials/CS79A/mod-5/AWS-Console-Setup.png",
-      filename: "AWS-Console-Setup.png",
+      fileUrl: "/course-materials/CS79A/mod-5/AWS-Console-Setup.webp",
+      filename: "AWS-Console-Setup.webp",
     },
     {
-      fileUrl: "/course-materials/CS79A/mod-5/IAM-User-Setup.png",
-      filename: "IAM-User-Setup.png",
+      fileUrl: "/course-materials/CS79A/mod-5/IAM-User-Setup.webp",
+      filename: "IAM-User-Setup.webp",
     },
   ];
 
   const screenshots = [
     {
-      src: "/course-materials/CS79A/mod-5/AWS-Console-Setup.png",
+      src: "/course-materials/CS79A/mod-5/AWS-Console-Setup.webp",
       label: "AWS Management Console dashboard after initial setup",
     },
     {
-      src: "/course-materials/CS79A/mod-5/IAM-User-Setup.png",
+      src: "/course-materials/CS79A/mod-5/IAM-User-Setup.webp",
       label: "IAM user successfully created and configured",
     },
   ];

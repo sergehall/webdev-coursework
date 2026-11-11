@@ -18,7 +18,7 @@ const Assignment10B = () => {
   const screenshots = [
     {
       label: "Dynamic Profile Component",
-      src: "/course-materials/CS81/mod-10/B/profile.png",
+      src: "/course-materials/CS81/mod-10/B/profile.webp",
     },
   ];
 
@@ -28,8 +28,8 @@ const Assignment10B = () => {
       filename: "README.md",
     },
     {
-      fileUrl: "/course-materials/CS81/mod-10/B/profile.png",
-      filename: "profile.png",
+      fileUrl: "/course-materials/CS81/mod-10/B/profile.webp",
+      filename: "profile.webp",
     },
     {
       fileUrl: "/course-materials/CS81/mod-10/B/module10a-profile.zip",

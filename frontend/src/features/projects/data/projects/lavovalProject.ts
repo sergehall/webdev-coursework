@@ -10,7 +10,7 @@ export const lavovalProject: ProjectShowcaseItem = {
   frameworks: ["Next.js"],
   summary:
     "A production full-stack marketplace where creators publish versioned skill products, users discover and run supported tools, and operators govern identity, catalog, delivery, and platform health.",
-  imageUrl: "/screenshots/projects/lavoval.png",
+  imageUrl: "/screenshots/projects/lavoval.webp",
   previewLabel: "Executable skill marketplace",
   previewDescription:
     "Discover creator-led skills, run supported tools, revisit results, and move between public, account, creator, and governed admin workflows.",

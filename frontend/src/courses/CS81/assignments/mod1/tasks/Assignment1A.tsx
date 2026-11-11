@@ -11,15 +11,15 @@ const Assignment1A = () => {
   const [showScreenshots, setShowScreenshots] = useState(false);
   const screenshots = [
     {
-      src: "/course-materials/CS81/mod-1/A/webstorm.png",
+      src: "/course-materials/CS81/mod-1/A/webstorm.webp",
       label: "WebStorm with project files",
     },
     {
-      src: "/course-materials/CS81/mod-1/A/chrome.png",
+      src: "/course-materials/CS81/mod-1/A/chrome.webp",
       label: "Chrome with site and console",
     },
     {
-      src: "/course-materials/CS81/mod-1/A/terminal.png",
+      src: "/course-materials/CS81/mod-1/A/terminal.webp",
       label: "Terminal showing Node.js and npm versions",
     },
   ];

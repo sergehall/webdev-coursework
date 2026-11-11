@@ -134,8 +134,8 @@ export const cs79dModule05TextTasks = [
     previewFiles: [
       {
         fileUrl:
-          "/course-materials/CS79D/mod-5/pihole-vpn-admin-login-verification.png",
-        filename: "pihole-vpn-admin-login-verification.png",
+          "/course-materials/CS79D/mod-5/pihole-vpn-admin-login-verification.webp",
+        filename: "pihole-vpn-admin-login-verification.webp",
         buttonLabel: "PiHole VPN Admin Verification",
       },
     ],
@@ -201,20 +201,20 @@ export const cs79dModule05TextTasks = [
     previewFiles: [
       {
         fileUrl:
-          "/course-materials/CS79D/mod-5/inspector-account-resource-coverage.png",
-        filename: "inspector-account-resource-coverage.png",
+          "/course-materials/CS79D/mod-5/inspector-account-resource-coverage.webp",
+        filename: "inspector-account-resource-coverage.webp",
         buttonLabel: "Inspector Coverage",
       },
       {
         fileUrl:
-          "/course-materials/CS79D/mod-5/inspector-network-reachability-findings.png",
-        filename: "inspector-network-reachability-findings.png",
+          "/course-materials/CS79D/mod-5/inspector-network-reachability-findings.webp",
+        filename: "inspector-network-reachability-findings.webp",
         buttonLabel: "Inspector Findings",
       },
       {
         fileUrl:
-          "/course-materials/CS79D/mod-5/inspector-port-22-remediation-detail.png",
-        filename: "inspector-port-22-remediation-detail.png",
+          "/course-materials/CS79D/mod-5/inspector-port-22-remediation-detail.webp",
+        filename: "inspector-port-22-remediation-detail.webp",
         buttonLabel: "Inspector Remediation",
       },
     ],

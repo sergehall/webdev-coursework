@@ -10,7 +10,7 @@ export const hexGateProject: ProjectShowcaseItem = {
   frameworks: ["Next.js"],
   summary:
     "A local-first security engineering platform combining a searchable knowledge workbench, protected operator cabinet, persisted identity controls, and bounded scanner validation workflows.",
-  imageUrl: "/screenshots/projects/defensive-engineering-hub.png",
+  imageUrl: "/screenshots/projects/defensive-engineering-hub.webp",
   previewLabel: "Defensive security workbench",
   previewDescription:
     "Searchable security standards and playbooks, protected operations, audit evidence, and controlled Kali lab validation in one operator-focused experience.",

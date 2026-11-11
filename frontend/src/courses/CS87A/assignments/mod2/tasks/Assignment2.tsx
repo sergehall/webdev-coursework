@@ -15,7 +15,7 @@ const Assignment2 = () => {
   const screenshots = [
     {
       label: "Screenshot-assignment2 – Python Trivia Game",
-      src: "/course-materials/CS87A/mod-2/screenshot-assignment2.png",
+      src: "/course-materials/CS87A/mod-2/screenshot-assignment2.webp",
     },
   ];
 

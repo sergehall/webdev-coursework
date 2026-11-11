@@ -70,9 +70,9 @@ describe("<AssignmentMod8 />", () => {
       screen.getByRole("button", { name: "View migration screenshot" })
     );
 
-    expect(screen.getByAltText("php_artisan_migrate.png")).toHaveAttribute(
+    expect(screen.getByAltText("php_artisan_migrate.webp")).toHaveAttribute(
       "src",
-      "/course-materials/CS85/mod-8/8a/php_artisan_migrate.png"
+      "/course-materials/CS85/mod-8/8a/php_artisan_migrate.webp"
     );
   });
 

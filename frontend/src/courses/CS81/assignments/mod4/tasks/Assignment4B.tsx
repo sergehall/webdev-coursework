@@ -14,7 +14,7 @@ const Assignment4B = () => {
   const screenshots = [
     {
       label: "Console Output Sample",
-      src: "/course-materials/CS81/mod-4/B/data-analysis-results.png",
+      src: "/course-materials/CS81/mod-4/B/data-analysis-results.webp",
     },
   ];
 

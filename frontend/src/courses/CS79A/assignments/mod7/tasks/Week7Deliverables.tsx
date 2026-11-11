@@ -19,22 +19,22 @@ export default function Week7Deliverables() {
 
   const files = [
     {
-      fileUrl: "/course-materials/CS79A/mod-7/AWS-Educate-Guide.png",
-      filename: "AWS-Educate-Guide.png",
+      fileUrl: "/course-materials/CS79A/mod-7/AWS-Educate-Guide.webp",
+      filename: "AWS-Educate-Guide.webp",
     },
     {
-      fileUrl: "/course-materials/CS79A/mod-7/OpenVPN-Lab-Instructions.png",
-      filename: "OpenVPN-Lab-Instructions.png",
+      fileUrl: "/course-materials/CS79A/mod-7/OpenVPN-Lab-Instructions.webp",
+      filename: "OpenVPN-Lab-Instructions.webp",
     },
   ];
 
   const screenshots = [
     {
-      src: "/course-materials/CS79A/mod-7/AWS-Educate-Guide.png",
+      src: "/course-materials/CS79A/mod-7/AWS-Educate-Guide.webp",
       label: "AWS Educate dashboard showing active enrollment and resources",
     },
     {
-      src: "/course-materials/CS79A/mod-7/OpenVPN-Lab-Instructions.png",
+      src: "/course-materials/CS79A/mod-7/OpenVPN-Lab-Instructions.webp",
       label: "OpenVPN client successfully connected to the AWS environment",
     },
   ];

@@ -36,16 +36,16 @@
 
   "screenshots": [
     {
-      "src": "/screenshots/dashboard-wide.png",
+      "src": "/screenshots/dashboard-wide.webp",
       "sizes": "1280x720",
-      "type": "image/png",
+      "type": "image/webp",
       "form_factor": "wide",
       "label": "Dashboard — course modules and progress on desktop"
     },
     {
-      "src": "/screenshots/mobile-home.png",
+      "src": "/screenshots/mobile-home.webp",
       "sizes": "720x1280",
-      "type": "image/png",
+      "type": "image/webp",
       "form_factor": "narrow",
       "label": "Mobile — courses list and quick actions"
     }

@@ -11,11 +11,11 @@ const Assignment1B = () => {
   const [showScreenshots, setShowScreenshots] = useState(false);
   const screenshots = [
     {
-      src: "/course-materials/CS81/mod-1/B/slack-workspace.png",
+      src: "/course-materials/CS81/mod-1/B/slack-workspace.webp",
       label: "Slack interface showing 'smccs81sum2025' workspace",
     },
     {
-      src: "/course-materials/CS81/mod-1/B/slack-profile.png",
+      src: "/course-materials/CS81/mod-1/B/slack-profile.webp",
       label: "Slack showing your full name in the member list or chat",
     },
   ];

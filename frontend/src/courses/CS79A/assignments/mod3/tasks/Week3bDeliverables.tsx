@@ -19,22 +19,22 @@ export default function Week3bDeliverables() {
 
   const files = [
     {
-      fileUrl: "/course-materials/CS79A/mod-3/S3-Static-Website-Lab.png",
-      filename: "S3-Static-Website-Lab.png",
+      fileUrl: "/course-materials/CS79A/mod-3/S3-Static-Website-Lab.webp",
+      filename: "S3-Static-Website-Lab.webp",
     },
     {
-      fileUrl: "/course-materials/CS79A/mod-3/S3-Website-Troubleshooting.png",
-      filename: "S3-Website-Troubleshooting.png",
+      fileUrl: "/course-materials/CS79A/mod-3/S3-Website-Troubleshooting.webp",
+      filename: "S3-Website-Troubleshooting.webp",
     },
   ];
 
   const screenshots = [
     {
-      src: "/course-materials/CS79A/mod-3/S3-Static-Website-Lab.png",
+      src: "/course-materials/CS79A/mod-3/S3-Static-Website-Lab.webp",
       label: "S3 bucket configured for static website hosting",
     },
     {
-      src: "/course-materials/CS79A/mod-3/S3-Website-Troubleshooting.png",
+      src: "/course-materials/CS79A/mod-3/S3-Website-Troubleshooting.webp",
       label: "Static website successfully loading from the S3 website endpoint",
     },
   ];

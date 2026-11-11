@@ -19,7 +19,7 @@ const Assignment9B = () => {
     {
       label:
         "Here is an example of the final component rendering multiple users inside a responsive modal.",
-      src: "/course-materials/CS81/mod-9/B/Module-9-Assignment-9B.png",
+      src: "/course-materials/CS81/mod-9/B/Module-9-Assignment-9B.webp",
     },
   ];
 
@@ -29,8 +29,8 @@ const Assignment9B = () => {
       filename: "README.md",
     },
     {
-      fileUrl: "/course-materials/CS81/mod-9/B/Module-9-Assignment-9B.png",
-      filename: "Module-9-Assignment-9B.png",
+      fileUrl: "/course-materials/CS81/mod-9/B/Module-9-Assignment-9B.webp",
+      filename: "Module-9-Assignment-9B.webp",
     },
     {
       fileUrl: "/course-materials/CS81/mod-9/B/Module9B_README.pdf",

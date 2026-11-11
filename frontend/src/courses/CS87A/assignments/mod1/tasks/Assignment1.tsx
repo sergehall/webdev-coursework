@@ -14,7 +14,7 @@ const Assignment1 = () => {
   const screenshots = [
     {
       label: "Screenshot-assignment1 – Python Intro",
-      src: "/course-materials/CS87A/mod-1/screenshot-assignment1.png",
+      src: "/course-materials/CS87A/mod-1/screenshot-assignment1.webp",
     },
   ];
 

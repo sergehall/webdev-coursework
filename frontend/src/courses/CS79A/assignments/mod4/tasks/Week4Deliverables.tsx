@@ -19,46 +19,46 @@ export default function Week4Deliverables() {
 
   const files = [
     {
-      fileUrl: "/course-materials/CS79A/mod-4/S3-Buckets-Bootstrap.png",
-      filename: "S3-Buckets-Bootstrap.png",
+      fileUrl: "/course-materials/CS79A/mod-4/S3-Buckets-Bootstrap.webp",
+      filename: "S3-Buckets-Bootstrap.webp",
     },
     {
-      fileUrl: "/course-materials/CS79A/mod-4/FTP-Server-Lab.png",
-      filename: "FTP-Server-Lab.png",
+      fileUrl: "/course-materials/CS79A/mod-4/FTP-Server-Lab.webp",
+      filename: "FTP-Server-Lab.webp",
     },
     {
-      fileUrl: "/course-materials/CS79A/mod-4/Screenshot2.png",
-      filename: "Screenshot2.png",
+      fileUrl: "/course-materials/CS79A/mod-4/Screenshot2.webp",
+      filename: "Screenshot2.webp",
     },
     {
-      fileUrl: "/course-materials/CS79A/mod-4/Screenshot3.png",
-      filename: "Screenshot3.png",
+      fileUrl: "/course-materials/CS79A/mod-4/Screenshot3.webp",
+      filename: "Screenshot3.webp",
     },
     {
-      fileUrl: "/course-materials/CS79A/mod-4/Screenshot4.png",
-      filename: "Screenshot4.png",
+      fileUrl: "/course-materials/CS79A/mod-4/Screenshot4.webp",
+      filename: "Screenshot4.webp",
     },
   ];
 
   const screenshots = [
     {
-      src: "/course-materials/CS79A/mod-4/S3-Buckets-Bootstrap.png",
+      src: "/course-materials/CS79A/mod-4/S3-Buckets-Bootstrap.webp",
       label: "S3 bucket hosting a Bootstrap website (example screenshot)",
     },
     {
-      src: "/course-materials/CS79A/mod-4/FTP-Server-Lab.png",
+      src: "/course-materials/CS79A/mod-4/FTP-Server-Lab.webp",
       label: "FTP Server configured and accessible (example screenshot)",
     },
     {
-      src: "/course-materials/CS79A/mod-4/Screenshot2.png",
+      src: "/course-materials/CS79A/mod-4/Screenshot2.webp",
       label: "FTP Server configured and accessible (example screenshot)",
     },
     {
-      src: "/course-materials/CS79A/mod-4/Screenshot3.png",
+      src: "/course-materials/CS79A/mod-4/Screenshot3.webp",
       label: "FTP Server configured and accessible (example screenshot)",
     },
     {
-      src: "/course-materials/CS79A/mod-4/Screenshot4.png",
+      src: "/course-materials/CS79A/mod-4/Screenshot4.webp",
       label: "FTP Server configured and accessible (example screenshot)",
     },
   ];

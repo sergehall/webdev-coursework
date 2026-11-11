@@ -15,7 +15,7 @@ const Assignment2B = () => {
 
   const screenshots = [
     {
-      src: "/course-materials/CS81/mod-2/B/FizzBuzz_Assignment_Screenshot.png",
+      src: "/course-materials/CS81/mod-2/B/FizzBuzz_Assignment_Screenshot.webp",
       alt: "FizzBuzz console screenshot",
     },
   ];

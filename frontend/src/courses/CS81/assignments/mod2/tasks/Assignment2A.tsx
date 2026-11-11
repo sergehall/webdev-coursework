@@ -15,7 +15,7 @@ const Assignment2A = () => {
   const screenshots = [
     {
       label: "Hello World alert and console screenshot",
-      src: "/course-materials/CS81/mod-2/A/HelloWorld_Assignment_Screenshot.png",
+      src: "/course-materials/CS81/mod-2/A/HelloWorld_Assignment_Screenshot.webp",
     },
   ];
   console.log("Hello, World!");

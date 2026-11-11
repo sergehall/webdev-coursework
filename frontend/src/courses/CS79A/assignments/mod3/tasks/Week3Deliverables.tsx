@@ -19,38 +19,38 @@ export default function Week3Deliverables() {
 
   const files = [
     {
-      fileUrl: "code-playground/CS79A/mod-3/Screenshot11.png",
-      filename: "Screenshot11.png",
+      fileUrl: "/course-materials/CS79A/mod-3/Screenshot11.webp",
+      filename: "Screenshot11.webp",
     },
     {
-      fileUrl: "code-playground/CS79A/mod-3/FTP-Server-Lab.png",
-      filename: "FTP-Server-Lab.png",
+      fileUrl: "/course-materials/CS79A/mod-3/Screenshot1.webp",
+      filename: "Screenshot1.webp",
     },
     {
-      fileUrl: "code-playground/CS79A/mod-3/Screenshot2.png",
-      filename: "Screenshot2.png",
+      fileUrl: "/course-materials/CS79A/mod-3/Screenshot2.webp",
+      filename: "Screenshot2.webp",
     },
     {
-      fileUrl: "code-playground/CS79A/mod-3/Screenshot3.png",
-      filename: "Screenshot3.png",
+      fileUrl: "/course-materials/CS79A/mod-3/Screenshot3.webp",
+      filename: "Screenshot3.webp",
     },
   ];
 
   const screenshots = [
     {
-      src: "/course-materials/CS79A/mod-3/Screenshot11.png",
+      src: "/course-materials/CS79A/mod-3/Screenshot11.webp",
       label: "Ubuntu EC2 instance running in AWS Console",
     },
     {
-      src: "/course-materials/CS79A/mod-3/FTP-Server-Lab.png",
-      label: "Ubuntu EC2 instance running in AWS Console",
+      src: "/course-materials/CS79A/mod-3/Screenshot1.webp",
+      label: "Listing the root directory on the Ubuntu instance",
     },
     {
-      src: "/course-materials/CS79A/mod-3/Screenshot2.png",
+      src: "/course-materials/CS79A/mod-3/Screenshot2.webp",
       label: "Successful SSH connection to Ubuntu server via terminal",
     },
     {
-      src: "/course-materials/CS79A/mod-3/Screenshot3.png",
+      src: "/course-materials/CS79A/mod-3/Screenshot3.webp",
       label: "Successful SSH connection to Ubuntu server via terminal",
     },
   ];

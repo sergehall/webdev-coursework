@@ -10,7 +10,7 @@ export const lensLoungeProject: ProjectShowcaseItem = {
   frameworks: ["Next.js", "NestJS"],
   summary:
     "A production-oriented learning platform combining public publishing, creator and editor workflows, realtime collaboration, governed administration, and independently deployable payment and file services.",
-  imageUrl: "/screenshots/projects/lens-lounge-microservices.png",
+  imageUrl: "/screenshots/projects/lens-lounge-microservices.webp",
   previewLabel: "Microservices publishing platform",
   previewDescription:
     "Public discovery, creator publishing, moderated engagement, realtime chat, and service-backed media workflows in one Next.js experience.",

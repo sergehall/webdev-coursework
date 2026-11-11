@@ -15,19 +15,19 @@ const Assignment4 = () => {
   const screenshots = [
     {
       label: "Screenshot-assignment4 – More Fun With Functions & Lists",
-      src: "/course-materials/CS87A/mod-4/screenshot-assignment4.png",
+      src: "/course-materials/CS87A/mod-4/screenshot-assignment4.webp",
     },
     {
       label: "Screenshot-assignment4 – More Fun With Functions & Lists",
-      src: "/course-materials/CS87A/mod-4/screenshot-assignment4-1.png",
+      src: "/course-materials/CS87A/mod-4/screenshot-assignment4-1.webp",
     },
     {
       label: "Screenshot-assignment4 – More Fun With Functions & Lists",
-      src: "/course-materials/CS87A/mod-4/screenshot-assignment4-2.png",
+      src: "/course-materials/CS87A/mod-4/screenshot-assignment4-2.webp",
     },
     {
       label: "Screenshot-assignment4 – More Fun With Functions & Lists",
-      src: "/course-materials/CS87A/mod-4/screenshot-assignment4-3.png",
+      src: "/course-materials/CS87A/mod-4/screenshot-assignment4-3.webp",
     },
   ];
 

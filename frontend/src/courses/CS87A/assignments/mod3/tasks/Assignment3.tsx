@@ -15,7 +15,7 @@ const Assignment3 = () => {
   const screenshots = [
     {
       label: "Screenshot-assignment3 – Tic-Tac-Toe",
-      src: "/course-materials/CS87A/mod-3/screenshot-assignment3.png",
+      src: "/course-materials/CS87A/mod-3/screenshot-assignment3.webp",
     },
   ];
 

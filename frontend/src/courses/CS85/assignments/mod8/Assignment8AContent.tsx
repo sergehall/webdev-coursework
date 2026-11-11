@@ -17,8 +17,8 @@ const assignment8AItem: CanvasItem = {
 
 const migrationScreenshotFiles = [
   {
-    fileUrl: "/course-materials/CS85/mod-8/8a/php_artisan_migrate.png",
-    filename: "php_artisan_migrate.png",
+    fileUrl: "/course-materials/CS85/mod-8/8a/php_artisan_migrate.webp",
+    filename: "php_artisan_migrate.webp",
   },
 ];
 
@@ -35,8 +35,8 @@ const submissionArtifacts = [
     description: "Sanitized local configuration with placeholder credentials.",
   },
   {
-    href: "/course-materials/CS85/mod-8/8a/php_artisan_migrate.png",
-    filename: "php_artisan_migrate.png",
+    href: "/course-materials/CS85/mod-8/8a/php_artisan_migrate.webp",
+    filename: "php_artisan_migrate.webp",
     description: "Screenshot confirming successful Laravel migrations.",
   },
 ];

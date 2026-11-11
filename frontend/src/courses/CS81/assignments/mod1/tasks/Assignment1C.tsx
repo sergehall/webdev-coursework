@@ -14,7 +14,7 @@ const Assignment1C = () => {
   const screenshots = [
     {
       label: "Console output screenshot",
-      src: "/course-materials/CS81/mod-1/C/introToJS.png",
+      src: "/course-materials/CS81/mod-1/C/introToJS.webp",
     },
   ];
 

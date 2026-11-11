@@ -29,7 +29,7 @@ The original standalone assignment package is available as [a ZIP archive](modul
 
 Below is a screenshot showing the `StudentCard` running in the browser, along with inline comments explaining how props, state, and toggle functionality work:
 
-![Screenshot of the StudentCard assignment](StudentCard-Component.png)
+![Screenshot of the StudentCard assignment](StudentCard-Component.webp)
 
 </details>
 

@@ -19,7 +19,7 @@ const Assignment2C = () => {
   const screenshots = [
     {
       label: "Commute simulation console screenshot",
-      src: "/course-materials/CS81/mod-2/C/Assignment2C_Screenshot.png",
+      src: "/course-materials/CS81/mod-2/C/Assignment2C_Screenshot.webp",
     },
   ];
 

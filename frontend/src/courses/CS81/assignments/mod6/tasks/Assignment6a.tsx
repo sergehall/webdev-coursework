@@ -14,7 +14,7 @@ const Assignment6A = () => {
   const screenshots = [
     {
       label: "Console Output Example",
-      src: "/course-materials/CS81/mod-6/A/playlist-console-output.png",
+      src: "/course-materials/CS81/mod-6/A/playlist-console-output.webp",
     },
   ];
 

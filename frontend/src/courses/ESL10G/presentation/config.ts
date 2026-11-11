@@ -23,7 +23,7 @@ export const MUSIC_BASE_PATH = "/course-materials/esl10g/presentation/music";
 
 export const presentationImageUrl = (image: string) =>
   versionedPresentationImageUrl(
-    `/course-materials/esl10g/presentation/${image}.png`
+    `/course-materials/esl10g/presentation/${image}.webp`
   );
 
 export const slideDuration = (index: number) =>

@@ -15,7 +15,7 @@ const Assignment6 = () => {
   const screenshots = [
     {
       label: "Screenshot-assignment6 – Tkinter Pie Chart (PLUI)",
-      src: "/course-materials/CS87A/mod-6/screenshot-assignment6.png",
+      src: "/course-materials/CS87A/mod-6/screenshot-assignment6.webp",
     },
   ];
 

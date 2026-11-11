@@ -10,7 +10,7 @@ export const javaStartProject: ProjectShowcaseItem = {
   frameworks: ["Next.js", "Spring Boot"],
   summary:
     "A local-first CS56 learning platform that connects structured Java coursework, checked assignment submissions, progress tracking, and a standalone JavaFX lab to a secure Next.js and Spring Boot application.",
-  imageUrl: "/screenshots/projects/java-start.png",
+  imageUrl: "/screenshots/projects/java-start.webp",
   previewLabel: "CS56 learning workspace",
   previewDescription:
     "Explore mapped course modules, inspect assignment source, track reviewed submissions, and launch a standalone JavaFX event-handling project.",

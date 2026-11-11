@@ -10,7 +10,7 @@ export const awsLearningPortalProject: ProjectShowcaseItem = {
   frameworks: ["Next.js", "NestJS", "AWS"],
   summary:
     "A previously deployed CS79D full-stack learning portal that connects eight cloud security modules to AWS workflows, validated uploads, activity evidence, account security, and a Bedrock-backed assessment advisor. Its EC2 runtime is currently paused.",
-  imageUrl: "/screenshots/projects/final-project-CS79D.png",
+  imageUrl: "/screenshots/projects/final-project-CS79D.webp",
   thumbnailUrl: "/screenshots/projects/final-project-CS79D-card.webp",
   previewLabel: "AWS security learning portal",
   previewDescription:

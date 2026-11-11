@@ -36,8 +36,8 @@ export function registerMediaCases() {
     const { unmount } = renderPage("/coursework/ESL10G/presentation-1");
     try {
       expect(images).toHaveLength(2);
-      expect(images[0].src).toContain("/brooklyn.png");
-      expect(images[0].src).toMatch(/\/brooklyn\.png\?v=[a-f0-9]{12}$/);
+      expect(images[0].src).toContain("/brooklyn.webp");
+      expect(images[0].src).toMatch(/\/brooklyn\.webp\?v=[a-f0-9]{12}$/);
       expect(images[0].fetchPriority).toBe("low");
       fireEvent.error(images[0]);
       expect(images).toHaveLength(3);

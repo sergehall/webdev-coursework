@@ -14,7 +14,7 @@ const Assignment5A = () => {
   const screenshots = [
     {
       label: "Sample Console Output",
-      src: "/course-materials/CS81/mod-5/A/hobbyTracker-output.png",
+      src: "/course-materials/CS81/mod-5/A/hobbyTracker-output.webp",
     },
   ];
 

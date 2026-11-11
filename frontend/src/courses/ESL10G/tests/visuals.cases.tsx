@@ -7,10 +7,10 @@ export function registerVisualCases() {
   it("uses the versioned Brooklyn photo on the opening and story slides", () => {
     const { container } = renderPage("/coursework/ESL10G/presentation-1");
     const openingPhoto = container.querySelector(
-      '.bookend__photos--opening img[src*="brooklyn.png"]'
+      '.bookend__photos--opening img[src*="brooklyn.webp"]'
     );
     const imageUrl = openingPhoto?.getAttribute("src");
-    expect(imageUrl).toMatch(/\/brooklyn\.png\?v=[a-f0-9]{12}$/);
+    expect(imageUrl).toMatch(/\/brooklyn\.webp\?v=[a-f0-9]{12}$/);
 
     fireEvent.click(screen.getByRole("button", { name: "Next slide" }));
     expect(
@@ -119,7 +119,7 @@ export function registerVisualCases() {
     ).toHaveAttribute(
       "src",
       expect.stringMatching(
-        /\/learning-together-personalized\.png\?v=[a-f0-9]{12}$/
+        /\/learning-together-personalized\.webp\?v=[a-f0-9]{12}$/
       )
     );
 
@@ -132,7 +132,7 @@ export function registerVisualCases() {
     ).toHaveAttribute(
       "src",
       expect.stringMatching(
-        /\/learning-together-personalized\.png\?v=[a-f0-9]{12}$/
+        /\/learning-together-personalized\.webp\?v=[a-f0-9]{12}$/
       )
     );
   });

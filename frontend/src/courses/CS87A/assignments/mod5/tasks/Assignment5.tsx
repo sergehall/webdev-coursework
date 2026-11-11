@@ -14,7 +14,7 @@ const Assignment5 = () => {
   const screenshots = [
     {
       label: "Screenshot-assignment5 – President vs House Winners",
-      src: "/course-materials/CS87A/mod-5/screenshot-assignment5.png",
+      src: "/course-materials/CS87A/mod-5/screenshot-assignment5.webp",
     },
   ];
 

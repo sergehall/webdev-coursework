@@ -147,8 +147,8 @@ export const cs79dModule06TextTasks = [
     previewFiles: [
       {
         fileUrl:
-          "/course-materials/CS79D/mod-6/vpc-peering-reference-diagram.png",
-        filename: "vpc-peering-reference-diagram.png",
+          "/course-materials/CS79D/mod-6/vpc-peering-reference-diagram.webp",
+        filename: "vpc-peering-reference-diagram.webp",
         buttonLabel: "VPC Peering Diagram",
       },
     ],
