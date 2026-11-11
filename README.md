@@ -116,6 +116,15 @@ described in the [account guide](docs/owner-account-analytics.md). `build`
 builds both workspaces. See each workspace's `package.json` for narrower
 commands.
 
+The backend build regenerates the Mentor catalog manifest from the current
+sources before compiling. This also runs through `yarn heroku-postbuild`, so
+asset path changes do not require a separate manifest update before deployment.
+Generation still validates approved source hashes, routes, and catalog contracts;
+changes to reviewed content require review. Use
+`yarn workspace backend knowledge:check` to check the committed manifest without
+updating it, or
+`yarn workspace backend knowledge:generate` to refresh it explicitly.
+
 ## Documentation and deployment
 
 Start with the [documentation index](docs/README.md) to find the architecture,

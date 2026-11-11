@@ -33,6 +33,18 @@ describe("catalog source/build boundary", () => {
   it("reproduces the checked-in artifact from canonical sources", () => {
     expect(buildCatalog(root)).toEqual(manifest);
   });
+  it("refreshes source hashes for asset changes in unreviewed modules", () => {
+    const path =
+      "frontend/src/courses/CS81/assignments/mod12/AssignmentMod12.tsx";
+    replace(path, "final-screenshot.webp", "final-screenshot-v2.webp");
+
+    const refreshed = buildCatalog(fixture);
+
+    expect(refreshed.inputHashes[path]).not.toBe(manifest.inputHashes[path]);
+    expect(refreshed.version).not.toBe(manifest.version);
+    expect(refreshed.entries).toEqual(manifest.entries);
+    expect(refreshed.coverage).toEqual(manifest.coverage);
+  });
   it("requires a new review when approved content changes", () => {
     const path =
       "frontend/src/courses/CS80/assignments/mod1/AssignmentMod1.tsx";

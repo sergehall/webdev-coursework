@@ -10,7 +10,7 @@
     "node": "24.x"
   },
   "scripts": {
-    "build": "yarn knowledge:check && rimraf dist && nest build",
+    "build": "yarn knowledge:generate && rimraf dist && nest build",
     "start:prod": "node dist/main.js",
     "start": "nest start",
     "build2": "rimraf dist && tsc -p tsconfig.json",
