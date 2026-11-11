@@ -117,7 +117,7 @@
     "frontend/src/courses/CS81/assignments/mod1/AssignmentMod1.tsx": "645aab9a6493b02d19b4767629ca4b59efb9b5de7a84e27bfcb67beb803d01ee",
     "frontend/src/courses/CS81/assignments/mod10/AssignmentMod10.tsx": "170c8d4813da52831650193fac48e051e242783ad4b92b63782d853279d87c97",
     "frontend/src/courses/CS81/assignments/mod11/AssignmentMod11.tsx": "54d10ef665f65133f621fe2d6c731d81baa1a1edced1d93c075fb34f21f307ff",
-    "frontend/src/courses/CS81/assignments/mod12/AssignmentMod12.tsx": "2ff0d45bc9486bf9757ca9fd66119477597d3ad261f8d74c3c0426d9d65617c8",
+    "frontend/src/courses/CS81/assignments/mod12/AssignmentMod12.tsx": "7089036686d7b6a71cb6d9c3c49285858b87fb5b3cb57007e148dbe3ac76d9c5",
     "frontend/src/courses/CS81/assignments/mod2/AssignmentMod2.tsx": "877b3d968781eafa3dd40c5b0e257c3715830cb3780feaf38f95562f44c4dec2",
     "frontend/src/courses/CS81/assignments/mod3/AssignmentMod3.tsx": "cc150fd40e5f84f90437008d2e8ea9316a24f68516ac2bd3bb93ac83d91a2c9c",
     "frontend/src/courses/CS81/assignments/mod4/AssignmentMod4.tsx": "4916cb80b3bbab9c3f8b978ca4cd4cb17ba8035edcd752e48f0ca7909a2aea69",
@@ -148,5 +148,5 @@
     "frontend/src/routes/AppRoutes.tsx": "334ad23c014ea679435408d7309beedd8e72a9fd4a8ee9f21197dd5556e76608",
     "frontend/src/routes/AutoAssignmentRouter.tsx": "ca398e8e318c49a31219d2a685d1b522633ef3729782acbb2d236f669289e17e"
   },
-  "version": "4599ed9c445da1c60ae065c5bc50b3a125dab2515ba562e5bcc03301d0b0db71"
+  "version": "fc536c97445cbc72b1332a5b04ff92492ca383f636d5a5c08422247c1fda03c4"
 }
