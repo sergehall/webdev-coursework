@@ -116,46 +116,33 @@ export default function CourseworkPage() {
           <p className="mb-3 text-sm font-bold tracking-[0.16em] text-sky-700 uppercase dark:text-sky-300">
             Fall 2026 · In progress
           </p>
-          <details className="group rounded-xl border border-sky-300 bg-gradient-to-r from-sky-50 to-indigo-50 p-5 shadow-sm dark:border-sky-800 dark:from-slate-900 dark:to-indigo-950">
-            <summary
-              className="cursor-pointer text-lg font-bold text-slate-900 dark:text-white"
-              id="esl-course-heading"
-            >
-              ESL 10G · Listening, Speaking & Grammar{" "}
-              <span className="ml-2 text-sm font-medium text-sky-700 dark:text-sky-300">
-                View course details
-              </span>
-            </summary>
-            <p className="mt-4 max-w-3xl text-sm leading-6 text-slate-700 dark:text-slate-300">
-              A 16-week Santa Monica College course for building English
-              listening, speaking, and grammar skills. We practice short
-              listening passages, everyday conversations, core grammar, and oral
-              presentations.
-            </p>
-            <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-slate-700 dark:text-slate-300">
-              <li>
-                Understand main ideas and supporting details in short talks.
-              </li>
-              <li>
-                Speak about familiar topics and deliver a 3–4 minute
-                presentation.
-              </li>
-              <li>
-                Use present, past, and future forms to make sentences and
-                questions.
-              </li>
-            </ul>
+          <div className="grid grid-cols-1 items-start gap-3 sm:grid-cols-2">
             <Link
               to="/coursework/ESL10G"
+              aria-labelledby="esl-course-heading"
               onClick={() => {
                 document.documentElement.scrollTop = 0;
                 document.body.scrollTop = 0;
               }}
-              className="mt-5 inline-flex min-h-10 items-center rounded-lg bg-sky-700 px-4 py-2 text-sm font-bold text-white hover:bg-sky-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
+              className="group relative flex min-h-28 flex-col overflow-hidden rounded-xl border border-sky-400 bg-gradient-to-l from-sky-100 to-blue-200 p-4 text-left shadow-sm transition-shadow duration-300 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky-500 dark:border-sky-700 dark:from-sky-800 dark:via-blue-900 dark:to-blue-950"
             >
-              Explore ESL 10G weeks and presentation
+              <h2 id="esl-course-heading" className="mb-4">
+                <span className="block text-sm font-medium text-gray-800 dark:text-white">
+                  ESL 10G
+                </span>{" "}
+                <span className="block text-lg font-bold text-gray-900 dark:text-white">
+                  Listening, Speaking & Grammar
+                </span>
+              </h2>
+              <div className="absolute inset-0 z-10 hidden items-center justify-center rounded-xl bg-sky-50/95 px-4 text-center text-sm text-slate-800 backdrop-blur-sm group-hover:flex group-focus-visible:flex dark:bg-slate-950/95 dark:text-sky-100">
+                <p>
+                  Practice English listening, everyday conversations, grammar,
+                  and oral presentations in this 16-week Santa Monica College
+                  course.
+                </p>
+              </div>
             </Link>
-          </details>
+          </div>
         </section>
       </motion.div>
 

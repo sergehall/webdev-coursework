@@ -84,15 +84,12 @@ describe("<CourseworkPage />", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("opens the ESL 10G course details at the bottom of coursework", async () => {
+  it("opens ESL 10G directly from its course card", async () => {
     const user = userEvent.setup();
     renderCourseworkPage();
 
-    await user.click(
-      screen.getByText(/ESL 10G · Listening, Speaking & Grammar/i)
-    );
     const link = screen.getByRole("link", {
-      name: /Explore ESL 10G weeks and presentation/i,
+      name: /ESL 10G Listening, Speaking & Grammar/i,
     });
     expect(link).toHaveAttribute("href", "/coursework/ESL10G");
     await user.click(link);
