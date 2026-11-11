@@ -134,7 +134,7 @@ export default function CourseworkPage() {
                   Listening, Speaking & Grammar
                 </span>
               </h2>
-              <div className="absolute inset-0 z-10 hidden items-center justify-center rounded-xl bg-sky-50/95 px-4 text-center text-sm text-slate-800 backdrop-blur-sm group-hover:flex group-focus-visible:flex dark:bg-slate-950/95 dark:text-sky-100">
+              <div className="absolute inset-0 z-10 hidden items-center justify-center rounded-xl bg-white/95 px-4 text-center text-sm text-gray-800 backdrop-blur-sm group-hover:flex group-focus-visible:flex dark:bg-gray-900/90 dark:text-gray-200">
                 <p>
                   Practice English listening, everyday conversations, grammar,
                   and oral presentations in this 16-week Santa Monica College
