@@ -1,6 +1,6 @@
 import { next } from "@vercel/functions";
 
-import { buildContentSecurityPolicy } from "./content-security-policy";
+import { buildContentSecurityPolicy } from "./content-security-policy.js";
 
 // Only HTML entry points need a per-response nonce. Static files bypass this function.
 export const config = {
