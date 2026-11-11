@@ -2,7 +2,7 @@
 import { fileURLToPath } from "url";
 import * as path from "path";
 import { createHash } from "node:crypto";
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 
 import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
@@ -13,17 +13,25 @@ import { workerContentSecurityPolicy } from "./worker-content-security-policy";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const brooklynImageVersion = createHash("sha256")
-  .update(
-    readFileSync(
-      path.resolve(
-        __dirname,
-        "public/course-materials/esl10g/presentation/brooklyn.png"
+// Content-derived URLs refresh browser and CDN caches only when an image changes.
+const presentationImageVersions = Object.fromEntries(
+  ["presentation", "presentation-2"].flatMap((directory) => {
+    const baseUrl = `/course-materials/esl10g/${directory}`;
+    const absoluteDirectory = path.join(__dirname, "public", baseUrl);
+    return readdirSync(absoluteDirectory, { withFileTypes: true })
+      .filter(
+        (entry) =>
+          entry.isFile() && /\.(png|webp|jpe?g|avif|gif|svg)$/i.test(entry.name)
       )
-    )
-  )
-  .digest("hex")
-  .slice(0, 12);
+      .map((entry) => [
+        `${baseUrl}/${entry.name}`,
+        createHash("sha256")
+          .update(readFileSync(path.join(absoluteDirectory, entry.name)))
+          .digest("hex")
+          .slice(0, 12),
+      ]);
+  })
+);
 // Production preview has no Cloudflare injection, so its CSP needs no nonce.
 const productionContentSecurityPolicy = buildContentSecurityPolicy();
 
@@ -151,7 +159,9 @@ export default defineConfig(({ mode }) => {
     },
     define: {
       __APP_ENV__: JSON.stringify(env.VITE_ENVIRONMENT),
-      __ESL10G_BROOKLYN_IMAGE_VERSION__: JSON.stringify(brooklynImageVersion),
+      __ESL10G_PRESENTATION_IMAGE_VERSIONS__: JSON.stringify(
+        presentationImageVersions
+      ),
       "process.env.NODE_ENV": JSON.stringify(
         isProd ? "production" : "development"
       ),

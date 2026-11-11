@@ -118,7 +118,9 @@ export function registerVisualCases() {
       })
     ).toHaveAttribute(
       "src",
-      "/course-materials/esl10g/presentation/learning-together-personalized.png"
+      expect.stringMatching(
+        /\/learning-together-personalized\.png\?v=[a-f0-9]{12}$/
+      )
     );
 
     fireEvent.click(screen.getByRole("button", { name: "Subtitles" }));
@@ -129,7 +131,9 @@ export function registerVisualCases() {
       container.querySelector(".bookend__photos--closing img:last-child")
     ).toHaveAttribute(
       "src",
-      "/course-materials/esl10g/presentation/learning-together-personalized.png"
+      expect.stringMatching(
+        /\/learning-together-personalized\.png\?v=[a-f0-9]{12}$/
+      )
     );
   });
 }

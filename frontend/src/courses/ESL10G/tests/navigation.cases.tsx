@@ -43,7 +43,7 @@ export function registerNavigationCases() {
       screen.getByRole("img", { name: "QR code for this presentation" })
     ).toHaveAttribute(
       "src",
-      "/course-materials/esl10g/presentation/presentation-qr.svg"
+      expect.stringMatching(/\/presentation-qr\.svg\?v=[a-f0-9]{12}$/)
     );
     expect(screen.getByText("Let’s stay in touch!")).toBeInTheDocument();
     expect(

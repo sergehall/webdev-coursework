@@ -1,6 +1,7 @@
 import { presentationSlides, storySlides } from "../courseContent";
 
 import type { PresentationPlaybackConfig } from "./domain/playback";
+import { versionedPresentationImageUrl } from "./imageUrl";
 
 export const MIN_DURATION_MS = 2.5 * 60 * 1000;
 
@@ -20,12 +21,10 @@ export const DEFAULT_MUSIC_VOLUME = 12;
 
 export const MUSIC_BASE_PATH = "/course-materials/esl10g/presentation/music";
 
-export const presentationImageUrl = (image: string) => {
-  const url = `/course-materials/esl10g/presentation/${image}.png`;
-  return image === "brooklyn"
-    ? `${url}?v=${__ESL10G_BROOKLYN_IMAGE_VERSION__}`
-    : url;
-};
+export const presentationImageUrl = (image: string) =>
+  versionedPresentationImageUrl(
+    `/course-materials/esl10g/presentation/${image}.png`
+  );
 
 export const slideDuration = (index: number) =>
   index === 0

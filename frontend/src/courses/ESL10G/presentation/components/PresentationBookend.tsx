@@ -1,5 +1,6 @@
 import { PRESENTATION_QR_URL } from "../../../../features/analytics/useQrVisit";
 import { presentationImageUrl } from "../config";
+import { versionedPresentationImageUrl } from "../imageUrl";
 
 interface PresentationBookendProps {
   readonly isOpening: boolean;
@@ -37,15 +38,9 @@ export function PresentationBookend({
             className="bookend__photos bookend__photos--opening"
             aria-hidden="true"
           >
-            <img
-              src="/course-materials/esl10g/presentation/belarus.png"
-              alt=""
-            />
+            <img src={presentationImageUrl("belarus")} alt="" />
             <img src={presentationImageUrl("brooklyn")} alt="" />
-            <img
-              src="/course-materials/esl10g/presentation/los-angeles.png"
-              alt=""
-            />
+            <img src={presentationImageUrl("los-angeles")} alt="" />
           </div>
           <div className="bookend__footer">
             Belarus <span>→</span> New York <span>→</span> California
@@ -70,16 +65,10 @@ export function PresentationBookend({
             className="bookend__photos bookend__photos--closing"
             aria-hidden="true"
           >
+            <img src={presentationImageUrl("hiking")} alt="" />
+            <img src={presentationImageUrl("classroom")} alt="" />
             <img
-              src="/course-materials/esl10g/presentation/hiking.png"
-              alt=""
-            />
-            <img
-              src="/course-materials/esl10g/presentation/classroom.png"
-              alt=""
-            />
-            <img
-              src="/course-materials/esl10g/presentation/learning-together-personalized.png"
+              src={presentationImageUrl("learning-together-personalized")}
               alt=""
             />
           </div>
@@ -106,7 +95,9 @@ export function PresentationBookend({
             <span className="bookend__qr-card">
               <span className="bookend__qr-title">Let’s stay in touch!</span>
               <img
-                src="/course-materials/esl10g/presentation/presentation-qr.svg"
+                src={versionedPresentationImageUrl(
+                  "/course-materials/esl10g/presentation/presentation-qr.svg"
+                )}
                 alt="QR code for this presentation"
                 width="220"
                 height="220"

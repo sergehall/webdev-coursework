@@ -23,7 +23,11 @@ it("opens from Week 11, pairs every chapter with its transcript, and stops navig
   for (const slide of presentation2Slides) {
     expect(screen.getByRole("img", { name: slide.alt })).toHaveAttribute(
       "src",
-      `/course-materials/esl10g/presentation-2/${slide.image}.webp`
+      expect.stringMatching(
+        new RegExp(
+          `/course-materials/esl10g/presentation-2/${slide.image}\\.webp\\?v=[a-f0-9]{12}$`
+        )
+      )
     );
     if (slide.text) {
       expect(screen.getByText(slide.text)).toBeInTheDocument();
