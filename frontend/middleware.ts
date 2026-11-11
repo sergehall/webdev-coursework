@@ -5,7 +5,7 @@ import { buildContentSecurityPolicy } from "./content-security-policy";
 // Only HTML entry points need a per-response nonce. Static files bypass this function.
 export const config = {
   matcher: ["/((?!course-materials/|assets/|.*\\.).*)", "/index.html"],
-  runtime: "edge",
+  runtime: "nodejs",
 };
 
 export default function middleware(request: Request) {
